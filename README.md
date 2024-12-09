@@ -1,6 +1,13 @@
 # SqlMan
 A lightweight Data Access Library for Java
 
+https://tawn33y.github.io/EasySQL/#demo
+https://github.com/fast-sql/FastSQL
+https://framework.ajaxjs.com/docs/aj/
+https://github.com/lightweight-component/aj-data
+
+https://sqlman.ajaxjs.com/
+https://github.com/lightweight-component/SqlMan
 
 https://www.baeldung.com/jdbi
 https://www.kancloud.cn/apachecn/zetcode-zh/1949996
