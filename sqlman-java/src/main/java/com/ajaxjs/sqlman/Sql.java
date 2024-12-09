@@ -1,12 +1,15 @@
 package com.ajaxjs.sqlman;
 
-import com.ajaxjs.data.util.ConvertBasicValue;
+
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
 import com.ajaxjs.sqlman.model.DAO;
 import com.ajaxjs.sqlman.model.Update;
+import com.ajaxjs.sqlman.util.ConvertBasicValue;
+import com.ajaxjs.sqlman.util.JsonUtil;
 import com.ajaxjs.sqlman.util.ReflectUtil;
 import com.ajaxjs.sqlman.util.Utils;
-import com.ajaxjs.util.JsonUtil;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
@@ -22,7 +25,9 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.*;
 
+@EqualsAndHashCode(callSuper = true)
 @Slf4j
+@Data
 public class Sql extends JdbcCRUD implements DAO {
     /**
      * Create a JDBC action with global connection
@@ -150,7 +155,7 @@ public class Sql extends JdbcCRUD implements DAO {
                     value = null;
                 else {
                     String jsonStr = value.toString();
-                    value = jsonStr.startsWith("[") ? JsonUtil.json2mapList(jsonStr) : JsonUtil.json2map(jsonStr);
+                    value = jsonStr.startsWith("[") ? JsonUtil.INSTANCE.json2mapList(jsonStr) : JsonUtil.INSTANCE.json2map(jsonStr);
                 }
             }
 
@@ -232,11 +237,11 @@ public class Sql extends JdbcCRUD implements DAO {
                             if (jsonStr.startsWith("{"))
 //                        value = ConvertComplexValue.getConvertValue().convert(jsonStr, propertyType);
 
-                                value = JsonUtil.fromJson(jsonStr, propertyType);
+                                value = JsonUtil.INSTANCE.fromJson(jsonStr, propertyType);
                             else if (jsonStr.startsWith("[")) {
 //                            Class<?> listType =  propertyType; // it might be a List
                                 Class<?> _beanClz = ReflectUtil.getGenericFirstReturnType(property.getReadMethod());
-                                value = JsonUtil.json2list(jsonStr, _beanClz);
+                                value = JsonUtil.INSTANCE.json2list(jsonStr, _beanClz);
                             } else {
                                 value = null;
                                 log.warn("非法 JSON 字符串： {}", jsonStr);
@@ -302,4 +307,6 @@ public class Sql extends JdbcCRUD implements DAO {
 //        return list.size() > 0 ? list : null; // 找不到记录返回 null，不返回空的 list
         return list; // 找不到记录返回 null，不返回空的 list
     }
+
+
 }

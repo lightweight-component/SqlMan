@@ -7,26 +7,19 @@ import com.ajaxjs.sqlman.model.JdbcConstants;
 import com.ajaxjs.sqlman.model.Update;
 import com.ajaxjs.sqlman.util.Utils;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.sql.*;
+import java.util.Map;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
-public class JdbcCRUD implements JdbcConstants {
-    /**
-     * 当前数据库厂商，默认 MySQL
-     */
-    private DatabaseVendor databaseVendor = DatabaseVendor.MYSQL;
-
-    /**
-     * Database connection
-     */
-    private Connection conn;
-
+public class JdbcCRUD extends JdbcConn implements JdbcConstants {
     /**
      * SQL 语句，可以带有 ? 的占位符
      */
@@ -38,38 +31,29 @@ public class JdbcCRUD implements JdbcConstants {
     private Object[] params;
 
     /**
+     * 通过 key 替换 SQL 中的参数，可不填
+     */
+    private Map<String, Object> keyParams;
+
+    /**
      * Create a JDBC action with global connection
      */
     public JdbcCRUD() {
-        // TODO
+        super();
     }
 
     /**
      * Create a JDBC action with specified connection
      */
     public JdbcCRUD(Connection conn) {
-        this.conn = conn;
-        getDatabaseVendor();
-    }
-
-    protected void getDatabaseVendor() {
-        try {
-            String databaseProductName = conn.getMetaData().getDatabaseProductName().toLowerCase();
-
-            if (databaseProductName.contains("mysql"))
-                databaseVendor = DatabaseVendor.MYSQL;
-            else if (databaseProductName.contains("oracle"))
-                databaseVendor = DatabaseVendor.ORACLE;
-        } catch (SQLException e) {
-            throw new RuntimeException("Getting database name error.", e);
-        }
+        super(conn);
     }
 
     /**
      * Create a JDBC action with specified data source
      */
     public JdbcCRUD(DataSource dataSource) {
-        this(Utils.getConnection(dataSource));
+        super(dataSource);
     }
 
     /**
@@ -111,7 +95,7 @@ public class JdbcCRUD implements JdbcConstants {
      */
     @SuppressWarnings("unchecked")
     public <T extends Serializable> Create<T> create(boolean isAutoIns, Class<T> idType) {
-        try (PreparedStatement ps = isAutoIns ? conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS) : conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = isAutoIns ? getConn().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS) : getConn().prepareStatement(sql)) {
             setParam2Ps(ps, params);
             log.info("Inserting SQL-->[{}]", Utils.printRealSql(sql, params));
             int effectRows = ps.executeUpdate();
@@ -167,7 +151,7 @@ public class JdbcCRUD implements JdbcConstants {
      * @return 成功修改的行数
      */
     public Update update() {
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = getConn().prepareStatement(sql)) {
             setParam2Ps(ps, params);
             log.info("Updating SQL-->[{}]", Utils.printRealSql(sql, params));
 
@@ -189,7 +173,7 @@ public class JdbcCRUD implements JdbcConstants {
      * @throws SQLException 异常
      */
     private static void setParam2Ps(PreparedStatement ps, Object... params) throws SQLException {
-        if ( (params == null || params.length == 0))
+        if ((params == null || params.length == 0))
             return;
 
         for (int i = 0; i < params.length; i++)
@@ -208,5 +192,27 @@ public class JdbcCRUD implements JdbcConstants {
         setParams(new Object[]{id});
 
         return update();
+    }
+
+    public static JdbcCRUD New(String sql, Object... params) {
+        JdbcCRUD _sql = new JdbcCRUD();
+        _sql.setSql(sql);
+        _sql.setParams(params);
+
+        return _sql;
+    }
+
+    public static JdbcCRUD New(Connection conn, String sql, Object... params) {
+        JdbcCRUD _sql = new JdbcCRUD(conn);
+        _sql.setSql(sql);
+        _sql.setParams(params);
+
+        return _sql;
+    }
+
+    public static JdbcCRUD New(DataSource dataSource, String sql, Object... params) {
+        Connection conn = Utils.getConnection(dataSource);
+
+        return New(conn, sql, params);
     }
 }
