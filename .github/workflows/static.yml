@@ -33,11 +33,11 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
+          cache-dependency-path: website-src/package-lock.json
           node-version: 20
           cache: 'npm'
-          cache-dependency-path: website-src/package-lock.json
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Build
         run: npm run build
       - name: Setup Pages
