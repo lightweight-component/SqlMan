@@ -5,11 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 public interface DAO {
-    DAO sql(String sql);
 
-    DAO sql(String sql, Object... params);
+    DAO input(String sql, Object... params);
 
-    DAO sql(String sql, Map<String, Object> params);
+    DAO input(String sql, Map<String, Object> keyParams, Object... params);
 
     /**
      * 有且只有一行记录，并只返回第一列的字段。可指定字段的数据类型

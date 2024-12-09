@@ -20,8 +20,7 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
-@Builder
-public class JdbcCRUD extends JdbcConn implements JdbcConstants {
+public abstract class JdbcCRUD extends JdbcConn implements JdbcConstants {
     /**
      * SQL 语句，可以带有 ? 的占位符
      */
@@ -66,6 +65,9 @@ public class JdbcCRUD extends JdbcConn implements JdbcConstants {
      * @return 查询结果，如果为 null 表示没有数据
      */
     protected <T> T query(ResultSetProcessor<T> processor) {
+        if (keyParams != null)
+            sql = SmallMyBatis.handleSql(sql, keyParams);
+
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
             log.info("Querying SQL-->[{}]", Utils.printRealSql(sql, params));
             setParam2Ps(ps, params);
@@ -194,27 +196,5 @@ public class JdbcCRUD extends JdbcConn implements JdbcConstants {
         setParams(new Object[]{id});
 
         return update();
-    }
-
-    public static JdbcCRUD New(String sql, Object... params) {
-        JdbcCRUD _sql = new JdbcCRUD();
-        _sql.setSql(sql);
-        _sql.setParams(params);
-
-        return _sql;
-    }
-
-    public static JdbcCRUD New(Connection conn, String sql, Object... params) {
-        JdbcCRUD _sql = new JdbcCRUD(conn);
-        _sql.setSql(sql);
-        _sql.setParams(params);
-
-        return _sql;
-    }
-
-    public static JdbcCRUD New(DataSource dataSource, String sql, Object... params) {
-        Connection conn = Utils.getConnection(dataSource);
-
-        return New(conn, sql, params);
     }
 }

@@ -2,6 +2,7 @@ package com.ajaxjs.sqlman;
 
 import com.ajaxjs.sqlman.model.JdbcConstants;
 import com.ajaxjs.sqlman.util.Utils;
+import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,7 +12,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.function.Supplier;
 
-@Data
 @Slf4j
 public class JdbcConn {
     /**
@@ -69,7 +69,7 @@ public class JdbcConn {
             }
         }
 
-        setConn(conn);
+        this.conn = conn;
     }
 
     /**
@@ -152,7 +152,7 @@ public class JdbcConn {
      * @param password 密码
      * @return 数据库连接对象
      */
-    public Connection getMySqlConnection(String ipPort, String dbName, String userName, String password) {
+    public static Connection getMySqlConnection(String ipPort, String dbName, String userName, String password) {
         return getConnection(String.format(MYSQL_CONN, ipPort, dbName), userName, password);
     }
 
@@ -186,5 +186,17 @@ public class JdbcConn {
     public static void closeDb() {
         closeDb(getConnection());
         CONNECTION.remove();
+    }
+
+    public Connection getConn() {
+        return conn;
+    }
+
+    public void setConn(Connection conn) {
+        this.conn = conn;
+    }
+
+    public void setDatabaseVendor(JdbcConstants.DatabaseVendor databaseVendor) {
+        this.databaseVendor = databaseVendor;
     }
 }

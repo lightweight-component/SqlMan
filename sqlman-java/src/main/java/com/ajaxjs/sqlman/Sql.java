@@ -51,12 +51,7 @@ public class Sql extends JdbcCRUD implements DAO {
     }
 
     @Override
-    public DAO sql(String sql) {
-        return this;
-    }
-
-    @Override
-    public DAO sql(String sql, Object... params) {
+    public DAO input(String sql, Object... params) {
         setSql(sql);
         setParams(params);
 
@@ -64,8 +59,11 @@ public class Sql extends JdbcCRUD implements DAO {
     }
 
     @Override
-    public DAO sql(String sql, Map<String, Object> params) {
-        // TODO
+    public DAO input(String sql, Map<String, Object> keyParams, Object... params) {
+        setSql(sql);
+        setParams(params);
+        setKeyParams(keyParams);
+
         return this;
     }
 
@@ -194,8 +192,12 @@ public class Sql extends JdbcCRUD implements DAO {
 
             try {
                 bean = beanClz.getDeclaredConstructor().newInstance();
-            } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                throw new RuntimeException("Failed when creating Bean.", e);
+            } catch (InstantiationException e) {
+                throw new RuntimeException("Failed when creating Bean. InstantiationException", e);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException("Failed when creating Bean. No Such Constructor", e);
+            } catch (InvocationTargetException | IllegalAccessException e) {
+                throw new RuntimeException("Failed when creating Bean. InvocationTargetException | IllegalAccessException", e);
             }
 
 //            if (beanClz.toString().contains("xxx")) {
@@ -308,5 +310,25 @@ public class Sql extends JdbcCRUD implements DAO {
         return list; // 找不到记录返回 null，不返回空的 list
     }
 
+    public static Sql sql(String sql, Object... params) {
+        Sql _sql = new Sql();
+        _sql.setSql(sql);
+        _sql.setParams(params);
 
+        return _sql;
+    }
+
+    public static Sql sql(Connection conn, String sql, Object... params) {
+        Sql _sql = new Sql(conn);
+        _sql.setSql(sql);
+        _sql.setParams(params);
+
+        return _sql;
+    }
+
+    public static Sql sql(DataSource dataSource, String sql, Object... params) {
+        Connection conn = Utils.getConnection(dataSource);
+
+        return sql(conn, sql, params);
+    }
 }
