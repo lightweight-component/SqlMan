@@ -6,6 +6,7 @@ import com.ajaxjs.sqlman.model.Create;
 import com.ajaxjs.sqlman.model.JdbcConstants;
 import com.ajaxjs.sqlman.model.Update;
 import com.ajaxjs.sqlman.util.Utils;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
+@Builder
 public class JdbcCRUD extends JdbcConn implements JdbcConstants {
     /**
      * SQL 语句，可以带有 ? 的占位符
