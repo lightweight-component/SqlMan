@@ -67,8 +67,6 @@ yarn-error.log*
 *.sw*
 *.lock
 
-package-lock.json
-
 /.history
 
 # Config file
