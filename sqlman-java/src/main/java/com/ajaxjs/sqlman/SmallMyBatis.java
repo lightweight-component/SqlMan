@@ -2,7 +2,7 @@ package com.ajaxjs.sqlman;
 
 
 
-import com.ajaxjs.sqlman.util.XmlHelper;
+import com.ajaxjs.util.XmlHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.expression.MapAccessor;
 import org.springframework.core.io.Resource;

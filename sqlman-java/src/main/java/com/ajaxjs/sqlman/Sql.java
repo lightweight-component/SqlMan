@@ -4,10 +4,11 @@ package com.ajaxjs.sqlman;
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
 import com.ajaxjs.sqlman.model.DAO;
 import com.ajaxjs.sqlman.model.Update;
-import com.ajaxjs.sqlman.util.ConvertBasicValue;
+import com.ajaxjs.util.ConvertBasicValue;
 import com.ajaxjs.sqlman.util.JsonUtil;
-import com.ajaxjs.sqlman.util.ReflectUtil;
 import com.ajaxjs.sqlman.util.Utils;
+import com.ajaxjs.util.reflect.Methods;
+import com.ajaxjs.util.reflect.Types;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -242,7 +243,7 @@ public class Sql extends JdbcCRUD implements DAO {
                                 value = JsonUtil.INSTANCE.fromJson(jsonStr, propertyType);
                             else if (jsonStr.startsWith("[")) {
 //                            Class<?> listType =  propertyType; // it might be a List
-                                Class<?> _beanClz = ReflectUtil.getGenericFirstReturnType(property.getReadMethod());
+                                Class<?> _beanClz = Types.getGenericFirstReturnType(property.getReadMethod());
                                 value = JsonUtil.INSTANCE.json2list(jsonStr, _beanClz);
                             } else {
                                 value = null;
@@ -260,19 +261,19 @@ public class Sql extends JdbcCRUD implements DAO {
                         }
 //					}
 
-                    ReflectUtil.executeMethod(bean, method, value);
+                    Methods.executeMethod(bean, method, value);
                 } catch (IntrospectionException e) {
                     // 数据库返回这个字段，但是 bean 没有对应的方法
 //						LOGGER.info("数据库返回这个字段 {0}，但是 bean {1} 没有对应的方法", key, beanClz);
                     try {
                         if ((_value != null) && beanClz.getField("extractData") != null) {
-                            Object obj = ReflectUtil.executeMethod(bean, "getExtractData");
+                            Object obj = Methods.executeMethod(bean, "getExtractData");
 
 //								LOGGER.info(":::::::::key::"+ key +":::v:::" + _value);
                             if (obj == null) {
                                 Map<String, Object> extractData = new HashMap<>();
-                                ReflectUtil.executeMethod(bean, "setExtractData", extractData);
-                                obj = ReflectUtil.executeMethod(bean, "getExtractData");
+                                Methods.executeMethod(bean, "setExtractData", extractData);
+                                obj = Methods.executeMethod(bean, "getExtractData");
                             }
 
                             Map<String, Object> map = (Map<String, Object>) obj;
@@ -327,7 +328,7 @@ public class Sql extends JdbcCRUD implements DAO {
     }
 
     public static Sql sql(DataSource dataSource, String sql, Object... params) {
-        Connection conn = Utils.getConnection(dataSource);
+        Connection conn = getConnection(dataSource);
 
         return sql(conn, sql, params);
     }

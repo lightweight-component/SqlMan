@@ -1,5 +1,6 @@
 package com.ajaxjs.sqlman;
 
+import com.ajaxjs.util.io.Resources;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
 
@@ -7,12 +8,15 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestSqlWrite {
+    Properties config = Resources.getProperties("test.properties");
 
-    Connection conn = JdbcConn.getMySqlConnection();
+    Connection conn = JdbcConn.getMySqlConnection(config.get("database.ipPort").toString(), "aj_base",
+            config.get("database.ipPort").toString(), config.get("database.ipPort").toString());
 
     @Test
     public void testQueryOne() throws SQLException {

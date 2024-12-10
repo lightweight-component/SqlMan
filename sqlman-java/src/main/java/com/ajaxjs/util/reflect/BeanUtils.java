@@ -1,6 +1,7 @@
 package com.ajaxjs.util.reflect;
 
-import com.ajaxjs.framework.IgnoreDB;
+
+import com.ajaxjs.sqlman.annotation.IgnoreDB;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 

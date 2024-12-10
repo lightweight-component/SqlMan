@@ -3,12 +3,11 @@ package com.ajaxjs.util.io;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 
 @Slf4j
 public class Resources {
@@ -167,6 +166,36 @@ public class Resources {
                 if (file.isFile()) // 是否为普通文件（非目录）
                     System.out.println(file.getName());
             }
+        }
+    }
+
+    /**
+     * 从类路径加载 properties 文件
+     *
+     * @param filename properties 文件
+     */
+    public static Properties getProperties(String filename) {
+        Properties prop = new Properties();
+
+        try (InputStream input = getResource(filename)) {
+            // 加载输入流中的键值对到 Properties 对象
+            prop.load(input);
+
+            return prop;
+
+            // 获取属性值
+//            String databaseUrl = prop.getProperty("database.url");
+//            String username = prop.getProperty("database.username");
+//            String password = prop.getProperty("database.password");
+//
+//            System.out.println("Database URL: " + databaseUrl);
+//            System.out.println("Username: " + username);
+//            System.out.println("Password: " + password);
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("Properties File not found " + filename, e);
+        } catch (IOException e) {
+            throw new RuntimeException("Properties File error " + filename, e);
         }
     }
 }

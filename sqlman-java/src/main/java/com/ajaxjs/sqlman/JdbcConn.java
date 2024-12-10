@@ -1,9 +1,7 @@
 package com.ajaxjs.sqlman;
 
 import com.ajaxjs.sqlman.model.JdbcConstants;
-import com.ajaxjs.sqlman.util.Utils;
-import lombok.Builder;
-import lombok.Data;
+import com.ajaxjs.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
@@ -84,7 +82,7 @@ public class JdbcConn {
      * Create a JDBC action with specified data source
      */
     public JdbcConn(DataSource dataSource) {
-        this(Utils.getConnection(dataSource));
+        this(getConnection(dataSource));
     }
 
     protected void getDatabaseVendor() {
@@ -114,7 +112,7 @@ public class JdbcConn {
         Connection conn;
 
         try {
-            if (Utils.hasText(userName) && Utils.hasText(password))
+            if (StrUtil.hasText(userName) && StrUtil.hasText(password))
                 conn = DriverManager.getConnection(jdbcUrl, userName, password);
             else
                 conn = DriverManager.getConnection(jdbcUrl);
@@ -135,6 +133,21 @@ public class JdbcConn {
      */
     public static Connection getConnection(String jdbcUrl) {
         return getConnection(jdbcUrl, null, null);
+    }
+
+    /**
+     * 从指定的数据源获取数据库连接
+     *
+     * @param dataSource 数据源对象，用于提供数据库连接
+     * @return Connection 数据库连接对象
+     * @throws RuntimeException 如果无法从数据源获取连接，则抛出运行时异常
+     */
+    public static Connection getConnection(DataSource dataSource) {
+        try {
+            return dataSource.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException("Can't get a connection from a DataSource: " + dataSource, e);
+        }
     }
 
     /**

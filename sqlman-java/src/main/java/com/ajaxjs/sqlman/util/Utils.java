@@ -1,8 +1,8 @@
 package com.ajaxjs.sqlman.util;
 
+import com.ajaxjs.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,47 +13,6 @@ import java.util.regex.Pattern;
 
 @Slf4j
 public class Utils {
-    /**
-     * Check whether the given {@code String} contains actual <em>text</em>.
-     * <p>More specifically, this method returns {@code true} if the
-     * {@code String} is not {@code null}, its length is greater than 0,
-     * and it contains at least one non-whitespace character.
-     *
-     * @param str the {@code String} to check (maybe {@code null})
-     * @return {@code true} if the {@code String} is not {@code null}, its
-     * length is greater than 0, and it does not contain whitespace only
-     * @see Character#isWhitespace
-     */
-    public static boolean hasText(String str) {
-        return (str != null && !str.isEmpty() && containsText(str));
-    }
-
-    private static boolean containsText(CharSequence str) {
-        int strLen = str.length();
-        for (int i = 0; i < strLen; i++) {
-            if (!Character.isWhitespace(str.charAt(i)))
-                return true;
-
-        }
-
-        return false;
-    }
-
-    /**
-     * 从指定的数据源获取数据库连接
-     *
-     * @param dataSource 数据源对象，用于提供数据库连接
-     * @return Connection 数据库连接对象
-     * @throws RuntimeException 如果无法从数据源获取连接，则抛出运行时异常
-     */
-    public static Connection getConnection(DataSource dataSource) {
-        try {
-            return dataSource.getConnection();
-        } catch (SQLException e) {
-            throw new RuntimeException("Can't get a connection from a DataSource: " + dataSource, e);
-        }
-    }
-
     /**
      * 将以下划线分隔的数据库字段转换为驼峰风格的字符串
      *
@@ -141,7 +100,7 @@ public class Utils {
      * @return 实际 sql 语句
      */
     public static String printRealSql(String sql, Object[] params) {
-        if (!hasText(sql))
+        if (!StrUtil.hasText(sql))
             throw new IllegalArgumentException("SQL 语句不能为空！");
 
         //        if (isClosePrintRealSql)
