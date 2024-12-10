@@ -19,7 +19,7 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
-public abstract class JdbcCRUD extends JdbcConn implements JdbcConstants {
+public class JdbcCRUD extends JdbcConn implements JdbcConstants {
     /**
      * SQL 语句，可以带有 ? 的占位符
      */
