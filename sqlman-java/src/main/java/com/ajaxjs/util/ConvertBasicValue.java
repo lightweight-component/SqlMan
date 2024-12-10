@@ -1,5 +1,7 @@
 package com.ajaxjs.sqlman.util;
 
+import com.ajaxjs.util.DateHelper;
+import com.ajaxjs.util.ListUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -8,7 +10,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * 尝试转换目标类型，注意并不是所有的类型都可以进行转换
@@ -69,7 +70,7 @@ public class ConvertBasicValue {
         else if (clz == double.class || clz == Double.class)
             return object2double(value);
         else if (clz == Date.class)
-            return DateUtil.object2Date(value);
+            return DateHelper.object2Date(value);
         else if (clz == BigDecimal.class) {
             if (value instanceof String || value instanceof Number)
                 return new BigDecimal(value.toString());
@@ -112,9 +113,9 @@ public class ConvertBasicValue {
         } else if (clz == int[].class /*|| clz == Integer[].class*/) {
             // 复数
             if (value instanceof String)
-                return stringArr2intArr((String) value);
+                return ListUtils.stringArr2intArr((String) value);
             else if (value instanceof List)
-                return intList2Arr((List<Integer>) value);
+                return ListUtils.intList2Arr((List<Integer>) value);
             else
                 log.warn("value: [{}] type:[{}] can‘t be converted to {}", value, value.getClass().getName(), clz);
         }
@@ -285,49 +286,5 @@ public class ConvertBasicValue {
             }
 
         return value;
-    }
-
-    /**
-     * 当它们每一个都是数字的字符串形式，转换为整形的数组
-     *
-     * <pre>
-     * {@code
-     *   "1,2,3, ..." -- [1, 2, ...]
-     * }
-     * </pre>
-     *
-     * @param value 输入字符串
-     * @return 整形数组
-     */
-    public static int[] stringArr2intArr(String value) {
-        String[] strArr = value.split(",");
-
-        return newIntArray(strArr.length, index -> Integer.parseInt(strArr[index].trim()));
-    }
-
-    /**
-     * 创建一个 int 数列，对其执行一些逻辑
-     *
-     * @param length 数列最大值
-     * @param fn     执行的逻辑
-     * @return 数组
-     */
-    private static int[] newIntArray(int length, Function<Integer, Integer> fn) {
-        int[] arr = new int[length];
-
-        for (int i = 0; i < length; i++)
-            arr[i] = fn.apply(i);
-
-        return arr;
-    }
-
-    /**
-     * Integer[] 不能直接转 int[]，故设置一个函数专门处理之
-     *
-     * @param list 整形列表
-     * @return 整形数组
-     */
-    public static int[] intList2Arr(List<Integer> list) {
-        return newIntArray(list.size(), list::get);
     }
 }

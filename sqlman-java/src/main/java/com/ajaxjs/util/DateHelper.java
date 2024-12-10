@@ -1,5 +1,6 @@
-package com.ajaxjs.sqlman.util;
+package com.ajaxjs.util;
 
+import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -14,7 +15,7 @@ import java.util.regex.Pattern;
  * 日期工具类
  * SimpleDateFormat 不是线程安全的，Java 8 之后尽量使用 java.time.DateTimeFormatter
  */
-public class DateUtil {
+public class DateHelper {
     /**
      * 常见的日期格式
      */
@@ -231,7 +232,7 @@ public class DateUtil {
         else if (obj instanceof String) {
             String str = obj.toString();
 
-            if (!Utils.hasText(str))
+            if (!StringUtils.hasText(str))
                 return null;
 
             if (DATETIME_PATTERN.matcher(str).matches())
