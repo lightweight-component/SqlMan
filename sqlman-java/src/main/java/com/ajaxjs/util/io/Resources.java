@@ -180,6 +180,8 @@ public class Resources {
         Properties prop = new Properties();
 
         try (InputStream input = getResource(filename)) {
+            if (input == null)
+                throw new FileNotFoundException();
             // 加载输入流中的键值对到 Properties 对象
             prop.load(input);
 

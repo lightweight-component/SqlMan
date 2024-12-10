@@ -10,7 +10,7 @@ import java.util.Properties;
 public abstract class BaseTest {
     static final Properties config = Resources.getProperties("test.properties");
 
-    static Connection conn;
+    protected static Connection conn;
 
     @BeforeAll
     static void setUpAll() {

@@ -27,7 +27,6 @@ import org.springframework.core.annotation.AliasFor;
 
 /**
  * A convenience annotation that is itself annotated with
- * {@link ControllerAdvice @ControllerAdvice}
  * and {@link ResponseBody @ResponseBody}.
  *
  * <p>Types that carry this annotation are treated as controller advice where

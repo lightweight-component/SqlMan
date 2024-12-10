@@ -24,7 +24,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.springframework.core.annotation.AliasFor;
-import org.springframework.stereotype.Component;
+//import org.springframework.stereotype.Component;
 
 /**
  * Specialization of {@link Component @Component} for classes that declare
@@ -70,12 +70,11 @@ import org.springframework.stereotype.Component;
  * @author Sam Brannen
  * @since 3.2
  * @see org.springframework.stereotype.Controller
- * @see RestControllerAdvice
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Component
+//@Component
 public @interface ControllerAdvice {
 
 	/**

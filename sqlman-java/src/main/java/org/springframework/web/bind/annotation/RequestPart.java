@@ -16,18 +16,11 @@
 
 package org.springframework.web.bind.annotation;
 
-import java.beans.PropertyEditor;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartResolver;
+
+import java.beans.PropertyEditor;
+import java.lang.annotation.*;
 
 /**
  * Annotation that can be used to associate the part of a "multipart/form-data" request
@@ -57,7 +50,6 @@ import org.springframework.web.multipart.MultipartResolver;
  * @author Sam Brannen
  * @since 3.1
  * @see RequestParam
- * @see org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)

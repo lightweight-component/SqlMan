@@ -1,6 +1,5 @@
 package com.ajaxjs.sqlman.crud;
 
-import com.ajaxjs.data.data_service.BaseEntityConstants;
 import com.ajaxjs.sqlman.model.IdField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

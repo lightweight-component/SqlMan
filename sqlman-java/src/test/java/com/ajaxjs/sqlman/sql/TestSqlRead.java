@@ -70,15 +70,6 @@ public class TestSqlRead extends BaseTest {
         assertEquals(2, result.size());
     }
 
-    @Data
-    public static class Address {
-        private Integer id;
-
-        private String name;
-
-        private String address;
-    }
-
     @Test
     public void testQueryInfoBean() {
         Address result;

@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.Map;
 
 public class CrudService implements CrudController {
-    public final Map<String, Crud<Map<String, Object>, Long>> namespaces = new HashMap<>();
+    public final Map<String, Crud> namespaces = new HashMap<>();
 
     public boolean isInit;
 
     public void init() {
     }
 
-    private Crud<Map<String, Object>, Long> getCRUD(String namespace) {
+    private Crud getCRUD(String namespace) {
         init();
 
         if (!namespaces.containsKey(namespace))
@@ -27,34 +27,40 @@ public class CrudService implements CrudController {
     }
 
     @Override
-    public Map<String, Object> info(String namespace, Long id) {
-        return getCRUD(namespace).info(id);
+    public Map<String, Object> info(String namespace, String namespace2, Long id) {
+        return null;
+//        return getCRUD(namespace).info(id);
     }
 
     @Override
-    public List<Map<String, Object>> list(String namespace, HttpServletRequest req) {
+    public List<Map<String, Object>> list(String namespace, String namespace2, HttpServletRequest req) {
         String where = getWhereClause(req);
         return List.of();
     }
 
     @Override
-    public PageResult<Map<String, Object>> page(String namespace) {
+    public PageResult<Map<String, Object>> page(String namespace, String namespace2) {
         return null;
     }
 
     @Override
-    public Long create(String namespace, Map<String, Object> params) {
-        return 0L;
-    }
-
-    @Override
-    public Boolean update(String namespace, Map<String, Object> params) {
+    public Long create(String namespace, String namespace2, Map<String, Object> params) {
         return null;
     }
 
     @Override
-    public Boolean delete(String namespace, Long id) {
+    public Boolean update(String namespace, String namespace2, Map<String, Object> params) {
         return null;
+    }
+
+    @Override
+    public Boolean delete(String namespace, String namespace2, Long id) {
+        return null;
+    }
+
+    @Override
+    public boolean reloadConfig() {
+        return false;
     }
 
     /**

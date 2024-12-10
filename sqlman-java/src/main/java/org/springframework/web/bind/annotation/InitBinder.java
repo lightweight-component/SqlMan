@@ -48,7 +48,6 @@ import java.lang.annotation.Target;
  *
  * @author Juergen Hoeller
  * @since 2.5
- * @see ControllerAdvice
  * @see org.springframework.web.bind.WebDataBinder
  * @see org.springframework.web.context.request.WebRequest
  */

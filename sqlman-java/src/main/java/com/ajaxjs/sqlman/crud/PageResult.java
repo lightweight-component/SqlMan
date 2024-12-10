@@ -65,11 +65,6 @@ public class PageResult<T> extends ArrayList<T> {
     }
 
     /**
-     * 默认分页大小
-     */
-    public static final int DEFAULT_PAGE_SIZE = 12;
-
-    /**
      * 列表不分页，转换为 PageResult
      *
      * @param <T>  实体类型

@@ -23,7 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.springframework.core.annotation.AliasFor;
-import org.springframework.stereotype.Controller;
+//import org.springframework.stereotype.Controller;
 
 /**
  * A convenience annotation that is itself annotated with
@@ -45,7 +45,7 @@ import org.springframework.stereotype.Controller;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Controller
+//@Controller
 @ResponseBody
 public @interface RestController {
 
@@ -55,7 +55,7 @@ public @interface RestController {
 	 * @return the suggested component name, if any (or empty String otherwise)
 	 * @since 4.0.1
 	 */
-	@AliasFor(annotation = Controller.class)
+//	@AliasFor(annotation = Controller.class)
 	String value() default "";
 
 }
