@@ -1,23 +1,15 @@
 package com.ajaxjs.sqlman;
 
-import com.ajaxjs.util.io.Resources;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestSqlWrite {
-    Properties config = Resources.getProperties("test.properties");
-
-    Connection conn = JdbcConn.getMySqlConnection(config.get("database.ipPort").toString(), "aj_base",
-            config.get("database.ipPort").toString(), config.get("database.ipPort").toString());
-
+public class TestSqlWrite extends BaseTest {
     @Test
     public void testQueryOne() throws SQLException {
         int result;
@@ -34,8 +26,6 @@ public class TestSqlWrite {
 
         result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE id = ?", Map.of("tableName", "shop_address", "abc", 2), 1).queryOne(int.class);
         System.out.println(result); // TODO, should be return 0
-
-        conn.close();
     }
 
     @Test
@@ -55,7 +45,6 @@ public class TestSqlWrite {
         result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE id = ?", Map.of("tableName", "shop_address", "abc", 2), 1).query();
         assertNotNull(result);
 
-        conn.close();
     }
 
     @Test
@@ -80,8 +69,6 @@ public class TestSqlWrite {
 
         System.out.println(result.size());
         assertEquals(2, result.size());
-
-        conn.close();
     }
 
     @Data
@@ -109,8 +96,6 @@ public class TestSqlWrite {
 
         result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE id = ?", Map.of("tableName", "shop_address", "abc", 2), 1).query(Address.class);
         assertNotNull(result);
-
-        conn.close();
     }
 
     @Test
@@ -135,8 +120,6 @@ public class TestSqlWrite {
 
         System.out.println(result.size());
         assertEquals(2, result.size());
-
-        conn.close();
     }
 
 }
