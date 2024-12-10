@@ -1,7 +1,5 @@
 package com.ajaxjs.util;
 
-import org.springframework.util.StringUtils;
-
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -232,7 +230,7 @@ public class DateHelper {
         else if (obj instanceof String) {
             String str = obj.toString();
 
-            if (!StringUtils.hasText(str))
+            if (StrUtil.isEmptyText(str))
                 return null;
 
             if (DATETIME_PATTERN.matcher(str).matches())

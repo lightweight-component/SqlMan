@@ -10,8 +10,6 @@
  */
 package com.ajaxjs.util;
 
-import org.springframework.util.AlternativeJdkIdGenerator;
-import org.springframework.util.Base64Utils;
 import org.springframework.util.DigestUtils;
 
 import java.beans.IntrospectionException;
@@ -50,6 +48,10 @@ public class StrUtil {
      */
     public static boolean hasText(String str) {
         return (str != null && !str.isEmpty() && containsText(str));
+    }
+
+    public static boolean isEmptyText(String str) {
+        return !hasText(str);
     }
 
     private static boolean containsText(CharSequence str) {
@@ -133,6 +135,16 @@ public class StrUtil {
      * @return 已编码的字符串
      */
     public static String base64Encode(byte[] bytes) {
+        return new String(Base64.getEncoder().encode(bytes), StandardCharsets.UTF_8);
+    }
+
+    /**
+     * BASE64 编码
+     *
+     * @param bytes 待编码的字符串 bytes
+     * @return 已编码的字符串
+     */
+    public static String base64EncodeRaw(byte[] bytes) {
         return Base64.getEncoder().encodeToString(bytes);
     }
 
@@ -143,11 +155,14 @@ public class StrUtil {
      * @return 已编码的字符串
      */
     public static String base64Encode(String str) {
-        return Base64Utils.encodeToString(getUTF8_Bytes(str));
+        return base64Encode(getUTF8_Bytes(str));
     }
 
     public static byte[] base64DecodeFromString(String str) {
-        return Base64.getDecoder().decode(str);
+        if (str.isEmpty())
+            return new byte[0];
+
+        return Base64.getDecoder().decode(str.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -158,7 +173,7 @@ public class StrUtil {
      * @return 已解码的字符串
      */
     public static String base64Decode(String str) {
-        return byte2String(Base64Utils.decodeFromString(str));
+        return byte2String(base64DecodeFromString(str));
     }
 
     /**
@@ -420,16 +435,15 @@ public class StrUtil {
      */
     @SuppressWarnings("unchecked")
     public static <T extends Serializable> T clone(T obj) {
-        try {
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(bout);
+        try (ByteArrayOutputStream bout = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(bout)) {
             oos.writeObject(obj);
 
-            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bout.toByteArray()));
-
-            // 说明：调用 ByteArrayInputStream 或 ByteArrayOutputStream 对象的 close 方法没有任何意义
-            // 这两个基于内存的流只要垃圾回收器清理对象就能够释放资源，这一点不同于对外部资源（如文件流）的释放
-            return (T) ois.readObject();
+            try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bout.toByteArray()))) {
+                // 说明：调用 ByteArrayInputStream 或 ByteArrayOutputStream 对象的 close 方法没有任何意义
+                // 这两个基于内存的流只要垃圾回收器清理对象就能够释放资源，这一点不同于对外部资源（如文件流）的释放
+                return (T) ois.readObject();
+            }
         } catch (Throwable e) {
             throw new RuntimeException("对象深度克隆 Error.", e);
         }
@@ -479,7 +493,7 @@ public class StrUtil {
      * @return 生成的 UUID 字符串
      */
     public static String uuid(boolean isRemove) {
-        String uuid = new AlternativeJdkIdGenerator().generateId().toString();
+        String uuid = java.util.UUID.randomUUID().toString();
 
         return isRemove ? uuid.replace("-", "") : uuid;
     }

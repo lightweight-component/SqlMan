@@ -1,6 +1,6 @@
 package com.ajaxjs.util.enums;
 
-import org.springframework.util.StringUtils;
+import com.ajaxjs.util.StrUtil;
 
 import java.util.Optional;
 
@@ -24,7 +24,7 @@ public class EnumsUtil {
     }
 
     public static <E, V, T extends IEnum<E, V>> E ofCode(String msg, Class<T> cla) {
-        if (!StringUtils.hasText(msg))
+        if (StrUtil.isEmptyText(msg))
             return null;
 
         T[] enums = cla.getEnumConstants();

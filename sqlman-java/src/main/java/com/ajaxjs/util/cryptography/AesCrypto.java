@@ -2,7 +2,6 @@ package com.ajaxjs.util.cryptography;
 
 import com.ajaxjs.util.BytesHelper;
 import com.ajaxjs.util.StrUtil;
-import org.springframework.util.Base64Utils;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -46,7 +45,7 @@ public class AesCrypto {
      * @return Base64 编码后的秘密密钥字符串
      */
     public static String getSecretKey(String algorithmName, SecureRandom secure) {
-        return Base64Utils.encodeToString(getSecretKey(algorithmName, 0, secure).getEncoded());
+        return StrUtil.base64Encode(getSecretKey(algorithmName, 0, secure).getEncoded());
     }
 
     /**

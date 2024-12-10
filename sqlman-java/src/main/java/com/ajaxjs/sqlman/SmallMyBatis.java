@@ -1,7 +1,7 @@
 package com.ajaxjs.sqlman;
 
 
-
+import com.ajaxjs.util.ListUtils;
 import com.ajaxjs.util.XmlHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.expression.MapAccessor;
@@ -12,7 +12,6 @@ import org.springframework.expression.spel.SpelEvaluationException;
 import org.springframework.expression.spel.standard.SpelExpression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -73,7 +72,7 @@ public class SmallMyBatis {
             log.warn("文件路径没有 xml", e);
         }
 
-        if (ObjectUtils.isEmpty(resources))
+        if (ListUtils.isEmpty(resources))
             throw new RuntimeException("文件路径[" + sqlLocations + "]没有 xml");
 
         // 写死 sql 目录下。Resource 不能返回相对目录

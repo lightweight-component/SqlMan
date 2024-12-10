@@ -3,7 +3,10 @@ package com.ajaxjs.util.io;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -21,16 +24,15 @@ public class Resources {
     public static String getResourcesFromClasspath(String resource, boolean isDecode) {
         URL url = Resources.class.getClassLoader().getResource(resource);
 
-        if (url == null) {
-            log.info("获取资源 {} 失败", resource);
-            return null;
-        }
+        if (url == null)
+            throw new RuntimeException("The resource " + resource + " not found");
 
         return url2path(url, isDecode);
     }
 
     /**
      * 获取当前类目录下的资源文件
+     * TODO 貌似不行
      *
      * @param clz      类引用
      * @param resource 资源文件名

@@ -1,6 +1,6 @@
 package com.ajaxjs.util.cryptography;
 
-import org.springframework.util.Base64Utils;
+import com.ajaxjs.util.StrUtil;
 
 import javax.crypto.Cipher;
 import java.security.*;
@@ -52,7 +52,7 @@ public class RsaCrypto {
      * @return 数字签名
      */
     public static String sign(String privateKey, byte[] data) {
-        return Base64Utils.encodeToString(sign(KEY_RSA_SIGNATURE, (PrivateKey) restoreKey(false, privateKey), data));
+        return StrUtil.base64Encode(sign(KEY_RSA_SIGNATURE, (PrivateKey) restoreKey(false, privateKey), data));
     }
 
     public static byte[] sign(String algorithmName, PrivateKey privateKey, byte[] data) {
@@ -85,7 +85,7 @@ public class RsaCrypto {
             signature.initVerify((PublicKey) restoreKey(true, publicKey));
             signature.update(data);
 
-            return signature.verify(Base64Utils.decodeFromString(sign));
+            return signature.verify(StrUtil.base64DecodeFromString(sign));
         } catch (SignatureException e) {
             throw new RuntimeException("签名计算失败", e);
         } catch (NoSuchAlgorithmException e) {
@@ -105,7 +105,7 @@ public class RsaCrypto {
      * @return 还原后的公钥或私钥对象，如果还原失败则返回null
      */
     private static Key restoreKey(boolean isPublic, String key) {
-        byte[] bytes = Base64Utils.decodeFromString(key);
+        byte[] bytes = StrUtil.base64DecodeFromString(key);
 
         try {
             KeyFactory f = KeyFactory.getInstance(KEY_RSA);
@@ -210,7 +210,7 @@ public class RsaCrypto {
      * @return 密钥的 Base64 编码
      */
     public static String getKey(String name, Map<String, byte[]> map) {
-        return Base64Utils.encodeToString(map.get(name));
+        return StrUtil.base64Encode(map.get(name));
     }
 
     /**

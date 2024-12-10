@@ -3,8 +3,6 @@ package com.ajaxjs.util;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.Base64Utils;
-import org.springframework.util.StringUtils;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
@@ -84,7 +82,7 @@ public class MessageDigestHelper {
     public String getResult() {
         byte[] result;
 
-        if (StringUtils.hasText(key))
+        if (StrUtil.hasText(key))
             result = getMac(algorithmName, key, value);
         else
             result = getMessageDigest(algorithmName, value);
@@ -92,7 +90,7 @@ public class MessageDigestHelper {
         if (isHexStr)
             return BytesHelper.bytesToHexStr(result).toLowerCase();
         else
-            return Base64Utils.encodeToString(result);
+            return StrUtil.base64Encode(result);
     }
 
     /**

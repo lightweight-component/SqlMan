@@ -1,9 +1,9 @@
 package com.ajaxjs.util.cryptography;
 
 import com.ajaxjs.util.BytesHelper;
+import com.ajaxjs.util.ListUtils;
 import com.ajaxjs.util.StrUtil;
 import com.ajaxjs.util.io.Resources;
-import org.springframework.util.CollectionUtils;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -221,7 +221,7 @@ public class CommonUtil {
         List<Map<String, Object>> list = (List<Map<String, Object>>) pMap.get("data");
         Map<BigInteger, X509Certificate> newCertList = new HashMap<>();
 
-        if (!CollectionUtils.isEmpty(list)) {
+        if (!ListUtils.isEmpty(list)) {
             for (Map<String, Object> map : list) {
                 Map<String, Object> certificate = (Map<String, Object>) map.get("encrypt_certificate");
 
