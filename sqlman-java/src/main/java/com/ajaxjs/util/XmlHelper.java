@@ -134,7 +134,7 @@ public class XmlHelper {
             }
         });
 
-        if (map.size() == 0) return null;
+        if (map.isEmpty()) return null;
 
         return map;
     }

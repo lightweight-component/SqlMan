@@ -6,7 +6,6 @@ import com.ajaxjs.sqlman.model.Create;
 import com.ajaxjs.sqlman.model.JdbcConstants;
 import com.ajaxjs.sqlman.model.Update;
 import com.ajaxjs.sqlman.util.Utils;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;

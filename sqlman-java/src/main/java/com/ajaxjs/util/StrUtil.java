@@ -254,7 +254,7 @@ public class StrUtil {
      * @return 替换后的字符串
      */
     public static String simpleTpl(String template, Map<String, Object> params) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         Matcher m = TPL_PATTERN.matcher(template);
 
         while (m.find()) {
@@ -317,7 +317,7 @@ public class StrUtil {
                 result = result.replace(placeholder, value.toString());
             }
         } catch (InvocationTargetException | IllegalAccessException | IntrospectionException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         return result;
@@ -431,8 +431,7 @@ public class StrUtil {
             // 这两个基于内存的流只要垃圾回收器清理对象就能够释放资源，这一点不同于对外部资源（如文件流）的释放
             return (T) ois.readObject();
         } catch (Throwable e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException("对象深度克隆 Error.", e);
         }
     }
 

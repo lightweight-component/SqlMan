@@ -211,7 +211,7 @@ public class SmallMyBatis {
      */
     public static String getValuedSQL(String template, Map<String, Object> paramMap) {
         Matcher matcher = PATTERN.matcher(template);
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         while (matcher.find()) {
             String placeholder = matcher.group(2); // 获取占位符中的键名

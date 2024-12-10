@@ -3,7 +3,6 @@ package com.ajaxjs.sqlman;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestSqlRead extends BaseTest {
     @Test
-    public void testQueryOne() throws SQLException {
+    public void testQueryOne() {
         int result;
         result = new Sql(conn).input("SELECT COUNT(*) AS total FROM shop_address").queryOne(int.class); // fetch the first one
 
@@ -29,7 +28,7 @@ public class TestSqlRead extends BaseTest {
     }
 
     @Test
-    public void testQueryInfo() throws SQLException {
+    public void testQueryInfo() {
         Map<String, Object> result;
         result = new Sql(conn).input("SELECT * FROM shop_address").query(); // fetch the first one
 
@@ -48,7 +47,7 @@ public class TestSqlRead extends BaseTest {
     }
 
     @Test
-    public void testQueryList() throws SQLException {
+    public void testQueryList() {
         List<Map<String, Object>> result;
         result = new Sql(conn).input("SELECT * FROM shop_address").queryList();
 
@@ -81,7 +80,7 @@ public class TestSqlRead extends BaseTest {
     }
 
     @Test
-    public void testQueryInfoBean() throws SQLException {
+    public void testQueryInfoBean() {
         Address result;
         result = new Sql(conn).input("SELECT * FROM shop_address").query(Address.class); // fetch the first one
 
@@ -99,7 +98,7 @@ public class TestSqlRead extends BaseTest {
     }
 
     @Test
-    public void testQueryListBean() throws SQLException {
+    public void testQueryListBean() {
         List<Address> result;
         result = new Sql(conn).input("SELECT * FROM shop_address").queryList(Address.class);
 

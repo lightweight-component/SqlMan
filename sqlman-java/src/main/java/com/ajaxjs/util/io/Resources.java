@@ -182,16 +182,6 @@ public class Resources {
             prop.load(input);
 
             return prop;
-
-            // 获取属性值
-//            String databaseUrl = prop.getProperty("database.url");
-//            String username = prop.getProperty("database.username");
-//            String password = prop.getProperty("database.password");
-//
-//            System.out.println("Database URL: " + databaseUrl);
-//            System.out.println("Username: " + username);
-//            System.out.println("Password: " + password);
-
         } catch (FileNotFoundException e) {
             throw new RuntimeException("Properties File not found " + filename, e);
         } catch (IOException e) {

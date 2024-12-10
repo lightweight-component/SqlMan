@@ -8,7 +8,7 @@ import java.sql.Connection;
 import java.util.Properties;
 
 public abstract class BaseTest {
-    static Properties config = Resources.getProperties("test.properties");
+    static final Properties config = Resources.getProperties("test.properties");
 
     static Connection conn;
 

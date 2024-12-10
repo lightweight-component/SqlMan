@@ -199,7 +199,7 @@ public class Methods {
                 clzList.add(clz);
         }
 
-        if (clzList.size() > 0)
+        if (!clzList.isEmpty())
             clzList.remove(0); // 排除自己
 
         return clzList.toArray(new Class[0]);

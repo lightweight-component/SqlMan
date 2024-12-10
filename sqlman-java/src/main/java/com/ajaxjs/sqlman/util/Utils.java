@@ -180,7 +180,7 @@ public class Utils {
             if (rs.next())
                 return true;
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         return false;

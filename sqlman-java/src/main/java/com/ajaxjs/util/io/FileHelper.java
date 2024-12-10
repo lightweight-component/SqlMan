@@ -58,10 +58,11 @@ public class FileHelper {
 
         try {
             if (Files.isDirectory(path)) {
-                Files.walk(path)
-                        .sorted(Comparator.reverseOrder())
-                        .map(Path::toFile)
-                        .forEach(File::delete);
+                try (Stream<Path> walk = Files.walk(path)) {
+                    walk.sorted(Comparator.reverseOrder())
+                            .map(Path::toFile)
+                            .forEach(File::delete);
+                }
             } else
                 Files.delete(path);
         } catch (IOException e) {
@@ -138,15 +139,18 @@ public class FileHelper {
 
         try {
             if (Files.isDirectory(sourcePath)) {
-                Files.walk(sourcePath).forEach(sourceFilePath -> {
-                    Path targetFilePath = targetPath.resolve(sourcePath.relativize(sourceFilePath));
 
-                    try {
-                        Files.copy(sourceFilePath, targetFilePath, StandardCopyOption.REPLACE_EXISTING);
-                    } catch (IOException e) {
-                        throw new UncheckedIOException(e);
-                    }
-                });
+                try (Stream<Path> walk = Files.walk(sourcePath)) {
+                    walk.forEach(sourceFilePath -> {
+                        Path targetFilePath = targetPath.resolve(sourcePath.relativize(sourceFilePath));
+
+                        try {
+                            Files.copy(sourceFilePath, targetFilePath, StandardCopyOption.REPLACE_EXISTING);
+                        } catch (IOException e) {
+                            throw new UncheckedIOException(e);
+                        }
+                    });
+                }
             } else
                 Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
