@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman;
+package com.ajaxjs.sqlman.sql;
 
 
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
@@ -16,10 +16,13 @@ import java.math.BigInteger;
 import java.sql.*;
 import java.util.Map;
 
+/**
+ * To execute basic JDBC commands, read and write data to database.
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
-public class JdbcCRUD extends JdbcConn implements JdbcConstants {
+public class JdbcCommand extends JdbcConn implements JdbcConstants {
     /**
      * SQL 语句，可以带有 ? 的占位符
      */
@@ -38,21 +41,21 @@ public class JdbcCRUD extends JdbcConn implements JdbcConstants {
     /**
      * Create a JDBC action with global connection
      */
-    public JdbcCRUD() {
+    public JdbcCommand() {
         super();
     }
 
     /**
      * Create a JDBC action with specified connection
      */
-    public JdbcCRUD(Connection conn) {
+    public JdbcCommand(Connection conn) {
         super(conn);
     }
 
     /**
      * Create a JDBC action with specified data source
      */
-    public JdbcCRUD(DataSource dataSource) {
+    public JdbcCommand(DataSource dataSource) {
         super(dataSource);
     }
 

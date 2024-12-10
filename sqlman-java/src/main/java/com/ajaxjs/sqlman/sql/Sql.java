@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman;
+package com.ajaxjs.sqlman.sql;
 
 
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
@@ -29,7 +29,7 @@ import java.util.*;
 @EqualsAndHashCode(callSuper = true)
 @Slf4j
 @Data
-public class Sql extends JdbcCRUD implements DAO {
+public class Sql extends JdbcCommand implements DAO {
     /**
      * Create a JDBC action with global connection
      */

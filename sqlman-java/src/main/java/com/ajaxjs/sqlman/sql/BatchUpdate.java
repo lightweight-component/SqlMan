@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman;
+package com.ajaxjs.sqlman.sql;
 
 import com.ajaxjs.sqlman.model.TableInfo;
 import com.ajaxjs.sqlman.model.Update;

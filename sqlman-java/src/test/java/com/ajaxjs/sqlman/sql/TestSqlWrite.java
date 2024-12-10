@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman;
+package com.ajaxjs.sqlman.sql;
 
 import lombok.Data;
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestSqlRead extends BaseTest {
+public class TestSqlWrite extends BaseTest {
     @Test
     public void testQueryOne() {
         int result;

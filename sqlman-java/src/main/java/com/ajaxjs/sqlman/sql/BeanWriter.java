@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman;
+package com.ajaxjs.sqlman.sql;
 
 import com.ajaxjs.sqlman.annotation.IgnoreDB;
 import com.ajaxjs.sqlman.annotation.TableName;
@@ -32,7 +32,7 @@ public class BeanWriter extends TableInfo implements JdbcConstants {
      */
     public Serializable create(Object entity) {
         SqlParams sp = entity2InsertSql(getTableName(), entity);
-        JdbcCRUD crud = getCrud();
+        JdbcCommand crud = getCrud();
         crud.setSql(sp.sql);
         crud.setParams(sp.values);
         IdField idField = getIdField();
@@ -144,7 +144,7 @@ public class BeanWriter extends TableInfo implements JdbcConstants {
             sp = entity2UpdateSql(tableName, entity, idField.getIdField(), id);
         }
 
-        JdbcCRUD crud = getCrud();
+        JdbcCommand crud = getCrud();
         crud.setSql(sp.sql);
         crud.setParams(sp.values);
 

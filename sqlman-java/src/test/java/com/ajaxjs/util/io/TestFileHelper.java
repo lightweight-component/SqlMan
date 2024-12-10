@@ -3,15 +3,14 @@ package com.ajaxjs.util.io;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 public class TestFileHelper {
-    String dir = Resources.getResourcesFromClass(TestFileHelper.class, "");
-    String fullPath = dir + File.separator + "test.txt";
+    final String dir = Resources.getResourcesFromClass(TestFileHelper.class, "");
+    final String fullPath = dir + File.separator + "test.txt";
 
     @Test
-    public void test() throws IOException {
+    public void test() {
         // 读取文件内容
         String content = FileHelper.readFileContent(fullPath);
         System.out.println("File content: " + content);

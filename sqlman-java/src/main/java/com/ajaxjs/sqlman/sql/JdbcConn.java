@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman;
+package com.ajaxjs.sqlman.sql;
 
 import com.ajaxjs.sqlman.model.JdbcConstants;
 import com.ajaxjs.util.StrUtil;

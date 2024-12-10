@@ -10,8 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class TestCryptography {
-    String key = "abc";
-    String word = "123";
+    final String key = "abc";
+    final String word = "123";
 
     @Test
     public void testAES() {

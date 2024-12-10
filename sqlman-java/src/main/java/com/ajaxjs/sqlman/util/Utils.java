@@ -185,4 +185,18 @@ public class Utils {
 
         return false;
     }
+
+    private static final Pattern PATTERN = Pattern.compile("(?i)select|update|delete|insert|drop|truncate|union|\\*|--|;");
+
+    /**
+     * 过滤输入字符串以避免 SQL 注入攻击。
+     * 该方法通过正则表达式匹配并移除可能导致 SQL 注入的特殊字符或关键字。
+     * 使用该方法对用户输入进行清理，可以增强系统的安全性。
+     *
+     * @param input 待过滤的字符串，通常是用户输入
+     * @return 过滤后的字符串，移除了可能的 SQL 注入关键字或字符
+     */
+    public static String escapeSqlInjection(String input) {
+        return PATTERN.matcher(input).replaceAll("");
+    }
 }

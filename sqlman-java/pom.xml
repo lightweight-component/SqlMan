@@ -31,6 +31,13 @@
             <version>1.7.36</version>
         </dependency>
 
+        <!-- 编译为 jar 包时依赖的 -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
