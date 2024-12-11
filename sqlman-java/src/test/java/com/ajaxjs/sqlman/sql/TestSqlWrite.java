@@ -1,124 +1,52 @@
 package com.ajaxjs.sqlman.sql;
 
-import lombok.Data;
+import com.ajaxjs.sqlman.model.Create;
+import com.ajaxjs.sqlman.model.Update;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestSqlWrite extends BaseTest {
     @Test
-    public void testQueryOne() {
-        int result;
-        result = new Sql(conn).input("SELECT COUNT(*) AS total FROM shop_address").queryOne(int.class); // fetch the first one
+    void testCreate() {
+        String sql = "INSERT INTO shop_address (name, address, phone, receiver) " +
+                "VALUES ('家', '北京路', '3412', 'Jack')";
+        Create<Integer> result;
+        result = new Sql(conn).input(sql).create(true, Integer.class);
 
         System.out.println(result);
-        assertEquals(5, result);
+        assertTrue(result.isOk());
 
-        result = new Sql(conn).input("SELECT COUNT(*) AS total FROM shop_address WHERE id = ?", 1).queryOne(int.class);
-        assertEquals(1, result);
+        sql = "INSERT INTO shop_address (name, address, phone, receiver) " +
+                "VALUES ('家', ?, '3412', ?)";
+        result = new Sql(conn).input(sql, "南京路", "Tom").create(true, Integer.class);
 
-        result = new Sql(conn).input("SELECT id FROM ${tableName} WHERE id = #{stat}", Map.of("tableName", "shop_address", "stat", 1)).queryOne(int.class);
-        assertEquals(1, result);
-
-        result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE id = ?", Map.of("tableName", "shop_address", "abc", 2), 1).queryOne(int.class);
-        System.out.println(result); // TODO, should be return 0
+        System.out.println(result);
+        assertTrue(result.isOk());
     }
 
     @Test
-    public void testQueryInfo() {
-        Map<String, Object> result;
-        result = new Sql(conn).input("SELECT * FROM shop_address").query(); // fetch the first one
+    void testUpdate() {
+        String sql = "UPDATE shop_address SET name= '公司' WHERE id = ?";
+
+        Update result;
+        result = new Sql(conn).input(sql, 8).update();
 
         System.out.println(result);
-        assertNotNull(result);
+        assertTrue(result.isOk());
 
-        result = new Sql(conn).input("SELECT * FROM shop_address WHERE id = ?", 1).query();
-        assertNotNull(result);
-
-        result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE id = #{stat}", Map.of("tableName", "shop_address", "stat", 1)).query();
-        assertNotNull(result);
-
-        result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE id = ?", Map.of("tableName", "shop_address", "abc", 2), 1).query();
-        assertNotNull(result);
-
-    }
-
-    @Test
-    public void testQueryList() {
-        List<Map<String, Object>> result;
-        result = new Sql(conn).input("SELECT * FROM shop_address").queryList();
+        String sql2 = "UPDATE ${tableName} SET name= '公司' WHERE id = ?";
+        result = new Sql(conn).input(sql2, Map.of("tableName", "shop_address"), 9).update();
 
         System.out.println(result);
-        assertTrue(result.size() > 1);
+        assertTrue(result.isOk());
 
-        result = new Sql(conn).input("SELECT * FROM shop_address WHERE stat = ?", 1).queryList();
-
-        System.out.println(result.size());
-        assertEquals(2, result.size());
-
-        result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE stat = #{stat}", Map.of("tableName", "shop_address", "stat", 1)).queryList();
-
-        System.out.println(result.size());
-        assertEquals(2, result.size());
-
-        result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE stat = ?", Map.of("tableName", "shop_address", "abc", 2), 1).queryList();
-
-        System.out.println(result.size());
-        assertEquals(2, result.size());
-    }
-
-    @Data
-    public static class Address {
-        private Integer id;
-
-        private String name;
-
-        private String address;
-    }
-
-    @Test
-    public void testQueryInfoBean() {
-        Address result;
-        result = new Sql(conn).input("SELECT * FROM shop_address").query(Address.class); // fetch the first one
+        String sql3 = "DELETE FROM ${tableName} WHERE  id = 10"; // Delete 也是 update
+        result = new Sql(conn).input(sql3, Map.of("tableName", "shop_address")).update();
 
         System.out.println(result);
-        assertNotNull(result);
-
-        result = new Sql(conn).input("SELECT * FROM shop_address WHERE id = ?", 1).query(Address.class);
-        assertNotNull(result);
-
-        result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE id = #{stat}", Map.of("tableName", "shop_address", "stat", 1)).query(Address.class);
-        assertNotNull(result);
-
-        result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE id = ?", Map.of("tableName", "shop_address", "abc", 2), 1).query(Address.class);
-        assertNotNull(result);
+        assertTrue(result.isOk());
     }
-
-    @Test
-    public void testQueryListBean() {
-        List<Address> result;
-        result = new Sql(conn).input("SELECT * FROM shop_address").queryList(Address.class);
-
-        System.out.println(result);
-        assertTrue(result.size() > 1);
-
-        result = new Sql(conn).input("SELECT * FROM shop_address WHERE stat = ?", 1).queryList(Address.class);
-
-        System.out.println(result.size());
-        assertEquals(2, result.size());
-
-        result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE stat = #{stat}", Map.of("tableName", "shop_address", "stat", 1)).queryList(Address.class);
-
-        System.out.println(result.size());
-        assertEquals(2, result.size());
-
-        result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE stat = ?", Map.of("tableName", "shop_address", "abc", 2), 1).queryList(Address.class);
-
-        System.out.println(result.size());
-        assertEquals(2, result.size());
-    }
-
 }

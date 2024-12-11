@@ -1,5 +1,10 @@
 package com.ajaxjs.sqlman.crud;
 
+import com.ajaxjs.sqlman.model.Create;
+import com.ajaxjs.sqlman.model.SqlParams;
+import com.ajaxjs.sqlman.model.TableModel;
+import com.ajaxjs.sqlman.sql.BeanWriter;
+import com.ajaxjs.sqlman.sql.DAO;
 import com.ajaxjs.sqlman.sql.Sql;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -41,6 +46,36 @@ public class Crud extends Sql implements ICrud {
     public Crud setTableModel(TableModel tableModel) {
         this.tableModel = tableModel;
         return this;
+    }
+
+    public Crud setTableName(String tableName) {
+        tableModel = new TableModel();
+        tableModel.setTableName(tableName);
+
+        return this;
+    }
+
+    /**
+     * Entity 实体，可以是 Map or Java Bean
+     */
+    private Object javaBean;
+
+    @Override
+    public DAO input(Object javaBean) {
+        this.javaBean = javaBean;
+
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends Serializable> Create<T> create() {
+        SqlParams sp = BeanWriter.entity2InsertSql(tableModel.getTableName(), javaBean);
+        setSql(sp.sql);
+        setParams(sp.values);
+        Create<? extends Serializable> create = create(tableModel.isAutoIns(), tableModel.getIdTypeClz());
+
+        return (Create<T>) create;
     }
 
     /**

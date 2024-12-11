@@ -1,7 +1,7 @@
 package com.ajaxjs.sqlman.crud.api;
 
 
-import com.ajaxjs.sqlman.crud.PageResult;
+import com.ajaxjs.sqlman.model.PageResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;

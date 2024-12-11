@@ -2,11 +2,12 @@ package com.ajaxjs.sqlman.sql;
 
 
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
-import com.ajaxjs.sqlman.model.DAO;
+import com.ajaxjs.sqlman.model.PageResult;
+import com.ajaxjs.sqlman.model.SqlParams;
 import com.ajaxjs.sqlman.model.Update;
-import com.ajaxjs.util.ConvertBasicValue;
 import com.ajaxjs.sqlman.util.JsonUtil;
 import com.ajaxjs.sqlman.util.Utils;
+import com.ajaxjs.util.ConvertBasicValue;
 import com.ajaxjs.util.reflect.Methods;
 import com.ajaxjs.util.reflect.Types;
 import lombok.Data;
@@ -117,6 +118,64 @@ public class Sql extends JdbcCommand implements DAO {
     @Override
     public <T> List<T> queryList(Class<T> beanClz) {
         return query(rs -> forEachRs(rs, getResultBean(beanClz)));
+    }
+
+    // TODO make page() returns Map, not the T
+    @Override
+    public <T> PageResult<T> page() {
+        return page(null, null, null);
+    }
+
+    @Override
+    public <T> PageResult<T> page(Integer start, Integer limit) {
+        return page(null, start, limit);
+    }
+
+    @Override
+    public <T> PageResult<T> page(Class<T> beanClz) {
+        return page(beanClz, null, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> PageResult<T> page(Class<T> beanClz, Integer start, Integer limit) {
+        Pager pager = new Pager();
+        pager.setDatabaseVendor(getDatabaseVendor());
+
+        if (start != null && limit != null) {
+            pager.setStart(start);
+            pager.setLimit(limit);
+        }
+
+        pager.parse(getSql());
+        setSql(pager.getCountTotal());
+        Long total = queryOne(Long.class);
+
+        PageResult<T> result = new PageResult<>();
+
+        if (total != null && total > 0) {
+            List<T> list;
+            setSql(pager.getPageSql());
+
+            // 如果 beanCls 为 null，则将查询结果作为 Map 列表返回
+            // 否则将查询结果转换为指定实体类的列表
+            if (beanClz == null)
+                list = (List<T>) queryList();
+            else
+                list = queryList(beanClz);
+
+            if (list != null) {
+                result.setCurrentPage(pager.getCurrentPage());
+                result.setTotalCount(total.intValue());
+                result.addAll(list);
+
+                return result;
+            }
+        }
+
+        result.setTotalCount(0);
+        result.setZero(true);
+
+        return result;
     }
 
     @Override

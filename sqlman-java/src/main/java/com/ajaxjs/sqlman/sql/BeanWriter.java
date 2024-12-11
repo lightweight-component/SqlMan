@@ -1,21 +1,18 @@
 package com.ajaxjs.sqlman.sql;
 
 import com.ajaxjs.sqlman.annotation.IgnoreDB;
-import com.ajaxjs.sqlman.annotation.TableName;
-import com.ajaxjs.sqlman.model.*;
+import com.ajaxjs.sqlman.model.JdbcConstants;
+import com.ajaxjs.sqlman.model.SqlParams;
 import com.ajaxjs.sqlman.util.Utils;
 import com.ajaxjs.util.StrUtil;
-import com.ajaxjs.util.reflect.Methods;
 import lombok.extern.slf4j.Slf4j;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,57 +20,63 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 @Slf4j
-public class BeanWriter extends TableInfo implements JdbcConstants {
-    /**
-     * 新建记录
-     *
-     * @param entity 实体，可以是 Map or Java Bean
-     * @return 新增主键，为兼顾主键类型，返回的类型设为同时兼容 int/long/string 的 Serializable
-     */
-    public Serializable create(Object entity) {
-        SqlParams sp = entity2InsertSql(getTableName(), entity);
-        JdbcCommand crud = getCrud();
-        crud.setSql(sp.sql);
-        crud.setParams(sp.values);
-        IdField idField = getIdField();
+public class BeanWriter implements JdbcConstants {
+//    private JdbcCommand crud;
+//
+//    /**
+//     * 新建记录
+//     *
+//     * @param entity 实体，可以是 Map or Java Bean
+//     * @return 新增主键，为兼顾主键类型，返回的类型设为同时兼容 int/long/string 的 Serializable
+//     */
+//    public Serializable create(Object entity) {
+//        SqlParams sp = entity2InsertSql(getTableName(), entity);
+//        JdbcCommand crud = getCrud();
+//        crud.setSql(sp.sql);
+//        crud.setParams(sp.values);
+//
+//        Serializable newlyId = crud.create(isAutoIns(), getIdTypeClz()).getNewlyId();
+//
+//
+//        return newlyId;
+//    }
 
-        Serializable newlyId = crud.create(idField.isAutoIns(), idField.getIdTypeClz()).getNewlyId();
-
-        if (entity instanceof Map) {
-            @SuppressWarnings("unchecked")
-            Map<String, Object> map = (Map<String, Object>) entity;
-            map.put(idField.getIdField(), newlyId); // id 一开始是没有的，保存之后才有，现在增加到实体
-        } else { // bean
-            TableName a = entity.getClass().getAnnotation(TableName.class);
-
-            if (a != null && a.isReturnNewlyId()) {
-                try {
-                    Method getId = entity.getClass().getMethod(Utils.changeColumnToFieldName("get_" + getIdField()));
-
-                    if (newlyId == null)
-                        return null; // 创建失败
-
-                    if (newlyId.equals(-1))  // 插入成功 但没有自增
-                        return (Serializable) getId.invoke(entity);
-
-                    Class<?> idClz = getId.getReturnType();// 根据 getter 推断 id 类型
-                    String setIdMethod = Utils.changeColumnToFieldName("set_" + getIdField());
-
-                    if (Long.class == idClz && newlyId instanceof Integer) {
-                        newlyId = (long) (int) newlyId;
-                        Methods.executeMethod(entity, setIdMethod, newlyId);
-                    } else if (Long.class == idClz && newlyId instanceof BigInteger) {
-                        newlyId = ((BigInteger) newlyId).longValue();
-                        Methods.executeMethod(entity, setIdMethod, newlyId);
-                    } else Methods.executeMethod(entity, setIdMethod, newlyId); // 直接保存
-                } catch (Throwable e) {
-                    log.warn("WARN>>", e);
-                }
-            }
-        }
-
-        return newlyId;
-    }
+//    public void addNewlyIdToEntity(Object entity, Serializable newlyId) {
+//
+//        if (newlyId == null)
+//            return; // 创建失败
+//
+//        if (entity instanceof Map) {
+//            @SuppressWarnings("unchecked")
+//            Map<String, Object> map = (Map<String, Object>) entity;
+//            map.put(getIdField(), newlyId); // id 一开始是没有的，保存之后才有，现在增加到实体
+//        } else { // bean
+//            // 如果是返回 id，则设置到实体中
+//            TableName a = entity.getClass().getAnnotation(TableName.class);
+//
+//            if (a != null && a.isReturnNewlyId()) {
+//                try {
+//                    Method getId = entity.getClass().getMethod(Utils.changeColumnToFieldName("get_" + getIdField()));
+//
+//                    if (newlyId.equals(-1))  // 插入成功 但没有自增
+//                        return (Serializable) getId.invoke(entity);
+//
+//                    Class<?> idClz = getId.getReturnType();// 根据 getter 推断 id 类型
+//                    String setIdMethod = Utils.changeColumnToFieldName("set_" + getIdField());
+//
+//                    if (Long.class == idClz && newlyId instanceof Integer) {
+//                        newlyId = (long) (int) newlyId;
+//                        Methods.executeMethod(entity, setIdMethod, newlyId);
+//                    } else if (Long.class == idClz && newlyId instanceof BigInteger) {
+//                        newlyId = ((BigInteger) newlyId).longValue();
+//                        Methods.executeMethod(entity, setIdMethod, newlyId);
+//                    } else Methods.executeMethod(entity, setIdMethod, newlyId); // 直接保存
+//                } catch (Throwable e) {
+//                    log.warn("设置 id 到实体中失败>>", e);
+//                }
+//            }
+//        }
+//    }
 
     /**
      * 将一个实体转换成插入语句的 SqlParams 对象
@@ -121,35 +124,34 @@ public class BeanWriter extends TableInfo implements JdbcConstants {
      * @param entity    实体，可以是 Map or Java Bean
      * @return 成功修改的行数，一般为 1
      */
-    public Update updateBean(String tableName, Object entity) {
-        SqlParams sp;
-        IdField idField = getIdField();
-
-        if (entity instanceof Map) {
-            @SuppressWarnings("unchecked")
-            Map<String, Object> map = (Map<String, Object>) entity;
-            Object id = map.get(idField.getIdField());
-
-            if (id == null)
-                throw new DataAccessException("未指定 id，这将会是批量全体更新！");
-
-            sp = entity2UpdateSql(tableName, map, idField.getIdField(), id);
-        } else {
-            String getId = Utils.changeColumnToFieldName("get_" + getIdField());
-            Object id = Methods.executeMethod(entity, getId);
-
-            if (id == null)
-                throw new DataAccessException("未指定 id，这将会是批量全体更新！");
-
-            sp = entity2UpdateSql(tableName, entity, idField.getIdField(), id);
-        }
-
-        JdbcCommand crud = getCrud();
-        crud.setSql(sp.sql);
-        crud.setParams(sp.values);
-
-        return crud.update();
-    }
+//    public Update updateBean(String tableName, Object entity) {
+//        SqlParams sp;
+//
+//        if (entity instanceof Map) {
+//            @SuppressWarnings("unchecked")
+//            Map<String, Object> map = (Map<String, Object>) entity;
+//            Object id = map.get(getIdField());
+//
+//            if (id == null)
+//                throw new DataAccessException("未指定 id，这将会是批量全体更新！");
+//
+//            sp = entity2UpdateSql(tableName, map, getIdField(), id);
+//        } else {
+//            String getId = Utils.changeColumnToFieldName("get_" + getIdField());
+//            Object id = Methods.executeMethod(entity, getId);
+//
+//            if (id == null)
+//                throw new DataAccessException("未指定 id，这将会是批量全体更新！");
+//
+//            sp = entity2UpdateSql(tableName, entity, getIdField(), id);
+//        }
+//
+//        JdbcCommand crud = getCrud();
+//        crud.setSql(sp.sql);
+//        crud.setParams(sp.values);
+//
+//        return crud.update();
+//    }
 
     /**
      * 将一个实体转换成更新语句的 SqlParams 对象

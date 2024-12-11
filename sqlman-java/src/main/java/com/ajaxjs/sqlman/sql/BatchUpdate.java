@@ -1,8 +1,10 @@
 package com.ajaxjs.sqlman.sql;
 
-import com.ajaxjs.sqlman.model.TableInfo;
+import com.ajaxjs.sqlman.model.TableModel;
 import com.ajaxjs.sqlman.model.Update;
 import com.ajaxjs.util.DateHelper;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
@@ -15,8 +17,12 @@ import java.util.*;
 /**
  * 批量更新
  */
+@EqualsAndHashCode(callSuper = true)
 @Slf4j
-public class BatchUpdate extends TableInfo {
+@Data
+public class BatchUpdate extends TableModel {
+    private JdbcCommand crud;
+
     /**
      * 批量插入数据
      *
@@ -166,7 +172,7 @@ public class BatchUpdate extends TableInfo {
      */
     public Update deleteBatch(List<? extends Serializable> ids) {
         StringBuilder sb = new StringBuilder();
-        sb.append("DELETE FROM ").append(getTableName()).append(" WHERE ").append(getIdField().getIdField()).append(" IN (");
+        sb.append("DELETE FROM ").append(getTableName()).append(" WHERE ").append(getIdField()).append(" IN (");
 
         List<String> valueHolders = new ArrayList<>();
         List<Object> params = new ArrayList<>();

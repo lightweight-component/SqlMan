@@ -101,6 +101,9 @@ public class JdbcCommand extends JdbcConn implements JdbcConstants {
      */
     @SuppressWarnings("unchecked")
     public <T extends Serializable> Create<T> create(boolean isAutoIns, Class<T> idType) {
+        if (keyParams != null)
+            sql = SmallMyBatis.handleSql(sql, keyParams);
+
         try (PreparedStatement ps = isAutoIns ? getConn().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS) : getConn().prepareStatement(sql)) {
             setParam2Ps(ps, params);
             log.info("Inserting SQL-->[{}]", Utils.printRealSql(sql, params));
@@ -157,6 +160,9 @@ public class JdbcCommand extends JdbcConn implements JdbcConstants {
      * @return 成功修改的行数
      */
     public Update update() {
+        if (keyParams != null)
+            sql = SmallMyBatis.handleSql(sql, keyParams);
+
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
             setParam2Ps(ps, params);
             log.info("Updating SQL-->[{}]", Utils.printRealSql(sql, params));
@@ -192,6 +198,7 @@ public class JdbcCommand extends JdbcConn implements JdbcConstants {
      * @param id 实体 ID
      * @return 是否成功
      */
+    @Deprecated
     public Update delete(String tableName, String idField, Serializable id) {
         String sql = "DELETE FROM " + tableName + " WHERE " + idField + " = ?";
         setSql(sql);

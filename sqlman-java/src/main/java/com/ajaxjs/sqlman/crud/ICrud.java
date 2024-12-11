@@ -1,9 +1,9 @@
 package com.ajaxjs.sqlman.crud;
 
-import com.ajaxjs.sqlman.model.DAO;
+import com.ajaxjs.sqlman.model.Create;
+import com.ajaxjs.sqlman.sql.DAO;
 
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * 通用实体快速的 CRUD。这个服务无须 DataService
@@ -16,4 +16,8 @@ public interface ICrud extends DAO {
      * @return 查询单笔记录，可以是 Bean 或者 Map，如果为 null 表示没数据
      */
     <T extends Serializable> Crud info(T id);
+
+    DAO input(Object javaBean);
+
+    <T extends Serializable> Create<T> create();
 }

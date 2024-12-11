@@ -1,14 +1,13 @@
-package com.ajaxjs.sqlman.crud;
+package com.ajaxjs.sqlman.model;
 
-import com.ajaxjs.sqlman.model.IdField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
  * 具体表里面的各个字段是什么名称，这里指定
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class TableModel extends IdField {
     /**
      * 表名
@@ -53,7 +52,7 @@ public class TableModel extends IdField {
     /**
      * 是否有逻辑删除标记
      */
-    private boolean hasIsDeleted = true;
+    private boolean hasIsDeleted;
 
     /**
      * 删除字段名称

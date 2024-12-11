@@ -1,4 +1,8 @@
-package com.ajaxjs.sqlman.model;
+package com.ajaxjs.sqlman.sql;
+
+import com.ajaxjs.sqlman.model.Create;
+import com.ajaxjs.sqlman.model.PageResult;
+import com.ajaxjs.sqlman.model.Update;
 
 import java.io.Serializable;
 import java.util.List;
@@ -43,6 +47,14 @@ public interface DAO {
      * @return List&lt;Bean&gt; 结构的结果。如果查询不到任何数据返回 null。
      */
     <T> List<T> queryList(Class<T> beanClz);
+
+    <T> PageResult<T> page();
+
+    <T> PageResult<T> page(Integer start, Integer limit);
+
+    <T> PageResult<T> page(Class<T> beanClz);
+
+    <T> PageResult<T> page(Class<T> beanClz, Integer start, Integer limit);
 
     DAO setIdType(Class<? extends Serializable> idType);
 

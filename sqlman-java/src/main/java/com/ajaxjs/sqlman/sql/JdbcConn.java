@@ -2,6 +2,7 @@ package com.ajaxjs.sqlman.sql;
 
 import com.ajaxjs.sqlman.model.JdbcConstants;
 import com.ajaxjs.util.StrUtil;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
@@ -11,6 +12,7 @@ import java.sql.SQLException;
 import java.util.function.Supplier;
 
 @Slf4j
+@Data
 public class JdbcConn {
     /**
      * Database connection
@@ -75,7 +77,7 @@ public class JdbcConn {
      */
     public JdbcConn(Connection conn) {
         this.conn = conn;
-        getDatabaseVendor();
+        initDatabaseVendor();
     }
 
     /**
@@ -85,7 +87,7 @@ public class JdbcConn {
         this(getConnection(dataSource));
     }
 
-    protected void getDatabaseVendor() {
+    protected void initDatabaseVendor() {
         try {
             String databaseProductName = conn.getMetaData().getDatabaseProductName().toLowerCase();
 
@@ -199,17 +201,5 @@ public class JdbcConn {
     public static void closeDb() {
         closeDb(getConnection());
         CONNECTION.remove();
-    }
-
-    public Connection getConn() {
-        return conn;
-    }
-
-    public void setConn(Connection conn) {
-        this.conn = conn;
-    }
-
-    public void setDatabaseVendor(JdbcConstants.DatabaseVendor databaseVendor) {
-        this.databaseVendor = databaseVendor;
     }
 }

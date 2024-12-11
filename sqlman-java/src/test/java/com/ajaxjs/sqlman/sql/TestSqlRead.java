@@ -1,6 +1,6 @@
 package com.ajaxjs.sqlman.sql;
 
-import lombok.Data;
+import com.ajaxjs.sqlman.model.PageResult;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -112,4 +112,26 @@ public class TestSqlRead extends BaseTest {
         assertEquals(2, result.size());
     }
 
+    @Test
+    void testPage() {
+        PageResult<Map<String, Object>> result;
+        result = new Sql(conn).input("SELECT * FROM article").page();
+
+        System.out.println(result);
+        assertNotNull(result);
+
+        result = new Sql(conn).input("SELECT * FROM article").page(3, 5);
+
+        System.out.println(result);
+        assertNotNull(result);
+
+        PageResult<Address> result2;
+        result2 = new Sql(conn).input("SELECT * FROM shop_address").page(Address.class, 1, 2);
+        System.out.println(result2);
+        assertNotNull(result2);
+
+        result2 = new Sql(conn).input("SELECT * FROM shop_address").page(Address.class, 10, 2);
+        System.out.println(result2);
+        assertEquals(0, result2.size());
+    }
 }
