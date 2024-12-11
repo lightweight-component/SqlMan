@@ -253,8 +253,8 @@ public class ConvertBasicValue {
 
         value = value.trim();
 
-        if ("".equals(value))
-            return "";
+        if (StrUtil.EMPTY_STRING.equals(value))
+            return StrUtil.EMPTY_STRING;
 
         if ("null".equals(value))
             return null;

@@ -24,5 +24,5 @@ public class IdField {
     /**
      * ID 类型的类引用
      */
-    private Class<? extends Serializable> idTypeClz;
+    private Class<? extends Serializable> idTypeClz = Integer.class;
 }

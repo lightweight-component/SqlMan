@@ -1,6 +1,6 @@
 package com.ajaxjs.sqlman.crud.api;
 
-import com.ajaxjs.sqlman.crud.Crud;
+import com.ajaxjs.sqlman.crud.Entity;
 import com.ajaxjs.sqlman.model.PageResult;
 import com.ajaxjs.sqlman.util.Utils;
 
@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.Map;
 
 public class CrudService implements CrudController {
-    public final Map<String, Crud> namespaces = new HashMap<>();
+    public final Map<String, Entity> namespaces = new HashMap<>();
 
     public boolean isInit;
 
     public void init() {
     }
 
-    private Crud getCRUD(String namespace) {
+    private Entity getCRUD(String namespace) {
         init();
 
         if (!namespaces.containsKey(namespace))

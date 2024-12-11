@@ -37,6 +37,7 @@ public class MessageDigestHelper {
      * HmacSHA512
      * </pre>
      */
+    @SuppressWarnings("SpellCheckingInspection")
     private String algorithmName;
 
     /**
@@ -214,7 +215,7 @@ public class MessageDigestHelper {
             return BytesHelper.bytesToHexStr(digest.digest());
         } catch (IOException | NoSuchAlgorithmException e) {
             log.warn("WARN>>>>>", e);
-            return "";
+            return StrUtil.EMPTY_STRING;
         }
     }
 }

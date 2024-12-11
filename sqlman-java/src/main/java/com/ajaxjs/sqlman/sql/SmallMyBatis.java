@@ -2,7 +2,9 @@ package com.ajaxjs.sqlman.sql;
 
 
 import com.ajaxjs.util.ListUtils;
+import com.ajaxjs.util.StrUtil;
 import com.ajaxjs.util.XmlHelper;
+import com.ajaxjs.util.io.Resources;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.expression.MapAccessor;
 import org.springframework.core.io.Resource;
@@ -12,7 +14,6 @@ import org.springframework.expression.spel.SpelEvaluationException;
 import org.springframework.expression.spel.standard.SpelExpression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.*;
@@ -27,7 +28,7 @@ public class SmallMyBatis {
     /**
      * key=id/value=sql
      */
-    private final Map<String, String> sqls = new HashMap<>();
+    private final Map<String, String> ALL_SQL = new HashMap<>();
 
     /**
      * 加载 XML SQL
@@ -38,23 +39,24 @@ public class SmallMyBatis {
         Pattern pattern = Pattern.compile("<!--.*?-->", Pattern.DOTALL);  // 使用 DOT ALL 匹配多行注释
 
         for (String xmlFile : xmlFiles) {
-//            String xmlBody = Resources.getResourceText(xmlFile);
-            String xmlBody = "Resources.getResourceText(xmlFile)";
+            String xmlBody = Resources.getResourceText(xmlFile);
 
             if (xmlBody != null) {
                 // 删除注释
-                xmlBody = pattern.matcher(xmlBody).replaceAll("");
+                xmlBody = pattern.matcher(xmlBody).replaceAll(StrUtil.EMPTY_STRING);
                 XmlHelper.parseXML(xmlBody, (node, nodeList) -> {
                     if ("sql".equals(node.getNodeName())) {
                         String id = XmlHelper.getNodeAttribute(node, "id");
 
-                        if (sqls.containsKey(id)) log.warn("已有相同 sqlId [{}]", id);
+                        if (ALL_SQL.containsKey(id))
+                            log.warn("已有相同 sqlId [{}]", id);
 
                         String sql = XmlHelper.getNodeText(node);
-                        sqls.put(id, sql);
+                        ALL_SQL.put(id, sql);
                     }
                 });
-            } else log.warn("找不到 {}-XML 资源", xmlFile);
+            } else
+                log.warn("找不到 {}-XML 资源", xmlFile);
         }
     }
 
@@ -87,9 +89,9 @@ public class SmallMyBatis {
      * @return SQL
      */
     public String getSqlById(String id) {
-        String sql = sqls.get(id);
+        String sql = ALL_SQL.get(id);
 
-        if (!StringUtils.hasText(sql))
+        if (StrUtil.isEmptyText(sql))
             throw new IllegalArgumentException("查询 id 为 " + id + "　的 SQL 为空");
 
         return sql;
@@ -114,7 +116,8 @@ public class SmallMyBatis {
                 sb.delete(startIdx, endIdx + 5);
                 String content = ifBlock.substring(ifBlock.indexOf(">") + 1, ifBlock.lastIndexOf("<"));
                 sb.insert(startIdx, content);
-            } else sb.delete(startIdx, endIdx + 5);
+            } else
+                sb.delete(startIdx, endIdx + 5);
 
             startIdx = sb.indexOf("<if", startIdx);
         }
@@ -151,11 +154,9 @@ public class SmallMyBatis {
      * 判断 ifBlock 是否满足条件，满足则返回 true，否则返回 false
      */
     private static boolean evalIfBlock(String ifBlock, Map<String, Object> params) {
-        // 从 ifBlock 中截取出 test= 后面的字符串，并去掉双引号
-        String test = ifBlock.substring(ifBlock.indexOf("test=") + 6, ifBlock.lastIndexOf("\""));
+        String test = ifBlock.substring(ifBlock.indexOf("test=") + 6, ifBlock.lastIndexOf("\""));// 从 ifBlock 中截取出 test= 后面的字符串，并去掉双引号
 
-        // 调用 BOL_EXP_PARSER 解析 test 字符串，传入 params 参数，返回解析结果的布尔值
-        return BOL_EXP_PARSER.get(test, params);
+        return BOL_EXP_PARSER.get(test, params); // 调用 BOL_EXP_PARSER 解析 test 字符串，传入 params 参数，返回解析结果的布尔值
     }
 
     /**
@@ -218,22 +219,24 @@ public class SmallMyBatis {
 
             if (placeholder.startsWith("T(")) { // 调用 Java 类的方法
                 Object value = EXP_PARSER.parseExpression(placeholder).getValue();
-                strValue = value == null ? "" : value.toString();
+                strValue = value == null ? StrUtil.EMPTY_STRING : value.toString();
             } else {
                 Object value = paramMap.get(placeholder); // 获取键名对应的值
 
                 if (value == null) {
-                    strValue = ""; // 如果值为空，替换为空字符串
+                    strValue = StrUtil.EMPTY_STRING; // 如果值为空，替换为空字符串
                 } else {
                     strValue = value.toString().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"); // 处理转义字符和 $ 符号
 
-                    if (matcher.group(1).equals("#{")) {
-                        // 使用 PreparedStatement 设置参数，自动转换类型
-
-                        if (value instanceof Number) strValue = String.valueOf(value);
-                        else if (value.equals(true)) strValue = "1";
-                        else if (value.equals(false)) strValue = "0";
-                        else strValue = "'" + value + "'"; // 如果是非数字类型，加上单引号
+                    if (matcher.group(1).equals("#{")) { // 使用 PreparedStatement 设置参数，自动转换类型
+                        if (value instanceof Number)
+                            strValue = String.valueOf(value);
+                        else if (value.equals(true))
+                            strValue = "1";
+                        else if (value.equals(false))
+                            strValue = "0";
+                        else
+                            strValue = "'" + value + "'"; // 如果是非数字类型，加上单引号
                     }
                 }
             }
@@ -258,11 +261,6 @@ public class SmallMyBatis {
     }
 
     /**
-     * Dummy
-     */
-    private static final Map<String, Object> EMPTY_PARAMS_MAP = new HashMap<>();
-
-    /**
      * 处理 SQL 语句
      *
      * @param sql       SQL 语句
@@ -271,7 +269,7 @@ public class SmallMyBatis {
      */
     public static String handleSql(String sql, Map<String, Object> paramsMap) {
         if (paramsMap == null)
-            paramsMap = EMPTY_PARAMS_MAP;
+            paramsMap = ListUtils.EMPTY_PARAMS_MAP;
 
         sql = generateIfBlock(sql, paramsMap);
         //        sql = parseForEach(sql, paramsMap);

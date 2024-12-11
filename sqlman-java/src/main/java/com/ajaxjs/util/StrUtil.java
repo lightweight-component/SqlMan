@@ -178,7 +178,9 @@ public class StrUtil {
 
     /**
      * 随机字符串
+     * noinspection SpellCheckingInspection
      */
+    @SuppressWarnings("SpellCheckingInspection")
     private static final String STR = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     /**
@@ -276,7 +278,7 @@ public class StrUtil {
             String param = m.group();
             // 获取要替换的键名，即去除 '${' 和 '}' 后的部分
             Object value = params.get(param.substring(2, param.length() - 1));
-            m.appendReplacement(sb, value == null ? "" : value.toString());// 替换键值对应的值，若值为 null，则置为空字符串
+            m.appendReplacement(sb, value == null ? StrUtil.EMPTY_STRING : value.toString());// 替换键值对应的值，若值为 null，则置为空字符串
         }
 
         m.appendTail(sb);
@@ -453,11 +455,11 @@ public class StrUtil {
      * 判断一个字符串是否属于指定的字符串数组中
      *
      * @param word 待判断字符串
-     * @param strs 指定字符串数组
+     * @param arr  指定字符串数组
      * @return 如果字符串属于数组中，则返回 true；否则返回 false
      */
-    public static boolean isWordOneOfThem(String word, String[] strs) {
-        for (String str : strs) {
+    public static boolean isWordOneOfThem(String word, String[] arr) {
+        for (String str : arr) {
             if (word.equals(str))
                 return true;
         }
@@ -469,11 +471,11 @@ public class StrUtil {
      * 判断一个字符串是否属于指定的字符串列表中
      *
      * @param word 待判断字符串
-     * @param strs 指定字符串列表
+     * @param list 指定字符串列表
      * @return 如果字符串属于列表中，则返回 true；否则返回 false
      */
-    public static boolean isWordOneOfThem(String word, List<String> strs) {
-        return isWordOneOfThem(word, strs.toArray(new String[0]));
+    public static boolean isWordOneOfThem(String word, List<String> list) {
+        return isWordOneOfThem(word, list.toArray(new String[0]));
     }
 
     /**
@@ -495,7 +497,7 @@ public class StrUtil {
     public static String uuid(boolean isRemove) {
         String uuid = java.util.UUID.randomUUID().toString();
 
-        return isRemove ? uuid.replace("-", "") : uuid;
+        return isRemove ? uuid.replace("-", StrUtil.EMPTY_STRING) : uuid;
     }
 
     /**

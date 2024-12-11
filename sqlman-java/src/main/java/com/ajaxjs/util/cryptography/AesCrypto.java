@@ -175,6 +175,7 @@ public class AesCrypto {
      * Blowfish
      * </pre>
      */
+    @SuppressWarnings("SpellCheckingInspection")
     private static final String TripleDES_ALGORITHM = "DESede";
 
     /**
@@ -227,6 +228,7 @@ public class AesCrypto {
      * PBEWithSHA1AndRC2_40
      * </pre>
      */
+     @SuppressWarnings("SpellCheckingInspection")
     private final static String KEY_PBE = "PBEWITHMD5andDES";
 
     /**

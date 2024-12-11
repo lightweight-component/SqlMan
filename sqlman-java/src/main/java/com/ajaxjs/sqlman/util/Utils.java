@@ -106,7 +106,7 @@ public class Utils {
         //        if (isClosePrintRealSql)
         //            return null;
 
-        sql = sql.replaceAll(SPACE_LINE, "");
+        sql = sql.replaceAll(SPACE_LINE, StrUtil.EMPTY_STRING);
 
         if (params == null || params.length == 0) // 完整的 SQL 无须填充
             return sql;
@@ -132,7 +132,7 @@ public class Utils {
             else if (value != null)
                 inSql = value.toString();// number
             else
-                inSql = "";
+                inSql = StrUtil.EMPTY_STRING;
 
             arr[i] = arr[i] + inSql;
         }
@@ -197,6 +197,6 @@ public class Utils {
      * @return 过滤后的字符串，移除了可能的 SQL 注入关键字或字符
      */
     public static String escapeSqlInjection(String input) {
-        return PATTERN.matcher(input).replaceAll("");
+        return PATTERN.matcher(input).replaceAll(StrUtil.EMPTY_STRING);
     }
 }

@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestConvertBasicValue {
     @Test
+    @SuppressWarnings("SpellCheckingInspection")
     public void testToBoolean() {
         assertTrue(toBoolean(true));
         assertTrue(toBoolean("true"));

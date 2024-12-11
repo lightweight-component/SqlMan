@@ -1,7 +1,24 @@
-package com.ajaxjs.sqlman.sql;
+/**
+ * Copyright (C) 2025 Frank
+ * <p>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.ajaxjs.sqlman.crud;
 
 import com.ajaxjs.sqlman.model.TableModel;
 import com.ajaxjs.sqlman.model.Update;
+import com.ajaxjs.sqlman.sql.JdbcCommand;
 import com.ajaxjs.util.DateHelper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -152,7 +169,7 @@ public class BatchUpdate extends TableModel {
         log.info("批量插入：：{}", sql);
         int[] result;
 
-        Connection conn = getCrud().getConn(); // TODO close this conn? above also
+        Connection conn = getCrud().getConn(); // TODO close this connection? above also
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.addBatch();
             result = ps.executeBatch();

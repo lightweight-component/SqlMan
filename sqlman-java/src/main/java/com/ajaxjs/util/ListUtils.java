@@ -16,6 +16,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ListUtils {
     /**
+     * Dummy Map
+     */
+    public static final Map<String, Object> EMPTY_PARAMS_MAP = Collections.unmodifiableMap(new HashMap<>());
+
+    /**
      * Determine whether the given array is empty:
      * i.e. {@code null} or of zero length.
      *

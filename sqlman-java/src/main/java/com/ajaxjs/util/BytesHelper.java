@@ -73,6 +73,7 @@ public class BytesHelper {
         return c;
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
 
     /**
@@ -107,11 +108,9 @@ public class BytesHelper {
         byte[] result = new byte[hexStr.length() / 2];
 
         for (int i = 0; i < hexStr.length() / 2; i++) {
-            // 获取高位和低位的16进制数
-            int high = Integer.parseInt(hexStr.substring(i * 2, i * 2 + 1), 16);
+            int high = Integer.parseInt(hexStr.substring(i * 2, i * 2 + 1), 16);// 获取高位和低位的16进制数
             int low = Integer.parseInt(hexStr.substring(i * 2 + 1, i * 2 + 2), 16);
-            // 计算二进制数
-            result[i] = (byte) (high * 16 + low);
+            result[i] = (byte) (high * 16 + low); // 计算二进制数
         }
 
         return result;

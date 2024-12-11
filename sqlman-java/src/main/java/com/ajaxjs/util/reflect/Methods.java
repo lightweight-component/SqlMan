@@ -1,6 +1,7 @@
 package com.ajaxjs.util.reflect;
 
 import com.ajaxjs.util.ListUtils;
+import com.ajaxjs.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.invoke.MethodHandles;
@@ -258,7 +259,7 @@ public class Methods {
     public static String getUnderLayerErrMsg(Throwable e) {
         String msg = getUnderLayerErr(e).toString();
 
-        return msg.replaceAll("^[^:]*:\\s?", "");
+        return msg.replaceAll("^[^:]*:\\s?", StrUtil.EMPTY_STRING);
     }
 
     /**

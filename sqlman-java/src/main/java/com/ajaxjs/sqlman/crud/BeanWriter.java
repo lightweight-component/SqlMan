@@ -1,4 +1,20 @@
-package com.ajaxjs.sqlman.sql;
+/**
+ * Copyright (C) 2025 Frank Cheung
+ * <p>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.ajaxjs.sqlman.crud;
 
 import com.ajaxjs.sqlman.annotation.IgnoreDB;
 import com.ajaxjs.sqlman.model.JdbcConstants;
@@ -21,25 +37,6 @@ import java.util.function.BiConsumer;
 
 @Slf4j
 public class BeanWriter implements JdbcConstants {
-//    private JdbcCommand crud;
-//
-//    /**
-//     * 新建记录
-//     *
-//     * @param entity 实体，可以是 Map or Java Bean
-//     * @return 新增主键，为兼顾主键类型，返回的类型设为同时兼容 int/long/string 的 Serializable
-//     */
-//    public Serializable create(Object entity) {
-//        SqlParams sp = entity2InsertSql(getTableName(), entity);
-//        JdbcCommand crud = getCrud();
-//        crud.setSql(sp.sql);
-//        crud.setParams(sp.values);
-//
-//        Serializable newlyId = crud.create(isAutoIns(), getIdTypeClz()).getNewlyId();
-//
-//
-//        return newlyId;
-//    }
 
 //    public void addNewlyIdToEntity(Object entity, Serializable newlyId) {
 //

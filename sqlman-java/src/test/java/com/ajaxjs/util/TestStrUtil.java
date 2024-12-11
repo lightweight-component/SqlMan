@@ -31,6 +31,7 @@ public class TestStrUtil {
 	}
 
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testConcatUrl() {
 		assertEquals("sdsd/aaa/bbb/sds", concatUrl("sdsd/aaa/", "/bbb/sds"));
 		assertEquals("sdsd/aaa/bbb/sds", concatUrl("sdsd/aaa", "bbb/sds"));

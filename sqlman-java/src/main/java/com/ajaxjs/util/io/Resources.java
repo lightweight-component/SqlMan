@@ -1,5 +1,6 @@
 package com.ajaxjs.util.io;
 
+import com.ajaxjs.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -109,7 +110,7 @@ public class Resources {
     public static String getResourceText(String path) {
         try (InputStream in = getResource(path)) {
             if (in == null) {
-                log.warn("[{}] 下没有 [{}] 资源文件", getResourcesFromClasspath(""), path);
+                log.warn("[{}] 下没有 [{}] 资源文件", getResourcesFromClasspath(StrUtil.EMPTY_STRING), path);
                 return null;
             }
 
@@ -158,7 +159,7 @@ public class Resources {
      */
     static void listResourceFile() {
         ClassLoader classLoader = Resources.class.getClassLoader();
-        URL resourceUrl = classLoader.getResource("");
+        URL resourceUrl = classLoader.getResource(StrUtil.EMPTY_STRING);
 
         if (resourceUrl != null) {
             File[] files = new File(resourceUrl.getFile()).listFiles(); // 将URL转换为文件路径

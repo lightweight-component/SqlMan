@@ -47,6 +47,7 @@ public class CommonUtil {
      * @param spec          参数，可选的
      * @return 结果
      */
+    @SuppressWarnings("SpellCheckingInspection")
     public static byte[] doCipher(String algorithmName, int mode, Key key, byte[] data, AlgorithmParameterSpec spec) {
         try {
             Cipher cipher = Cipher.getInstance(algorithmName);
@@ -171,7 +172,9 @@ public class CommonUtil {
      */
     public static PrivateKey loadPrivateKey(String privateKey) {
         Objects.requireNonNull(privateKey, "没有私钥内容");
-        privateKey = privateKey.replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", "").replaceAll("\\s+", "");
+        privateKey = privateKey.replace("-----BEGIN PRIVATE KEY-----", StrUtil.EMPTY_STRING)
+                .replace("-----END PRIVATE KEY-----", StrUtil.EMPTY_STRING)
+                .replaceAll("\\s+", StrUtil.EMPTY_STRING);
 
         try {
             return KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKey)));

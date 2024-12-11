@@ -1,5 +1,6 @@
 package com.ajaxjs.util.reflect;
 
+import com.ajaxjs.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.invoke.MethodHandle;
@@ -71,7 +72,7 @@ public class Clazz {
      */
     public static Class<?> getClassByInterface(Type type) {
         String className = type.toString();
-        className = className.replaceAll("<.*>$", "").replaceAll("(class|interface)\\s", ""); // 不要泛型的字符
+        className = className.replaceAll("<.*>$", StrUtil.EMPTY_STRING).replaceAll("(class|interface)\\s", StrUtil.EMPTY_STRING); // 不要泛型的字符
 
         return getClassByName(className);
     }
@@ -193,13 +194,14 @@ public class Clazz {
 
         return false;
     }
-//	/**
-//	 * 根据类全称创建实例，并转换到其接口的类型
-//	 *
-//	 * @param className 实际类的类型
-//	 * @param clazz     接口类型
-//	 * @return 对象实例
-//	 */
+
+	/**
+	 * 根据类全称创建实例，并转换到其接口的类型
+	 *
+	 * @param className 实际类的类型
+	 * @param clazz     接口类型
+	 * @return 对象实例
+	 */
     // @SuppressWarnings("unchecked")
     // public static <T> T newInstance(String className, Class<T> clazz) {
     // Class<?> clz = getClassByName(className);

@@ -3,11 +3,11 @@ package com.ajaxjs.sqlman.sql;
 
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
 import com.ajaxjs.sqlman.model.PageResult;
-import com.ajaxjs.sqlman.model.SqlParams;
 import com.ajaxjs.sqlman.model.Update;
 import com.ajaxjs.sqlman.util.JsonUtil;
 import com.ajaxjs.sqlman.util.Utils;
 import com.ajaxjs.util.ConvertBasicValue;
+import com.ajaxjs.util.reflect.Clazz;
 import com.ajaxjs.util.reflect.Methods;
 import com.ajaxjs.util.reflect.Types;
 import lombok.Data;
@@ -18,7 +18,6 @@ import javax.sql.DataSource;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -248,17 +247,7 @@ public class Sql extends JdbcCommand implements DAO {
 //                }
             }
 
-            T bean;
-
-            try {
-                bean = beanClz.getDeclaredConstructor().newInstance();
-            } catch (InstantiationException e) {
-                throw new RuntimeException("Failed when creating Bean. InstantiationException", e);
-            } catch (NoSuchMethodException e) {
-                throw new RuntimeException("Failed when creating Bean. No Such Constructor", e);
-            } catch (InvocationTargetException | IllegalAccessException e) {
-                throw new RuntimeException("Failed when creating Bean. InvocationTargetException | IllegalAccessException", e);
-            }
+            T bean = Clazz.newInstance(beanClz);
 
 //            if (beanClz.toString().contains("xxx")) {
 //                System.out.println();
@@ -339,7 +328,8 @@ public class Sql extends JdbcCommand implements DAO {
                             assert map != null;
                             map.put(key, _value);
                         }
-                    } catch (NoSuchFieldException | SecurityException ignored) {
+                    } catch (NoSuchFieldException | SecurityException e2) {
+                        log.warn("ERROR>>", e2);
                     }
                 } catch (IllegalArgumentException e) {
                     throw new DataAccessException("记录集合转换为 bean 异常。", e);

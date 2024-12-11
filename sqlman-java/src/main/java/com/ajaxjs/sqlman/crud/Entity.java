@@ -1,9 +1,24 @@
+/**
+ * Copyright (C) 2025 Frank Cheung
+ * <p>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.ajaxjs.sqlman.crud;
 
 import com.ajaxjs.sqlman.model.Create;
 import com.ajaxjs.sqlman.model.SqlParams;
 import com.ajaxjs.sqlman.model.TableModel;
-import com.ajaxjs.sqlman.sql.BeanWriter;
 import com.ajaxjs.sqlman.sql.DAO;
 import com.ajaxjs.sqlman.sql.Sql;
 import lombok.Data;
@@ -16,25 +31,25 @@ import java.sql.Connection;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class Crud extends Sql implements ICrud {
+public class Entity extends Sql implements IEntity {
     /**
      * Create a JDBC action with global connection
      */
-    public Crud() {
+    public Entity() {
         super();
     }
 
     /**
      * Create a JDBC action with specified connection
      */
-    public Crud(Connection conn) {
+    public Entity(Connection conn) {
         super(conn);
     }
 
     /**
      * Create a JDBC action with specified data source
      */
-    public Crud(DataSource dataSource) {
+    public Entity(DataSource dataSource) {
         super(dataSource);
     }
 
@@ -43,12 +58,12 @@ public class Crud extends Sql implements ICrud {
      */
     private TableModel tableModel;
 
-    public Crud setTableModel(TableModel tableModel) {
+    public Entity setTableModel(TableModel tableModel) {
         this.tableModel = tableModel;
         return this;
     }
 
-    public Crud setTableName(String tableName) {
+    public Entity setTableName(String tableName) {
         tableModel = new TableModel();
         tableModel.setTableName(tableName);
 
@@ -61,21 +76,19 @@ public class Crud extends Sql implements ICrud {
     private Object javaBean;
 
     @Override
-    public DAO input(Object javaBean) {
+    public IEntity input(Object javaBean) {
         this.javaBean = javaBean;
 
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <T extends Serializable> Create<T> create() {
+    public <T extends Serializable> Create<T> create(Class<T> idTypeClz) {
         SqlParams sp = BeanWriter.entity2InsertSql(tableModel.getTableName(), javaBean);
         setSql(sp.sql);
         setParams(sp.values);
-        Create<? extends Serializable> create = create(tableModel.isAutoIns(), tableModel.getIdTypeClz());
 
-        return (Create<T>) create;
+        return create(tableModel.isAutoIns(), idTypeClz);
     }
 
     /**
@@ -108,7 +121,7 @@ public class Crud extends Sql implements ICrud {
     private final static String SELECT_SQL = "SELECT * FROM %s WHERE " + DUMMY_STR;
 
     @Override
-    public <T extends Serializable> Crud info(T id) {
+    public <T extends Serializable> Entity info(T id) {
         String sql = getSql();// 尝试获取已经定义好的 SQL 语句
 
         // 如果已经定义了 SQL 语句且不为空，则处理查询参数的动态替换
@@ -128,11 +141,11 @@ public class Crud extends Sql implements ICrud {
         return this;
     }
 
-    public Crud list() {
+    public Entity list() {
         return list(null);
     }
 
-    public Crud list(String where) {
+    public Entity list(String where) {
         String sql = getSql();
 
         if (StringUtils.hasText(sql)) {

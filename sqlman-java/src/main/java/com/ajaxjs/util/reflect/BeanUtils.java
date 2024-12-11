@@ -2,6 +2,7 @@ package com.ajaxjs.util.reflect;
 
 
 import com.ajaxjs.sqlman.annotation.IgnoreDB;
+import com.ajaxjs.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -27,9 +28,29 @@ public class BeanUtils {
      * @return 属性名称
      */
     public static String getFieldName(String method, String action) {
-        method = method.replace(action, "");
+        method = method.replace(action, StrUtil.EMPTY_STRING);
 
         return Character.toString(method.charAt(0)).toLowerCase() + method.substring(1);
+    }
+
+    /**
+     * 设置 Java Bean 的值
+     *
+     * @param bean      Bean 实体
+     * @param fieldName 字段名
+     * @param value     值
+     */
+    public static void setBeanValue(Object bean, String fieldName, Object value) {
+        try {
+            Field field = bean.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(bean, value);
+        } catch (IllegalAccessException e) {
+            // the exception here doesn't need to handle
+            log.warn("访问字段时候 {} 失败", fieldName);
+        } catch (NoSuchFieldException e) {
+            log.warn("No Such Field: {}", fieldName);
+        }
     }
 
     /**
@@ -106,10 +127,13 @@ public class BeanUtils {
                     continue;
 
                 fn.item(key, value, property);
-
             }
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            throw new RuntimeException("遍历一个 Java Bean 错误", e);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("遍历一个 Java Bean 时候 Illegal Argument: ", e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("遍历一个 Java Bean 并访问字段时候失败", e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException("遍历一个 Java Bean 失败 InvocationTargetException，原因： " + e.getCause(), e.getCause());
         }
     }
 
@@ -173,22 +197,5 @@ public class BeanUtils {
         }
 
         return map;
-    }
-
-    /**
-     * 设置 Java Bean 的值
-     *
-     * @param bean      Bean 实体
-     * @param fieldName 字段名
-     * @param value     值
-     */
-    public static void setBeanValue(Object bean, String fieldName, Object value) {
-        try {
-            Field field = bean.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            field.set(bean, value);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-//            LOGGER.warning(e);
-        }
     }
 }
