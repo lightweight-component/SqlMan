@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import javax.sql.DataSource;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -375,5 +374,30 @@ public class Sql extends JdbcCommand implements DAO {
         Connection conn = getConnection(dataSource);
 
         return sql(conn, sql, params);
+    }
+
+    @Override
+    public DAO inputXmlId(String sqlId, Object... params) {
+        setParams(params);
+
+        SmallMyBatis smallMyBatis = new SmallMyBatis();
+        smallMyBatis.loadBySqlLocations("classpath*:sql/**/*.xml");
+        String sql = smallMyBatis.getSqlById(sqlId);
+        setSql(sql);
+
+        return this;
+    }
+
+    @Override
+    public DAO inputXmlId(String sqlId, Map<String, Object> keyParams, Object... params) {
+        setParams(params);
+        setKeyParams(keyParams);
+
+        SmallMyBatis smallMyBatis = new SmallMyBatis();
+        smallMyBatis.loadBySqlLocations("classpath*:sql/**/*.xml");
+        String sql = smallMyBatis.getSqlById(sqlId);
+        setSql(sql);
+
+        return this;
     }
 }

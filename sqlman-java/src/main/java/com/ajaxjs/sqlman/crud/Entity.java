@@ -22,6 +22,7 @@ import com.ajaxjs.sqlman.model.Create;
 import com.ajaxjs.sqlman.model.SqlParams;
 import com.ajaxjs.sqlman.model.TableModel;
 import com.ajaxjs.sqlman.model.Update;
+import com.ajaxjs.sqlman.sql.DAO;
 import com.ajaxjs.sqlman.sql.DataAccessException;
 import com.ajaxjs.sqlman.sql.Sql;
 import com.ajaxjs.sqlman.util.Utils;

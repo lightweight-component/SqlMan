@@ -67,7 +67,7 @@ public class JdbcCommand extends JdbcConn implements JdbcConstants {
      * @return 查询结果，如果为 null 表示没有数据
      */
     protected <T> T query(ResultSetProcessor<T> processor) {
-        if (keyParams != null)
+//        if (keyParams != null)
             sql = SmallMyBatis.handleSql(sql, keyParams);
 
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
@@ -101,7 +101,7 @@ public class JdbcCommand extends JdbcConn implements JdbcConstants {
      */
     @SuppressWarnings("unchecked")
     public <T extends Serializable> Create<T> create(boolean isAutoIns, Class<T> idType) {
-        if (keyParams != null)
+//        if (keyParams != null)
             sql = SmallMyBatis.handleSql(sql, keyParams);
 
         try (PreparedStatement ps = isAutoIns ? getConn().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS) : getConn().prepareStatement(sql)) {
@@ -160,7 +160,7 @@ public class JdbcCommand extends JdbcConn implements JdbcConstants {
      * @return 成功修改的行数
      */
     public Update update() {
-        if (keyParams != null)
+//        if (keyParams != null)
             sql = SmallMyBatis.handleSql(sql, keyParams);
 
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {

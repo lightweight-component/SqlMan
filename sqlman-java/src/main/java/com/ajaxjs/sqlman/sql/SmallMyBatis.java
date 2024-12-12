@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.expression.MapAccessor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.SpelEvaluationException;
 import org.springframework.expression.spel.standard.SpelExpression;
@@ -277,5 +278,66 @@ public class SmallMyBatis {
         sql = sql.replaceAll("&lt;", "<").replaceAll("&gt;", ">");
 
         return sql;
+    }
+
+    private static final ExpressionParser parser = new SpelExpressionParser();
+
+    /**
+     * 解析并评估模板中的条件标签。
+     *
+     * @param template 包含 <if> 和 <else> 标签的模板字符串。
+     * @param context  用于评估表达式的上下文。
+     * @return 解析后的最终字符串。
+     */
+    public static String evaluate(String template, StandardEvaluationContext context) {
+        StringBuilder result = new StringBuilder();
+        int pos = 0;
+
+        while (pos < template.length()) {
+            int ifStart = template.indexOf("<if test=", pos);
+            if (ifStart == -1) break;
+
+            // 将 <if> 标签之前的内容直接添加到结果中
+            result.append(template, pos, ifStart);
+
+            // 查找 </if> 或 <else> 结束标签的位置
+            int elsePos = template.indexOf("<else>", ifStart);
+            int endIfPos = template.indexOf("</if>", ifStart);
+            if (endIfPos == -1) throw new IllegalArgumentException("Missing closing </if>");
+
+            // 提取并评估条件表达式
+            int exprEnd = template.indexOf('>', ifStart);
+            if (exprEnd == -1 || exprEnd > endIfPos) throw new IllegalArgumentException("Invalid <if> tag");
+
+            String exprText = template.substring(ifStart + "<if test=\"".length(), exprEnd).trim();
+            Expression expr = parser.parseExpression(exprText);
+            boolean condition = expr.getValue(context, Boolean.class);
+
+            // 根据条件选择内容片段
+            String content;
+            if (condition) {
+                int bodyStart = exprEnd + 1;
+                content = template.substring(bodyStart, elsePos != -1 ? elsePos : endIfPos);
+            } else {
+                if (elsePos == -1) {
+                    content = "";
+                } else {
+                    content = template.substring(elsePos + "<else>".length(), endIfPos);
+                }
+            }
+
+            // 添加选定的内容到结果中
+            result.append(content.trim());
+
+            // 更新位置指针
+            pos = endIfPos + "</if>".length();
+        }
+
+        // 添加剩余部分（如果有的话）
+        if (pos < template.length()) {
+            result.append(template.substring(pos));
+        }
+
+        return result.toString();
     }
 }
