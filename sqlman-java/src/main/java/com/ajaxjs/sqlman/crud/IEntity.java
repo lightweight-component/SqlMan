@@ -17,6 +17,7 @@
 package com.ajaxjs.sqlman.crud;
 
 import com.ajaxjs.sqlman.model.Create;
+import com.ajaxjs.sqlman.model.Update;
 import com.ajaxjs.sqlman.sql.DAO;
 
 import java.io.Serializable;
@@ -48,4 +49,6 @@ public interface IEntity extends DAO {
      * @return 新增主键，为兼顾主键类型，返回的类型设为同时兼容 int/long/string 的 Serializable
      */
     <T extends Serializable> Create<T> create(Class<T> idTypeClz);
+
+    Update update(String where);
 }

@@ -16,7 +16,9 @@
  */
 package com.ajaxjs.sqlman.crud;
 
+import com.ajaxjs.sqlman.annotation.Column;
 import com.ajaxjs.sqlman.annotation.IgnoreDB;
+import com.ajaxjs.sqlman.annotation.Transient;
 import com.ajaxjs.sqlman.model.JdbcConstants;
 import com.ajaxjs.sqlman.model.SqlParams;
 import com.ajaxjs.sqlman.util.Utils;
@@ -27,6 +29,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -115,51 +118,15 @@ public class BeanWriter implements JdbcConstants {
     }
 
     /**
-     * 修改实体
-     *
-     * @param tableName 数据库表名
-     * @param entity    实体，可以是 Map or Java Bean
-     * @return 成功修改的行数，一般为 1
-     */
-//    public Update updateBean(String tableName, Object entity) {
-//        SqlParams sp;
-//
-//        if (entity instanceof Map) {
-//            @SuppressWarnings("unchecked")
-//            Map<String, Object> map = (Map<String, Object>) entity;
-//            Object id = map.get(getIdField());
-//
-//            if (id == null)
-//                throw new DataAccessException("未指定 id，这将会是批量全体更新！");
-//
-//            sp = entity2UpdateSql(tableName, map, getIdField(), id);
-//        } else {
-//            String getId = Utils.changeColumnToFieldName("get_" + getIdField());
-//            Object id = Methods.executeMethod(entity, getId);
-//
-//            if (id == null)
-//                throw new DataAccessException("未指定 id，这将会是批量全体更新！");
-//
-//            sp = entity2UpdateSql(tableName, entity, getIdField(), id);
-//        }
-//
-//        JdbcCommand crud = getCrud();
-//        crud.setSql(sp.sql);
-//        crud.setParams(sp.values);
-//
-//        return crud.update();
-//    }
-
-    /**
      * 将一个实体转换成更新语句的 SqlParams 对象
      *
      * @param tableName 数据库表名
      * @param entity    字段及其对应的值
      * @param idField   ID 字段名
-     * @param where     指定记录的 ID 值
+     * @param idValue   指定记录的 ID 值
      * @return 更新语句的 SqlParams 对象
      */
-    public static SqlParams entity2UpdateSql(String tableName, Object entity, String idField, Object where) {
+    public static SqlParams entity2UpdateSql(String tableName, Object entity, String idField, Object idValue) {
         StringBuilder sb = new StringBuilder();
         List<Object> values = new ArrayList<>();
         sb.append("UPDATE ").append(tableName).append(" SET");
@@ -185,11 +152,11 @@ public class BeanWriter implements JdbcConstants {
         sb.deleteCharAt(sb.length() - 1);// 删除最后一个 ,
         Object[] arr = values.toArray();  // 将 List 转为数组
 
-        if (StrUtil.hasText(idField) && where != null) {
+        if (StrUtil.hasText(idField) && idValue != null) {
             sb.append(" WHERE ").append(idField).append(" = ?");
 
             arr = Arrays.copyOf(arr, arr.length + 1);
-            arr[arr.length - 1] = where; // 将新值加入数组末尾
+            arr[arr.length - 1] = idValue; // 将新值加入数组末尾
         }
 
         SqlParams sp = new SqlParams();
@@ -234,12 +201,26 @@ public class BeanWriter implements JdbcConstants {
      * @param everyBeanField 传入一个回调函数，将数据库列名和字段值作为参数进行操作
      */
     protected static void everyBeanField(Object entity, BiConsumer<String, Object> everyBeanField) {
+        Class<?> clz = entity.getClass();
+
         try {
             BeanInfo beanInfo = Introspector.getBeanInfo(entity.getClass());
 
             for (PropertyDescriptor property : beanInfo.getPropertyDescriptors()) {
                 String filedName = property.getName(); // 获取字段的名称
-                if ("class".equals(filedName)) continue;
+                if ("class".equals(filedName))
+                    continue;
+
+                Field field2 = findField(clz, filedName);
+                if (field2 != null && field2.getAnnotation(Transient.class) != null)
+                    continue;
+
+                if (field2 != null && field2.getAnnotation(Column.class) != null) {
+                    Column column = field2.getAnnotation(Column.class);
+
+                    if (StrUtil.hasText(column.name())) // Real field name in DB
+                        filedName = column.name();
+                }
 
                 Method method = property.getReadMethod(); // 获取字段对应的读取方法
                 if (method.getAnnotation(IgnoreDB.class) != null) // 忽略的字段，不参与
@@ -255,5 +236,19 @@ public class BeanWriter implements JdbcConstants {
         } catch (IntrospectionException | InvocationTargetException | IllegalAccessException e) {
             log.warn("WARN>>", e);
         }
+    }
+
+    private static Field findField(Class<?> clazz, String fieldName) {
+        try {
+            return clazz.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            // 如果当前类没有该字段，则尝试在父类中查找
+            Class<?> superClass = clazz.getSuperclass();
+
+            if (superClass != null)
+                return findField(superClass, fieldName);
+        }
+
+        return null;
     }
 }

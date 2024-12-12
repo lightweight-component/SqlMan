@@ -178,11 +178,6 @@ public class Sql extends JdbcCommand implements DAO {
     }
 
     @Override
-    public DAO setIdType(Class<? extends Serializable> idType) {
-        return null;
-    }
-
-    @Override
     public Update delete() {
         return null;
     }
@@ -328,8 +323,8 @@ public class Sql extends JdbcCommand implements DAO {
                             assert map != null;
                             map.put(key, _value);
                         }
-                    } catch (NoSuchFieldException | SecurityException e2) {
-                        log.warn("ERROR>>", e2);
+                    } catch (NoSuchFieldException | SecurityException ignored) {
+//                        log.warn("ERROR>>", e2);
                     }
                 } catch (IllegalArgumentException e) {
                     throw new DataAccessException("记录集合转换为 bean 异常。", e);

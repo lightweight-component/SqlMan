@@ -16,21 +16,29 @@
  */
 package com.ajaxjs.sqlman.crud;
 
+import com.ajaxjs.sqlman.annotation.Id;
+import com.ajaxjs.sqlman.annotation.Table;
 import com.ajaxjs.sqlman.model.Create;
 import com.ajaxjs.sqlman.model.SqlParams;
 import com.ajaxjs.sqlman.model.TableModel;
-import com.ajaxjs.sqlman.sql.DAO;
+import com.ajaxjs.sqlman.model.Update;
+import com.ajaxjs.sqlman.sql.DataAccessException;
 import com.ajaxjs.sqlman.sql.Sql;
+import com.ajaxjs.sqlman.util.Utils;
+import com.ajaxjs.util.reflect.Methods;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.io.Serializable;
 import java.sql.Connection;
+import java.util.Map;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@Slf4j
 public class Entity extends Sql implements IEntity {
     /**
      * Create a JDBC action with global connection
@@ -84,11 +92,91 @@ public class Entity extends Sql implements IEntity {
 
     @Override
     public <T extends Serializable> Create<T> create(Class<T> idTypeClz) {
-        SqlParams sp = BeanWriter.entity2InsertSql(tableModel.getTableName(), javaBean);
+        SqlParams sp = BeanWriter.entity2InsertSql(getTableName(), javaBean);
         setSql(sp.sql);
         setParams(sp.values);
 
         return create(tableModel.isAutoIns(), idTypeClz);
+    }
+
+    /**
+     * 修改实体
+     * 将一个 Map 转换成更新语句的 SqlParams 对象，可允许任意的过滤条件，而不只是 WHERE id = 1
+     *
+     * @param where 查询条件，直接是 SQL WHERE 语句的后面部分（不用包含 WHERE 字符），可允许任意的过滤条件
+     * @return 成功修改的行数，一般为 1
+     */
+    @Override
+    public Update update(String where) {
+        if (where == null) {
+            log.warn("You're executing UPDATE, R U sure??? All records will be effected!");
+
+            return update();
+        } else {
+            SqlParams sp = BeanWriter.entity2UpdateSql(getTableName(), javaBean, null, null);
+            sp.sql += " WHERE " + where;
+
+            setSql(sp.sql);
+            setParams(sp.values);
+
+            return super.update();
+        }
+    }
+
+    @Override
+    public Update update() {
+        if (javaBean != null) { // do bean update
+            Object id = getIdValue();
+
+            if (id == null) {
+                log.warn("You're executing UPDATE, R U sure?? All records will be effected!");
+                throw new DataAccessException("未指定 id，这将会是批量全体更新！");
+            }
+
+            SqlParams sp = BeanWriter.entity2UpdateSql(getTableName(), javaBean, tableModel.getIdField(), id);
+            setSql(sp.sql);
+            setParams(sp.values);
+        }
+
+        // if there's no bean, then keeps the old way
+
+        return super.update();
+    }
+
+    private String getTableName() {
+        if (javaBean instanceof Map) {
+            return tableModel.getTableName();
+        } else {
+            Table annotation = javaBean.getClass().getAnnotation(Table.class);
+
+            if (annotation != null)
+                return annotation.value();
+            else
+                return tableModel.getTableName();
+        }
+    }
+
+    private Object getIdValue() {
+        Object id;
+
+        if (javaBean instanceof Map) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> map = (Map<String, Object>) javaBean;
+            id = map.get(tableModel.getIdField());
+        } else {
+            String idFieldName;
+            Id annotation = javaBean.getClass().getAnnotation(Id.class);
+
+            if (annotation != null)
+                idFieldName = annotation.value();
+            else
+                idFieldName = tableModel.getIdField();
+
+            String getId = Utils.changeColumnToFieldName("get_" + idFieldName);
+            id = Methods.executeMethod(javaBean, getId);
+        }
+
+        return id;
     }
 
     /**

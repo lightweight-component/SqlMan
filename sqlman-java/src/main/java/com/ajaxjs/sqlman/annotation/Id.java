@@ -4,21 +4,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * 表名
+ * 表示 id 字段
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TableName {
+public @interface Id {
     /**
-     * 表名
+     * Id 是哪个字段？
      *
      * @return v
      */
     String value();
-
-    /**
-     * 创建实体后是否返回新建的 id
-     *
-     * @return v
-     */
-    boolean isReturnNewlyId() default false;
 }

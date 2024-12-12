@@ -1,5 +1,7 @@
 package com.ajaxjs.sqlman.sql;
 
+import com.ajaxjs.sqlman.annotation.Column;
+import com.ajaxjs.sqlman.annotation.Transient;
 import lombok.Data;
 
 @Data
@@ -11,4 +13,10 @@ public class Address {
     private String address;
 
     private String phone;
+
+    @Transient
+    private String phone2;
+
+    @Column(name ="receiver")
+    private String re;
 }

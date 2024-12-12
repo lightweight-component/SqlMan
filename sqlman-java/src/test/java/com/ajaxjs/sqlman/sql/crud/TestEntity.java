@@ -67,6 +67,8 @@ public class TestEntity extends BaseTest {
         address.setName("出差");
         address.setAddress("广州");
         address.setPhone("188");
+        address.setPhone2("188");
+        address.setRe("Tom");
 
         TableModel tableModel = new TableModel();
         tableModel.setTableName("shop_address");
