@@ -15,15 +15,11 @@ public class TestSqlWrite extends BaseTest {
                 "VALUES ('家', '北京路', '3412', 'Jack')";
         Create<Integer> result;
         result = new Sql(conn).input(sql).create(true, Integer.class);
-
-        System.out.println(result);
         assertTrue(result.isOk());
 
         sql = "INSERT INTO shop_address (name, address, phone, receiver) " +
                 "VALUES ('家', ?, '3412', ?)";
         result = new Sql(conn).input(sql, "南京路", "Tom").create(true, Integer.class);
-
-        System.out.println(result);
         assertTrue(result.isOk());
     }
 
@@ -33,20 +29,14 @@ public class TestSqlWrite extends BaseTest {
 
         Update result;
         result = new Sql(conn).input(sql, 8).update();
-
-        System.out.println(result);
         assertTrue(result.isOk());
 
         String sql2 = "UPDATE ${tableName} SET name= '公司' WHERE id = ?";
         result = new Sql(conn).input(sql2, Map.of("tableName", "shop_address"), 9).update();
-
-        System.out.println(result);
         assertTrue(result.isOk());
 
         String sql3 = "DELETE FROM ${tableName} WHERE  id = 10"; // Delete 也是 update
         result = new Sql(conn).input(sql3, Map.of("tableName", "shop_address")).update();
-
-        System.out.println(result);
         assertTrue(result.isOk());
     }
 }

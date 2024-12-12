@@ -14,9 +14,9 @@ public interface DAO {
 
     DAO input(String sql, Map<String, Object> keyParams, Object... params);
 
-    DAO inputXmlId(String sqlId, Object... params);
+    DAO inputXml(String sqlId, Object... params);
 
-    DAO inputXmlId(String sqlId, Map<String, Object> keyParams, Object... params);
+    DAO inputXml(String sqlId, Map<String, Object> keyParams, Object... params);
 
     /**
      * 有且只有一行记录，并只返回第一列的字段。可指定字段的数据类型

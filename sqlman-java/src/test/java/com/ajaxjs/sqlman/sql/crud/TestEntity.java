@@ -2,14 +2,13 @@ package com.ajaxjs.sqlman.sql.crud;
 
 import com.ajaxjs.sqlman.crud.Entity;
 import com.ajaxjs.sqlman.model.Create;
-import com.ajaxjs.sqlman.model.JdbcConstants;
 import com.ajaxjs.sqlman.model.PageResult;
 import com.ajaxjs.sqlman.model.TableModel;
+import com.ajaxjs.sqlman.model.Update;
 import com.ajaxjs.sqlman.sql.Address;
 import com.ajaxjs.sqlman.sql.BaseTest;
 import org.junit.jupiter.api.Test;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -23,11 +22,10 @@ public class TestEntity extends BaseTest {
 
         Entity entity = new Entity(conn);
         Map<String, Object> result = entity.setTableModel(tableModel).info(1L).query();
-        System.out.println(result);
+        assertFalse(result.isEmpty());
 
         Address bean = entity.query(Address.class);
-        System.out.println(bean);
-        assertFalse(result.isEmpty());
+        assertNotNull(bean);
     }
 
     @Test
@@ -38,11 +36,10 @@ public class TestEntity extends BaseTest {
 
         Entity entity = new Entity(conn);
         List<Map<String, Object>> result = entity.setTableModel(tableModel).list().queryList();
-        System.out.println(result);
+        assertFalse(result.isEmpty());
 
         List<Address> addresses = entity.queryList(Address.class);
-        System.out.println(addresses);
-        assertFalse(result.isEmpty());
+        assertNotNull(addresses);
     }
 
     @Test
@@ -53,11 +50,9 @@ public class TestEntity extends BaseTest {
 
         Entity entity = new Entity(conn);
         PageResult<Address> result = entity.setTableModel(tableModel).list().page(Address.class);
-        System.out.println(result);
         assertFalse(result.isEmpty());
 
         PageResult<Object> article = new Entity(conn).setTableName("article").list().page();
-        System.out.println(article);
         assertFalse(article.isEmpty());
     }
 
@@ -76,8 +71,28 @@ public class TestEntity extends BaseTest {
         tableModel.setIdTypeClz(Integer.class);
 
         Create<Integer> result = new Entity(conn).setTableModel(tableModel).input(address).create(Integer.class);
-        System.out.println(result);
         assertNotNull(result.getNewlyId());
+        assertTrue(result.isOk());
+    }
+
+    @Test
+    void testUpdate() {
+        Address address = new Address();
+        address.setId(1);
+        address.setName("出差");
+        address.setAddress("广州");
+        address.setPhone("188");
+        address.setPhone2("188");
+        address.setRe("Tom");
+
+        TableModel tableModel = new TableModel();
+        tableModel.setTableName("shop_address");
+        tableModel.setAutoIns(true);
+        tableModel.setIdTypeClz(Integer.class);
+
+        Update result;
+        result = new Entity(conn).setTableModel(tableModel).input(address).update();
+
         assertTrue(result.isOk());
     }
 }

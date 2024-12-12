@@ -97,15 +97,16 @@ public class Clazz {
     /**
      * 获取 private 字段
      *
-     * @param clz       类
+//     * @param clz       类
      * @param fieldName 字段名
      * @param fieldType 字段类型
      * @param <T>       字段类型
      * @return 字段的值
      */
     @SuppressWarnings("unchecked")
-    public static <T> T getPrivateField(Class<?> clz, String fieldName, Class<T> fieldType) {
+    public static <T> T getPrivateField(Object instance, String fieldName, Class<T> fieldType) {
         MethodHandles.Lookup lookup;
+        Class<?> clz = instance.getClass();
 
         try {
             lookup = MethodHandles.privateLookupIn(clz, MethodHandles.lookup());
@@ -124,7 +125,7 @@ public class Clazz {
         }
 
         try {
-            return (T) mh.invoke(newInstance(clz));
+            return (T) mh.invoke(instance);
         } catch (Throwable e) {
             throw new RuntimeException("获取 private 字段异常", e);
         }

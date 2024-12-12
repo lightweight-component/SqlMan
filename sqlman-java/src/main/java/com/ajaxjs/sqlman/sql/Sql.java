@@ -7,6 +7,7 @@ import com.ajaxjs.sqlman.model.Update;
 import com.ajaxjs.sqlman.util.JsonUtil;
 import com.ajaxjs.sqlman.util.Utils;
 import com.ajaxjs.util.ConvertBasicValue;
+import com.ajaxjs.util.EasyLogger;
 import com.ajaxjs.util.reflect.Clazz;
 import com.ajaxjs.util.reflect.Methods;
 import com.ajaxjs.util.reflect.Types;
@@ -377,7 +378,7 @@ public class Sql extends JdbcCommand implements DAO {
     }
 
     @Override
-    public DAO inputXmlId(String sqlId, Object... params) {
+    public DAO inputXml(String sqlId, Object... params) {
         setParams(params);
 
         SmallMyBatis smallMyBatis = new SmallMyBatis();
@@ -389,15 +390,12 @@ public class Sql extends JdbcCommand implements DAO {
     }
 
     @Override
-    public DAO inputXmlId(String sqlId, Map<String, Object> keyParams, Object... params) {
-        setParams(params);
+    public DAO inputXml(String sqlId, Map<String, Object> keyParams, Object... params) {
         setKeyParams(keyParams);
 
-        SmallMyBatis smallMyBatis = new SmallMyBatis();
-        smallMyBatis.loadBySqlLocations("classpath*:sql/**/*.xml");
-        String sql = smallMyBatis.getSqlById(sqlId);
-        setSql(sql);
-
-        return this;
+        return inputXml(sqlId, params);
+    }
+    public static void main(String[] args) {
+        EasyLogger.info("hihhhhhhhhhhhhh");
     }
 }

@@ -13,8 +13,6 @@ public class TestSqlRead extends BaseTest {
     public void testQueryOne() {
         int result;
         result = new Sql(conn).input("SELECT COUNT(*) AS total FROM shop_address").queryOne(int.class); // fetch the first one
-
-        System.out.println(result);
         assertTrue( result>0);
 
         result = new Sql(conn).input("SELECT COUNT(*) AS total FROM shop_address WHERE id = ?", 1).queryOne(int.class);
@@ -31,8 +29,6 @@ public class TestSqlRead extends BaseTest {
     public void testQueryInfo() {
         Map<String, Object> result;
         result = new Sql(conn).input("SELECT * FROM shop_address").query(); // fetch the first one
-
-        System.out.println(result);
         assertNotNull(result);
 
         result = new Sql(conn).input("SELECT * FROM shop_address WHERE id = ?", 1).query();
@@ -50,32 +46,23 @@ public class TestSqlRead extends BaseTest {
     public void testQueryList() {
         List<Map<String, Object>> result;
         result = new Sql(conn).input("SELECT * FROM shop_address").queryList();
-
-        System.out.println(result);
         assertTrue(result.size() > 1);
 
         result = new Sql(conn).input("SELECT * FROM shop_address WHERE stat = ?", 1).queryList();
-
-        System.out.println(result.size());
         assertEquals(2, result.size());
 
         result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE stat = #{stat}", Map.of("tableName", "shop_address", "stat", 1)).queryList();
-
-        System.out.println(result.size());
         assertEquals(2, result.size());
 
         result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE stat = ?", Map.of("tableName", "shop_address", "abc", 2), 1).queryList();
-
-        System.out.println(result.size());
         assertEquals(2, result.size());
     }
 
     @Test
     public void testQueryInfoBean() {
         Address result;
-        result = new Sql(conn).input("SELECT * FROM shop_address").query(Address.class); // fetch the first one
 
-        System.out.println(result);
+        result = new Sql(conn).input("SELECT * FROM shop_address").query(Address.class); // fetch the first one
         assertNotNull(result);
 
         result = new Sql(conn).input("SELECT * FROM shop_address WHERE id = ?", 1).query(Address.class);
@@ -92,23 +79,15 @@ public class TestSqlRead extends BaseTest {
     public void testQueryListBean() {
         List<Address> result;
         result = new Sql(conn).input("SELECT * FROM shop_address").queryList(Address.class);
-
-        System.out.println(result);
         assertTrue(result.size() > 1);
 
         result = new Sql(conn).input("SELECT * FROM shop_address WHERE stat = ?", 1).queryList(Address.class);
-
-        System.out.println(result.size());
         assertEquals(2, result.size());
 
         result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE stat = #{stat}", Map.of("tableName", "shop_address", "stat", 1)).queryList(Address.class);
-
-        System.out.println(result.size());
         assertEquals(2, result.size());
 
         result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE stat = ?", Map.of("tableName", "shop_address", "abc", 2), 1).queryList(Address.class);
-
-        System.out.println(result.size());
         assertEquals(2, result.size());
     }
 
@@ -116,22 +95,16 @@ public class TestSqlRead extends BaseTest {
     void testPage() {
         PageResult<Map<String, Object>> result;
         result = new Sql(conn).input("SELECT * FROM article").page();
-
-        System.out.println(result);
         assertNotNull(result);
 
         result = new Sql(conn).input("SELECT * FROM article").page(3, 5);
-
-        System.out.println(result);
         assertNotNull(result);
 
         PageResult<Address> result2;
         result2 = new Sql(conn).input("SELECT * FROM shop_address").page(Address.class, 1, 2);
-        System.out.println(result2);
         assertNotNull(result2);
 
         result2 = new Sql(conn).input("SELECT * FROM shop_address").page(Address.class, 100, 2);
-        System.out.println(result2);
         assertEquals(0, result2.size());
     }
 }

@@ -12,29 +12,29 @@ public class TestXml extends BaseTest {
     @Test
     void test() {
         int result;
-        result = new Sql(conn).inputXmlId("foo").queryOne(int.class); // fetch the first one
+        result = new Sql(conn).inputXml("foo").queryOne(int.class); // fetch the first one
         System.out.println(result);
         assertTrue(result > 0);
 
 
-        result = new Sql(conn).inputXmlId("foo-2", 1).queryOne(int.class);
+        result = new Sql(conn).inputXml("foo-2", 1).queryOne(int.class);
         assertEquals(1, result);
 
-        result = new Sql(conn).inputXmlId("foo-3", Map.of("tableName", "shop_address", "stat", 1)).queryOne(int.class);
+        result = new Sql(conn).inputXml("foo-3", Map.of("tableName", "shop_address", "stat", 1)).queryOne(int.class);
         assertEquals(1, result);
 
-        result = new Sql(conn).inputXmlId("foo-4", Map.of("tableName", "shop_address", "abc", 2), 1).queryOne(int.class);
+        result = new Sql(conn).inputXml("foo-4", Map.of("tableName", "shop_address", "abc", 2), 1).queryOne(int.class);
         System.out.println(result); // TODO, should be return 0
     }
 
     @Test
     void testTag() {
         int result;
-        result = new Sql(conn).inputXmlId("foo-5", Map.of("type", "address")).queryOne(int.class); // fetch the first one
+        result = new Sql(conn).inputXml("foo-5", Map.of("type", "address")).queryOne(int.class); // fetch the first one
         System.out.println(result);
         assertTrue(result > 0);
 
-        result = new Sql(conn).inputXmlId("foo-5", Map.of("type", "article", "tableName", "article")).queryOne(int.class); // fetch the first one
+        result = new Sql(conn).inputXml("foo-5", Map.of("type", "article", "tableName", "article")).queryOne(int.class); // fetch the first one
         System.out.println(result);
         assertTrue(result > 0);
     }
@@ -46,7 +46,7 @@ public class TestXml extends BaseTest {
     @Test
     void testCallJava() {
         int result;
-        result = new Sql(conn).inputXmlId("foo-6", Map.of("tableName", "shop_address")).queryOne(int.class); // fetch the first one
+        result = new Sql(conn).inputXml("foo-6", Map.of("tableName", "shop_address")).queryOne(int.class); // fetch the first one
         System.out.println(result);
         assertTrue(result > 0);
     }

@@ -52,10 +52,13 @@ public class JdbcConn {
         CONNECTION.set(conn);
     }
 
+    private long startTime;
+
     /**
      * Create a JDBC action with global connection
      */
     public JdbcConn() {
+        this.startTime = System.currentTimeMillis();
         Connection conn = getConnection();
 
         if (conn == null) {
@@ -76,6 +79,7 @@ public class JdbcConn {
      * Create a JDBC action with specified connection
      */
     public JdbcConn(Connection conn) {
+        this.startTime = System.currentTimeMillis();
         this.conn = conn;
         initDatabaseVendor();
     }

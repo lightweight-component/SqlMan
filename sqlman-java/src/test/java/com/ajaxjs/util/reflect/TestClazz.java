@@ -59,7 +59,7 @@ public class TestClazz {
 
     @Test
     public void testGetPrivateField() {
-        String foo1 = Clazz.getPrivateField(TestClazz.class, "foo", String.class);
+        String foo1 = Clazz.getPrivateField(new TestClazz(), "foo", String.class);
         System.out.println(foo1);
     }
 
