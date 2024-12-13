@@ -1,0 +1,124 @@
+.loginway-body {
+  width: 342px;
+}
+.otherways-login {
+  margin-top: 28px;
+}
+.login-inp {
+  padding-left: 43px;
+}
+.login-inp input {
+  width: 256px;
+  height: 30px;
+  line-height: 30px;
+  margin-bottom: 25px;
+  font-size: 13px;
+  font-family: PingFang SC;
+  font-weight: 300;
+  color: #555;
+  text-indent: 8px;
+  vertical-align: top;
+  float: left;
+}
+.qrcode-login span {
+  margin: 0 0 20px 0;
+}
+.login-submit {
+  width: 213px;
+  height: 37px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+.forgetPassword {
+  font-size: 13px;
+  margin-top: 20px;
+}
+.login-inp img {
+  height: 70px;
+  margin-top: 28px;
+}
+.login-inp .qr-code-box, .login-inp .qr-code, .login-inp .qr-code-fail{
+  width: 153px;
+  height: 153px;
+}
+.otherways-btns {
+  height: 94px;
+}
+.login-inp .countcode {
+  width: 180px;
+}
+.capcha-inp .capcha {
+  width: 150px;
+}
+.login-inp .countdown {
+  width: 76px;
+  height: 32px;
+  line-height: 32px;
+  font-size: 12px;
+}
+.capcha-inp .capcha-img-box {
+  width: 104px;
+  height: 30px;
+  display: inline-block;
+  overflow: hidden;
+  position: relative;
+}
+.capcha-inp .capcha-img-code, .capcha-inp .capcha-img-mask {
+  width: 106px;
+  height: 32px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.capcha-inp  .capcha-img-fresh {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+.otherways-login .title {
+  font-size: 20px;
+  line-height: 25px;
+  margin-top: 64px;
+}
+.login-inp p, .login-inp p a {
+  font-size: 12px;
+  margin: 0;
+}
+.moreways {
+  width: 205px;
+  height: 40px;
+  border-radius: 20px;
+  font-size: 15px;
+  margin-top: 28px;
+}
+.moreways a {
+  line-height: 40px;
+}
+.otherway-button .hovericon {
+  width: 15px;
+}
+.otherway-button .icon {
+  margin: 12px auto 3px;
+}
+.otherway-button p {
+  height: 12px;
+  line-height: 12px;
+  font-size: 12px;
+}
+.tip {
+  top: 10px;
+  height: 54px;
+  line-height: 54px;
+  white-space: nowrap;
+  font-size: 16px;
+}
+.login-mess-one {
+  /* margin: 10px 0; */
+}

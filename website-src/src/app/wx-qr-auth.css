@@ -1,0 +1,28 @@
+.js_qrcode_panel {
+    display: block;
+}
+
+.impowerBox .title {display: none;}
+
+.impowerBox .qrcode {
+    width: 80%;
+    max-width: 220px;
+}
+
+.impowerBox .info {
+    width: 100%;
+}
+
+.impowerBox .status.status_browser {
+    margin-top: 9%;
+}
+
+.impowerBox .icon38_msg.succ {
+    display: none;
+}
+
+.impowerBox .status_succ, .impowerBox .status_fail {
+    text-align: center;
+    margin-top: 13%;
+    margin-left: 0;
+}

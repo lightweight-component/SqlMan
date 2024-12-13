@@ -1,0 +1,145 @@
+html, body {
+  width: 100%;
+  height: 100%;
+}
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-decoration: none;
+}
+.tbody {
+  width: 100%;
+  height: 100%;
+  min-height: 620px;
+  overflow: auto;
+  background: #C4E1FF;
+  position: relative;
+  overflow: hidden;
+}
+.header p.title1 {
+  font-size: 32px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #282828;
+  line-height: 46px;
+  text-align: center;
+  margin: 60px 0 10px;
+}
+.header p.title1 img{
+  width: 48px;
+}
+.header p.title2 {
+  font-size: 23px;
+  text-align: center;
+}
+.iframe-box {
+  width: 520px;
+  min-width: 520px;
+  height: 600px;
+  background: #fff;
+  margin: 50px auto;
+  border-radius: 20px;
+}
+.reset-pwd {
+  display: none;
+  height: 100%;
+  background: #fff;
+  border-radius: 20px;
+  width: 480px;
+  height: 600px;
+  border-radius: 20px;
+  margin: 50px auto;
+}
+.password_change {
+  overflow: hidden;
+  position: relative;
+}
+.reset-back {
+  font-size: 54px;
+  font-weight: 100;
+  color: #A3A2A2;
+  position: absolute;
+  top: 10px;
+  left: 25px;
+  z-index: 999;
+  cursor: pointer;
+}
+.reset-back:hover {
+  color: #3C9AFF;
+}
+.title1, .title2 {
+  text-align: center;
+  font-family: PingFang SC;
+  font-weight: 400;
+  color: #666;
+}
+.title1 {
+  font-size: 24px;
+  margin-top: 64px;
+}
+.title2 {
+  font-size: 20px;
+  margin-top: 10px;
+}
+.reset-submit {
+  width: 300px;
+  height: 48px;
+  background: #3C9AFF;
+  border-radius: 24px;
+  border: none;
+  outline: none;
+  font-size: 18px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #FEFEFE;
+  display: block;
+  margin: auto;
+}
+@media ( max-width: 1600px) {
+  .header p.title1 {
+    font-size: 23px;
+    margin: 30px 0 10px;
+  }
+  .header p.title1 img{
+    width: 35px;
+  }
+  .header p.title2 {
+    font-size: 17px;
+  }
+  .iframe-box {
+    width: 384px;
+    min-width: 384px;
+    height: 427px;
+  }
+  .reset-pwd {
+    width: 342px;
+    height: 427px;
+  }
+
+  .reset-pwd .password_change .reset-back {
+    font-size: 40px;
+    line-height: 40px;
+    left: 21px;
+  }
+  .reset-pwd .password_change .title1 {
+    font-size: 17px;
+    margin-top: 46px;
+  }
+  .reset-pwd .password_change .title2 {
+    font-size: 14px;
+  }
+  .reset-pwd .password_change .noModify {
+    margin-bottom: 25px;
+  }
+  .reset-pwd .password_change .reset-submit {
+    width: 213px;
+    height: 37px;
+    background: #3C9AFF;
+    border-radius: 17px;
+    font-size: 13px;
+    font-family: Microsoft YaHei;
+    font-weight: 400;
+    color: #FEFEFE;
+  }
+}
