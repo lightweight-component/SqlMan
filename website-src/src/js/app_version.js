@@ -1,1 +1,0 @@
-$appVersion='版本：ids-3.2.0.0'

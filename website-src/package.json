@@ -1,19 +1,30 @@
 {
   "name": "sqlman",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "version": "1.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "webpack-dev-server",
+    "build": "webpack",
+    "build:prod": "webpack --env production"
   },
-  "dependencies": {
-    "vue": "^3.5.13"
-  },
+  "keywords": [],
+  "author": "",
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.2.1",
+    "css-loader": "^7.1.2",
+    "css-minimizer-webpack-plugin": "^7.0.0",
+    "ejs-loader": "^0.5.0",
+    "html-loader": "^5.1.0",
+    "html-webpack-plugin": "^5.6.3",
     "less": "^4.2.1",
-    "vite": "^6.0.1"
+    "less-loader": "^12.2.0",
+    "mini-css-extract-plugin": "^2.9.2",
+    "style-loader": "^4.0.0",
+    "vue": "^2.6.14",
+    "vue-loader": "^15.11.1",
+    "vue-template-compiler": "2.6.14",
+    "webpack": "^5.96.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.1.0"
   }
 }
