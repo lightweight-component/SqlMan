@@ -33,7 +33,7 @@ public class Resources {
 
     /**
      * 获取当前类目录下的资源文件
-     * TODO 貌似不行
+     * 测试时候，源码目录没有，要手动复制
      *
      * @param clz      类引用
      * @param resource 资源文件名
