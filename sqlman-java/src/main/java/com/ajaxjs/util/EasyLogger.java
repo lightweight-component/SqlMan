@@ -7,13 +7,14 @@ import java.time.LocalTime;
 
 public class EasyLogger {
     private enum Level {
-        INFO, WARN, ERROR;
+        INFO, WARN, ERROR
     }
 
     private static final String INFO_TPL = "%s %s \033[32;4mINFO\033[0m \033[36;4m%s\033[0m : %s";
     private static final String WARN_TPL = "%s %s \033[33;4mWARN\033[0m \033[36;4m%s\033[0m : %s";
     private static final String ERROR_TPL = "%s %s \033[31;4mERROR\033[0m \033[36;4m%s\033[0m : %s";
 
+    @SuppressWarnings("SpellCheckingInspection")
     private static final String DELIM_STR = "{}";
 
     private static final Object[] EMPTY_ARGS = new Object[0];
@@ -32,7 +33,7 @@ public class EasyLogger {
             args = EMPTY_ARGS;
 
         StringBuilder buffer = new StringBuilder(format.length() + 64);
-        int beginIndex = 0, endIndex = 0, count = 0;
+        int beginIndex = 0, endIndex, count = 0;
 
         while ((endIndex = format.indexOf(DELIM_STR, beginIndex)) >= 0) {
             buffer.append(format, beginIndex, endIndex);
@@ -62,7 +63,7 @@ public class EasyLogger {
     /**
      * 控制台打印 WARN 日志
      *
-     * @param x 待打印
+     * @param format 待打印
      */
     public static void info(String format, Object... args) {
         print(Level.INFO, format, args);
@@ -71,7 +72,7 @@ public class EasyLogger {
     /**
      * 控制台打印 ERROR 日志
      *
-     * @param x 待打印
+     * @param format 待打印
      */
     public static void warn(String format, Object... args) {
         print(Level.WARN, format, args);
@@ -80,7 +81,7 @@ public class EasyLogger {
     /**
      * 控制台打印 INFO 日志
      *
-     * @param x 待打印
+     * @param format 待打印
      */
     public static void error(String format, Object... args) {
         print(Level.ERROR, format, args);

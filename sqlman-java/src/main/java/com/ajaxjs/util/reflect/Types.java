@@ -78,4 +78,9 @@ public class Types {
     public static Class<?> type2class(Type type) {
         return type instanceof Class ? (Class<?>) type : null;
     }
+
+    /*
+        从 Spring 4.0 开始 Spring 中添加了 ResolvableType 工具，这个类可以更加方便的用来回去泛型信息。
+        Ref: https://my.oschina.net/qq596392912/blog/3028409
+     */
 }

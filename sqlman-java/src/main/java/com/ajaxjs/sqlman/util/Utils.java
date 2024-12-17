@@ -3,12 +3,11 @@ package com.ajaxjs.sqlman.util;
 import com.ajaxjs.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.sql.DataSource;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Slf4j
@@ -100,5 +99,41 @@ public class Utils {
      */
     public static String escapeSqlInjection(String input) {
         return PATTERN.matcher(input).replaceAll(StrUtil.EMPTY_STRING);
+    }
+
+    /**
+     * 利用反射获取数据源连接信息
+     *
+     * @param dataSource 数据源
+     * @return 数据源连接信息
+     */
+    public static String retrieveCredentials(DataSource dataSource) {
+        String result = null;
+
+        try {
+            Field host = dataSource.getClass().getDeclaredField("host");
+            host.setAccessible(true);
+            Object hostValue = host.get(dataSource);
+            Field port = dataSource.getClass().getDeclaredField("port");
+            port.setAccessible(true);
+            Object portValue = port.get(dataSource);
+            Field database = dataSource.getClass().getDeclaredField("database");
+            database.setAccessible(true);
+            Object databaseValue = database.get(dataSource);
+            Field user = dataSource.getClass().getDeclaredField("user");
+            user.setAccessible(true);
+            Object userValue = user.get(dataSource);
+            Field pwd = dataSource.getClass().getDeclaredField("password");
+            pwd.setAccessible(true);
+            Object pwdValue = pwd.get(dataSource);
+
+            result = String.format("{\"user\": \"%s\", \"pwd\": \"%s\", \"host\": \"%s\", \"port\": %s, \"database\": \"%s\"}",
+                    userValue, pwdValue.toString(), hostValue.toString(),
+                    portValue.toString(), databaseValue.toString());
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            log.error(e.getMessage(), e);
+        }
+
+        return result;
     }
 }
