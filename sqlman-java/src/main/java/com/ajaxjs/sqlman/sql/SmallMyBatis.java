@@ -1,7 +1,7 @@
 package com.ajaxjs.sqlman.sql;
 
 
-import com.ajaxjs.util.ListUtils;
+import com.ajaxjs.util.CollUtils;
 import com.ajaxjs.util.StrUtil;
 import com.ajaxjs.util.XmlHelper;
 import com.ajaxjs.util.io.Resources;
@@ -75,7 +75,7 @@ public class SmallMyBatis {
             log.warn("文件路径没有 xml", e);
         }
 
-        if (ListUtils.isEmpty(resources))
+        if (CollUtils.isEmpty(resources))
             throw new RuntimeException("文件路径[" + sqlLocations + "]没有 xml");
 
         // 写死 sql 目录下。Resource 不能返回相对目录
@@ -270,7 +270,7 @@ public class SmallMyBatis {
      */
     public static String handleSql(String sql, Map<String, Object> paramsMap) {
         if (paramsMap == null)
-            paramsMap = ListUtils.EMPTY_PARAMS_MAP;
+            paramsMap = CollUtils.EMPTY_PARAMS_MAP;
 
         sql = generateIfBlock(sql, paramsMap);
         //        sql = parseForEach(sql, paramsMap);

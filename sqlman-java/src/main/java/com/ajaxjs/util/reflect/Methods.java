@@ -1,6 +1,6 @@
 package com.ajaxjs.util.reflect;
 
-import com.ajaxjs.util.ListUtils;
+import com.ajaxjs.util.CollUtils;
 import com.ajaxjs.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,7 +43,7 @@ public class Methods {
         Class<?> cls = obj instanceof Class ? (Class<?>) obj : obj.getClass();
 
         try {
-            return ListUtils.isEmpty(args) ? cls.getMethod(method) : cls.getMethod(method, args);
+            return CollUtils.isEmpty(args) ? cls.getMethod(method) : cls.getMethod(method, args);
         } catch (NoSuchMethodException | SecurityException e) {
             StringBuilder str = new StringBuilder();
 
@@ -65,7 +65,7 @@ public class Methods {
      * @return 匹配的方法对象，null 表示找不到
      */
     public static Method getMethod(Object obj, String method, Object... args) {
-        if (!ListUtils.isEmpty(args))
+        if (!CollUtils.isEmpty(args))
             return getMethod(obj, method, Clazz.args2class(args));
         else
             return getMethod(obj, method);

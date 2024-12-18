@@ -9,7 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestListUtils {
+public class TestCollUtils {
     private List<String> nonEmptyList;
     private List<String> emptyList;
     private List<String> nullList;
@@ -27,16 +27,16 @@ public class TestListUtils {
 
     @Test
     public void getList_NullOrEmptyList_ReturnsEmptyList() {
-        List<String> result = ListUtils.getList(nullList);
+        List<String> result = CollUtils.getList(nullList);
         assertTrue(result.isEmpty(), "Expected an empty list when input is null");
 
-        result = ListUtils.getList(emptyList);
+        result = CollUtils.getList(emptyList);
         assertTrue(result.isEmpty(), "Expected an empty list when input is empty");
     }
 
     @Test
     public void getList_NonEmptyList_ReturnsSameList() {
-        List<String> result = ListUtils.getList(nonEmptyList);
+        List<String> result = CollUtils.getList(nonEmptyList);
         assertEquals(nonEmptyList, result, "Expected the same non-empty list");
     }
 
@@ -44,19 +44,19 @@ public class TestListUtils {
     public void printArray_NullArray_LogsDebugMessage() {
         // Since this method only logs, we can check if the logs were generated as expected
         // However, in this test case, we will just check if no exception is thrown
-        assertDoesNotThrow(() -> ListUtils.printArray(null), "Printing null array should not throw an exception");
+        assertDoesNotThrow(() -> CollUtils.printArray(null), "Printing null array should not throw an exception");
     }
 
     @Test
     public void printArray_EmptyArray_LogsDebugMessage() {
         // Since this method only logs, we will just check if no exception is thrown
-        assertDoesNotThrow(() -> ListUtils.printArray(new String[0]), "Printing empty array should not throw an exception");
+        assertDoesNotThrow(() -> CollUtils.printArray(new String[0]), "Printing empty array should not throw an exception");
     }
 
     @Test
     public void printArray_NonEmptyArray_LogsArrayElements() {
         // Since this method only logs, we will just check if no exception is thrown
-        assertDoesNotThrow(() -> ListUtils.printArray(new String[]{"A", "B"}), "Printing non-empty array should not throw an exception");
+        assertDoesNotThrow(() -> CollUtils.printArray(new String[]{"A", "B"}), "Printing non-empty array should not throw an exception");
     }
 
     @Test
@@ -65,7 +65,7 @@ public class TestListUtils {
         String[] second = {"C", "D"};
         String[] expected = {"A", "B", "C", "D"};
 
-        String[] result = ListUtils.concat(first, second);
+        String[] result = CollUtils.concat(first, second);
         assertArrayEquals(expected, result, "Expected concatenated array");
     }
 
@@ -76,13 +76,13 @@ public class TestListUtils {
         Integer[] third = {5, 6};
         Integer[] expected = {1, 2, 3, 4, 5, 6};
 
-        Integer[] result = ListUtils.addAll(first, second, third);
+        Integer[] result = CollUtils.addAll(first, second, third);
         assertArrayEquals(expected, result, "Expected concatenated array");
     }
 
     @Test
     public void newArray_CreatesNewArray() {
-        Integer[] array = ListUtils.newArray(Integer.class, 5);
+        Integer[] array = CollUtils.newArray(Integer.class, 5);
         assertNotNull(array, "Expected a new array");
         assertEquals(5, array.length, "Expected array of length 5");
     }
@@ -95,7 +95,7 @@ public class TestListUtils {
         expected.add("B");
         expected.add("C");
 
-        List<String> result = ListUtils.arrayList(elements);
+        List<String> result = CollUtils.arrayList(elements);
         assertEquals(expected, result, "Expected ArrayList with same elements");
     }
 
@@ -106,7 +106,7 @@ public class TestListUtils {
         list.add("Banana");
         list.add("Cherry");
 
-        String result = ListUtils.findOne(list, s -> s.startsWith("B"));
+        String result = CollUtils.findOne(list, s -> s.startsWith("B"));
         assertEquals("Banana", result, "Expected 'Banana' as the first matching element");
     }
 
@@ -117,7 +117,7 @@ public class TestListUtils {
         list.add("Banana");
         list.add("Cherry");
 
-        String result = ListUtils.findOne(list, s -> s.startsWith("D"));
+        String result = CollUtils.findOne(list, s -> s.startsWith("D"));
         assertNull(result, "Expected null as there is no matching element");
     }
 
@@ -129,7 +129,7 @@ public class TestListUtils {
         list.add("Cherry");
         list.add("Apricot");
 
-        List<String> result = ListUtils.findSome(list, s -> s.startsWith("A"));
+        List<String> result = CollUtils.findSome(list, s -> s.startsWith("A"));
         assertNotNull(result, "Expected a non-null list");
         assertTrue(result.contains("Apple"), "Expected list to contain 'Apple'");
         assertTrue(result.contains("Apricot"), "Expected list to contain 'Apricot'");
@@ -142,7 +142,7 @@ public class TestListUtils {
         list.add("Banana");
         list.add("Cherry");
 
-        List<String> result = ListUtils.findSome(list, s -> s.startsWith("D"));
+        List<String> result = CollUtils.findSome(list, s -> s.startsWith("D"));
         assertNotNull(result, "Expected a non-null list");
         assertTrue(result.isEmpty(), "Expected empty list as there are no matching elements");
     }
@@ -155,7 +155,7 @@ public class TestListUtils {
         list.add(3);
 
         int[] expected = {1, 2, 3};
-        int[] result = ListUtils.intList2Arr(list);
+        int[] result = CollUtils.intList2Arr(list);
         assertArrayEquals(expected, result, "Expected int array with same elements");
     }
 
@@ -163,7 +163,7 @@ public class TestListUtils {
     public void stringArr2intArr_ConvertsStringToIntArray() {
         String input = "1,2,3";
         int[] expected = {1, 2, 3};
-        int[] result = ListUtils.stringArr2intArr(input);
+        int[] result = CollUtils.stringArr2intArr(input);
         assertArrayEquals(expected, result, "Expected int array with parsed elements");
     }
 }
