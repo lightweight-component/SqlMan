@@ -15,88 +15,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class CollUtils {
-    /**
-     * Dummy Map
-     */
-    public static final Map<String, Object> EMPTY_PARAMS_MAP = Collections.unmodifiableMap(new HashMap<>());
 
-    /**
-     * 创建一个新的 HashMap
-     *
-     * @param k1  键1
-     * @param v1  值1
-     * @param <K> k1 类型
-     * @param <V> v1 类型
-     * @return 新创建的 HashMap
-     */
-    public static <K, V> Map<K, V> mapOf(K k1, V v1) {
-        Map<K, V> map = new HashMap<>();
-        map.put(k1, v1);
-
-        return map;
-    }
-
-    /**
-     * 创建一个新的 HashMap
-     *
-     * @param k1  键1
-     * @param v1  值1
-     * @param k2  键2
-     * @param v2  值2
-     * @param <K> k1 类型
-     * @param <V> v1 类型
-     * @return 新创建的 HashMap
-     */
-    public static <K, V> Map<K, V> mapOf(K k1, V v1, K k2, V v2) {
-        Map<K, V> map = new HashMap<>();
-        map.put(k1, v1);
-        map.put(k2, v2);
-
-        return map;
-    }
-
-    /**
-     * 创建一个新的 HashMap
-     *
-     * @param k1  键1
-     * @param v1  值1
-     * @param k2  键2
-     * @param v2  值2
-     * @param k3  键3
-     * @param v3  值3
-     * @param <K> k1 类型
-     * @param <V> v1 类型
-     * @return 新创建的 HashMap
-     */
-    public static <K, V> Map<K, V> mapOf(K k1, V v1, K k2, V v2, K k3, V v3) {
-        Map<K, V> map = mapOf(3);
-        map.put(k1, v1);
-        map.put(k2, v2);
-        map.put(k3, v3);
-
-        return map;
-    }
-
-    /**
-     * Creates a HashMap with a specified expected number of entries.
-     * The initial capacity and load factor are calculated to minimize resizing.
-     *
-     * @param expectedSize the expected number of entries in the map
-     * @return a new HashMap with optimal initial capacity and load factor
-     */
-    public static <K, V> Map<K, V> mapOf(int expectedSize) {
-        // Calculate the initial capacity as the next power of two greater than or equal to expectedSize / default_load_factor
-        float defaultLoadFactor = 0.75f;
-        int initialCapacity = (int) Math.ceil(expectedSize / defaultLoadFactor);
-        initialCapacity = Integer.highestOneBit(initialCapacity - 1) << 1;
-
-        // Ensure that the initial capacity is at least 16 (the default capacity)
-        if (initialCapacity < 16)
-            initialCapacity = 16;
-
-        // Create and return the HashMap with the calculated initial capacity and default load factor
-        return new HashMap<>(initialCapacity, defaultLoadFactor);
-    }
 
     /**
      * Determine whether the given array is empty:
@@ -150,10 +69,11 @@ public class CollUtils {
      * @param arr 数组对象，可以为 null
      */
     public static void printArray(Object[] arr) {
-        if (arr == null)
+        if (arr == null) {
             log.debug("数组为空，null！");
+            return;
+        }
 
-        assert arr != null;
         if (arr.length == 0)
             log.debug("数组不为空，但没有一个元素在内");
 
@@ -177,7 +97,7 @@ public class CollUtils {
 
     /**
      * 将多个数组合并在一起
-     * 忽略 null  的数组
+     * 忽略 null 的数组
      *
      * @param <T>    数组元素类型
      * @param arrays 数组集合

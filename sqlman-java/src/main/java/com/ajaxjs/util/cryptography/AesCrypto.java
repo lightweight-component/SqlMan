@@ -1,6 +1,7 @@
 package com.ajaxjs.util.cryptography;
 
 import com.ajaxjs.util.BytesHelper;
+import com.ajaxjs.util.EncodeTools;
 import com.ajaxjs.util.StrUtil;
 
 import javax.crypto.Cipher;
@@ -45,7 +46,9 @@ public class AesCrypto {
      * @return Base64 编码后的秘密密钥字符串
      */
     public static String getSecretKey(String algorithmName, SecureRandom secure) {
-        return StrUtil.base64Encode(getSecretKey(algorithmName, 0, secure).getEncoded());
+        byte[] encoded = getSecretKey(algorithmName, 0, secure).getEncoded();
+
+        return EncodeTools.base64EncodeToString(encoded);
     }
 
     /**
@@ -107,7 +110,7 @@ public class AesCrypto {
      * @param algorithmName 加密使用的算法名称
      * @param key           加密的秘钥
      * @param keySize       加密密钥的大小，如果为0，则使用默认大小
-     * @param isEncrypt      是否加密，true 表示加密，false 表示解密
+     * @param isEncrypt     是否加密，true 表示加密，false 表示解密
      * @return 加密或解密后的字符串
      */
     private static String keyGeneratorES(String res, String algorithmName, String key, int keySize, boolean isEncrypt) {
@@ -228,7 +231,7 @@ public class AesCrypto {
      * PBEWithSHA1AndRC2_40
      * </pre>
      */
-     @SuppressWarnings("SpellCheckingInspection")
+    @SuppressWarnings("SpellCheckingInspection")
     private final static String KEY_PBE = "PBEWITHMD5andDES";
 
     /**

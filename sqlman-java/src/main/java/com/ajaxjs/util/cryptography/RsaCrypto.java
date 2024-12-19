@@ -1,6 +1,6 @@
 package com.ajaxjs.util.cryptography;
 
-import com.ajaxjs.util.StrUtil;
+import com.ajaxjs.util.EncodeTools;
 
 import javax.crypto.Cipher;
 import java.security.*;
@@ -52,7 +52,9 @@ public class RsaCrypto {
      * @return 数字签名
      */
     public static String sign(String privateKey, byte[] data) {
-        return StrUtil.base64Encode(sign(KEY_RSA_SIGNATURE, (PrivateKey) restoreKey(false, privateKey), data));
+        byte[] sign = sign(KEY_RSA_SIGNATURE, (PrivateKey) restoreKey(false, privateKey), data);
+
+        return EncodeTools.base64EncodeToString(sign);
     }
 
     public static byte[] sign(String algorithmName, PrivateKey privateKey, byte[] data) {
@@ -85,7 +87,7 @@ public class RsaCrypto {
             signature.initVerify((PublicKey) restoreKey(true, publicKey));
             signature.update(data);
 
-            return signature.verify(StrUtil.base64DecodeFromString(sign));
+            return signature.verify(EncodeTools.base64Decode(sign));
         } catch (SignatureException e) {
             throw new RuntimeException("签名计算失败", e);
         } catch (NoSuchAlgorithmException e) {
@@ -105,7 +107,7 @@ public class RsaCrypto {
      * @return 还原后的公钥或私钥对象，如果还原失败则返回null
      */
     private static Key restoreKey(boolean isPublic, String key) {
-        byte[] bytes = StrUtil.base64DecodeFromString(key);
+        byte[] bytes = EncodeTools.base64Decode(key);
 
         try {
             KeyFactory f = KeyFactory.getInstance(KEY_RSA);
@@ -210,7 +212,9 @@ public class RsaCrypto {
      * @return 密钥的 Base64 编码
      */
     public static String getKey(String name, Map<String, byte[]> map) {
-        return StrUtil.base64Encode(map.get(name));
+        byte[] bytes = map.get(name);
+
+        return EncodeTools.base64EncodeToString(bytes);
     }
 
     /**

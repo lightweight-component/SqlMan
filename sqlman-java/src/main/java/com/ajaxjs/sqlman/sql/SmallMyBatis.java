@@ -2,6 +2,7 @@ package com.ajaxjs.sqlman.sql;
 
 
 import com.ajaxjs.util.CollUtils;
+import com.ajaxjs.util.ObjectHelper;
 import com.ajaxjs.util.StrUtil;
 import com.ajaxjs.util.XmlHelper;
 import com.ajaxjs.util.io.Resources;
@@ -270,7 +271,7 @@ public class SmallMyBatis {
      */
     public static String handleSql(String sql, Map<String, Object> paramsMap) {
         if (paramsMap == null)
-            paramsMap = CollUtils.EMPTY_PARAMS_MAP;
+            paramsMap = ObjectHelper.EMPTY_PARAMS_MAP;
 
         sql = generateIfBlock(sql, paramsMap);
         //        sql = parseForEach(sql, paramsMap);

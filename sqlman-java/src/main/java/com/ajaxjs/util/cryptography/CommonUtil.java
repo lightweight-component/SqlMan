@@ -2,6 +2,7 @@ package com.ajaxjs.util.cryptography;
 
 import com.ajaxjs.util.BytesHelper;
 import com.ajaxjs.util.CollUtils;
+import com.ajaxjs.util.EncodeTools;
 import com.ajaxjs.util.StrUtil;
 import com.ajaxjs.util.io.Resources;
 
@@ -87,7 +88,7 @@ public class CommonUtil {
             if (associatedData != null)
                 cipher.updateAAD(associatedData);
 
-            return StrUtil.byte2String(cipher.doFinal(StrUtil.base64DecodeFromString(cipherText)));
+            return StrUtil.byte2String(cipher.doFinal(EncodeTools.base64Decode(cipherText)));
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
             throw new RuntimeException("当前 Java 环境不支持 " + algorithmName, e);
         } catch (IllegalBlockSizeException | BadPaddingException e) {

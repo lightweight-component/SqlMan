@@ -1,6 +1,6 @@
 package com.ajaxjs.util.cryptography;
 
-import com.ajaxjs.util.StrUtil;
+import com.ajaxjs.util.EncodeTools;
 import com.ajaxjs.util.io.Resources;
 
 import javax.crypto.Cipher;
@@ -45,9 +45,9 @@ public class WeiXinCrypto {
      * @return 解密后的文本
      */
     public static String aesDecryptPhone(String iv, String cipherText, String sessionKey) {
-        IvParameterSpec spec = new IvParameterSpec(StrUtil.base64DecodeFromString(iv));
+        IvParameterSpec spec = new IvParameterSpec(EncodeTools.base64Decode(iv));
 
-        return CommonUtil.doCipher("AES/CBC/PKCS5Padding", Cipher.DECRYPT_MODE, StrUtil.base64DecodeFromString(sessionKey), spec, cipherText, null);
+        return CommonUtil.doCipher("AES/CBC/PKCS5Padding", Cipher.DECRYPT_MODE, EncodeTools.base64Decode(sessionKey), spec, cipherText, null);
     }
 
     //----------------- RSA 加密、解密 -------------------
@@ -61,7 +61,9 @@ public class WeiXinCrypto {
      * @return 加密后的文本
      */
     public static String encryptOAEP(String message, X509Certificate certificate) {
-        return StrUtil.base64Encode(CommonUtil.doCipher(TRANSFORMATION, Cipher.ENCRYPT_MODE, certificate.getPublicKey(), message.getBytes(StandardCharsets.UTF_8)));
+        byte[] bytes = CommonUtil.doCipher(TRANSFORMATION, Cipher.ENCRYPT_MODE, certificate.getPublicKey(), message.getBytes(StandardCharsets.UTF_8));
+
+        return EncodeTools.base64EncodeToString(bytes);
     }
 
     /**
@@ -112,6 +114,6 @@ public class WeiXinCrypto {
      * @return 签名结果
      */
     public static String rsaSign(PrivateKey privateKey, byte[] data) {
-        return StrUtil.base64Encode(RsaCrypto.sign("SHA256withRSA", privateKey, data));
+        return EncodeTools.base64EncodeToString(RsaCrypto.sign("SHA256withRSA", privateKey, data));
     }
 }

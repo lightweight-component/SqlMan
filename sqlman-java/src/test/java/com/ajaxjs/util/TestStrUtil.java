@@ -20,15 +20,6 @@ public class TestStrUtil {
 		assertEquals("中国", byte2String(str));
 	}
 
-	@Test
-	public void testUrlChinese() {
-//		assertEquals("中国", urlChinese("%E4%B8%AD%E5%9B%BD"));
-	}
-
-	@Test
-	public void testMisc() {
-		assertEquals(base64Decode(base64Encode(str)), str);
-	}
 
 	@Test
 	@SuppressWarnings("SpellCheckingInspection")

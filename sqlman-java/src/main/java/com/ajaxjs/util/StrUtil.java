@@ -1,12 +1,18 @@
-/**
- * Copyright sp42 frank@ajaxjs.com Licensed under the Apache License, Version
- * 2.0 (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
- * or agreed to in writing, software distributed under the License is
- * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
+/*
+ * Copyright (C) 2025 Frank Cheung<frank@ajaxjs.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.ajaxjs.util;
 
@@ -15,12 +21,11 @@ import org.springframework.util.DigestUtils;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,143 +71,6 @@ public class StrUtil {
     }
 
     /**
-     * URL 网址的中文乱码处理。 如果 Tomcat 过滤器设置了 UTF-8 那么这里就不用重复转码了
-     *
-     * @param str 通常是 URL 的 Query String 参数
-     * @return 中文
-     */
-    public static String urlChinese(String str) {
-        return byte2String(str.getBytes(StandardCharsets.ISO_8859_1));
-    }
-
-    /**
-     * URL 编码。 适合 GET 请求时候用
-     * <p>
-     * <a href="https://www.cnblogs.com/del88/p/6496825.html">...</a>
-     *
-     * @param str 输入的字符串
-     * @return 编码后的字符串
-     */
-    public static String urlEncodeQuery(String str) {
-//        str = str.replaceAll(" ", "%20");
-        return urlEncode(str);
-    }
-
-    /**
-     * UTF-8 字符串而已
-     */
-    public static final String UTF8_SYMBOL = "UTF-8";
-
-    /**
-     * URL 编码
-     *
-     * @param str 输入的字符串
-     * @return URL 编码后的字符串
-     */
-    public static String urlEncode(String str) {
-        return URLEncoder.encode(str, StandardCharsets.UTF_8);
-    }
-
-    /**
-     * URL 解码
-     *
-     * @param str 输入的字符串
-     * @return URL 解码后的字符串
-     */
-    public static String urlDecode(String str) {
-        return urlDecode(str, UTF8_SYMBOL);
-    }
-
-    /**
-     * URL 解码
-     *
-     * @param str 输入的字符串
-     * @param enc 编码方法
-     * @return URL 解码后的字符串
-     */
-    public static String urlDecode(String str, String enc) {
-        try {
-            return URLDecoder.decode(str, enc);
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
-    }
-
-    /**
-     * BASE64 编码
-     *
-     * @param bytes 待编码的字符串 bytes
-     * @return 已编码的字符串
-     */
-    public static String base64Encode(byte[] bytes) {
-        return new String(Base64.getEncoder().encode(bytes), StandardCharsets.UTF_8);
-    }
-
-    /**
-     * BASE64 编码
-     *
-     * @param bytes 待编码的字符串 bytes
-     * @return 已编码的字符串
-     */
-    public static String base64EncodeRaw(byte[] bytes) {
-        return Base64.getEncoder().encodeToString(bytes);
-    }
-
-    /**
-     * BASE64 编码
-     *
-     * @param str 待编码的字符串
-     * @return 已编码的字符串
-     */
-    public static String base64Encode(String str) {
-        return base64Encode(getUTF8_Bytes(str));
-    }
-
-    public static byte[] base64DecodeFromString(String str) {
-        if (str.isEmpty())
-            return new byte[0];
-
-        return Base64.getDecoder().decode(str.getBytes(StandardCharsets.UTF_8));
-    }
-
-    /**
-     * BASE64 解码 这里需要强制捕获异常。
-     * 中文乱码：<a href="http://s.yanghao.org/program/viewdetail.php?i=54806">...</a>
-     *
-     * @param str 待解码的字符串
-     * @return 已解码的字符串
-     */
-    public static String base64Decode(String str) {
-        return byte2String(base64DecodeFromString(str));
-    }
-
-    /**
-     * 随机字符串
-     * noinspection SpellCheckingInspection
-     */
-    @SuppressWarnings("SpellCheckingInspection")
-    private static final String STR = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-    /**
-     * 生成指定长度的随机字符，可能包含数字
-     * 另外一个方法 <a href="https://blog.csdn.net/qq_41995919/article/details/115299461">...</a>
-     *
-     * @param length 户要求产生字符串的长度
-     * @return 随机字符
-     */
-    public static String getRandomString(int length) {
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < length; i++) {
-            int number = random.nextInt(62);
-            sb.append(STR.charAt(number));
-        }
-
-        return sb.toString();
-    }
-
-    /**
      * 连接两个 url 目录字符串，如果没有 / 则加上；如果有则去掉一个
      *
      * @param a 第一个 url 目录字符串
@@ -211,18 +79,15 @@ public class StrUtil {
      */
     public static String concatUrl(String a, String b) {
         char last = a.charAt(a.length() - 1), first = b.charAt(0);
-        String result = null;
 
         if (last == '/' && first == '/') // both has
-            result = a + b.substring(1);
+            return a + b.substring(1);
         else if (last != '/' && first != '/') // haven't at all
-            result = a + "/" + b;
+            return a + "/" + b;
         else if (last == '/' && first != '/')// a 有 /，b 没有 /
-            result = a + b;
-        else if (last != '/' && first == '/')// a 没有 /，b 有 /
-            result = a + b;
-
-        return result;
+            return a + b;
+        else
+            return a + b;
     }
 
     /**
@@ -284,7 +149,6 @@ public class StrUtil {
         m.appendTail(sb);
 
         return sb.toString();
-
     }
 
     /**
@@ -429,29 +293,6 @@ public class StrUtil {
     }
 
     /**
-     * 对象深度克隆
-     *
-     * @param <T> 对象泛型参数
-     * @param obj 待克隆的对象
-     * @return 克隆后的对象
-     */
-    @SuppressWarnings("unchecked")
-    public static <T extends Serializable> T clone(T obj) {
-        try (ByteArrayOutputStream bout = new ByteArrayOutputStream();
-             ObjectOutputStream oos = new ObjectOutputStream(bout)) {
-            oos.writeObject(obj);
-
-            try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bout.toByteArray()))) {
-                // 说明：调用 ByteArrayInputStream 或 ByteArrayOutputStream 对象的 close 方法没有任何意义
-                // 这两个基于内存的流只要垃圾回收器清理对象就能够释放资源，这一点不同于对外部资源（如文件流）的释放
-                return (T) ois.readObject();
-            }
-        } catch (Throwable e) {
-            throw new RuntimeException("对象深度克隆 Error.", e);
-        }
-    }
-
-    /**
      * 判断一个字符串是否属于指定的字符串数组中
      *
      * @param word 待判断字符串
@@ -476,37 +317,6 @@ public class StrUtil {
      */
     public static boolean isWordOneOfThem(String word, List<String> list) {
         return isWordOneOfThem(word, list.toArray(new String[0]));
-    }
-
-    /**
-     * 计算一个字符串的 MD5 值
-     *
-     * @param str 待计算 MD5 的字符串
-     * @return 计算结果
-     */
-    public static String md5(String str) {
-        return DigestUtils.md5DigestAsHex(str.getBytes());
-    }
-
-    /**
-     * 生成一个 UUID，可选择是否去掉其中的 "-" 符号（Copy from Spring，Spring 提供的算法性能远远高于 JDK 的）
-     *
-     * @param isRemove 是否去掉 "-" 符号
-     * @return 生成的 UUID 字符串
-     */
-    public static String uuid(boolean isRemove) {
-        String uuid = java.util.UUID.randomUUID().toString();
-
-        return isRemove ? uuid.replace("-", StrUtil.EMPTY_STRING) : uuid;
-    }
-
-    /**
-     * 生成一个去掉 "-" 字符的 UUID 字符串
-     *
-     * @return 生成的 UUID 字符串
-     */
-    public static String uuid() {
-        return uuid(true);
     }
 
     public static byte[] getUTF8_Bytes(String str) {

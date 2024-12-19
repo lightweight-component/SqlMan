@@ -3,15 +3,13 @@ package com.ajaxjs.util;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.DigestUtils;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.security.InvalidKeyException;
@@ -68,8 +66,7 @@ public class MessageDigestHelper {
         try {
             md = MessageDigest.getInstance(algorithmName);
         } catch (NoSuchAlgorithmException e) {
-            log.warn("WARN>>>>>", e);
-            throw new RuntimeException(e);
+            throw new RuntimeException("No Such Algorithm: " + algorithmName, e);
         }
 
         return md.digest(StrUtil.getUTF8_Bytes(str));
@@ -91,7 +88,7 @@ public class MessageDigestHelper {
         if (isHexStr)
             return BytesHelper.bytesToHexStr(result).toLowerCase();
         else
-            return StrUtil.base64Encode(result);
+            return EncodeTools.base64EncodeToString(result);
     }
 
     /**
@@ -152,8 +149,7 @@ public class MessageDigestHelper {
                 sk = KeyGenerator.getInstance(algorithmName).generateKey();
             else sk = new SecretKeySpec(StrUtil.getUTF8_Bytes(key)/*Base64Utils.decodeFromString(key)*/, algorithmName);
         } catch (NoSuchAlgorithmException e) {
-            log.warn("WARN>>>>>", e);
-            throw new RuntimeException(e);
+            throw new RuntimeException("No Such Algorithm: " + algorithmName, e);
         }
 
         try {
@@ -161,9 +157,10 @@ public class MessageDigestHelper {
             mac.init(sk); // 使用指定算法初始化 Mac 对象
 
             return mac.doFinal(StrUtil.getUTF8_Bytes(data)); // 对指定数据进行MAC计算
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            log.warn("WARN>>>>>", e); // 捕获算法不存在和密钥无效异常
-            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("No Such Algorithm: " + algorithmName, e);
+        } catch (InvalidKeyException e) {
+            throw new RuntimeException("Invalid Key: " + key, e);
         }
     }
 
@@ -205,17 +202,30 @@ public class MessageDigestHelper {
      * @return 返回文件的 md5 值，如果计算过程中任务的状态变为取消或暂停，返回 null， 如果有其他异常，返回空字符串
      */
     public static String calcFileMD5(File file, byte[] bytes) {
+        byte[] buf = new byte[8192];
+        int len;
+
         try (InputStream stream = file != null ? Files.newInputStream(file.toPath(), StandardOpenOption.READ) : new ByteArrayInputStream(bytes)) {
-            byte[] buf = new byte[8192];
-            int len;
             MessageDigest digest = MessageDigest.getInstance("MD5");
 
-            while ((len = stream.read(buf)) > 0) digest.update(buf, 0, len);
+            while ((len = stream.read(buf)) > 0)
+                digest.update(buf, 0, len);
 
             return BytesHelper.bytesToHexStr(digest.digest());
-        } catch (IOException | NoSuchAlgorithmException e) {
-            log.warn("WARN>>>>>", e);
-            return StrUtil.EMPTY_STRING;
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("No Such Algorithm: MD5", e);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Calc File MD5 IO Error.", e);
         }
+    }
+
+    /**
+     * 计算一个字符串的 MD5 值
+     *
+     * @param str 待计算 MD5 的字符串
+     * @return 计算结果
+     */
+    public static String md5(String str) {
+        return DigestUtils.md5DigestAsHex(str.getBytes());
     }
 }
