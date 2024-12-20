@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <sql id="foo">SELECT COUNT(*) AS total FROM shop_address</sql>
+    <sql id="foo-2">SELECT COUNT(*) AS total FROM shop_address WHERE id = ?</sql>
+    <sql id="foo-3">SELECT id FROM ${tableName} WHERE id = #{stat}</sql>
+    <sql id="foo-4">SELECT * FROM ${tableName} WHERE id = ?</sql>
+    <sql id="foo-5">
+        <if test="type=='address'">
+            SELECT COUNT(*) AS total FROM shop_address
+        </if>
+        <if test="type=='article'">
+            SELECT COUNT(*) AS total FROM ${tableName}
+        </if>
+    </sql>
+    <sql id="foo-6">SELECT id FROM ${tableName} WHERE ${T(com.ajaxjs.sqlman.sql.TestXml).w()}</sql>
+</root>
