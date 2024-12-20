@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>打包与部署</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../../../common/inner.css" />
+    <script src="../../../common/inner.js"></script>
+</head>
+
+<body>
+    <h1>打包与部署</h1>
+    <h2>打包</h2>
+    <p>最终打包为 JAR 包。执行 Maven package 命令即可。注意要依赖包拷贝到 lib 目录，而不是一个大的 Fat Jar（已集成相关的插件）。<code>aj-common-parent</code>已集成。
+    </p>
+    <h2>一键部署</h2>
+    <p>可以通过 Maven 插件一键部署到 SSH 服务器。在 pom.xml 中加入 build 节点并修改相关配置。具体参阅<span class="external-link">
+            <span>↗</span>
+        </span> <a href="https://blog.csdn.net/zhangxin09/article/details/132456075" target="_blank">Maven 一键部署到 SSH
+            服务器</a>。</p>
+    <pre class="code xml-code"><build>
+    <plugins>
+            <!--一键部署到服务器 SSH-->
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>wagon-maven-plugin</artifactId>
+            <version>2.0.2</version>
+
+            <executions>
+                <execution>
+                    <id>upload-deploy</id>
+                    <!-- 运行package打包的同时运行upload-single和sshexec -->
+                    <phase>package</phase>
+                    <goals>
+                        <goal>upload-single</goal>
+                        <goal>sshexec</goal>
+                    </goals>
+                    <configuration>
+                        <!-- 指定 SSH 账号 -->
+                        <serverId>high.ajaxjs.com</serverId>
+                        <!-- 要更新的 jar 包 -->
+                        <fromFile>target/aj-iam-server.jar</fromFile>
+                        <!-- 服务器部署位置 -->
+                        <url>${ssh.url.iam}</url>
+                        <!-- 重启脚本 先切换目录，才能正确执行脚本 -->
+                        <commands>
+                            <command>cd /home/service/aj-iam;./startup.sh</command>
+                        </commands>
+                        <!-- 显示运行命令的输出结果 -->
+                        <displayCommandOutputs>true</displayCommandOutputs>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build></pre>
+
+
+</body>
+
+</html>

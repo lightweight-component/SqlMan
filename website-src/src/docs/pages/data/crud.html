@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>增删改查 CRUD</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../../../common/inner.css" />
+    <script src="../../../common/inner.js"></script>
+</head>
+
+<body>
+    <h1>增删改查 CRUD</h1>
+    <p>所谓 CRUD，顾名思义就是数据库增删改查的工作——所形成封装的就是 CRUD 类。这类多数的方法都是<code>static</code>方法。</p>
+    <h2>查询单笔记录</h2>
+    <p>查询一笔记录，分为最简单的单行单列和单行多列两种情形。什么是查询单行单列？举两个例子：</p>
+    <pre class="code sql-code">// 最简单的单行单列
+SELECT id FROM news WHERE id = 1;
+SELECT COUNT(1) FROM user;</pre>
+
+    <p>这些都是返回<b>一个独立的</b>字段。相对地，当我们传入<code>*</code>的时候则表示查询所有字段返回。</p>
+    <pre class="code sql-code">SELECT * FROM aritcle</pre>
+
+    <p>明显这返回不是一个字段，而是多个。我们不能用一个<code>String/Long</code>等的单个类型去表示，而是采用 Map 或者 Java Bean 去承载查询所返回的数据。</p>
+
+    <h3>查询单行单列记录</h3>
+    <p>
+        有且只有一行记录，并只返回第一列的字段。可指定字段的数据类型。入参为返回的类型、执行的 SQL 和
+        SQL 参数（选填项，能对应 SQL 里面的<code>?</code>的插值符）。
+    </p>
+
+    <pre class="code java-code">public static &lt;T&gt; T queryOne(Class&lt;T&gt; clz, String sql, Object... params);</pre>
+
+    <p>参数 clz 支持的类型有 String、Integer、Long、Float、Double 等。 例子如下：</p>
+
+    <pre class="code java-code">Long id = CRUD.queryOne(Long.class, "SELECT id FROM news WHERE id = ?", 1);</pre>
+
+    <h3>查询普通的单笔记录</h3>
+    <p>所谓普通的单笔记录即是查询“单行多列”的记录。JdbcHelper 支持 Map 和 Java Bean 两种数据格式，故无论查询还是创建、修改数据，均支持返回和入参这两种格式。首先看看返回查询普通的单笔
+        Map 记录，有下面两种方法：</p>
+
+    <pre
+        class="code java-code">/**
+* 查询单笔记录，以 Map 格式返回
+*
+* @param sql    SQL 语句
+* @param params SQL 参数列表（选填项，能对应 SQL 里面的`?`的插值符）
+* @return 查询结果，如果为 null 表示没数据
+*/
+public static Map&lt;String, Object&gt; info(String sql, Object... params);
+
+/**
+* 查询单笔记录，以 Map 格式返回
+*
+* @param sqlId     SQL Id，于 XML 里的索引
+* @param paramsMap Map 格式的参数（若没有可传 null）
+* @param params    SQL 参数列表（选填项，能对应 SQL 里面的`?`的插值符）
+* @return 查询结果，如果为 null 表示没数据
+*/
+public static Map&lt;String, Object&gt; infoMap(String sqlId, Map&lt;String, Object&gt; paramsMap, Object... params);</pre>
+
+    <p>区别在于第一个参数，后者是 sqlId，它不是普通的 SQL 语句（字符串）。我们支持类似 MyBatis 在 XML 书写 SQL 的方法，这样对于 SQL 有更好的管理作用。这个就是 XML 的索引，参见一个 XML id
+        的例子。</p>
+
+    <pre class="code xml-code"><?xml version='1.0' encoding='utf-8'?>
+<sqls>
+	<sql id="infoNews">
+		SELECT * FROM aritcle WHERE name LIKE '%${name}%'
+	</sql>
+</sqls></pre>
+    <p>
+        其中<code>${name}</code>对应参数<code>Map&lt;String, Object&gt; paramsMap</code>中 key 为 name 的值；后面的入参 params，那不是
+        key/value 的结构，只是一维数组，按照顺序对应
+        SQL 中的<code>?</code>替换，这适合一些比较简单的入参情形。</p>
+
+    <p></p>例子：</p>
+
+    <pre
+        class="code java-code">Map&lt;String, Object&gt; article = CRUD.info("SELECT * FROM aritcle WHERE id = ?", 1);</pre>
+
+    <p>接着是返回 Java Bean 的，它要求传入一个<code>Class&lt;T&gt;</code>的参数指定 Bean 类型。其余大体一样（入参之类的）。</p>
+
+
+    <pre
+        class="code java-code">/**
+ * 查询单笔记录，以 Java Bean 格式返回
+ *
+ * @param beanClz 返回的 Bean 类型
+ * @param sql     SQL 语句
+ * @param params  SQL 参数列表（选填项，能对应 SQL 里面的`?`的插值符）
+ * @param &lt;T&gt;     返回的 Bean 类型
+ * @return 查询单笔记录，以 Java Bea 格式返回
+ */
+public static &lt;T&gt; T info(Class&lt;T&gt; beanClz, String sql, Object... params);
+
+/**
+ * 查询单笔记录，以 Java Bean 格式返回
+ *
+ * @param sqlId     SQL Id，于 XML 里的索引
+ * @param beanClz   返回的 Bean 类型
+ * @param paramsMap Map 格式的参数（若没有可传 null）
+ * @param params    SQL 参数列表（选填项，能对应 SQL 里面的`?`的插值符）
+ * @param &lt;T&gt;       返回的 Bean 类型
+ * @return 查询单笔记录，以 Java Bea 格式返回
+ */
+public static &lt;T&gt; T info(String sqlId, Class&lt;T&gt; beanClz, Map&lt;String, Object&gt; paramsMap, Object... params);</pre>
+    <p>例子：</p>
+
+    <pre class="code java-code">Article article = CRUD.info(Article.class, "SELECT * FROM aritcle WHERE id = ?", 1);
+Article article = CRUD.info("infoArticle", Article.class, null, 1);</pre>
+
+
+    <h2>查询多行记录</h2>
+    <p>返回多行的 List 集合。与上述同理，均有 Map/Bean、SQL String/XML id 之版本。</p>
+
+    <pre
+        class="code java-code">/**
+ * 查询列表记录，以 List Map 格式返回
+ *
+ * @param sql    SQL 语句
+ * @param params SQL 参数列表（选填项，能对应 SQL 里面的`?`的插值符）
+ * @return 查询结果，如果没数据返回一个空 List
+ */
+public static List&lt;Map&lt;String, Object&gt;&gt; list(String sql, Object... params);
+
+/**
+ * 查询列表记录，以 List Map 格式返回
+ *
+ * @param sqlId     SQL Id，于 XML 里的索引
+ * @param paramsMap Map 格式的参数（若没有可传 null）
+ * @param params    SQL 参数列表（选填项，能对应 SQL 里面的`?`的插值符）
+ * @return 查询结果，如果没数据返回一个空 List
+ */
+public static List&lt;Map&lt;String, Object&gt;&gt; listMap(String sqlId, Map&lt;String, Object&gt; paramsMap, Object... params); 
+
+/**
+ * 查询列表记录，以 List Java Bean 格式返回
+ *
+ * @param beanClz 实体 Bean 类型
+ * @param sql     SQL 语句
+ * @param params  SQL 参数列表（选填项，能对应 SQL 里面的`?`的插值符）
+ * @return 查询结果，如果没数据返回一个空 List
+ */
+public static &lt;T&gt; List&lt;T&gt; list(Class&lt;T&gt; beanClz, String sql, Object... params);
+
+/**
+ * 查询列表记录，以 List Java Bean 格式返回
+ *
+ * @param sqlId     SQL Id，于 XML 里的索引
+ * @param beanClz   实体 Bean 类型
+ * @param paramsMap Map 格式的参数（若没有可传 null）
+ * @param params    SQL 参数列表（选填项，能对应 SQL 里面的`?`的插值符）
+ * @param &lt;T&gt;       实体 Bean 类型
+ * @return 查询结果，如果没数据返回一个空 List
+ */
+public static &lt;T&gt; List&lt;T&gt; list(String sqlId, Class&lt;T&gt; beanClz, Map&lt;String, Object&gt; paramsMap, Object... params);</pre>
+
+    <h2>列表分页查询</h2>
+
+    <p>分页是一种特殊类型的查询。我们通过 JSQL Parser 语法解析 SQL 查询语句，先生成 COUNT 统计总数的 SQL，若 &gt;0 则返回第二次查询的分页结果。</p>
+
+    <pre
+        class="code java-code">/**
+ * 分页查询列表记录，以 List Java Bean 格式返回
+ *
+ * @param beanClz   实体 Bean 类型
+ * @param sql       SQL 语句
+ * @param paramsMap Map 格式的参数（若没有可传 null）
+ * @param &lt;T&gt;       实体 Bean 类型
+ * @return 查询结果，如果没数据返回一个空 List
+ */
+public static &lt;T&gt; PageResult&lt;T&gt; page(Class&lt;T&gt; beanClz, String sql, Map&lt;String, Object&gt; paramsMap);
+
+/**
+ * 分页查询列表记录，以 List Java Bean 格式返回
+ *
+ * @param sqlId     SQL Id，于 XML 里的索引
+ * @param beanClz   实体 Bean 类型
+ * @param paramsMap Map 格式的参数（若没有可传 null）
+ * @param &lt;T&gt;       实体 Bean 类型
+ * @return 查询结果，如果没数据返回一个空 List
+ */
+public static &lt;T&gt; PageResult&lt;T&gt; page(String sqlId, Class&lt;T&gt; beanClz, Map&lt;String, Object&gt; paramsMap);</pre>
+
+
+    <p>返回的分页结果是 PageResult，是比较通用的结构了。它继承于 ArrayList：</p>
+
+    <pre class="code java-code">/**
+ * 分页信息 bean
+ *
+ * @param &lt;T&gt; Bean 对象，也可以是 Map
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class PageResult&lt;T&gt; extends ArrayList&lt;T&gt; {
+    private static final long serialVersionUID = 543109149479031294L;
+
+    /**
+     * 总记录数
+     */
+    private int totalCount;
+
+    /**
+     * 从第几笔记录开始
+     */
+    private int start;
+
+    /**
+     * 每页大小
+     */
+    private int pageSize;
+
+    /**
+     * 总页数
+     */
+    private int totalPage;
+
+    /**
+     * 当前第几页
+     */
+    private int currentPage;
+
+    /**
+     * 是否没有数据，就是查询了之后，一条记录符合都没有
+     */
+    private boolean isZero;
+}</pre>
+
+    <p>要分页返回返回 Map 的，<code>page(clz)</code>中的 clz 参数传 null 即可。</p>
+
+    <h2>原理分析</h2>
+    <p>有关原理的分析，请移步至博客文章：
+        <span class="external-link">
+            <span>↗</span>
+        </span>
+        <a href="https://zhangxin.blog.csdn.net/article/details/130445993" target="_blank">https://zhangxin.blog.csdn.net/article/details/130445993</a>。
+    </p>
+</body>
+
+</html>

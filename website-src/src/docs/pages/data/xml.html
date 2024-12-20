@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>XML 管理 SQL</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../../../common/inner.css" />
+    <script src="../../../common/inner.js"></script>
+</head>
+
+<body>
+    <h1>XML 管理 SQL</h1>
+    <p>类似于 MyBatis，通过 xml 文件来管理多行、复杂的 SQL 语句，并提供 if/forEach 等的流程控制。</p>
+    <h2>XML SQL 保存位置</h2>
+    <p>XML SQL 保存位置写死在<code>classpath*:sql/**/*.xml</code>，注意要新建一个专属的 sql 目录，文件名不限制，扩展名一定是 xml，例如在
+        <code>resources/sql</code> 目录下：</p>
+    <img src="../../imgs/data/1.jpg" width="450" />
+    <p>下面是一个 XML SQL 的例子：</p>
+    <pre class="code xml-code"><?xml version="1.0" encoding="UTF-8"?>
+<sqls>
+    <!-- 获取车队平台方分账配置   -->
+    <sql id="common.plat.profitsharing_conf">
+        SELECT * FROM MK_PLAT_PROFITSHARING_CONF WHERE fleet_id = #{fleetid}
+    </sql>
+</sqls></pre>
+    <p>其中，属性 id 必填的，用于定位哪一个 SQL。另外<code>#{xxx}</code>用于获取参数 xxx；<code>${xxx}</code>用法一样，只是不进行类型转义。</p>
+
+
+    <h2>流程控制</h2>
+    <p>if 逻辑判断。这里复用了 Spring Expression Language（SpEL）表达式解释。注意，大于 &gt; 转义为：gt；小于 &lt; 转义为：lt，而且它们都是大小写不敏感的。使用时中间要以空格分开。
+    </p>
+
+    <pre class="code xml-code"><sql id="getTransactionRecord">
+    SELECT * FROM mk_order_money m WHERE 1 = 1
+    <if test="tranType != null">
+        AND m.pay_type = #{tranType}
+    </if>
+    ORDER BY m.create_time DESC
+</sql></pre>
+
+    <p>转义的示例如下。</p>
+    <img src="../../imgs/data/2.jpg" />
+
+
+    
+    <h3>调用 Java 类的方法</h3>
+    <p>调用 Java 类的方法，例子如下</p>
+    <pre
+        class="code sql-code">INSERT INTO sys_bookmark (name, content, user_id) VALUES (#{name}, #{content},{T(com.ajaxjs.framework.entity.BaseCRUD).getCurrentUserId()});</pre>
+    <p>Spring Expression Language 可以调用 Java 类方法，包括静态方法和非静态方法。 要调用静态方法，可以使用以下语法：</p>
+    <pre class="code java-code">T(className).methodName(arguments)</pre>
+
+</body>
+
+</html>

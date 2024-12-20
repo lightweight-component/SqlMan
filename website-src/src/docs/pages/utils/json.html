@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>JSON 序列化/反序列化</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../../../common/inner.css" />
+    <script src="../../../common/inner.js"></script>
+</head>
+
+<body>
+    <h1>JSON 序列化/反序列化</h1>
+    <p>没学过编译原理，做一个 JSON 解析器难吗？——难！是不是就不能“迎难而上”呢？——不是！越是难的越是一个挑战！——笔者这里尝试通过通俗易懂的行文为大家介绍一下 JSON 解析器，——那一串串长长的 JSON
+        文本到底是如何被解析成为 Java
+        里面“可以理解的”对象的。前面的铺垫可能比较长，但请尽量不要跳过，因为那都是基础，尤其对于我们非科班来说，应要恶补。当然，为照顾大家的理解程度（包括我自己，我也会以后回看自己的代码，以此反复理解、反复消化），我会把代码写多点注释，把代码可读性提高那么一点点，因为网上很多写解析器的大神都是从
+        C 语言高手过来的，明显带有过程式的风格。因此我会重构这些代码，使得代码更 OO 一些，这样看起来也会紧凑一些，可读性高一些。</p>
+
+    <p>有关JSON 序列化/反序列化的详细分析，请移步至博客文章：
+        <span class="external-link">
+            <span>↗</span>
+        </span>
+        <a href="https://zhangxin.blog.csdn.net/article/details/77132093" target="_blank">
+            https://zhangxin.blog.csdn.net/article/details/77132093</a>、<a
+            href="https://zhangxin.blog.csdn.net/article/details/86688282" target="_blank">
+            https://zhangxin.blog.csdn.net/article/details/86688282</a>。
+    </p>
+    <a href="https://central.sonatype.com/artifact/com.ajaxjs/aj-json" target="_blank">
+        <img src="https://img.shields.io/maven-central/v/com.ajaxjs/aj-json?label=Latest%20Release" alt="最新版本" />
+    </a>
+
+    <pre class="code xml-code"><!-- 轻量级的 JSON 反序列化 -->
+<dependency>
+    <groupId>com.ajaxjs</groupId>
+    <artifactId>aj-json</artifactId>
+    <version>1.4</version>
+</dependency></pre>
+    <p>组件源码在：<span class="external-link">
+            <span>↗</span>
+        </span> <a href=""
+            target="_blank">https://github.com/lightweight-component/aj-json</a>。
+    </p>
+    <p>Javadoc：<span class="external-link">
+        <span>↗</span>
+    </span> <a href="https://dev.ajaxjs.com/docs/javadoc/aj-json/" target="_blank">https://dev.ajaxjs.com/docs/javadoc/aj-json/</a>。
+</p>
+
+    <h2>调用例子</h2>
+    <p>转换 Java 值为 JSON 值。</p>
+    <pre class="code java-code">Object obj = true;
+String json = ConvertToJson.toJson(obj);
+assertEquals("true", json);
+
+obj = 123;
+json = ConvertToJson.toJson(obj);
+assertEquals("123", json);
+
+obj = 100000000000000001L;
+json = ConvertToJson.toJson(obj);
+assertEquals("\"100000000000000001\"", json);
+
+obj = 99999L;
+json = ConvertToJson.toJson(obj);
+assertEquals("99999", json);
+
+obj = "hello";
+json = ConvertToJson.toJson(obj);
+assertEquals("\"hello\"", json);
+
+Map map = new HashMap();
+map.put("name", "John");
+map.put("age", 30);
+json = ConvertToJson.toJson(map);
+assertEquals("{\"name\":\"John\",\"age\":30}", json);   
+</pre>
+    <p>列表转换为 JSON。</p>
+    <pre class="code java-code">
+List list = new ArrayList();
+list.add(1);
+list.add(2);
+list.add(3);
+String json = ConvertToJson.list2Json(list);
+assertEquals("[1, 2, 3]", json);
+</pre>
+    <p>TODO</p>
+</body>
+
+</html>
