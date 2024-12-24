@@ -1,25 +1,31 @@
+[![Maven Central](https://img.shields.io/maven-central/v/com.ajaxjs/ajaxjs-util?label=Latest%20Release)](https://central.sonatype.com/artifact/com.ajaxjs/ajaxjs-util)
+[![Javadoc](https://img.shields.io/badge/javadoc-1.1.8-brightgreen.svg?)](https://javadoc.io/doc/com.ajaxjs/ajaxjs-util )
+![coverage](https://img.shields.io/badge/coverage-80%25-yellowgreen.svg?maxAge=2592000)
+[![License](https://img.shields.io/badge/license-Apache--2.0-green.svg?longCache=true&style=flat)](http://www.apache.org/licenses/LICENSE-2.0.txt)
+[![Email](https://img.shields.io/badge/Contact--me-Email-orange.svg)](mailto:frank@ajaxjs.com)
+[![QQ群](https://framework.ajaxjs.com/static/qq.svg)](https://shang.qq.com/wpa/qunwpa?idkey=3877893a4ed3a5f0be01e809e7ac120e346102bd550deb6692239bb42de38e22)
 
-https://tomcat.apache.org/tomcat-9.0-doc/security-howto.html
+# SqlMan
 
+SqlMan is a lightweight wrapper over JDBC. It is NOT an ORM but follows a SQL-first approach. It allows you to use pure SQL with IF/forEach and pass Map parameters for queries or executions. The results you receive are either 'isOk' indicators and 'Map' or Java Bean object(s). SqlMan enables fast CRUD database operations with ZERO dependencies, except for the JDK.
 
+## Source code
 
-# Template Engine
-I need to template to do the jobs like MyBatis `<if><else><foreach>`. However, it's not easy to achieve it.
-MyBatis is using own XML parser with OGNL expression engine, details [here](https://www.cnblogs.com/fangjian0423/p/mybaits-dynamic-sql-analysis.html).
+[Github](https://javadoc.io/doc/com.ajaxjs/ajaxjs-util) | [Gitcode](https://gitcode.com/zhangxin09/aj-framework/tree/master/aj-public/aj-util)
 
-It's hard to copy that.
+## Link
 
-Another way is to use the common template engine, like Thymeleaf/Freemarker, but it's too heavy I think.
+[Tutorials](https://javadoc.io/doc/com.ajaxjs/ajaxjs-util) | [Java Documents](https://javadoc.io/doc/com.ajaxjs/ajaxjs-util) | [Web Site](https://javadoc.io/doc/com.ajaxjs/ajaxjs-util)
 
-[Beetl](http://ibeetl.com/) is a sharp project, better than Java HTML template engines, and it mentions the library ANTLR like a compiler.
+## Install
 
-It's a advanced topic, I don't think I can handle it well.
+Runs on Java11+. Maven:
 
-However, I'm considering to put this problem on other hand, This is a question about how to implement your own DSL.
+```xml
 
-
-At this point, [dropincc.java](https://github.com/pfmiles/dropincc.java), a small parser generator, comes into my eyes, and the author says,
- it ships with a [template engine](http://pfmiles.github.io/blog/what-does-a-template-engine-for-code-generation-look-like/) 
-that can be used to generatetemplate engine, which is exactly what I need. But I can't find its implementation in the project!
-
-So, The ANTLR's [StringTemplate](https://www.jianshu.com/p/d87ef30a2f63) is the best choice. StringTemplate seems to be the only choice.
+<dependency>
+    <groupId>com.ajaxjs</groupId>
+    <artifactId>sqlman</artifactId>
+    <version>1.0</version>
+</dependency>
+```
