@@ -1,4 +1,5 @@
-package com.ajaxjs.util.reflect;
+package com.ajaxjs.sqlman.util;
+
 
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,7 @@ public class TestBeanUtils {
         };
 
         // When
-        BeanUtils.eachField(testClass, fn);
+       BeanUtils.eachField(testClass, fn);
     }
 
     @Test

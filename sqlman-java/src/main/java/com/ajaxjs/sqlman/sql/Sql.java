@@ -7,7 +7,6 @@ import com.ajaxjs.sqlman.model.Update;
 import com.ajaxjs.sqlman.util.JsonUtil;
 import com.ajaxjs.sqlman.util.Utils;
 import com.ajaxjs.util.ConvertBasicValue;
-import com.ajaxjs.util.EasyLogger;
 import com.ajaxjs.util.reflect.Clazz;
 import com.ajaxjs.util.reflect.Methods;
 import com.ajaxjs.util.reflect.Types;
@@ -394,8 +393,5 @@ public class Sql extends JdbcCommand implements DAO {
         setKeyParams(keyParams);
 
         return inputXml(sqlId, params);
-    }
-    public static void main(String[] args) {
-        EasyLogger.info("hihhhhhhhhhhhhh");
     }
 }

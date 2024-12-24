@@ -1,8 +1,10 @@
-package com.ajaxjs.util.reflect;
+package com.ajaxjs.sqlman.util;
 
 
 import com.ajaxjs.sqlman.annotation.IgnoreDB;
 import com.ajaxjs.util.StrUtil;
+import com.ajaxjs.util.reflect.Clazz;
+import com.ajaxjs.util.reflect.Methods;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 

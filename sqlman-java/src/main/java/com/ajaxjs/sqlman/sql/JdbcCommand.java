@@ -6,7 +6,6 @@ import com.ajaxjs.sqlman.model.Create;
 import com.ajaxjs.sqlman.model.JdbcConstants;
 import com.ajaxjs.sqlman.model.Update;
 import com.ajaxjs.sqlman.util.PrettyLog;
-import com.ajaxjs.util.EasyLogger;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -178,14 +177,13 @@ public class JdbcCommand extends JdbcConn implements JdbcConstants {
      * @return 成功修改的行数
      */
     public Update update() {
-        EasyLogger.info("hihi");
 //        if (keyParams != null)
         sql = SmallMyBatis.handleSql(sql, keyParams);
         String resultText = null;
 
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
             setParam2Ps(ps, params);
-            EasyLogger.info(PrettyLog.LOG_TEXT, "Update", sql, Arrays.toString(params), PrettyLog.printRealSql(sql, params));
+            log.info(PrettyLog.LOG_TEXT, "Update", sql, Arrays.toString(params), PrettyLog.printRealSql(sql, params));
 
             Update result = new Update();
             result.setOk(true);

@@ -21,8 +21,8 @@ public class PrettyLog {
         System.out.println("│ Duration: " + (System.currentTimeMillis() - jdbcCommand.getStartTime()) + "ms");
         System.out.println("│ Result:   " + result);
         System.out.println("└───────── Debugging END ───────────");
-    }
 
+    }
     public static String trimResult(Object result) {
         String s = result.toString();
 

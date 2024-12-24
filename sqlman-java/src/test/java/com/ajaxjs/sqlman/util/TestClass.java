@@ -1,4 +1,4 @@
-package com.ajaxjs.util.reflect;
+package com.ajaxjs.sqlman.util;
 
 import java.util.*;
 import java.util.function.Predicate;
