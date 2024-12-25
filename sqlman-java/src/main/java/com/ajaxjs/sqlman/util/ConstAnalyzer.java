@@ -18,7 +18,7 @@ import net.sf.jsqlparser.statement.select.SubSelect;
  * @author guyadong
  */
 public class ConstAnalyzer implements ExpressionVisitor, ItemsListVisitor {
-    private static final ThreadLocal<Boolean> constFlag = new ThreadLocal<>() {
+    private static final ThreadLocal<Boolean> constFlag = new ThreadLocal<Boolean>() {
         @Override
         protected Boolean initialValue() {
             return true;
