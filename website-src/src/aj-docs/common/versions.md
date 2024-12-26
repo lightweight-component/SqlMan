@@ -5,7 +5,7 @@ description: TODO
 date: 2022-01-05
 tags:
   - last one
-layout: layouts/docs.njk
+layout: layouts/aj-docs.njk
 ---
     <h1>版本发布说明</h1>
     <h3>v1.1.8 <span class="release-date">2024-01-11</span></h3>
