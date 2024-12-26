@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>工具包简介</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../../../common/inner.css" />
+    <script src="../../../common/inner.js"></script>
+</head>
+
+<body>
+    <h1>工具包简介</h1>
+    <p>常规工具包，有字符串工具类、编码工具类、常用日期处理类、XML/值处理工具类、文件磁盘处理、Zip 解压缩、流处理工具类、资源扫描器、基于 java.util.logger
+        封装的日志组件、反射工具包、轻量级缓存服务、摘要算法（MD5/SHA）、加密解密（DES/AES/3D_DES/PBE/RSA/DH）、键对值转换、遍历的助手类等等。</p>
+    <p>鉴于 Spring 普及，于是就依赖他的工具方法（仅依赖 Spring Core 即可）直接使用，
+        如常见的判断字符串非空的方法 <span class="c">StringUtils.hasText()</span> 等等。</p>
+
+    <p>特别地有下面这两个模块，是独立的工程。</p>
+    <ul>
+        <li>JSON Parser，小型 JSON 解析器，实现 JSON 与 Map/List 互换，是了解 JSON 解析的好例子。源码<a
+                href="https://github.com/lightweight-component/aj-json"
+                target="_blank"><span class="external-link">
+                    <span>↗</span>
+                </span></a> / <a href="json.html">教程</a>。
+        </li>
+        <li>aj-net，类似于 HttpClient 的发送 HTTP 的客户端，还有一个无须 JavaMail 的发送邮件组件。源码<a
+                href="https://github.com/lightweight-component/aj-net" target="_blank"><span class="external-link">
+                    <span>↗</span>
+                </span></a> / <a href="http.html">教程</a>。
+        </li>
+    </ul>
+    <p>Utils 包的源码在：<span class="external-link">
+            <span>↗</span>
+        </span> <a
+            href="https://github.com/lightweight-component/aj-util"
+            target="_blank">https://github.com/lightweight-component/aj-util</a>。
+    </p>
+    <p>Javadoc：<span class="external-link">
+            <span>↗</span>
+        </span> <a href="https://dev.ajaxjs.com/docs/javadoc/aj-util/" target="_blank">https://dev.ajaxjs.com/docs/javadoc/aj-util/</a>。
+    </p>
+
+    <h2>也说说工具包（Utils）</h2>
+    <p>工具包/助手包（英文多见于 Utils、Helpers、Tools）是框架的基础构成部分之一。随着时间的推移，我们的软件代码写得越来越多，API
+        中两次或两次以上使用到代码，可视为通用的逻辑，可考虑将其抽出来，封装形成公共调用的方法。至于出现多少次才能归纳到工具库，开发者必须有一个清醒的认识：如果出现少但也重构到公共库 API，那么这些所谓重用的 API
+        会显得非常琐碎，举一个反模式的例子：但凡是出现两次都算，那么是不是都要抽取到工具包里面呢？可以预见，这种“包罗万有”导致不但维护费力且调用者也觉得烦琐，少封装不如无封装；如果那个逻辑非常重要，有显著性等的因素，例如特定的算法，那么即使出现一次也可以归并到
+        API 里面去。总之，没有一个特定的量，是一种平衡，在整体的运行机制来说是统一的，可以抽取成公共的部分，但是有一部分又会业务性非常强，需要在实际做业务的时候进行扩展。</p>
+    <p>工具包里的工具类多为公开的、静态（static）方法，例如 StringUtils、IOUtils,、FileUtils……可以说是一个个小的实用函数（Utility 或称
+        Helper、Tools）。不过也不全是静态方法，也有大的组件，比如日志组件也归类到实用工具包中。</p>
+    <p>工具包的方法可以在程序中直接调用，不会生成实例对象。因此包含工具方法的类本身不需要实例化，所以工具方法的执行也是无状态的（stateless），也就是说，除了输入的参数和其他静态成员外，没有其他元素可以改变函数返回的结果。熟悉
+        C 语言的用户对静态方法倍感熟悉，在于静态方法本身就跟 C
+        语言的面向过程的函数很相似。另外一方面讲，这导致有人批评仍使用面向过程会不符合面向对象的思想，于是建议单例模式（Singleton）代替静态方法。不过在笔者看来，工具方法代码应该简易、简洁多一些，故倾向于采用静态的方法。
+    </p>
+    <p>理论上工具类应该可以做到与特定环境脱离，只要是 Java 运行环境便可使用，不限定特定的 Web、Swing、Android 或其他。
+        实际上 AJ-Framework 目标亦如此，不过因为尚未测试的缘故，很多情况考虑不到，故不能百分百达成。
+    </p>
+</body>
+
+</html>

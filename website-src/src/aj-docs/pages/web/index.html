@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>传统页面开发技术</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../../../common/inner.css" />
+    <script src="../../../common/inner.js"></script>
+</head>
+
+<body>
+    <h1>传统页面开发技术</h1>
+    <p>缘起：PC 端的网页某些场合还不适合 SPA 模式来开发，还是得传统的服务端渲染页面。</p>
+    <p>页面层使用： JSP + EL 表达式 + 自定义标签（SimpleTagSupport/TagFiles）。 <b>严禁在 JSP 中书写 Java。</b></p>
+    <h2>为什么今天还推荐 JSP？</h2>
+    <p>JSP 本身是门老技术，常被技术选型所诟病。我们选择的理由是，技术本身无非好坏，只有适合与否。在极力推崇前后端分离和不断弱化服务端表示层（Presentation）的今天，
+        采用哪一种的后端模板已变得无足轻重，——一句话，就是不再纠结了。
+
+        那么既然如此为什么不选择简单的呢？况且其缺点是能逐步克服的，只是存在着很大程度误解和“人云亦云”。</p>
+    <p>针对页面开发问题，我们特意安排了一个库用于服务端渲染页面： aj-web。</p>
+    <p>
+        <a href="https://search.maven.org/artifact/com.ajaxjs/ajaxjs-web" target="_blank">
+            <img src="https://img.shields.io/maven-central/v/com.ajaxjs/ajaxjs-web?label=Latest%20Release" alt="最新版本" />
+        </a>
+    </p>
+    <pre class="code xml-code"><!-- aj-web 库 -->
+<dependency>
+    <groupId>com.ajaxjs</groupId>
+    <artifactId>ajaxjs-web</artifactId>
+    <version>1.3.0</version>
+</dependency></pre>
+
+    <p>另外顺便一句，Java Web 开发最好在 Eclipse 下搞，—— 如果你是用 IDEA 旗舰版那不存在这问题——我等使用社区版的人，不能编辑 HTML/CSS/JS——这不 Eclispe 又香起来了：）</p>
+</body>
+
+</html>

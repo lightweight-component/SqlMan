@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>自定义标签</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../../../common/inner.css" />
+    <script src="../../../common/inner.js"></script>
+</head>
+
+<body>
+    <h1>自定义标签</h1>
+
+    <p>学过 JSTL 的朋友都会熟悉这个，现在我们重写的纯粹为“轮子”一个，但它非常精简，只有 7 个 SimpleTagSupport 类和一个 tld 配置文件。源码在
+        <code>com.ajaxjs.web.view</code>。提供下列标签：
+    </p>
+    <ul>
+        <li>if 条件判断逻辑</li>
+        <li>choose 条件判断逻辑，类似 <code>if……else……</code> 逻辑的判断</li>
+        <li>foreach 迭代逻辑</li>
+        <li>日期格式化标签</li>
+    </ul>
+    <p>在 JSP 页面中声明必不可少的头：<code>&lt;%@taglib uri="/ajaxjs" prefix="c"%&gt;</code></p>
+    <h2>
+        <a id="if-条件判断逻辑" class="anchor" href="#if-%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD%E9%80%BB%E8%BE%91"></a>if 条件判断逻辑
+    </h2>
+    <p>若条件为真，渲染标签内的内容。例子：</p>
+<pre class="code">&lt;%@taglib prefix=&quot;c&quot; 	uri=&quot;/ajaxjs&quot;%&gt;
+
+Hello,
+&lt;c:if test=&quot;${bar &gt; 10}&quot;&gt;
+    World
+&lt;/c:if&gt;
+
+&lt;c:if test=&quot;${aj_allConfig.user.login.canModiflyUserName}&quot;&gt;
+    &lt;a href=&quot;safe/?action=modiflyUserName&quot;&gt;修改登录名&lt;/a&gt;
+&lt;/c:if&gt;</pre>
+    <h2>choose 条件判断逻辑
+    </h2>
+    <p>提供类似 <code>if……else……</code> 逻辑的判断。</p>
+    <pre class="code">&lt;c:choose&gt;
+    &lt;c:when test=&quot;${empty user}&quot;&gt;
+        用户不存在
+    &lt;/c:when&gt;
+    &lt;c:otherwise&gt;
+        用户名是 ：${user.name}
+    &lt;/c:otherwise&gt;
+&lt;/c:choose&gt;</pre>
+
+    <h2>
+        遍历列表
+    </h2>
+    <p>foreach 为迭代集合而设，既支持迭代 <code>List/Map/Java 普通数组</code>。<code>items</code> 是传入的集合，为必填；<code>item</code> 是变量名，可选，默认为
+        <code>item</code>；变量 <code>${currentcnt}</code> 是当前索引；变量 <code>${cnt}</code> 是集合总数。
+    </p>
+    <h3>遍历列表</h3>
+
+    <pre class="code">&lt;% 
+    List&lt;String&gt; list = new ArrayList&lt;&gt;();
+    list.add(&quot;aaa&quot;);
+    list.add(&quot;bbb&quot;);
+    list.add(&quot;ccc&quot;);
+    list.add(&quot;ddd&quot;);
+    request.setAttribute(&quot;list&quot;, list);
+%&gt;
+
+&lt;c:foreach var=&quot;str&quot; items=&quot;${list}&quot;&gt;${str}，前 ${currentIndex}/一共 ${totalCount}&lt;/c:foreach&gt;</pre>
+
+
+    <h3>遍历 Map</h3>
+    <pre class="code">&lt;% 
+    Map&lt;String, String&gt; map = new HashMap&lt;&gt;();
+    map.put(&quot;aa&quot;,&quot;111&quot;);
+    map.put(&quot;bb&quot;,&quot;222&quot;);
+    map.put(&quot;cc&quot;,&quot;333&quot;);
+    map.put(&quot;dd&quot;,&quot;444&quot;);
+    request.setAttribute(&quot;map&quot;, map);
+%&gt;
+&lt;c:foreach var=&quot;entry&quot; items=&quot;${map}&quot;&gt;
+    键名：${entry.key } = 值：${entry.value }
+&lt;/c:foreach&gt;</pre>
+    <p>典型地生成一个下拉列表控件：</p>
+    <pre class="code">&lt;select class=&quot;ajaxjs-select&quot; name=&quot;sellerId&quot;&gt;
+    &lt;c:foreach items=&quot;${sellers}&quot; var=&quot;item&quot;&gt;
+        &lt;option value=&quot;${item.key}&quot; ${item.key == info.sellerId ? &#x27;selected&#x27; : &#x27;&#x27;}&gt;${item.value.name}&lt;/option&gt;
+    &lt;/c:foreach&gt;
+&lt;/select&gt;</pre>
+
+    <h1>配置标签</h1>
+
+    <pre class="code"><%@taglib uri="/ajaxjs_config" prefix="config"%>
+&lt;!-- 顶部导航条 --&gt;	
+&lt;config:siteStru type=&quot;navBar&quot; /&gt;
+&lt;!-- 二级菜单 --&gt;	
+&lt;config:siteStru type=&quot;secondLevelMenu&quot; /&gt;
+&lt;!-- 二级和三级菜单 --&gt;	
+&lt;config:siteStru type=&quot;subMenu&quot; /&gt;
+&lt;!-- 面包屑导航 --&gt;	
+&lt;config:siteStru type=&quot;breadCrumb&quot; /&gt;
+
+// For navBar,是否展示导航的二级菜单
+request.setAttribute(&quot;showNavSubMenuUl&quot;, true);
+// For secondLevelMenu,是否展示所有下级菜单
+request.setAttribute(&quot;showSubMenu&quot;, true);</pre>
+
+    <h1>会员用标签</h1>
+    <pre class="code"><% @taglib prefix="user" uri="/ajaxjs_user"%></pre>
+    <pre class="code xml-code"><user:logined>
+	<a href="${ctx}/user/user-center/">${userName}</a>
+</user:logined>
+
+<user:notLogined>
+	<a href="${ctx}/user/login/">登录</a>
+</user:notLogined></pre>
+    <h2>基于 TagFiles 的自定义标签</h2>
+    <pre class="code">&lt;%@taglib tagdir=&quot;/WEB-INF/tags&quot; prefix=&quot;tagfiles&quot;%&gt;</pre>
+    <h2>
+        <a id="页面中读取配置" class="anchor"
+            href="#%E9%A1%B5%E9%9D%A2%E4%B8%AD%E8%AF%BB%E5%8F%96%E9%85%8D%E7%BD%AE"></a>页面中读取配置
+    </h2>
+    <p>EL 表达式读取 aj_allConfig 全局配置，这是一个复合嵌套的 map，不断 <code>get(xx).get(xx)……</code></p>
+    <pre class="code xml-code"><c:if test="${aj_allConfig.data.article.comment}">
+    ……
+</c:if></pre>
+    <p>也可以执行静态方法读取配置。效率更高，直接读取一个 <code>map</code> 即可。不过先要 <code>import</code> 一下（例如
+        <code>import="com.ajaxjs.config.ConfigService"</code>）。
+    </p>
+    <pre class="code xml-code"><c:if test="${ConfigService.getValueAsBool('data.article.pageHelper')}">	
+    ……
+ </c:if></pre>
+</body>
+
+</html>

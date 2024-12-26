@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>HTTP 请求组件</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../../../common/inner.css" />
+    <script src="../../../common/inner.js"></script>
+</head>
+
+<body>
+    <h1>HTTP 请求组件</h1>
+    <p>Apache HttpClient 是著名的 HTTP 客户端请求工具——现在我们模拟它打造一套简单小巧的请求工具库，
+        封装 Java 类库里面的 HttpURLConnection 对象来完成日常的 HTTP 请求，诸如 GET、HEAD、POST 等等，并尝试应用 Java 8 函数式风格来制定 API。
+    </p>
+
+    <a href="https://central.sonatype.com/artifact/com.ajaxjs/aj-net" target="_blank">
+        <img src="https://img.shields.io/maven-central/v/com.ajaxjs/aj-net?label=Latest%20Release" alt="最新版本" />
+    </a>
+
+    <pre class="code xml-code"><dependency>
+    <groupId>com.ajaxjs</groupId>
+    <artifactId>aj-net</artifactId>
+    <version>1.4</version>
+</dependency></pre>
+
+    <p>组件源码在：<span class="external-link">
+            <span>↗</span>
+        </span> <a href="https://github.com/lightweight-component/aj-net"
+            target="_blank">https://github.com/lightweight-component/aj-net</a>。
+    </p>
+    <p>Javadoc：<span class="external-link">
+        <span>↗</span>
+    </span> <a href="https://dev.ajaxjs.com/docs/javadoc/aj-json/" target="_blank">https://dev.ajaxjs.com/docs/javadoc/aj-net/</a>。
+</p>
+
+    <h2>发送 HTTP GET 请求</h2>
+    <p>发送 HTTP GET 请求如下代码所示。</p>
+    <pre class="code java-code">// 请求百度网站，返回网站的 HTML 内容
+String html = Get.get("https://www.baidu.com").toString();</pre>
+    <p>框架约定，所有 HTTP 请求返回特定的结果：ResponseEntity，包含了关于请求相关的设置和响应内容。典型地 toString() 返回响应内容的文本格式。ResponseEntity 是一个 Java
+        Bean，字段如下。</p>
+    <pre class="code java-code">public class ResponseEntity {
+    /**
+        * 返回响应文本结果
+        */
+    @Override
+    public String toString() {
+        return ResponseHandler.stream2Str(this).getResponseText();
+    }
+
+    /**
+        * 连接对象
+        */
+    private HttpURLConnection connection;
+
+    /**
+        * 请求地址
+        */
+    private String url;
+
+    /**
+        * 请求方法
+        */
+    private String httpMethod;
+
+    /**
+        * 请求参数
+        */
+    private Map params;
+
+    /**
+        * 是否成功（http 200 即表示成功，4xx/500x 表示不成功）
+        */
+    private boolean isOk;
+
+    /**
+        * 程序异常，发生时间比 HTTP 请求靠前，例如非法网址，或者 dns 不存在的 UnknownHostException
+        */
+    private Exception ex;
+
+    /**
+        * HTTP 状态码
+        */
+    private Integer httpCode;
+
+    /**
+        * 响应消息字符串
+        */
+    private String responseText;
+
+    /**
+        * 结果的流
+        */
+    private InputStream in;
+}</pre>
+
+    <p>有时候我们需要获取响应的 HTTP 状态码，那么读取这个<code>ResponseEntity.getHttpCode()</code>就可以了。有的时候甚至不要读取内容，例如获取重定向地址，例如 HTTP HEAD
+        请求（下面会讲）。</p>
+
+    <h2>配置 HTTP 请求</h2>
+
+
+    <p>一般情况下，需要在请求发起之前进行诸多的配置，除了 HTTP 方法、URL、参数这些之外，请求框架还应该提供对 HTTP Header 的配置。在 Java 中实际是围绕 HttpURLConnection 对象进行配置。
+        怎么才可以灵活地配置呢？此处我们引入函数接口<code>Consumer&lt;HttpURLConnection&gt;</code>，即可添加头字段。重载的<code>get()</code> 方法如下。</p>
+    <pre class="code java-code">/**
+* GET 请求，返回文本内容
+*
+* @param url 请求目标地址
+* @param fn  自定义 HTTP 头的时候可设置，可选的
+* @return 响应的内容
+*/
+public static ResponseEntity get(String url, Consumer<HttpURLConnection> fn);
+
+// 例子
+ResponseEntity result = Get.get("http://abc.com", conn -> {
+    conn.setRequestProperty("Content-Type", "application/json");
+    conn.setRequestProperty("Authorization", "Bearer " + admin.getAccessToken());
+});</pre>
+    <p>框架提供常用的配置的 lambda，如指定 From POST 等等，参见 SetConnection 类。</p>
+
+    <pre class="code java-code">/**
+ * 为初始化 HTTP Connection 所准备的函数。该类不能创建实例
+ * 
+ * @author Frank Cheung<sp42@qq.com>
+ *
+ */
+public abstract class SetConnection {
+    /**
+     * 设置 POST 方式
+     */
+    public final static Consumer<HttpURLConnection> SET_FORM_POST = conn -> conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+    /**
+     * 设置响应 JSON
+     */
+    public final static Consumer<HttpURLConnection> SET_JSON = conn -> conn.setRequestProperty("Content-type", "application/json");
+
+    /**
+     * 设置启动 GZip 请求
+     */
+    public final static Consumer<HttpURLConnection> SET_GIZPREQUEST = conn -> conn.addRequestProperty("Accept-Encoding", "gzip, deflate");
+    ……
+}</pre>
+    <p>为了额外传参数来实施控制，还有其他静态方法返回<code>Consumer&lt;HttpURLConnection&gt;</code>。实际这些是<code>Consumer&lt;HttpURLConnection&gt;</code>的“高阶函数”。例如：
+    </p>
+    <pre class="code java-code">/**
+    * 设置超时 （单位：秒）
+    */
+   public final static Consumer<HttpURLConnection> setTimeout(int timeout) {
+       return conn -> conn.setConnectTimeout(timeout * 1000);
+   }
+
+   /**
+    * 请求来源
+    */
+   public final static Consumer<HttpURLConnection> setReferer(String url) {
+       return conn -> conn.addRequestProperty("Referer", url); // httpUrl.getHost()?
+   }
+
+   /**
+    * 设置 cookies
+    */
+   public final static Consumer<HttpURLConnection> setCookies(Map<String, String> map) {
+       return conn -> conn.addRequestProperty("Cookie", MapTool.join(map, ";"));
+   }</pre>
+    <p>只要都是<code>Consumer&lt;HttpURLConnection&gt;</code>类型，则可以链式调用，如<code>SET_FORM_POST.andThen(SET_JSON)</code>。</p>
+    <h3>GZip</h3>
+    <p>多数 HTTP 资源允许 GZip 压缩，那样传输效率更高。这时请求头须带上 GZip 打开的标识才可以，也就是说请求头加入了上面的<code>Accept-Encoding</code>字段，一般情况下服务器才会对内容进行
+        GZip 压缩，否则就不压缩，原文输出。
+        但有些网站是不管有没有这种请求都一概返回 GZip 的。如果有 GZip，服务器会在响应头中加入<code>Content-Encoding</code>的字段告诉我们的。</p>
+
+    <h2>处理响应结果</h2>
+    <p>HTTP 是文本协议，于是一般情况下 toString() 即可返回响应的文本内容。
+        针对常见 Restful API 返回 JSON，框架提供 api() 的方法返回 JSON。
+        apiXml() 则返回 XML 内容。无论结果 JSON 还是 XML 都使用 Map&lt;String, Object&gt; 作为容器。</p>
+    <pre class="code java-code">/**
+ * GET API，返回 JSON
+ *
+ * @param url 请求目标地址
+ * @param fn  自定义 HTTP 头的时候可设置，可选的
+ * @return 响应的 JSON，Map 格式
+ */
+public static Map&lt;String, Object&gt; api(String url, Consumer<HttpURLConnection> fn)；
+public static Map&lt;String, Object&gt; api(String url)；
+public static Map&lt;String, String&gt; apiXML(String url, Consumer<HttpURLConnection> fn)；
+public static Map&lt;String, String&gt; apiXML(String url)；</pre>
+
+    如果 API 返回 JSON 数组则返回 List&lt;Map&lt;String, String&gt;&gt;，请使用：
+    <pre class="code java-code">public static List&lt;Map&lt;String, Object&gt;&gt; apiList(String url, Consumer<HttpURLConnection> fn);
+public static List&lt;Map&lt;String, Object&gt;&gt; apiList(String url)；</pre>
+    <h3>文件下载</h3>
+
+    <p>HTTP 响应内容在底层处理中被视为输入流 InputStream。文本操作只是转换流的形式之一 我们还可以把流转换为文件，即“远程文件下载到本地磁盘”的功能。ResponseHandler 是这么一个处理
+        InputStream 的类。</p>
+    <pre class="code java-code">/
+* 下载二进制文件
+* @param url 请求目标地址
+* @param saveDir 保存的目录
+* @param newFileName 是否有新的文件名，如无请传 null
+* @return 下载文件的完整磁盘路径
+*/
+public static String download(String url, String saveDir, String newFileName);
+
+// 用法
+String url = "https://bbsimage.res.meizu.com/forum/2019/01/23/153122zrz85kuvubbiibbs.jpg";
+assertNotNull(Get.download(url, "c:/temp", null));</pre>
+
+
+    <h2>发送 HTTP HEAD 请求</h2>
+    <p>HEAD 方法也是 HTTP 标准方法之一。像获取资源体积大小、获取 302 重定向调转地址、资源是否 404 那样的请求，着实无须 GET 方法，使用 HEAD 即可。各种 HEAD 请求的用法已封装，参见下面的测试用例。
+    </p>
+
+    <pre class="code java-code">// 获取资源文件体积大小
+long size = Head.getFileSize("http://c.csdnimg.cn/jifen/images/xunzhang/xunzhang/bokezhuanjiamiddle.png");
+assertEquals(size, 4102L);
+
+// 获取 302 重定向跳转地址
+System.out.println(Head.get302redirect("https://baidu.com"));
+
+// 请求检测是否 404
+assertTrue(!Head.is404("http://c.csdnimg.cn/jifen/images/xunzhang/xunzhang/bokezhuanjiamiddle.png"));</pre>
+
+    <h2>发送 HTTP POST/PUT 请求</h2>
+    <p>关于 POST 的配置和用法大体和 GET 相似，比较不同的是一般要指定 POST 出去的数据，即 POST 参数，可以为 String、 Map&lt;String, Object&gt;、byte[] 类型。</p>
+
+    <pre class="code java-code">// POST Map 参数
+String result = Post.post("http://localhost:8080/post.jsp", new HashMap<String, Object>() {
+    private static final long serialVersionUID = 1L;
+    {
+        put("foo", "bar");
+    }
+});
+
+// POST 字符串参数
+result = Post.post("http://localhost:8080/post", "a=1&b=2&c=3");
+
+// api
+Post.api(...);
+Post.apiXML(...);</pre>
+    PUT 方法为<code>Post.put()/Post.putApi()</code>。
+    <h2>发送 DELETE 请求</h2>
+    <p>比较简单，暂且不提。</p>
+    <h2>原理分析</h2>
+    <p>有关原理的分析，请移步至博客文章：
+        <span class="external-link">
+            <span>↗</span>
+        </span>
+        <a href="https://blog.csdn.net/zhangxin09/article/details/86668854" target="_blank">
+            https://blog.csdn.net/zhangxin09/article/details/86668854</a>、<span class="external-link">
+            <span>↗</span>
+        </span>
+        <a href="https://blog.csdn.net/zhangxin09/article/details/51836563" target="_blank">
+            https://blog.csdn.net/zhangxin09/article/details/51836563</a>。
+    </p>
+</body>
+
+</html>

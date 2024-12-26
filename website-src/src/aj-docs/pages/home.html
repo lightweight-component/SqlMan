@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../../common/inner.css" />
+    <script src="../../common/inner.js"></script>
+</head>
+
+<body>
+    <h1>AJ Framework 简介</h1>
+    <section>
+        <h4>&nbsp; &nbsp;&nbsp; &nbsp;一个基于 SpringMVC 构建的轻量级框架，旨在增强 SpringMVC 并使其更具 SpringBoot 的特性。它拥有许多小型组件，非常易于使用。</h4>
+        <p style="text-align: right;font-style: italic;">——轻量级的、简单的、全栈的</p>
+    </section>
+    <section>
+        <h2>特点</h2>
+        <a name="point"></a>
+        <ul>
+            <li>与 SpringBoot 相同的使用方式，嵌入 Tomcat 并优化启动时间，生成体积小的 JAR 包便于部署</li>
+            <li>最大化组件重用： 优先重用现有组件，避免引入第三方组件，具体包括：
+                <ol style="margin-top: 15px;">
+                    <li>
+                        Spring 内置工具类，大量重复利用其功能。</li>
+                    <li>
+                        SLF4J + JUL 日志组件，此外支持 ELK 日志输出。</li>
+                    <li>
+                        复用内置组件，例如 Servlet 3.0 文件上传和 Tomcat JDBC 连接池。</li>
+                    <li>
+                        基于全新 Spring MVC 的干净 Controller-Service 模型，Java 接口作为 Controller，服务类只需实现该接口。</li>
+                    <li>
+                        简单 Bean 数据验证，类似 Hibernate Validator。</li>
+                    <li>
+                        自带的 JSON 序列化/反序列化组件。</li>
+                </ol>
+            </li>
+            <li>便捷的数据访问： 提供类似 Spring JDBCTemplate 的 CRUD 功能，轻松将 SQL 数据库数据获取到 Java Bean 或 Map/List 中。
+                在此基础上提供类似 MyBatis 的 XML 管理 SQL。建议使用经典方式编写原生 SQL 以满足更复杂的业务逻辑。</li>
+            <li>安全功能： 提供 SSO/用户管理实现，支持 OAuth/OIDC/JWT 协议。角色管理正在开发中。</li>
+            <li>
+                工作流引擎： 提供轻量级的流程引擎，更多功能正在开发中。</li>
+            <li>
+                集成低代码开发工具： 集成更丰富的低代码开发工具，例如数据服务、表单生成器和列表生成器、可视化设计器等。
+            </li>
+            <li> 更多监控工具： 未来将提供更多监控工具。 </li>
+
+            <p>
+                所有代码都有充足的注释、单元测试和文档，并采用测试驱动开发方法。不仅是服务器端框架，同时也是客户端库。前端使用 Vue.js 或 iView.js 开发，同时使用原生 JavaScript 和
+                TypeScript。后端使用 Java 8 并连接 MySQL 8 数据库。
+            </p>
+        </ul>
+    </section>
+
+    <h2>子组件/子项目</h2>
+    <p>某些模块比较重要，是一个独立的项目或者适合另外开篇介绍，如下所示。</p>
+    <p><a target="_top" href="../../data-service/">数据服务 DataService</a>，一站式快速 CRUD 服务 | <a target="_top"
+            href="../../iam/">AJ-IAM</a>，轻量级 OIDC 用户认证系统 | <a target="_top"
+            href="../../workflow/">AJ-Workflow</a>，轻量级工作流引擎
+        | <a target="_top" href="../../base/">AJ-Base</a>，常见的业务封装</p>
+    <h2>FAQ</h2>
+    <ul>
+        <li>
+            Q：为什么不直接用 Spring Boot？貌似不会比 Spring MVC 重很多……
+            <br />
+            A： 嗯，的确不重。可见重不重，不是关键的理由。那么，你可以看作一个老人面对新技术浪潮，不愿妥协的一种最后的倔强吧。
+        </li>
+        <li>
+            Q：为什么不直接用 MyBatis？
+            <br />
+            A： MyBatis 之前一直高频率使用着。不是它不够好，而是我就是想轻一点、再轻一点……于是就……
+        </li>
+
+        <li>
+            Q：你选型所用的组件，有些什么的，听都没听过，咋这么离经叛道呢？为啥不用一些主流的组件？
+            <br />
+            A： 我选型的原则是，一：开源免费简单的；二：轻量级的，最好“就地取材”的。事实上，早期的我曾经连 Spring 都蔑视不用……后来我没那么大能量在项目里面说不用 Spring 啊，自己写的也是个玩具而已
+        </li>
+
+    </ul>
+</body>
+
+</html>

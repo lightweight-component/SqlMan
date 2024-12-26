@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>相关配置</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../../../common/inner.css" />
+    <script src="../../../common/inner.js"></script>
+</head>
+
+<body>
+    <h1>相关配置</h1>
+    <h2>全局的数据库连接</h2>
+    <p>一般情况下，每个控制器都会产生数据库连接，因为默认每个接口所对应的方法都会涉及数据库操作。这是由框架对 Spring 的 <code>HandlerInterceptor</code> 拦截器默认全局配置的。但是你的控制器方法如果无须数据库连接，可以添加一个注解 <code>@IgnoreDataBaseConnect</code>忽略数据库连接，减少资源消耗。</p>
+    <pre class="code java-code">@IgnoreDataBaseConnect
+public Foo getFoo() { // do your business code
+    Foo foo = new Foo();
+    foo.setId(888L);
+    foo.setName("Jack");
+
+    return foo;
+}</pre>
+
+    <p>注意：如果控制器是一个 <code>interface</code>，那么应该将该注解安置在控制器的实现方法上，而非接口方法。</p>
+
+    <h2>把接口作控制器</h2>
+
+    <p>Spring MVC 5.1 引入了<span class="external-link">
+        <span>↗</span>
+    </span> <a
+            href="https://github.com/spring-projects/spring-framework/wiki/What%27s-New-in-Spring-Framework-5.x#general-web-revision-1"
+            target="_blank">新功能</a>：</p>
+    <div class="ref">
+        Controller parameter annotations get detected on interfaces as well: Allowing for complete mapping contracts in
+        controller interfaces.
+        <br />
+        在接口上的控制器注解也能检测到，并自动映射到实现类上。
+    </div>
+
+    <p>说白了就是控制器只是个 Java Interface，对应的实现却不是控制器，而是业务类。这有点控制器与业务类合二为一的味道。实际上为我们减少不少编码量，还是相当值得使用的。这样相当于简化了 Controller 编写。我们用一个用户的例子来看看。首先定义控制器，这里提供了相关的 MVC 的注解。</p>
+
+    <pre class="code java-code">import com.ajaxjs.user.model.User;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/user")
+public interface UserController {
+    @GetMapping("/{id}")
+    User info(@PathVariable Long id);
+
+    @PostMapping
+    Long create(@RequestBody User user);
+
+    /**
+        * 检查用户某个值是否已经存在一样的值
+        *
+        * @param field 字段名，当前只能是 username/email/phone 中的任意一种
+        * @param value 字段值，要校验的值
+        * @return 是否已经存在一样的值，true 表示存在
+        */
+    @GetMapping("/checkRepeat")
+    Boolean checkRepeat(@RequestParam String field, @RequestParam Object value);
+
+    @PutMapping
+    Boolean update(@RequestBody User user);
+
+    @DeleteMapping("/{id}")
+    Boolean delete(@PathVariable Long id);
+}</pre>
+
+    <p>接着我们实现这个接口，特别地，这是个业务类。当然你也可以说他是控制器类，但这样就失去简化的意义了，只是把之前类上的注解搬到接口身上，并没有简化控制器。我们看看实现类：</p>
+
+    <pre class="code java-code">import com.ajaxjs.data.CRUD;
+import com.ajaxjs.data.entity.CrudUtils;
+import com.ajaxjs.framework.entity.BaseEntityConstants;
+import com.ajaxjs.sass.SaasUtils;
+import com.ajaxjs.user.controller.UserController;
+import com.ajaxjs.user.model.User;
+import org.springframework.stereotype.Service;
+
+import javax.validation.Valid;
+
+@Service
+public class UserService implements UserController {
+    @Override
+    public User info(Long id) {
+        String sql = "SELECT * FROM user WHERE stat != 1 AND id = ?";
+        sql = SaasUtils.addTenantIdQuery(sql);
+
+        return CRUD.info(User.class, sql, id);
+    }
+
+    @Override
+    public Long create(@Valid User user) {
+        if (checkRepeat("username", user.getUsername()))
+            throw new IllegalArgumentException("用户的登录名" + user.getUsername() + "重复");
+
+        return CRUD.create(user);
+    }
+
+    @Override
+    public Boolean checkRepeat(String field, Object value) {
+        String sql = "SELECT * FROM user WHERE stat != 1 AND " + field + " = ?";
+        sql = SaasUtils.addTenantIdQuery(sql);
+        sql += "LIMIT 1";
+
+        return CRUD.info(sql, value) != null;
+    }
+
+    @Override
+    public Boolean update(User user) {
+        CrudUtils.checkId(user);
+
+        return CRUD.update(user);
+    }
+
+    @Override
+    public Boolean delete(Long id) {
+        // 逻辑删除
+        User user = new User();
+        user.setId(id);
+        user.setStat(BaseEntityConstants.STATUS_DELETED);
+
+        return update(user);
+    }
+}</pre>
+
+    <p>这有点控制器与业务类合二为一的味道。实际上为我们减少不少编码量，还是相当值得使用的。</p>
+</body>
+
+</html>

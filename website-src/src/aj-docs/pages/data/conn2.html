@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>连接数据库</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../../../common/inner.css" />
+    <script src="../../../common/inner.js"></script>
+</head>
+
+<body>
+    <h1>连接数据库</h1>
+    <h2>也说说 ORM</h2>
+    <p>综观后台开发，大多数的开发工作就是数据库的开发（俗称“CRUD Boy”）。怎么跟数据库打好交道与我们的开发体验息息相关。业界时常讨论的“对象关系阻抗不匹配（Object–relational impedance mismatch）”正是问题的症结所在：既然都是两种不同的“编程世界观”——一个关系型模型的数据库（SQL）、一个编程语言（Java、C#、Go）， 各自有各自的方法论、使用场景及思维都不太一样，那么怎么可以做到“和衷共济”然后“互通有无”呢？显然而言“阻抗不匹配”不是一个容易解决的问题。很多后台开发者为了避开写
+        SQL，于是在各种 ORM（Object–relational mapping） 方案中绞尽脑汁，——请恕笔者直言——那大可不必。ORM 看似开发效率奇高，但实际“里三层、外三层”——不过封装罢了，终究还是回到 SQL 层。ORM，通俗讲就是把一种问题转化为另一种问题进行解决，完全抛弃 SQL。但是数据库的问题，比如关联查询、嵌套的子查询和复杂逻辑的 SQL 等，能在 ORM 中完美地解决吗？或者说写起来并不那么舒服简单，与其这样为什么还要弄蹩脚的 ORM？ORM 恐怕心有余而力不足。而那些问题却是关系数据库最擅长的问题域。把关系数据库擅长解决的问题转化给不擅长处理这类问题的
+        ORM 去解决，岂不是挺糊涂的吗？面向对象的方法论（ORM 亦算 OO 之衍生），应当控制一下自己的野心，专注于自己擅长的领域吧。况且 SQL 本身足够优秀优雅，都是值得我们深入研究的。
+    </p>
+    <p>当时 iBatis/MyBatis 代替了 Hibernate，即是一例，证明还不如写 SQL 灵活、高效（SQL First/SQL Centric）。后来的 MyBatis Plus 的 lambda 写法却有点走回头路的意思，——实际早年微软的 LinQ 已大行其道。</p>
+    <p>
+        当然，也不是说完全抛起 ORM 中的优秀部分，例如：</p>
+    <ul>
+        <li>ORM 中的“对象”部分，例如把一条数据（结果集）自动转化为一个对象，以便于业务代码的处理是相当有益处的。</li>
+        <li>SQL 不及编程语言可读性的问题，这个跟开发习惯有关，熟悉了 SQL 自然觉得更可读。</li>
+        <li>单独的 SQL 并不能包办所有。显然，复杂的业务逻辑离不开 SQL+Java 两者协力完成。</li>
+    </ul>
+    <p>参阅：<span class="external-link">
+        <span>↗</span>
+    </span><a href="https://juejin.cn/post/6941560842487857182" target="_blank">《ORM（对象关系映射）的灾难》</a>。</p>
+    <p>
+        结合上述的优缺点，笔者斗胆给出一个清晰、简单、可复用的 JDBC 解决方案，务求尝试可以处理数据库也就是 Java 领域中 JDBC 所围绕的“CRUD（增删改查）”问题。依笔者浅见，怎么界定好两者之间的接口正是问题关键所在。在 Java 中大家尝试用 DAO（Data Access Object）层去解决，我们这里讨论的就是这个 DAO。 </p>
+
+    <h2>创建数据库连接</h2>
+    <p>JDBC 最质朴的连接数据库方法如下。有次试过不能把 user 和 password 写在第一个 jdbc 连接字符串上，那样会连不通，死活不行（估计要转义某个字符串），分开 user 和 password 就可以。</p>
+    <pre class="code java-code">/**
+    * 连接数据库。这种方式最简单，但是没有经过数据库连接池。
+    * 有时不能把 user 和 password 写在第一个 jdbc 连接字符串上 那样会连不通
+    * 分开 user 和 password 就可以
+    *
+    * @param jdbcUrl  数据库连接字符串，不包含用户名和密码
+    * @param userName 用户
+    * @param password 密码
+    * @return 数据库连接对象
+*/
+public Connection getConnection(String jdbcUrl, String userName, String password) {
+    try {
+
+        if (StringUtils.hasText(userName) && StringUtils.hasText(password))
+            connection = DriverManager.getConnection(jdbcUrl, userName, password);
+        else connection = DriverManager.getConnection(jdbcUrl);
+
+        LOGGER.info("数据库连接成功： " + connection.getMetaData().getURL());
+    } catch (SQLException e) {
+        LOGGER.warning("数据库连接失败！", e);
+    }
+
+    return connection;
+}</pre>
+    <p>重载一个版本，数据库连接字符串，已包含用户名和密码的。</p>
+    <pre class="code java-code">/**
+ * 连接数据库。这种方式最简单，但是没有经过数据库连接池。
+ *
+ * @param jdbcUrl 数据库连接字符串，已包含用户名和密码
+ * @return 数据库连接对象
+ */
+public Connection getConnection(String jdbcUrl) {
+    return getConnection(jdbcUrl, null, null);
+}</pre>
+    <p>
+        这个最质朴的方法，注意是没有经过数据库连接池的，一般测试用或者简单场合用。</p>
+    <p>
+        至于使用连接池的，笔者这里给出一个使用 Tomcat JDBC Pool 的，如<code>setupJdbcPool()</code>。</p>
+
+    <pre class="code java-code">/**
+ * 手动创建连接池。这里使用了 Tomcat JDBC Pool
+ *
+ * @param driver   驱动程序，如 com.mysql.cj.jdbc.Driver
+ * @param url      数据库连接字符串
+ * @param userName 用户
+ * @param password 密码
+ * @return 数据源
+ */
+public static DataSource setupJdbcPool(String driver, String url, String userName, String password);</pre>
+    <p>大家都喜欢用 Druid、HikariCP，——但笔者比较喜欢轻量级的 Tomcat 的，相当于集成自带。</p>
+
+    <p>还有个不得不提的是从 DataSource 获取 Connection 。DataSource 其实比 Connection 更重要，特点有三：</p>
+    <ul>
+        <li>可以从 DataSource 获取 Connection（如下方法），是其根源；</li>
+        <li>DataSource 一般代表已经池化了的；</li>
+        <li>于是这个 DataSource 才是 API 交换的接口（实际也是 Java Interface）。君不见如 Spring JDBC 也是要求你传入 DataSource 而不是 Connection 的，所以框架级的暴露一个数据库对象应该是 DataSource 而不是 Connection。</li>
+    </ul>
+
+    <pre class="code java-code">/**
+ * 根据数据源对象获得数据库连接对象
+ *
+ * @param source 数据源对象
+ * @return 数据库连接对象
+ */
+public Connection getConnection(DataSource source);</pre>
+
+    <h3>当前进程的数据库连接</h3>
+    <p>这个就是日常使用的 Connection，每次控制器先会从这里获取数据库连接。大概就是通过 ThreadLocal 保存、获取，非常方便。既然是 ThreadLocal 的——那就是 static 静态方法了。</p>
+
+    <pre class="code java-code">/**
+ * 当前进程的数据库连接
+ */
+private static final ThreadLocal<Connection> CONNECTION = new ThreadLocal<>();
+
+/**
+ * 获取一个当前进程的数据库连接
+ *
+ * @return 当前进程的数据库连接对象
+ */
+public static Connection getConnection() {
+    return CONNECTION.get();
+}
+
+/**
+ * 保存一个数据库连接对象到当前进程
+ *
+ * @param conn 当前进程的数据库连接对象
+ */
+public static void setConnection(Connection conn) {
+    CONNECTION.set(conn);
+}
+
+/**
+ * 关闭当前进程的数据库连接
+ */
+public static void closeDb() {
+    closeDb(getConnection());
+    CONNECTION.set(null);
+}
+
+/**
+ * 关闭数据库连接
+ *
+ * @param conn 数据库连接对象
+ */
+public static void closeDb(Connection conn) {
+    try {
+        if (conn != null && !conn.isClosed()) {
+            conn.close();
+            if (Version.isDebug)
+                LOGGER.info("关闭数据库连接成功！ Closed database OK！");
+        }
+    } catch (SQLException e) {
+        LOGGER.warning(e);
+    }
+}</pre>
+    <p>顺带提供关闭数据库连接的静态方法。一般在控制器执行完业务方法之后统一关闭。</p>
+</body>
+
+</html>

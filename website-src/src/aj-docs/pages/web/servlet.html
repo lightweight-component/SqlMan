@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>老树新花 Servlet</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../../../common/inner.css" />
+    <script src="../../../common/inner.js"></script>
+</head>
+
+<body>
+    <h1>老树新花 Servlet</h1>
+
+    <h2>模块化支持</h2>
+    <p>在 Servlet 3.0 协议规范中给我们的页面管理注入了强大的能力，借助它提供的特性，可以发挥页面打包封装复用之作用。</p>
+    <p>首先有一独立的、公共的库项目，这个项目原来就是标准 Java 项目，那么现在只需要增加一个
+        <span class="c">
+            META-INF/resources
+        </span>
+        目录，这里导出的
+        <span class="c">
+            ${jar}/META-INF/resources/
+        </span>
+        被视为 Web
+        虚拟目录的“/”根目录，里面可以放 HTML/JSP/CSS/JS 等的一切资源。假设 home.jsp 被放在
+        <span class="c">${jar}/META-INF/resources/home.jsp </span>，当服务器运行时用户可以直接通过
+        “http://域名/home.jsp ” 访问。/META-INF/resources/ 为约定好的固定目录，不能修改。
+        如同我们的项目 head.jsp 就包含在其 META-INF/resources 特定目录中，如插图所示
+    </p>
+    <div style="text-align: center;">
+        <img src="../../imgs/web/1.webp" />
+    </div>
+    <p>因为采用了 Jar 打包 jsp 分发的缘故，故所以你不能在 IDEA/Eclipse 里面按 Ctrl 键打开 head.jsp，最好的方法是关闭 IDE 验证的错误提示。</p>
+
+    <h2>EL 表达式</h2>
+    <p>EL 表达式 <code>${param.xxx}</code><br>
+        含义:获取请求参数，相当于request.getParameter("xxx")</p>
+    <p>EL 表达式 <code>${pageContext.request.contextPath}</code><br>
+        含义:获取项目当前名称，相当于request.getContextPath()</p>
+    <p>EL 表达式 <code>${requestScope['javax.servlet.forward.request_uri']}</code><br>
+        含义：获取原请求的uri，而非模版所在的uri</p>
+    <p>EL 表达式：<code>${viewUtils.formatDateShorter(current.createDate)}</code><br>
+        含义：调用Java方法并传参，例子viewUtils系传入到页面的对象，之前已经通过<code>request.setAttribute()</code>将其设置于页面的上下文中</p>
+    <p>EL 表达式： <code>${empty value ? Foo : bar}/${not empty value ? Bar : foo}</code><br>
+        含义：三元二目式判断值是否为空</p>
+    <p>EL 表达式 <code>${'请求完成耗时：'.concat(requestTimeRecorder).concat('秒') }</code><br>
+        含义：EL 不支持字符串 + 操作符，故使用 String 的 concat() 代替</p>
+    <p>EL 表达式可否获取或读取 Java 常量？答案是肯定的（EL v3.0新特性），首先在 JSP 中 import 具体的类，然后<code>${XXX类名称.成员}</code>
+        即可读取<code>public final static</code>的 Java 常量。
+        注意不能是接口而是普通类。接口也没关系，弄一个空的实现类即可。</p>
+
+</body>
+
+</html>
