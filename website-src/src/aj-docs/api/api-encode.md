@@ -5,7 +5,7 @@ description: TODO
 date: 2022-01-05
 tags:
   - last one
-layout: layouts/docs.njk
+layout: layouts/aj-docs.njk
 ---
 # API 接口加密/解密
 为了安全性需要对接口的数据进行加密处理，不能明文暴露数据。对于接口的行为，分别有：
@@ -15,8 +15,8 @@ layout: layouts/docs.njk
 
 有人把加密结果原文输出，如下图所示：
 
-![](/asset/docs/temp/1.png)
-但笔者觉得那是一种反模式，而保留原有 JSON 结果更好，也符合既有的统一返回结果，即把`data`数据加密，其他`code`、`msg`等的正常显示。如下提交的 JSON。
+![](/asset/aj-docs/api-encode.png)
+但笔者觉得那是一种反模式，而保留原有 JSON 结构更好，如下提交的 JSON。
 
 ```json
 {
@@ -24,6 +24,8 @@ layout: layouts/docs.njk
     "data": "BQduoGH4PI+6jxgu+6S2FWu5c/vHd+041ITnCH9JulUKpPX8BvRTvBNYfP7……"
 }
 ```
+
+另外也符合既有的统一返回结果，即把`data`数据加密，其他`code`、`msg`等的正常显示。
 
 ## 加密算法
 
