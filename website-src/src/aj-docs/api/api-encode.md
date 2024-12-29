@@ -179,7 +179,7 @@ boolean jsonSubmit(@RequestBody DecodeDTO dto) {
 }
 ```
 
-但是这种方法，方法数量一多则遍地`DecodeDTO`，API 文档也没法写了（破坏了代码清晰度，不能反映原来代码的意图）。为此我们应该尽量采用“非入侵”的方法，所谓非入侵，就是不修改原有的代码，只做额外的“装饰”。这种手段有很多，典型如 AOP，其他同类的开源库[sa-encrypt-body-spring-boot](https://github.com/ishuibo/rsa-encrypt-body-spring-boot)、[encrypt-body-spring-boot-starter](https://github.com/Licoy/encrypt-body-spring-boot-starter)也是不约而同地使用 AOP。
+但是这种方法，方法数量一多则遍地`DecodeDTO`，API 文档也没法写了（破坏了代码清晰度，不能反映原来代码的意图）。为此我们应该尽量采用“非入侵”的方法，所谓非入侵，就是不修改原有的代码，只做额外的“装饰”。这种手段有很多，典型如 AOP，其他同类的开源库 [rsa-encrypt-body-spring-boot](https://github.com/ishuibo/rsa-encrypt-body-spring-boot)、[encrypt-body-spring-boot-starter](https://github.com/Licoy/encrypt-body-spring-boot-starter) 也是不约而同地使用 AOP。
 
 然而笔者个人来说不太喜欢 AOP，可能也是不够熟悉吧——反正能不用则不用。如果不用 AOP 那应该如何做呢？笔者思考了几种方式例如 Filter、拦截器等，但最终把这个问题定位于 JSON 序列化/反序列化层面上，在执行这一步骤之前就可以做加密/解密操作了。开始以为可以修改 Jackson 全局序列化方式，但碍于全局的话感觉不太合理，更合适的是在介乎于 Spring 与 Jackson 结合的地方做修改。于是有了在的`MappingJackson2HttpMessageConverter`基础上扩展的 `EncryptedBodyConverter`，重写了`read`方法，在反序列化之前先做解密操作，`writeInternal`方法亦然。
 
