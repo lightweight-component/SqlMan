@@ -72,7 +72,7 @@ public class JdbcCommand extends JdbcConn implements JdbcConstants {
         sql = SmallMyBatis.handleSql(sql, keyParams);
         String resultText = null;
 
-        try (PreparedStatement ps = getConn().prepareStatement(sql)) {
+        try (PreparedStatement ps = getConn().prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)) {
             log.info(PrettyLog.LOG_TEXT, "Query", sql, Arrays.toString(params), PrettyLog.printRealSql(sql, params));
 //            log.info("Querying SQL-->[{}]", Utils.printRealSql(sql, params));
             setParam2Ps(ps, params);

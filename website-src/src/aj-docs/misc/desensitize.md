@@ -131,7 +131,7 @@ public class GlobalResponseResult implements ResponseBodyAdvice<Object> {
 
 # 同类开源
 
-- https://gitee.com/strong_sea/sensitive-plus 使用了`MappingJackson2HttpMessageConverter`这点不错，同时也比较全面，还支持日志脱敏，可是代码组织太分散了
+- https://gitee.com/strong_sea/sensitive-plus https://www.cnblogs.com/nuccch/p/18148298 使用了`MappingJackson2HttpMessageConverter`这点不错，同时也比较全面，还支持日志脱敏，可是代码组织太分散了
 - https://github.com/chenqi92/alltobs-desensitization-all
 - https://github.com/mingyang66/spring-parent/tree/master/emily-project/oceansky-desensitize 代码简洁清晰
 - https://gitee.com/l0km/beanfilter 大神作品，功能全面，包括 RPC 的
