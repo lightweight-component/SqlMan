@@ -1,5 +1,5 @@
 ---
-title: API 限流
+title: API 安全
 subTitle: 2024-12-05 by Frank Cheung
 description: TODO
 date: 2022-01-05
@@ -7,7 +7,7 @@ tags:
   - last one
 layout: layouts/aj-docs.njk
 ---
-# API 接口加密/解密
+# API 安全
 为了安全性需要对接口的数据进行加密处理，不能明文暴露数据。对于接口的行为，分别有：
 
 - 入参，对传过来的加密参数解密。接口处理客户端提交的参数时候，这里统一约定对 HTTP Raw Body 提交的数据（已加密的密文），转换为 JSON 处理，这是最常见的提交方式。其他 QueryString、标准 Form、HTTP Header 的入参则不支持。

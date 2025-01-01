@@ -6,6 +6,7 @@ import com.ajaxjs.sqlman.model.Create;
 import com.ajaxjs.sqlman.model.JdbcConstants;
 import com.ajaxjs.sqlman.model.Update;
 import com.ajaxjs.sqlman.util.PrettyLog;
+import com.ajaxjs.util.CollUtils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -73,9 +74,12 @@ public class JdbcCommand extends JdbcConn implements JdbcConstants {
         String resultText = null;
 
         try (PreparedStatement ps = getConn().prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)) {
-            log.info(PrettyLog.LOG_TEXT, "Query", sql, Arrays.toString(params), PrettyLog.printRealSql(sql, params));
+            if (!CollUtils.isEmpty(params)) {
+                log.info(PrettyLog.LOG_TEXT, "Query", sql, Arrays.toString(params), PrettyLog.printRealSql(sql, params));
 //            log.info("Querying SQL-->[{}]", Utils.printRealSql(sql, params));
-            setParam2Ps(ps, params);
+                setParam2Ps(ps, params);
+            } else
+                log.info(PrettyLog.LOG_TEXT, "Query", sql, "none", sql);
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {

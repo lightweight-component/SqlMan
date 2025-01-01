@@ -1,19 +1,19 @@
 html,
 body {
     height: 100%;
+    font-size: 17px;
 }
 
 body {
     padding: 0;
     margin: 0;
     // font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    // font-family: "Noto Sans SC", serif;
-    font-family: "Liberation Serif", "DejaVu serif", "Source Code Pro", Monaco, Menlo, Consolas, monospace;
-
+    font-family: "Noto Serif SC", SimSun, serif;
+    // font-family: "Liberation Serif", "DejaVu serif", "Source Code Pro", Monaco, Menlo, Consolas, monospace;
     font-optical-sizing: auto;
-    /*     font-weight: 400;
-    font-style: normal; */
-    font-size: 18px;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 1rem;
     line-height: 1.5;
     color: #606c71;
 }
@@ -168,17 +168,18 @@ article {
 
     h1 {
         color: black;
-        font-size: 25px;
-        font-weight: normal;
+        font-size: 1.8rem;
+        font-weight: 700;
         padding: 20px 0;
         border-bottom: 1px dashed #ccc;
         letter-spacing: 3px;
+        margin-bottom: 0;
     }
 
     h2 {
         letter-spacing: 2px;
         padding-bottom: 2%;
-        margin-top: 6%;
+        margin-top: 2%;
         border-bottom: 1px dotted #ccc;
     }
 
@@ -301,6 +302,7 @@ article {
         border: 2px solid gray;
         position: relative;
         margin: 0 5px;
+
     }
 
     .external-link::before {
@@ -317,10 +319,11 @@ article {
         position: absolute;
         display: block;
         text-indent: 0;
-        top: -11px;
+        top: -13px;
         left: 0px;
         font-weight: bold;
         font-size: 18px;
+        font-family: Arial, sans-serif;;
     }
 
     .trc_rbox_container {
