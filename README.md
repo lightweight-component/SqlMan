@@ -15,7 +15,7 @@ SqlMan is a lightweight wrapper over JDBC. It is NOT an ORM but follows a SQL-fi
 
 ## Link
 
-[Tutorials](https://javadoc.io/doc/com.ajaxjs/sqlman) | [Java Documents](https://javadoc.io/doc/com.ajaxjs/sqlman) | [Web Site](https://sqlman.ajaxjs.com)
+[Web Site](https://sqlman.ajaxjs.com) | [Tutorials](https://javadoc.io/doc/com.ajaxjs/sqlman) | [Java Documents](https://javadoc.io/doc/com.ajaxjs/sqlman) 
 
 ## Install
 
