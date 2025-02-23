@@ -8,8 +8,6 @@ tags:
 layout: layouts/docs.njk
 ---
     <h1>联系</h1>
-    作者： Frank Cheung
-    <br />
     <br />
     Email：<a href="mailto:support@ajaxjs.com">support@ajaxjs.com</a>
     <br />

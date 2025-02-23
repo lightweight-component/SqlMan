@@ -23,6 +23,7 @@ public class PrettyLog {
         System.out.println("└───────── Debugging END ───────────");
 
     }
+
     public static String trimResult(Object result) {
         String s = result.toString();
 
@@ -32,12 +33,10 @@ public class PrettyLog {
         return s;
     }
 
-
     /**
      * 多行空行
      */
     private final static String SPACE_LINE = "(?m)^[ \t]*\r?\n";
-
 
     /**
      * ? 和参数的实际个数是否匹配
@@ -71,7 +70,6 @@ public class PrettyLog {
 
         //        if (isClosePrintRealSql)
         //            return null;
-
         sql = sql.replaceAll(SPACE_LINE, StrUtil.EMPTY_STRING);
 
         if (params == null || params.length == 0) // 完整的 SQL 无须填充
@@ -104,7 +102,6 @@ public class PrettyLog {
         }
 
         String str = String.join(" ", arr).trim();
-
         return insertNewline(str, 25);
     }
 
