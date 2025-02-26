@@ -22,11 +22,9 @@
             <div>
                 <div class="links">
                     <a href="/">🏠 Home</a>
-                    |
-                                    ⚙️ Source:
+                    | ⚙️ Source:
                     <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan/overview">Gitcode</a>
-                    |
-                    <a href="/docs/common/contact">✉️ Contact</a>
+                   | <a  href="https://github.com/lightweight-component/SqlMan">Chinese Version</a>
                 </div>
                 <h1>
                     <img src="/asset/aj-docs/logo.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;" /> 
@@ -44,21 +42,6 @@
                     </li>
                     <li>
                         <a href="/aj-docs/quick-start">快速开始</a>
-                    </li>
-                </ul>
-                <h3>开始</h3>
-                <ul>
-                    <li>
-                        <a href="pages/api/init.html">初始化一个项目</a>
-                    </li>
-                    <li>
-                        <a href="/aj-docs/init/controller">简化控制器为接口</a>
-                    </li>
-                    <li>
-                        <a href="/aj-docs/init/global">统一返回、统一异常</a>
-                    </li>
-                    <li>
-                        <a href="pages/api/package.html">打包与部署</a>
                     </li>
                 </ul>
                 <h3>Common</h3>
@@ -85,33 +68,32 @@
                         <a href="/aj-util/io/StreamHelper/">StreamHelper</a>
                     </li>
                 </ul>
-                <h3>其他模块</h3>
+                <h3>Reflection</h3>
                 <ul>
-                    <li>
-                        <a href="/aj-docs/misc/cache">使用多级缓存</a>
+                  <li>
+                        <a href="/aj-util/reflect/Clazz/">Clazz</a>
                     </li>
                     <li>
-                        <a href="/aj-docs/misc/desensitize">脱敏组件</a>
+                        <a href="/aj-util/reflect/Methods/">Methods</a>
                     </li>
                     <li>
-                        <a href="/aj-docs/misc/trace">链路跟踪</a>
-                    </li>
-                    <li>
-                        <a href="/aj-docs/misc/dlock">分布式锁、延迟消息</a>
+                        <a href="/aj-util/reflect/Types/">Types</a>
                     </li>
                 </ul>
     
-                <h3>Misc</h3>
-                <ul>
-                    <li><a href="/aj-docs/common/versions">Release History</a></li>
-                    <li><a href="/aj-docs/common/contact">Contact</a></li>
-                </ul>
+           
             </menu>
             <article>
                 {{ content | safe }}
             </article>
         </div>
 
-        {% include "component/footer.njk" %}
+       <footer>
+            AJ-Util, a part of <a href="https://framework.ajaxjs.com" target="_blank">AJ-Framework</a> open source. Mail:
+            frank@ajaxjs.com, visit <a href="https://blog.csdn.net/zhangxin09" target="_blank">my blog(In Chinese)</a>.
+            <br />
+            <br />
+            Copyright © 2025 Frank Cheung. All rights reserved.
+        </footer>
     </body>
 </html>

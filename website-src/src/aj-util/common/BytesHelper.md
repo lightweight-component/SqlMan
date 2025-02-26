@@ -7,8 +7,6 @@ tags:
   - last one
 layout: layouts/aj-util.njk
 ---
-
-
 # BytesHelper Tutorial
 
 This tutorial provides an overview of the `BytesHelper` class, which is part of the `lightweight-component/aj-util` library.  `BytesHelper` offers a collection of utility methods for working with byte arrays in Java. This guide will cover the purpose of each method and provide usage examples.
