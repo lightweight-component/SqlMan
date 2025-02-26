@@ -5,7 +5,7 @@ description: TODO
 date: 2025-02-23
 tags:
   - last one
-layout: layouts/aj-util.njk
+layout: layouts/aj-util-cn.njk
 ---
 # Methods
 `Methods` 类提供了动态检索和调用方法以及处理方法参数的方法。这些方法有助于在运行时高效、方便地操作 Java 方法。

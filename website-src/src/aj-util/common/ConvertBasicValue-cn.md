@@ -5,9 +5,9 @@ description: TODO
 date: 2025-02-23
 tags:
   - last one
-layout: layouts/aj-util.njk
+layout: layouts/aj-util-cn.njk
 ---
-# ConvertBasicValue 教程 (版本 2)
+# ConvertBasicValue 教程 
 
 本教程旨在介绍 `lightweight-component/aj-util` 库中的 `ConvertBasicValue` 类。`ConvertBasicValue` 提供了一组实用工具方法，用于将对象安全地转换为基本的 Java 数据类型。本指南将详细介绍每个方法的目的，并提供相应的用法示例。
 

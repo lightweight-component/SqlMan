@@ -5,7 +5,7 @@ description: TODO
 date: 2025-02-23
 tags:
   - last one
-layout: layouts/aj-util.njk
+layout: layouts/aj-util-cn.njk
 ---
 # StreamHelper
  `StreamHelper` 类提供静态方法来对 Java 流执行常见操作。 它侧重于简化将输入流转换为字符串以及有效地在流之间复制数据。

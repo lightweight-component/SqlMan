@@ -14,13 +14,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const m = arr.pop();
 
+        if (m === 'cn')
+            m = arr.pop();
+
         if (m) {
             const selected = document.querySelector('body>div>menu li.selected');
             selected && selected.classList.remove('selected');
 
             document.querySelectorAll('body>div>menu li a').forEach(a => {
-                // console.log(a.getAttribute('href'))
+                console.log(a.getAttribute('href'))
                 if (a.getAttribute('href').indexOf(m) != -1) {
+                    console.log(m)
                     a.parentNode.classList.add('selected');
                 }
             });

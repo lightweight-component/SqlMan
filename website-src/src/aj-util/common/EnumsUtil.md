@@ -7,6 +7,7 @@ tags:
   - last one
 layout: layouts/aj-util.njk
 ---
+# EnumsUtil
 
 This tutorial provides an overview of the `EnumsUtil` class, which is part of the `lightweight-component/aj-util` library. The `EnumsUtil` class provides a way to retrieve enum instances and their associated messages (or other values) based on a code, when the enums implement the `IEnum` interface. This is particularly useful when you have enums where each constant has a code and a corresponding descriptive message, and you need to look up the enum by its code.
 

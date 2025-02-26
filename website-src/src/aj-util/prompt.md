@@ -3,8 +3,9 @@
 
 What is the purpose of this repository?
 
-can u write  tutorials for  `Clazz` and `Methods` and `Types`? u can take the unit test code as some examples. Also give these tutorials in Chinese.
+Can u write the tutorials for `EncodeTools` and `MessageDigestHelper`? u can take the unit test code as some examples. Also give these tutorials in Chinese.
 
+Can u write a tutorial for `XmlHelper`? u can take the unit test code as some examples. Also give this tutorial in Chinese.
 
 Here is a Tutorial for `ConvertBasicValue`. Please write tutorial again for 'BytesHelper' like  `ConvertBasicValue` did.
 

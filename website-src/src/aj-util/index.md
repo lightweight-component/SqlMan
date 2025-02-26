@@ -7,18 +7,41 @@ tags:
   - last one
 layout: layouts/aj-util.njk
 ---
-# AJ Framework 简介
 
-一个基于 SpringBoot 的轻量级框架，旨在增强 SpringBoot 特性。它拥有许多小型组件，非常易于使用。
+# AJ Utilities
+
+Small Java Utils Library with many powerful components. The size of jar is around 60kb. It contains the following modules:
+
+| Class/Package Module | Detail Description                | Memo         |
+|----------------------|-----------------------------------|--------------|
+| BytesHelper          | Byte array utility class          |              |
+| CollUtils            | Collection utility class          |              |
+| ConvertBasicValue    | Attempts to convert target type, note that not all types can be converted |              |
+| DateHelper           | Date utility class                |              |
+| EncodeTools          | String URL/Base64 encoder         |              |
+| MessageDigestHelper  | MD5/SHA1/SHA256/384/512 encryption utility class |              |
+| ObjectHelper         | A helper for Java Object          |              |
+| RandomTools          | Random Numbers and Strings        |              |
+| RegExpUtils          | Regular expression utility class  |              |
+| StrUtil              | String utility class              |              |
+| XmlHelper            | XML processing utility class      |              |
+| Cryptography         | AES/RSA encryption and decryption package |              |
+| IO                   | File, resource, stream utility package |              |
+| Reflection              | Reflection utility package        |              |
+
+## Source code
+
+[Github](https://github.com/lightweight-component/aj-util) | [GitCode](https://gitcode.com/lightweight-component/aj-util) | [Java Documents](https://javadoc.io/doc/com.ajaxjs/ajaxjs-util) 
+
  
+## Install
 
-## Source Code
-Under GNU GENERAL PUBLIC LICENSE v3.0.
- 
-- Github: [https://github.com/lightweight-component/SqlMan](https://github.com/lightweight-component/SqlMan)
-- Gitcode: [https://gitcode.com/lightweight-component/SqlMan](https://gitcode.com/lightweight-component/SqlMan), for Chinese users faster access.
+Runs on Java 11+. Maven:
 
-
-## Links
-
-[Website](https://sqlman.ajaxjs.com) | [Documents](https://sqlman.ajaxjs.com/docs)  | [JavaDoc](https://github.com/lightweight-component/SqlMan)
+```xml
+<dependency>
+    <groupId>com.ajaxjs</groupId>
+    <artifactId>ajaxjs-util</artifactId>
+    <version>1.1.8</version>
+</dependency>
+```
