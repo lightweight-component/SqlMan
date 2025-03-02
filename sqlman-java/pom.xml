@@ -7,14 +7,15 @@
     <parent>
         <groupId>com.ajaxjs</groupId>
         <artifactId>ajaxjs-parent</artifactId>
-        <version>1.22</version>
+        <version>1.23</version>
         <relativePath/>
     </parent>
 
     <artifactId>sqlman</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <name>SqlMan</name>
     <packaging>jar</packaging>
+    <description>A easy, small, straight forward Java CRUD Helper.</description>
 
     <scm>
         <url>https://github.com/lightweight-component/SqlMan</url>
@@ -37,7 +38,7 @@
         <dependency>
             <groupId>com.ajaxjs</groupId>
             <artifactId>ajaxjs-util</artifactId>
-            <version>1.1.8</version>
+            <version>1.1.9</version>
         </dependency>
 
         <dependency>

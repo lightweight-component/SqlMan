@@ -35,13 +35,14 @@ layout: layouts/aj-util-cn.njk
 
 
 ## 安装
-
 需要 Java 11+ 或以上。Maven 坐标：
 
 ```xml
 <dependency>
     <groupId>com.ajaxjs</groupId>
     <artifactId>ajaxjs-util</artifactId>
-    <version>1.1.8</version>
+    <version>1.1.9</version>
 </dependency>
 ```
+
+[![Maven Central](https://img.shields.io/maven-central/v/com.ajaxjs/ajaxjs-util?label=Latest%20Release)](https://central.sonatype.com/artifact/com.ajaxjs/ajaxjs-util)

@@ -42,6 +42,8 @@ Runs on Java 11+. Maven:
 <dependency>
     <groupId>com.ajaxjs</groupId>
     <artifactId>ajaxjs-util</artifactId>
-    <version>1.1.8</version>
+    <version>1.1.9</version>
 </dependency>
 ```
+
+[![Maven Central](https://img.shields.io/maven-central/v/com.ajaxjs/ajaxjs-util?label=Latest%20Release)](https://central.sonatype.com/artifact/com.ajaxjs/ajaxjs-util)

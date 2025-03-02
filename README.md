@@ -11,7 +11,7 @@ SqlMan is a lightweight wrapper over JDBC. It is NOT an ORM but follows a SQL-fi
 
 ## Source code
 
-[Github](https://github.com/core-lib/sqlman) | [Gitcode](https://gitcode.com/lightweight-component/SqlMan)
+[Github](https://github.com/lightweight-component/SqlMan) | [Gitcode](https://gitcode.com/lightweight-component/SqlMan)
 
 ## Link
 
