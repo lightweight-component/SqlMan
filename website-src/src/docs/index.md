@@ -9,7 +9,7 @@ layout: layouts/docs.njk
 ---
 # Welcome to SqlMan's Docs Center
 
-This is a Java helper library about data manipulation of RDMS (Databases), from low-level SQL operations to advanced low-code rapid development integration. First of all, it encapsulates common JDBC operations while retaining the original SQL statement input (SQL can be stored in XML or Java annotations); Secondly, provides convenient CRUD (Create, Read, Update, Delete) operations for Java entities, eliminating the need to write SQL; Finally, it offers a rapid development platform that integrates the features of the former two, allowing the generation of API interfaces with just SQL statements, making it more user-friendly.
+This is a Java helper library for data manipulation of RDBMS (Databases), from low-level SQL operations to advanced low-code rapid development integration. First of all, it encapsulates common JDBC operations while retaining the original SQL statement input (SQL can be stored in XML or Java annotations); Secondly, it provides convenient CRUD (Create, Read, Update, Delete) operations for Java entities, eliminating the need to write SQL; Finally, it offers a rapid development platform that integrates the features of the former two, allowing the generation of API interfaces with just SQL statements, making it more user-friendly.
 
 <!-- 
 封装了 JDBC 常见的操作，保留原始的 SQL 语句输入（SQL 可以保存在 XML 或者 Java 注解）；其次，针对 Java 实体提供便捷的增删改查操作，这时基本不用写 SQL；最后，提供一个快速开发平台，集成前二者的特色，只须提供 SQL 语句即可生成 API 接口，更易用。
@@ -29,7 +29,7 @@ This is a Java helper library about data manipulation of RDMS (Databases), from 
 
 ### SqlMan is designed to be:
 <!-- 近乎偏执的简单哲学 -->
-- Small - Almost obsessively simple philosoph. You should be able to understand the whole package in a short amount of time.
+- Small - Almost obsessively simple philosophy. You should be able to understand the whole package in a short amount of time.
 - Transparent - SqlMan doesn't do any magic behind the scenes. You give it a query, it executes it and cleans up for you.
 - Fast - You don't need to create a million temporary objects to work with SqlMan.
 

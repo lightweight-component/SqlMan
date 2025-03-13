@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 public @interface Column {
     /**
      * (Optional) The name of the column. Defaults to the property
-     * or field name of the persistable class.
+     * or field name of the perishable class.
      */
     String name() default "";
 

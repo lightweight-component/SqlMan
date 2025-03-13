@@ -36,13 +36,13 @@ Small Java Utils Library with many powerful components. The size of jar is aroun
  
 ## Install
 
-Runs on Java 11+. Maven:
+Runs on Java 8+. Maven:
 
 ```xml
 <dependency>
     <groupId>com.ajaxjs</groupId>
     <artifactId>ajaxjs-util</artifactId>
-    <version>1.1.9</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 

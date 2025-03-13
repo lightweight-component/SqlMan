@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.ajaxjs</groupId>
         <artifactId>ajaxjs-parent</artifactId>
-        <version>1.23</version>
+        <version>1.25</version>
         <relativePath/>
     </parent>
 
@@ -27,18 +27,11 @@
         <url>https://github.com/lightweight-component/SqlMan/issues</url>
     </issueManagement>
 
-    <dependencyManagement>
-        <dependencies>
-
-
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>com.ajaxjs</groupId>
             <artifactId>ajaxjs-util</artifactId>
-            <version>1.1.9</version>
+            <version>1.2.0</version>
         </dependency>
 
         <dependency>

@@ -35,13 +35,13 @@ layout: layouts/aj-util-cn.njk
 
 
 ## 安装
-需要 Java 11+ 或以上。Maven 坐标：
+需要 Java 8+ 或以上。Maven 坐标：
 
 ```xml
 <dependency>
     <groupId>com.ajaxjs</groupId>
     <artifactId>ajaxjs-util</artifactId>
-    <version>1.1.9</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
