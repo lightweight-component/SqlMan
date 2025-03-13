@@ -40,7 +40,7 @@ This is a Java helper library for data manipulation of RDBMS (Databases), from l
     透明 - SqlMan 库在后台没有做太多工作，它只需查询并执行。
     快速 - SqlMan 库类不会创建许多背景对象，并且在数据库操作执行中速度非常快。 -->
 
-### SqlMan is not:
+### SqlMan is NOT:
 
 - An Object/Relational bridge - there are plenty of good O/R tools already. SqlMan is for developers looking to use JDBC without all the mundane pieces.
 - Does not provide a functional-style chained call, as the author believes that readability is poor and debugging is inconvenient.

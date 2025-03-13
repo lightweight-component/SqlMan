@@ -20,6 +20,7 @@ import java.util.Map;
 
 /**
  * To execute basic JDBC commands, read and write data to database.
+ * Usually we don't use this class directly, use class Sql instead.
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
