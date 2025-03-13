@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman.model;
+package com.ajaxjs.sqlman.crud.model;
 
 /**
  * 给 PrepareStatement 用的 SQL 语句和参数值列表

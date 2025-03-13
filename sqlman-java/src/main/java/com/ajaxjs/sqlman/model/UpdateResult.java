@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class Update extends Result {
+public class UpdateResult extends Result {
     /**
      * 操作成功后 影响的行数
      */

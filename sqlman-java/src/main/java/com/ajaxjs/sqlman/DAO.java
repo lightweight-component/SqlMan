@@ -1,13 +1,16 @@
 package com.ajaxjs.sqlman;
 
-import com.ajaxjs.sqlman.model.Create;
+import com.ajaxjs.sqlman.model.CreateResult;
 import com.ajaxjs.sqlman.model.PageResult;
-import com.ajaxjs.sqlman.model.Update;
+import com.ajaxjs.sqlman.model.UpdateResult;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Data Access Object
+ */
 public interface DAO {
     DAO input(String sql, Object... params);
 
@@ -59,9 +62,9 @@ public interface DAO {
 
     <T> PageResult<T> page(Class<T> beanClz, Integer start, Integer limit);
 
-    <T extends Serializable> Create<T> create(boolean isAutoIns, Class<T> idType);
+    <T extends Serializable> CreateResult<T> create(boolean isAutoIns, Class<T> idType);
 
-    Update update();
+    UpdateResult update();
 
-    Update delete();
+    UpdateResult delete();
 }

@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman.model;
+package com.ajaxjs.sqlman.crud.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

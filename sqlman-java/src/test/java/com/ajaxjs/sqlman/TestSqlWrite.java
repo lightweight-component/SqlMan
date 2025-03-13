@@ -1,7 +1,7 @@
 package com.ajaxjs.sqlman;
 
-import com.ajaxjs.sqlman.model.Create;
-import com.ajaxjs.sqlman.model.Update;
+import com.ajaxjs.sqlman.model.CreateResult;
+import com.ajaxjs.sqlman.model.UpdateResult;
 import org.junit.jupiter.api.Test;
 
 import static com.ajaxjs.util.ObjectHelper.mapOf;
@@ -9,10 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestSqlWrite extends BaseTest {
     @Test
-    void testCreate() {
+    public   void testCreate() {
         String sql = "INSERT INTO shop_address (name, address, phone, receiver) " +
                 "VALUES ('家', '北京路', '3412', 'Jack')";
-        Create<Integer> result;
+        CreateResult<Integer> result;
         result = new Sql(conn).input(sql).create(true, Integer.class);
         assertTrue(result.isOk());
 
@@ -23,10 +23,10 @@ public class TestSqlWrite extends BaseTest {
     }
 
     @Test
-    void testUpdate() {
+   public void testUpdate() {
         String sql = "UPDATE shop_address SET name= '公司' WHERE id = ?";
 
-        Update result;
+        UpdateResult result;
         result = new Sql(conn).input(sql, 8).update();
         assertTrue(result.isOk());
 
@@ -36,6 +36,12 @@ public class TestSqlWrite extends BaseTest {
 
         String sql3 = "DELETE FROM ${tableName} WHERE  id = 10"; // Delete 也是 update
         result = new Sql(conn).input(sql3, mapOf("tableName", "shop_address")).update();
+        assertTrue(result.isOk());
+    }
+
+    @Test
+    public void testDelete() {
+        UpdateResult result = new Sql(conn).delete("shop_address", "id", 1);
         assertTrue(result.isOk());
     }
 }

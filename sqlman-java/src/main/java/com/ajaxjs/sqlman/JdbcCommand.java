@@ -2,9 +2,8 @@ package com.ajaxjs.sqlman;
 
 
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
-import com.ajaxjs.sqlman.model.Create;
-import com.ajaxjs.sqlman.model.JdbcConstants;
-import com.ajaxjs.sqlman.model.Update;
+import com.ajaxjs.sqlman.model.CreateResult;
+import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman.util.PrettyLog;
 import com.ajaxjs.util.CollUtils;
 import lombok.Data;
@@ -115,7 +114,7 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
      * @return 新增主键，为兼顾主键类型，返回的类型设为同时兼容 int/long/string 的 Serializable
      */
     @SuppressWarnings("unchecked")
-    public <T extends Serializable> Create<T> create(boolean isAutoIns, Class<T> idType) {
+    public <T extends Serializable> CreateResult<T> create(boolean isAutoIns, Class<T> idType) {
 //        if (keyParams != null)
         sql = SmallMyBatis.handleSql(sql, keyParams);
         String resultText = null;
@@ -129,7 +128,7 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
             int effectRows = ps.executeUpdate();
 
             if (effectRows > 0) {// 插入成功
-                Create<T> result = new Create<>();
+                CreateResult<T> result = new CreateResult<>();
                 result.setOk(true);
 
                 if (isAutoIns) {
@@ -181,7 +180,7 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
      *
      * @return 成功修改的行数
      */
-    public Update update() {
+    public UpdateResult update() {
 //        if (keyParams != null)
         sql = SmallMyBatis.handleSql(sql, keyParams);
         String resultText = null;
@@ -190,7 +189,7 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
             setParam2Ps(ps, params);
             log.info(PrettyLog.LOG_TEXT, "Update", sql, Arrays.toString(params), PrettyLog.printRealSql(sql, params));
 
-            Update result = new Update();
+            UpdateResult result = new UpdateResult();
             result.setOk(true);
             result.setEffectedRows(ps.executeUpdate());
 
@@ -225,7 +224,7 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
      * @return 是否成功
      */
     @Deprecated
-    public Update delete(String tableName, String idField, Serializable id) {
+    public UpdateResult delete(String tableName, String idField, Serializable id) {
         String sql = "DELETE FROM " + tableName + " WHERE " + idField + " = ?";
         setSql(sql);
         setParams(new Object[]{id});

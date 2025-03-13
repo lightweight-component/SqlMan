@@ -3,7 +3,7 @@ package com.ajaxjs.sqlman;
 
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
 import com.ajaxjs.sqlman.model.PageResult;
-import com.ajaxjs.sqlman.model.Update;
+import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman.util.JsonUtil;
 import com.ajaxjs.sqlman.util.Utils;
 import com.ajaxjs.util.ConvertBasicValue;
@@ -177,7 +177,7 @@ public class Sql extends JdbcCommand implements DAO {
     }
 
     @Override
-    public Update delete() {
+    public UpdateResult delete() {
         return null;
     }
 

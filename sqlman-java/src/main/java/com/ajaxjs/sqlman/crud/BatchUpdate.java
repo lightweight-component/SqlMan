@@ -16,8 +16,8 @@
  */
 package com.ajaxjs.sqlman.crud;
 
-import com.ajaxjs.sqlman.model.TableModel;
-import com.ajaxjs.sqlman.model.Update;
+import com.ajaxjs.sqlman.crud.model.TableModel;
+import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman.JdbcCommand;
 import com.ajaxjs.util.DateHelper;
 import lombok.Data;
@@ -162,6 +162,15 @@ public class BatchUpdate extends TableModel {
         insertBatch(sb);
     }
 
+    /**
+     * 执行批量插入操作
+     * <p>
+     * 该方法根据传入的StringBuilder对象构建SQL语句，并执行批量插入操作
+     * 它首先移除StringBuilder中最后一个字符，通常是移除SQL语句中的多余逗号或类似字符
+     * 然后，它将StringBuilder的内容转换为字符串并执行SQL批量插入操作
+     *
+     * @param sb StringBuilder对象，用于构建SQL批量插入语句
+     */
     private void insertBatch(StringBuilder sb) {
         sb.deleteCharAt(sb.length() - 1);// 删除最后一个
 
@@ -187,7 +196,7 @@ public class BatchUpdate extends TableModel {
      * @param ids 实体 ID 列表
      * @return 是否成功
      */
-    public Update deleteBatch(List<? extends Serializable> ids) {
+    public UpdateResult deleteBatch(List<? extends Serializable> ids) {
         StringBuilder sb = new StringBuilder();
         sb.append("DELETE FROM ").append(getTableName()).append(" WHERE ").append(getIdField()).append(" IN (");
 

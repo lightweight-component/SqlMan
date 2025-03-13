@@ -1,6 +1,5 @@
 package com.ajaxjs.sqlman;
 
-import com.ajaxjs.sqlman.model.JdbcConstants;
 import com.ajaxjs.util.StrUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

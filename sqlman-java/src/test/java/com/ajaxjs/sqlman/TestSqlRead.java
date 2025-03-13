@@ -14,7 +14,7 @@ public class TestSqlRead extends BaseTest {
     public void testQueryOne() {
         int result;
         result = new Sql(conn).input("SELECT COUNT(*) AS total FROM shop_address").queryOne(int.class); // fetch the first one
-        assertTrue( result>0);
+        assertTrue(result > 0);
 
         result = new Sql(conn).input("SELECT COUNT(*) AS total FROM shop_address WHERE id = ?", 1).queryOne(int.class);
         assertEquals(1, result);
@@ -93,12 +93,15 @@ public class TestSqlRead extends BaseTest {
     }
 
     @Test
-    void testPage() {
+    public void testPage() {
         PageResult<Map<String, Object>> result;
-        result = new Sql(conn).input("SELECT * FROM article").page();
+        result = new Sql(conn).input("SELECT * FROM shop_address").page();
         assertNotNull(result);
 
-        result = new Sql(conn).input("SELECT * FROM article").page(3, 5);
+        result = new Sql(conn).input("SELECT * FROM shop_address where stat = ?", 1).page();
+        assertNotNull(result);
+
+        result = new Sql(conn).input("SELECT * FROM shop_address").page(3, 5);
         assertNotNull(result);
 
         PageResult<Address> result2;
@@ -107,5 +110,9 @@ public class TestSqlRead extends BaseTest {
 
         result2 = new Sql(conn).input("SELECT * FROM shop_address").page(Address.class, 100, 2);
         assertEquals(0, result2.size());
+
+//Sql sqlServer = new Sql(conn);
+//sqlServer.setDatabaseVendor(JdbcConstants.DatabaseVendor.SQL_SERVER);
+//sqlServer.input("SELECT * FROM article").page();
     }
 }

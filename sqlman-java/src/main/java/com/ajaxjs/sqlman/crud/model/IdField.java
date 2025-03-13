@@ -1,5 +1,6 @@
-package com.ajaxjs.sqlman.model;
+package com.ajaxjs.sqlman.crud.model;
 
+import com.ajaxjs.sqlman.JdbcConstants;
 import lombok.Data;
 
 import java.io.Serializable;

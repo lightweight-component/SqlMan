@@ -18,10 +18,10 @@ package com.ajaxjs.sqlman.crud;
 
 import com.ajaxjs.sqlman.annotation.Id;
 import com.ajaxjs.sqlman.annotation.Table;
-import com.ajaxjs.sqlman.model.Create;
-import com.ajaxjs.sqlman.model.SqlParams;
-import com.ajaxjs.sqlman.model.TableModel;
-import com.ajaxjs.sqlman.model.Update;
+import com.ajaxjs.sqlman.model.CreateResult;
+import com.ajaxjs.sqlman.crud.model.SqlParams;
+import com.ajaxjs.sqlman.crud.model.TableModel;
+import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman.DataAccessException;
 import com.ajaxjs.sqlman.Sql;
 import com.ajaxjs.sqlman.util.Utils;
@@ -36,6 +36,9 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.util.Map;
 
+/**
+ * CRUD for Entity
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
@@ -91,7 +94,7 @@ public class Entity extends Sql implements IEntity {
     }
 
     @Override
-    public <T extends Serializable> Create<T> create(Class<T> idTypeClz) {
+    public <T extends Serializable> CreateResult<T> create(Class<T> idTypeClz) {
         SqlParams sp = BeanWriter.entity2InsertSql(getTableName(), javaBean);
         setSql(sp.sql);
         setParams(sp.values);
@@ -107,7 +110,7 @@ public class Entity extends Sql implements IEntity {
      * @return 成功修改的行数，一般为 1
      */
     @Override
-    public Update update(String where) {
+    public UpdateResult update(String where) {
         if (where == null) {
             log.warn("You're executing UPDATE, R U sure??? All records will be effected!");
 
@@ -124,7 +127,7 @@ public class Entity extends Sql implements IEntity {
     }
 
     @Override
-    public Update update() {
+    public UpdateResult update() {
         if (javaBean != null) { // do bean update
             Object id = getIdValue();
 

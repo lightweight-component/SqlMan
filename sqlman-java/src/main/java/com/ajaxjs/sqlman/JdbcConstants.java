@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman.model;
+package com.ajaxjs.sqlman;
 
 import java.util.Date;
 

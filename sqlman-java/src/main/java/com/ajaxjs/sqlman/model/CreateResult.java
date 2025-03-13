@@ -10,6 +10,6 @@ import java.io.Serializable;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class Create<T extends Serializable> extends Result {
+public class CreateResult<T extends Serializable> extends Result {
     private T newlyId;
 }

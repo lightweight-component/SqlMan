@@ -1,9 +1,9 @@
 package com.ajaxjs.sqlman.crud;
 
-import com.ajaxjs.sqlman.model.Create;
+import com.ajaxjs.sqlman.model.CreateResult;
 import com.ajaxjs.sqlman.model.PageResult;
-import com.ajaxjs.sqlman.model.TableModel;
-import com.ajaxjs.sqlman.model.Update;
+import com.ajaxjs.sqlman.crud.model.TableModel;
+import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman.Address;
 import com.ajaxjs.sqlman.BaseTest;
 import org.junit.jupiter.api.Test;
@@ -69,7 +69,7 @@ public class TestEntity extends BaseTest {
         tableModel.setAutoIns(true);
         tableModel.setIdTypeClz(Integer.class);
 
-        Create<Integer> result = new Entity(conn).setTableModel(tableModel).input(address).create(Integer.class);
+        CreateResult<Integer> result = new Entity(conn).setTableModel(tableModel).input(address).create(Integer.class);
         assertNotNull(result.getNewlyId());
         assertTrue(result.isOk());
     }
@@ -89,7 +89,7 @@ public class TestEntity extends BaseTest {
         tableModel.setAutoIns(true);
         tableModel.setIdTypeClz(Integer.class);
 
-        Update result;
+        UpdateResult result;
         result = new Entity(conn).setTableModel(tableModel).input(address).update();
 
         assertTrue(result.isOk());

@@ -1,6 +1,5 @@
 package com.ajaxjs.sqlman;
 
-import com.ajaxjs.sqlman.model.JdbcConstants;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
@@ -13,6 +12,9 @@ import net.sf.jsqlparser.statement.select.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+/**
+ * A bean object for paging.
+ */
 @Data
 @Slf4j
 public class Pager {
@@ -174,7 +176,6 @@ public class Pager {
 
         return null;
     }
-
 
     /**
      * 将页码和每页数量转换为起始位置
