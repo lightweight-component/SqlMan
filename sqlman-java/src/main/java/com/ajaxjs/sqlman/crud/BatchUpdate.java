@@ -18,7 +18,7 @@ package com.ajaxjs.sqlman.crud;
 
 import com.ajaxjs.sqlman.model.TableModel;
 import com.ajaxjs.sqlman.model.Update;
-import com.ajaxjs.sqlman.sql.JdbcCommand;
+import com.ajaxjs.sqlman.JdbcCommand;
 import com.ajaxjs.util.DateHelper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

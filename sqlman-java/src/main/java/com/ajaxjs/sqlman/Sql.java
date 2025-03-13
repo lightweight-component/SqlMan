@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman.sql;
+package com.ajaxjs.sqlman;
 
 
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;

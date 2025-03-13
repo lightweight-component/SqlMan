@@ -67,7 +67,6 @@ public class Utils {
         return str;
     }
 
-
     /**
      * 检查数据库中是否存在指定的表
      * 检测表是否存在

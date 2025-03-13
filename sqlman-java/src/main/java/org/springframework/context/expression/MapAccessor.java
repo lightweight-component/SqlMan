@@ -36,7 +36,6 @@ import org.springframework.util.Assert;
  * @since 3.0
  */
 public class MapAccessor implements CompilablePropertyAccessor {
-
     @Override
     public Class<?>[] getSpecificTargetClasses() {
         return new Class<?>[]{Map.class};

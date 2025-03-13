@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman.sql;
+package com.ajaxjs.sqlman;
 
 /**
  * 数据访问异常

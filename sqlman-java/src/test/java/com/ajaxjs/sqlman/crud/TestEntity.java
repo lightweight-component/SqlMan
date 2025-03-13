@@ -1,12 +1,11 @@
-package com.ajaxjs.sqlman.sql.crud;
+package com.ajaxjs.sqlman.crud;
 
-import com.ajaxjs.sqlman.crud.Entity;
 import com.ajaxjs.sqlman.model.Create;
 import com.ajaxjs.sqlman.model.PageResult;
 import com.ajaxjs.sqlman.model.TableModel;
 import com.ajaxjs.sqlman.model.Update;
-import com.ajaxjs.sqlman.sql.Address;
-import com.ajaxjs.sqlman.sql.BaseTest;
+import com.ajaxjs.sqlman.Address;
+import com.ajaxjs.sqlman.BaseTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

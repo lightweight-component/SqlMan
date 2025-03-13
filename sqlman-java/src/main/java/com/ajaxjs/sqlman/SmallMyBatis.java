@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman.sql;
+package com.ajaxjs.sqlman;
 
 
 import com.ajaxjs.util.CollUtils;
@@ -213,7 +213,7 @@ public class SmallMyBatis {
      */
     public static String getValuedSQL(String template, Map<String, Object> paramMap) {
         Matcher matcher = PATTERN.matcher(template);
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
 
         while (matcher.find()) {
             String placeholder = matcher.group(2); // 获取占位符中的键名
@@ -247,6 +247,8 @@ public class SmallMyBatis {
         }
 
         matcher.appendTail(sb);
+
+
         return sb.toString();
     }
 

@@ -1,11 +1,9 @@
-package com.ajaxjs.sqlman.sql.util;
+package com.ajaxjs.sqlman.util;
 
-import com.ajaxjs.sqlman.util.SqlInjectionAnalyzer;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 
 public class TestSqlInject {
     @Test

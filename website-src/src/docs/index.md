@@ -25,7 +25,7 @@ This is a Java helper library for data manipulation of RDBMS (Databases), from l
 - Core philosophy centers around SQL. Enhanced SQL logic, supporting dynamic SQL (IF/ForEach).
 - Built-in common CRUD functionality, allowing simple systems to write 0% SQL, and saving 50% of the workload in complex projects.
 - Offers a rich set of extension features, with 80% of the functionality being customizable and expandable.
-- LowCode Platform ready for advanced integration,  [check it out!](low-code)
+<!-- - LowCode Platform ready for advanced integration,  [check it out!](low-code) -->
 
 ### SqlMan is designed to be:
 <!-- 近乎偏执的简单哲学 -->

@@ -1,7 +1,6 @@
-package com.ajaxjs.sqlman.sql.util;
+package com.ajaxjs.sqlman.util;
 
 
-import com.ajaxjs.sqlman.util.SnowflakeId;
 import org.junit.jupiter.api.Test;
 
 public class TestSnowflakeId {

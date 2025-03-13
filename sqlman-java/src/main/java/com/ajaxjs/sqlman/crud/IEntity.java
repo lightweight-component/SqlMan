@@ -18,7 +18,7 @@ package com.ajaxjs.sqlman.crud;
 
 import com.ajaxjs.sqlman.model.Create;
 import com.ajaxjs.sqlman.model.Update;
-import com.ajaxjs.sqlman.sql.DAO;
+import com.ajaxjs.sqlman.DAO;
 
 import java.io.Serializable;
 

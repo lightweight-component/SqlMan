@@ -41,11 +41,11 @@
         </dependency>
 
         <!-- 编译为 jar 包时依赖的 -->
-        <dependency>
+<!--        <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>org.springframework</groupId>
@@ -58,15 +58,15 @@
             <artifactId>jsqlparser</artifactId>
         </dependency>
 
-        <dependency>
+<!--        <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-jdbc</artifactId>
-        </dependency>
+        </dependency>-->
 
         <!-- MySQL 数据库驱动 -->
-        <dependency>
+  <!--      <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
-        </dependency>
+        </dependency>-->
     </dependencies>
 </project>

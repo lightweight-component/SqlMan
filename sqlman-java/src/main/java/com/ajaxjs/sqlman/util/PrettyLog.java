@@ -1,6 +1,6 @@
 package com.ajaxjs.sqlman.util;
 
-import com.ajaxjs.sqlman.sql.JdbcCommand;
+import com.ajaxjs.sqlman.JdbcCommand;
 import com.ajaxjs.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 

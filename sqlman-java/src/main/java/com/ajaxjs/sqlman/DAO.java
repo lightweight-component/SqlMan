@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman.sql;
+package com.ajaxjs.sqlman;
 
 import com.ajaxjs.sqlman.model.Create;
 import com.ajaxjs.sqlman.model.PageResult;
@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface DAO {
-
     DAO input(String sql, Object... params);
 
     DAO input(String sql, Map<String, Object> keyParams, Object... params);

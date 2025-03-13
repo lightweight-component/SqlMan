@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman.sql;
+package com.ajaxjs.sqlman;
 
 import com.ajaxjs.util.io.Resources;
 import org.junit.jupiter.api.AfterAll;
@@ -15,12 +15,12 @@ public abstract class BaseTest {
     @BeforeAll
     static void setUpAll() {
         // 在这里放置一次性初始化代码
-        conn = JdbcConn.getMySqlConnection(config.get("database.ipPort").toString(), "aj_base",
+        conn = JdbcConnection.getMySqlConnection(config.get("database.ipPort").toString(), "aj_base",
                 config.get("database.username").toString(), config.get("database.password").toString());
     }
 
     @AfterAll
     static void end() {
-        JdbcConn.closeDb(conn);
+        JdbcConnection.closeDb(conn);
     }
 }

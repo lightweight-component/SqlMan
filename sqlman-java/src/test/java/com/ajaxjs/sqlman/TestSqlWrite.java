@@ -1,11 +1,10 @@
-package com.ajaxjs.sqlman.sql;
+package com.ajaxjs.sqlman;
 
 import com.ajaxjs.sqlman.model.Create;
 import com.ajaxjs.sqlman.model.Update;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-
+import static com.ajaxjs.util.ObjectHelper.mapOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestSqlWrite extends BaseTest {
@@ -32,11 +31,11 @@ public class TestSqlWrite extends BaseTest {
         assertTrue(result.isOk());
 
         String sql2 = "UPDATE ${tableName} SET name= '公司' WHERE id = ?";
-        result = new Sql(conn).input(sql2, Map.of("tableName", "shop_address"), 9).update();
+        result = new Sql(conn).input(sql2, mapOf("tableName", "shop_address"), 9).update();
         assertTrue(result.isOk());
 
         String sql3 = "DELETE FROM ${tableName} WHERE  id = 10"; // Delete 也是 update
-        result = new Sql(conn).input(sql3, Map.of("tableName", "shop_address")).update();
+        result = new Sql(conn).input(sql3, mapOf("tableName", "shop_address")).update();
         assertTrue(result.isOk());
     }
 }

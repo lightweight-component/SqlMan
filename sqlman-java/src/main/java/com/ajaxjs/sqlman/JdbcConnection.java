@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman.sql;
+package com.ajaxjs.sqlman;
 
 import com.ajaxjs.sqlman.model.JdbcConstants;
 import com.ajaxjs.util.StrUtil;
@@ -11,9 +11,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.function.Supplier;
 
+/**
+ * JDBC Connection
+ */
 @Slf4j
 @Data
-public class JdbcConn {
+public class JdbcConnection {
     /**
      * Database connection
      */
@@ -57,7 +60,7 @@ public class JdbcConn {
     /**
      * Create a JDBC action with global connection
      */
-    public JdbcConn() {
+    public JdbcConnection() {
         this.startTime = System.currentTimeMillis();
         Connection conn = getConnection();
 
@@ -78,7 +81,7 @@ public class JdbcConn {
     /**
      * Create a JDBC action with specified connection
      */
-    public JdbcConn(Connection conn) {
+    public JdbcConnection(Connection conn) {
         this.startTime = System.currentTimeMillis();
         this.conn = conn;
         initDatabaseVendor();
@@ -87,7 +90,7 @@ public class JdbcConn {
     /**
      * Create a JDBC action with specified data source
      */
-    public JdbcConn(DataSource dataSource) {
+    public JdbcConnection(DataSource dataSource) {
         this(getConnection(dataSource));
     }
 

@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman.sql;
+package com.ajaxjs.sqlman;
 
 
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
@@ -24,7 +24,7 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
-public class JdbcCommand extends JdbcConn implements JdbcConstants {
+public class JdbcCommand extends JdbcConnection implements JdbcConstants {
     /**
      * SQL 语句，可以带有 ? 的占位符
      */
