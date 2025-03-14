@@ -95,6 +95,7 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
                 }
             }
         } catch (SQLException e) {
+            log.warn(e.getMessage());
             throw new RuntimeException("SQL query error.", e);
         } finally {
             PrettyLog.end(this, resultText);

@@ -118,11 +118,11 @@ public class Sql extends JdbcCommand implements DAO {
         return query(rs -> forEachRs(rs, getResultBean(beanClz)));
     }
 
-    // TODO make page() returns Map, not the T
     @Override
     public <T> PageResult<T> page() {
         return page(null, null, null);
     }
+    // TODO make page() returns Map, not the T
 
     @Override
     public <T> PageResult<T> page(Integer start, Integer limit) {

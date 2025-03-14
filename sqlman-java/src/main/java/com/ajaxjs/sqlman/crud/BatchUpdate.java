@@ -165,11 +165,11 @@ public class BatchUpdate extends TableModel {
     /**
      * 执行批量插入操作
      * <p>
-     * 该方法根据传入的StringBuilder对象构建SQL语句，并执行批量插入操作
-     * 它首先移除StringBuilder中最后一个字符，通常是移除SQL语句中的多余逗号或类似字符
-     * 然后，它将StringBuilder的内容转换为字符串并执行SQL批量插入操作
+     * 该方法根据传入的 StringBuilder 对象构建 SQL 语句，并执行批量插入操作
+     * 它首先移除 StringBuilder 中最后一个字符，通常是移除SQL语句中的多余逗号或类似字符
+     * 然后，它将 StringBuilder 的内容转换为字符串并执行SQL批量插入操作
      *
-     * @param sb StringBuilder对象，用于构建SQL批量插入语句
+     * @param sb StringBuilder 对象，用于构建 SQL 批量插入语句
      */
     private void insertBatch(StringBuilder sb) {
         sb.deleteCharAt(sb.length() - 1);// 删除最后一个

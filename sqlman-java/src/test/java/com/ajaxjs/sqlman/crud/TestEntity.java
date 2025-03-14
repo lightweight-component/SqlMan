@@ -19,11 +19,10 @@ public class TestEntity extends BaseTest {
         TableModel tableModel = new TableModel();
         tableModel.setTableName("shop_address");
 
-        Entity entity = new Entity(conn);
-        Map<String, Object> result = entity.setTableModel(tableModel).info(1L).query();
+        Map<String, Object> result =  new Entity(conn).setTableModel(tableModel).info(1L).query();
         assertFalse(result.isEmpty());
 
-        Address bean = entity.query(Address.class);
+        Address bean =  new Entity(conn).query(Address.class);
         assertNotNull(bean);
     }
 
@@ -39,6 +38,9 @@ public class TestEntity extends BaseTest {
 
         List<Address> addresses = entity.queryList(Address.class);
         assertNotNull(addresses);
+
+        List<Map<String, Object>> result2 = new Entity(conn).setTableName("shop_address").list().queryList();
+        assertFalse(result2.isEmpty());
     }
 
     @Test
@@ -51,7 +53,7 @@ public class TestEntity extends BaseTest {
         PageResult<Address> result = entity.setTableModel(tableModel).list().page(Address.class);
         assertFalse(result.isEmpty());
 
-        PageResult<Object> article = new Entity(conn).setTableName("article").list().page();
+        PageResult<Object> article = new Entity(conn).setTableName("shop_address").list().page();
         assertFalse(article.isEmpty());
     }
 

@@ -35,8 +35,8 @@ public abstract class BaseTest {
                     "    phone VARCHAR(20),\n" +
                     "    receiver VARCHAR(255),\n" +
                     "    stat INT,\n" +
-                    "    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n" +
-                    "    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP\n" +
+                    "    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n" +
+                    "    update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP\n" +
                     ");");
 
             stmt.execute("INSERT INTO shop_address (name, address, phone, receiver, stat)\n" +
