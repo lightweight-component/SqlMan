@@ -101,6 +101,8 @@ public class JdbcConnection {
                 databaseVendor = JdbcConstants.DatabaseVendor.MYSQL;
             else if (databaseProductName.contains("oracle"))
                 databaseVendor = JdbcConstants.DatabaseVendor.ORACLE;
+            else if (databaseProductName.contains("h2"))
+                databaseVendor = JdbcConstants.DatabaseVendor.H2;
         } catch (SQLException e) {
             throw new RuntimeException("Getting database name error.", e);
         }

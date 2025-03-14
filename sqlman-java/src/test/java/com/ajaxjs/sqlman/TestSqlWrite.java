@@ -17,9 +17,14 @@ public class TestSqlWrite extends BaseTest {
         assertTrue(result.isOk());
 
         sql = "INSERT INTO shop_address (name, address, phone, receiver) " +
-                "VALUES ('家', ?, '3412', ?)";
-        result = new Sql(conn).input(sql, "南京路", "Tom").create(true, Integer.class);
+                "VALUES (${name}, ?, '3412', ?)";
+
+        // mixing parameters with Map and Array
+        result = new Sql(conn).input(sql, mapOf("name", "'office'"),"Kid Place", "Tom").create(true, Integer.class);
         assertTrue(result.isOk());
+
+        Address address = new Sql(conn).input("SELECT * FROM shop_address WHERE id = ?", result.getNewlyId()).query(Address.class);
+        System.out.println(address);
     }
 
     @Test

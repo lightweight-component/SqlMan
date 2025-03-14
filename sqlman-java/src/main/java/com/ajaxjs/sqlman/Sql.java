@@ -226,7 +226,7 @@ public class Sql extends JdbcCommand implements DAO {
      * @return ResultSet 处理器，传入 ResultSet 类型对象返回 T 类型的 bean
      */
     @SuppressWarnings({"unchecked"})
-    public static <T> ResultSetProcessor<T> getResultBean(Class<T> beanClz) {
+    public <T> ResultSetProcessor<T> getResultBean(Class<T> beanClz) {
         return rs -> {
             ResultSetMetaData metaData = rs.getMetaData();
 
@@ -249,6 +249,9 @@ public class Sql extends JdbcCommand implements DAO {
 
             for (int i = 1; i <= metaData.getColumnCount(); i++) {// 遍历结果集
                 String key = metaData.getColumnLabel(i);
+                if (getDatabaseVendor() == JdbcConstants.DatabaseVendor.H2)  // H2 的数据库字段名称是大写的，需要转换为小写
+                    key = key.toLowerCase();
+
                 Object _value = rs.getObject(i); // Real value in DB
 
 //                if (key.startsWith("table_model") && _value != null) {
