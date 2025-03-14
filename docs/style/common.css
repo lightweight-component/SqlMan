@@ -1,0 +1,265 @@
+body {
+  color: #213547;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: backgrond-color 0.5s;
+}
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #fa8b69;
+}
+.color-scheme-drak {
+  background-color: black;
+  color: rgba(235, 235, 235, 0.6);
+}
+.color-scheme-drak header.top {
+  background-color: initial;
+}
+.color-scheme-drak header.top > div {
+  border-bottom: 1px solid #e7e7e74f;
+}
+.color-scheme-drak header.top h1,
+.color-scheme-drak header.top h2 {
+  text-shadow: none !important;
+}
+.color-scheme-drak .locales-btn svg {
+  fill: white;
+}
+.color-scheme-drak footer {
+  border-top: 1px solid #e7e7e74f;
+}
+.github-fork-ribbon {
+  width: 12.1em;
+  height: 12.1em;
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  right: 0;
+  z-index: 9999;
+  pointer-events: none;
+  font-size: 13px;
+  text-decoration: none;
+  text-indent: -999999px;
+}
+.github-fork-ribbon::before {
+  content: "";
+  padding: 0.38em 0;
+  background-color: #a00;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), to(rgba(0, 0, 0, 0.15)));
+  background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+  background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+  background-image: -ms-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+  background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+  -webkit-box-shadow: 0 0.15em 0.23em 0 rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0 0.15em 0.23em 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0.15em 0.23em 0 rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+}
+.github-fork-ribbon::after {
+  content: attr(data-ribbon);
+  color: #fff;
+  font: 700 1em "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: normal;
+  line-height: 1.54em;
+  text-decoration: none;
+  text-shadow: 0 -0.08em rgba(0, 0, 0, 0.5);
+  text-align: center;
+  text-indent: 0;
+  padding: 0.15em 0;
+  margin: 0.15em 0;
+  border-width: 0.08em 0;
+  border-style: dotted;
+  border-color: #fff;
+  border-color: rgba(255, 255, 255, 0.7);
+}
+.github-fork-ribbon::after,
+.github-fork-ribbon::before {
+  position: absolute;
+  display: block;
+  width: 15.38em;
+  height: 1.54em;
+  top: 3.23em;
+  right: -3.23em;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+.content {
+  margin: 0 auto;
+  max-width: 1300px;
+}
+header.top {
+  height: 700px;
+  width: 100%;
+  background-color: #eee;
+}
+header.top > div {
+  position: relative;
+  margin: 0 auto;
+  max-width: 1300px;
+  height: 100%;
+}
+header.top > div > nav > ul {
+  padding: 0;
+  margin: 0;
+  padding-top: 30px;
+}
+header.top > div > nav > ul li {
+  display: inline-block;
+  width: 90px;
+  text-align: center;
+  padding-left: 1%;
+  padding-right: 1%;
+  border-right: 1px solid gray;
+}
+header.top > div > nav > ul li:first-child {
+  padding-left: 0%;
+}
+header.top > div > nav > ul li:last-child {
+  border-right: none;
+}
+header.top > div nav #tools {
+  float: right;
+  margin-top: 35px;
+}
+header.top > div > .img {
+  margin-top: 2%;
+  margin-right: 1%;
+  float: right;
+}
+header.top > div > .img div {
+  color: #afafaf;
+  font-size: 14px;
+  text-align: center;
+}
+header.top > div .text {
+  position: absolute;
+  top: 25%;
+  left: 20px;
+  width: 100%;
+  /* 悬停效果 */
+  /* 点击效果 */
+  /* 禁用状态 */
+  /* 不同类型的按钮样式 */
+}
+header.top > div .text h1 {
+  text-shadow: 3px 1px 2px #ffffff;
+  margin: 0;
+  margin-bottom: 20px;
+  font-weight: bold;
+  font-size: 2.5em;
+  line-height: 1.1;
+}
+header.top > div .text h2 {
+  color: #4f5961;
+  text-shadow: 3px 1px 2px #ffffff;
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 18px 0;
+}
+header.top > div .text p {
+  width: 600px;
+  line-height: 1.6;
+  text-align: justify;
+  text-indent: 2em;
+}
+header.top > div .text button {
+  appearance: none;
+  /* 移除浏览器默认样式 */
+  border: 1px solid gray;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  border-radius: 0.25rem;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  color: gray;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 1%;
+}
+header.top > div .text button:hover {
+  opacity: 0.9;
+}
+header.top > div .text button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.1);
+}
+header.top > div .text button[disabled] {
+  opacity: 0.65;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+header.top > div .text button.primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+}
+header.top > div .text .m {
+  font-size: 0.8em;
+  color: #969696;
+  margin-top: 1%;
+}
+.main h1 {
+  font-size: 2.1rem;
+  margin: 40px 0;
+  font-weight: bold;
+}
+#tools label {
+  vertical-align: top;
+}
+#tools .locales-btn {
+  cursor: pointer;
+  width: 42px;
+  height: 24px;
+  display: inline-block;
+  position: relative;
+}
+#tools .locales-btn svg {
+  height: 100%;
+}
+#tools .locales-btn menu {
+  display: none;
+  height: 100px;
+  width: 110px;
+  left: -70px;
+  bottom: -100px;
+  position: absolute;
+  font-size: 14px;
+}
+#tools .locales-btn menu.show {
+  display: initial;
+}
+#tools .locales-btn menu ul {
+  padding: 10px;
+  border: 1px solid gray;
+  border-radius: 5px;
+}
+#tools .locales-btn menu li {
+  margin: 15px 0;
+}
+footer {
+  border-top: 1px solid lightgray;
+  margin-top: 90px;
+  padding: 50px 0;
+  text-align: center;
+  color: gray;
+  line-height: 150%;
+}
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4vc3JjL3N0eWxlL2NvbW1vbi5sZXNzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksY0FBQTtFQUNBLG1FQUFBO0VBQ0Esb0JBQUE7RUFDQSxrQ0FBQTtFQUNBLG1DQUFBO0VBQ0Esa0NBQUE7RUFDQSxnQ0FBQTs7QUFHSjtFQUNJLGdCQUFBO0VBQ0EsY0FBQTtFQUNBLHdCQUFBOztBQUVBLENBQUM7RUFDRyxjQUFBOztBQUlSO0VBQ0ksdUJBQUE7RUFDQSwrQkFBQTs7QUFGSixrQkFJSSxPQUFNO0VBQ0YseUJBQUE7O0FBRUEsa0JBSEosT0FBTSxJQUdEO0VBQ0csa0NBQUE7O0FBUlosa0JBSUksT0FBTSxJQU9GO0FBWFIsa0JBSUksT0FBTSxJQVFGO0VBQ0ksNEJBQUE7O0FBYlosa0JBaUJJLGFBQ0k7RUFDSSxXQUFBOztBQW5CWixrQkF1Qkk7RUFDSSwrQkFBQTs7QUFJUjtFQUNJLGFBQUE7RUFDQSxjQUFBO0VBQ0Esa0JBQUE7RUFDQSxnQkFBQTtFQUNBLE1BQUE7RUFDQSxRQUFBO0VBQ0EsYUFBQTtFQUNBLG9CQUFBO0VBQ0EsZUFBQTtFQUNBLHFCQUFBO0VBQ0Esc0JBQUE7O0FBRUEsbUJBQUM7RUFDRyxTQUFTLEVBQVQ7RUFDQSxpQkFBQTtFQUNBLHNCQUFBO0VBQ0Esa0JBQWtCLGdEQUFnRCx3QkFBd0Isd0JBQTFGO0VBQ0Esa0JBQWtCLG1FQUFsQjtFQUNBLGtCQUFrQixnRUFBbEI7RUFDQSxrQkFBa0IsK0RBQWxCO0VBQ0Esa0JBQWtCLDhEQUFsQjtFQUNBLGtCQUFrQixpRUFBbEI7RUFDQSx3REFBQTtFQUNBLHFEQUFBO0VBQ0EsZ0RBQUE7RUFDQSxvQkFBQTs7QUFHSixtQkFBQztFQUNHLFNBQVMsaUJBQVQ7RUFDQSxXQUFBO0VBQ0EsY0FBYyw4Q0FBZDtFQUNBLG1CQUFBO0VBQ0EsbUJBQUE7RUFDQSxxQkFBQTtFQUNBLHlDQUFBO0VBQ0Esa0JBQUE7RUFDQSxjQUFBO0VBQ0EsaUJBQUE7RUFDQSxnQkFBQTtFQUNBLHNC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 */

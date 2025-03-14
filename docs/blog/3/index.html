@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="renderer" content="webkit" />
@@ -9,11 +10,13 @@
 <script src="https://g.alicdn.com/code/lib/vue/2.7.16/vue.min.js"></script> 
 <link rel="icon" type="image/png" href="/asset/favicon.png"/>
 <link rel="stylesheet" href="/style/index.css"/>
-<script src="/asset/js/website.js"></script> <link rel="stylesheet" href="/style/reset.css"/>
-    <title>SQLMan</title>
-    
-  </head>
-  <body class="">
+<script src="/asset/js/website.js"></script>
+    <link rel="stylesheet" href="/style/common.css"/>
+    <link rel="stylesheet" href="/style/blog.css"/>
+    <title>SqlMan's Blog: The XML Template Engine</title>
+</head>
+
+<body class="blog">
     <header class="top">
     <a class="github-fork-ribbon" href="https://github.com/lightweight-component/SqlMan" data-ribbon="Fork me on GitHub"
         title="Fork me on GitHub">Fork me on GitHub</a>
@@ -78,25 +81,36 @@
 
     </div>
 </header>
-    <div class="content main">
-      <h1>
-        Lightweight Data Access Library for Java, and MUCH MORE!
-      </h1>
-      <section>
-        <h2>Usage:</h2>
-        <div></div>
-      </section>
-      <section>
-        <h2>Something I would like to say:</h2>
-        <div></div>
-      </section>
-    </div>
-    <footer>
+        <div class="content main">
+            <h1>
+                Blog
+            </h1>
+            <div class="list article">
+                <h1>The XML Template Engine</h1>
+                <h2>2024-12-25 by Frank Cheung</h2>
+               <h1>The XML Template Engine</h1>
+<p>I need to template to do the jobs like MyBatis <code>&lt;if&gt;&lt;else&gt;&lt;foreach&gt;</code>. However, it's not easy to achieve it.
+MyBatis is using own XML parser with OGNL expression engine, details <a href="https://www.cnblogs.com/fangjian0423/p/mybaits-dynamic-sql-analysis.html">here</a>.</p>
+<p>It's hard to copy that.</p>
+<p>Another way is to use the common template engine, like Thymeleaf/Freemarker, but it's too heavy I think.</p>
+<p><a href="http://ibeetl.com/">Beetl</a> is a sharp project, better than Java HTML template engines, and it mentions the library ANTLR like a compiler.</p>
+<p>It's a advanced topic, I don't think I can handle it well.</p>
+<p>However, I'm considering to put this problem on other hand, This is a question about how to implement your own DSL.</p>
+<p>At this point, <a href="https://github.com/pfmiles/dropincc.java">dropincc.java</a>, a small parser generator, comes into my eyes, and the author says,
+it ships with a <a href="http://pfmiles.github.io/blog/what-does-a-template-engine-for-code-generation-look-like/">template engine</a>
+that can be used to generatetemplate engine, which is exactly what I need. But I can't find its implementation in the project!</p>
+<p>So, The ANTLR's <a href="https://www.jianshu.com/p/d87ef30a2f63">StringTemplate</a> is the best choice. StringTemplate seems to be the only choice.</p>
+
+            </div>
+        </div>
+
+        <footer>
     SqlMan, a part of <a href="https://framework.ajaxjs.com" target="_blank">AJ-Framework</a> open source. Mail:
     frank@ajaxjs.com, visit <a href="https://blog.csdn.net/zhangxin09" target="_blank">my blog(In Chinese)</a>.
     <br />
     <br />
      Copyright © 2025 Frank Cheung. All rights reserved.
 </footer>
-  </body>
+</body>
+
 </html>

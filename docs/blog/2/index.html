@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="renderer" content="webkit" />
@@ -9,11 +10,13 @@
 <script src="https://g.alicdn.com/code/lib/vue/2.7.16/vue.min.js"></script> 
 <link rel="icon" type="image/png" href="/asset/favicon.png"/>
 <link rel="stylesheet" href="/style/index.css"/>
-<script src="/asset/js/website.js"></script> <link rel="stylesheet" href="/style/reset.css"/>
-    <title>SQLMan</title>
-    
-  </head>
-  <body class="">
+<script src="/asset/js/website.js"></script>
+    <link rel="stylesheet" href="/style/common.css"/>
+    <link rel="stylesheet" href="/style/blog.css"/>
+    <title>SqlMan's Blog: Why I so recommend &#39;SQL First&#39;?</title>
+</head>
+
+<body class="blog">
     <header class="top">
     <a class="github-fork-ribbon" href="https://github.com/lightweight-component/SqlMan" data-ribbon="Fork me on GitHub"
         title="Fork me on GitHub">Fork me on GitHub</a>
@@ -78,25 +81,66 @@
 
     </div>
 </header>
-    <div class="content main">
-      <h1>
-        Lightweight Data Access Library for Java, and MUCH MORE!
-      </h1>
-      <section>
-        <h2>Usage:</h2>
-        <div></div>
-      </section>
-      <section>
-        <h2>Something I would like to say:</h2>
-        <div></div>
-      </section>
-    </div>
-    <footer>
+        <div class="content main">
+            <h1>
+                Blog
+            </h1>
+            <div class="list article">
+                <h1>Why I so recommend &#39;SQL First&#39;?</h1>
+                <h2>2024-12-25 by Frank Cheung</h2>
+               <p>Looking at backend development as a whole, most of the work revolves around database development (commonly
+referred to as &quot;CRUD Boy&quot;). How we interact with databases is closely related to our development experience.
+The industry frequently discusses the &quot;object-relational impedance mismatch,&quot; which lies at the heart of the
+issue: given that we have two different &quot;programming worldviews&quot;—a relational model database (SQL) and a
+programming language (Java, C#, Go)—each with its own methodologies, use cases, and ways of thinking, how
+can they coexist harmoniously and exchange information? Clearly, the &quot;impedance mismatch&quot; is not an easy
+problem to solve.</p>
+<p>Many backend developers try to avoid writing SQL by struggling with various ORM (Object-Relational Mapping)
+solutions. To be frank, this isn't necessary. ORMs may seem to offer high development efficiency on the
+surface, but in reality, they are just layers of abstraction—ultimately leading back to the SQL layer. ORMs,
+in simple terms, transform one problem into another for resolution, completely bypassing SQL. However,
+issues specific to databases, such as join queries, nested subqueries, and complex SQL logic, can hardly be
+perfectly addressed within ORMs—or rather, they are not as straightforward or comfortable to write. Why go
+through the trouble of using cumbersome ORMs when direct SQL is more flexible and efficient? ORMs might find
+themselves stretched beyond their capabilities. These problems fall precisely into the domain where
+relational databases excel. Transferring tasks best suited for relational databases to ORMs, which are less
+adept at handling them, seems rather misguided. The object-oriented paradigm (of which ORMs are a
+derivative) should perhaps temper its ambitions and focus on what it does best. Moreover, SQL itself is
+sufficiently elegant and worthy of deep study.</p>
+<p>The replacement of Hibernate by iBatis/MyBatis is a case in point, proving that writing SQL directly can be
+more flexible and efficient (SQL First/SQL Centric). Later developments like MyBatis Plus's lambda syntax
+somewhat revert to earlier approaches—similar to Microsoft's LINQ, which was widely adopted early on.</p>
+<p>Of course, this doesn’t mean completely discarding the beneficial aspects of ORMs, such as:
+<ul>
+<li>
+The &quot;object&quot; part of ORMs, which automatically converts a row of data (result set) into an object,
+facilitating business code processing.
+</li>
+<li>
+The readability concerns of SQL compared to programming languages, which depend on developer habits;
+familiarity with SQL naturally enhances readability.
+</li>
+<li>
+Single SQL statements cannot cover everything. Clearly, complex business logic requires collaboration
+between SQL and Java.
+</li>
+</ul></p>
+<p>Refer to: The Disaster of ORM (Object-Relational Mapping).</p>
+<p>Considering these pros and cons, I boldly propose a clear, simple, and reusable JDBC solution aimed at
+addressing CRUD (Create, Read, Update, Delete) issues within the realm of Java and JDBC. Defining the
+interface between the two domains is crucial. In Java, developers often use the DAO (Data Access Object)
+layer to solve this problem, which is exactly what we are discussing here.</p>
+
+            </div>
+        </div>
+
+        <footer>
     SqlMan, a part of <a href="https://framework.ajaxjs.com" target="_blank">AJ-Framework</a> open source. Mail:
     frank@ajaxjs.com, visit <a href="https://blog.csdn.net/zhangxin09" target="_blank">my blog(In Chinese)</a>.
     <br />
     <br />
      Copyright © 2025 Frank Cheung. All rights reserved.
 </footer>
-  </body>
+</body>
+
 </html>
