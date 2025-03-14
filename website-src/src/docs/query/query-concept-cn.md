@@ -5,7 +5,7 @@ description: TODO
 date: 2022-01-05
 tags:
   - last one
-layout: layouts/docs.njk
+layout: layouts/docs-cn.njk
 ---
 # 查询概念
 ## 开始前的概念

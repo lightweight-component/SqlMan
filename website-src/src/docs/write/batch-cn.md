@@ -5,13 +5,13 @@ description: TODO
 date: 2022-01-05
 tags:
   - last one
-layout: layouts/docs.njk
+layout: layouts/docs-cn.njk
 ---
 
 # Updating, Creating, and Deleting Database Data
 This tutorial will guide you through the process of updating, creating, and deleting data in a database using SqlMan. We'll use a sample test code to demonstrate how to perform these operations.
 
-## Creating Records
+### 1. Creating Records
 
 The `testCreate` method demonstrates how to insert new records into the `shop_address` table:
 
@@ -20,29 +20,20 @@ The `testCreate` method demonstrates how to insert new records into the `shop_ad
 public void testCreate() {
     // Insert a new record into the shop_address table
     String sql = "INSERT INTO shop_address (name, address, phone, receiver) " +
-            "VALUES ('Home', 'Tree Road', '3412', 'Jack')";
+            "VALUES ('家', '北京路', '3412', 'Jack')";
     CreateResult<Integer> result;
     result = new Sql(conn).input(sql).create(true, Integer.class);
     assertTrue(result.isOk());
 
     // Insert a new record with parameters
     sql = "INSERT INTO shop_address (name, address, phone, receiver) " +
-                "VALUES (${name}, ?, '3412', ?)";
-        
-    // mixing parameters with Map and Array
-    result = new Sql(conn).input(sql, mapOf("name", "'office'"),"Kid Place", "Tom").create(true, Integer.class);
+            "VALUES ('家', ?, '3412', ?)";
+    result = new Sql(conn).input(sql, "南京路", "Tom").create(true, Integer.class);
     assertTrue(result.isOk());
-
-    Address address = new Sql(conn).input("SELECT * FROM shop_address WHERE id = ?", result.getNewlyId()).query(Address.class);
-    System.out.println(address);
 }
 ```
-In the method `input()`, still, both positional and named parameters are supported, and mixing them is allowed.
 
-### Extracting Auto-Increment Column Values
-When we have an insert statement with auto-generated columns (typically auto-increment or sequences), we may want to obtain the generated values. To do this, we can use the `create()` method with the `isReturnGeneratedKeys` parameter set to `true`. Then, we can use the `result.getNewlyId()` method to retrieve the generated values.
-
-## Updating Records
+### 2. Updating Records
 
 The `testUpdate` method shows how to update existing records in the `shop_address` table:
 
@@ -67,7 +58,7 @@ public void testUpdate() {
 }
 ```
 
-## Deleting Records
+### 3. Deleting Records
 
 The `testDelete` method demonstrates how to delete records from the `shop_address` table:
 

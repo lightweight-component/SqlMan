@@ -9,7 +9,7 @@ layout: layouts/docs.njk
 ---
 # Paging Query
 
-Paging through large datasets is a common requirement in applications to enhance performance and provide a better user experience. This tutorial will guide you through the process of paging database data in Java using a sample test code.
+Paging through large datasets is a common requirement in applications to enhance performance and provide a better user experience. This tutorial will guide you through the process of paging database data in SqlMan using a sample test code.
 
 ## Paging with Default Settings
 

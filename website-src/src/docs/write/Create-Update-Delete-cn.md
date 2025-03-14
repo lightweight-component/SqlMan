@@ -1,19 +1,19 @@
 ---
-title: Query Concept
+title: 数据库数据的更新、创建和删除
 subTitle: 2024-12-05 by Frank Cheung
 description: TODO
 date: 2022-01-05
 tags:
   - last one
-layout: layouts/docs.njk
+layout: layouts/docs-cn.njk
 ---
 
-# Updating, Creating, and Deleting Database Data
-This tutorial will guide you through the process of updating, creating, and deleting data in a database using SqlMan. We'll use a sample test code to demonstrate how to perform these operations.
+# 数据库数据的更新、创建和删除
+本教程将指导您如何使用 SqlMan 在数据库中更新、创建和删除数据。我们将使用示例测试代码来演示如何执行这些操作。
 
-## Creating Records
+## 创建记录
 
-The `testCreate` method demonstrates how to insert new records into the `shop_address` table:
+`testCreate`方法演示了如何向`shop_address`表中插入新记录：
 
 ```java
 @Test
@@ -37,14 +37,14 @@ public void testCreate() {
     System.out.println(address);
 }
 ```
-In the method `input()`, still, both positional and named parameters are supported, and mixing them is allowed.
 
-### Extracting Auto-Increment Column Values
-When we have an insert statement with auto-generated columns (typically auto-increment or sequences), we may want to obtain the generated values. To do this, we can use the `create()` method with the `isReturnGeneratedKeys` parameter set to `true`. Then, we can use the `result.getNewlyId()` method to retrieve the generated values.
+在`input()`方法中，同时支持位置参数和命名参数，并且允许混合使用它们。
 
-## Updating Records
+### 提取自增列值
+当我们有一个包含自动生成列（通常是自增或序列）的插入语句时，我们可能想要获取生成的值。为此，我们可以使用`create()`方法，并将 isReturnGeneratedKeys 参数设置为`true`。然后，我们可以使用`result.getNewlyId()`方法来获取生成的值。
 
-The `testUpdate` method shows how to update existing records in the `shop_address` table:
+## 更新记录
+testUpdate 方法展示了如何更新 shop_address 表中的现有记录：
 
 ```java
 @Test
@@ -67,9 +67,8 @@ public void testUpdate() {
 }
 ```
 
-## Deleting Records
-
-The `testDelete` method demonstrates how to delete records from the `shop_address` table:
+## 删除记录
+testDelete 方法演示了如何从 shop_address 表中删除记录：
 
 ```java
 @Test
@@ -80,4 +79,4 @@ public void testDelete() {
 }
 ```
 
-Note: This is a physical delete, not a logical delete.
+注意：这是物理删除，而不是逻辑删除。
