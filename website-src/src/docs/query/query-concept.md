@@ -25,6 +25,8 @@ We assume that the query is ready to be executed, it's pure SQL statement. Of co
 Map<String, Object> result = new Sql(conn).input("SELECT * FROM shop_address").query(); // fetch the first one
 ```
 
+It's important to note that `input()` method accepts SQL statement and its parameters. The query is not executed until the `query()` method is called.
+
 Currently we didn't pass any parameters to the query. We'll talk about how to pass parameters in the next section.
 
 Here is a question about how to represent the result(s), it can be divded into two parts: 

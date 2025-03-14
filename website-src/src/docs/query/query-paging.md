@@ -27,7 +27,7 @@ The second example shows how to retrieve paginated results by specifying the pag
 PageResult<Map<String, Object>> result = new Sql(conn).input("SELECT * FROM article").page(3, 5);
 ```
 
-### 4. Paging with Custom Class Mapping
+### Paging with Custom Class Mapping
 
 The third example demonstrates how to map the results to a custom class (`Address`) and retrieve paginated results:
 ```java

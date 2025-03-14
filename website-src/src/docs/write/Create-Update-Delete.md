@@ -12,6 +12,7 @@ layout: layouts/docs.njk
 This tutorial will guide you through the process of updating, creating, and deleting data in a database using SqlMan. We'll use a sample test code to demonstrate how to perform these operations.
 
 ## Creating Records
+Now that we’ve seen queries, values, and parameters, we can go back to statements and apply the same knowledge.
 
 The `testCreate` method demonstrates how to insert new records into the `shop_address` table:
 
@@ -59,13 +60,16 @@ public void testUpdate() {
     String sql2 = "UPDATE ${tableName} SET name= '公司' WHERE id = ?";
     result = new Sql(conn).input(sql2, mapOf("tableName", "shop_address"), 9).update();
     assertTrue(result.isOk());
+    System.out.println(result.getEffectedRows());
 
     // Delete a record using update method
     String sql3 = "DELETE FROM ${tableName} WHERE id = 10"; // Delete is also update
     result = new Sql(conn).input(sql3, mapOf("tableName", "shop_address")).update();
     assertTrue(result.isOk());
+    System.out.println(result.getEffectedRows());
 }
 ```
+As we have already seen, it returns the number of affected rows.
 
 ## Deleting Records
 

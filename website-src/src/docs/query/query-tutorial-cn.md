@@ -36,7 +36,9 @@ result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE id = ?", mapOf("t
 assertNotNull(result);
 ```
 
-这允许我们使用 `Map` 对象一次绑定多个命名参数。
+这允许我们使用 `Map`对象一次绑定多个命名参数。
+
+允许混合使用`Map`对象和参数数组，但 Map 必须作为第一个参数，其余的则作为参数数组。
 
 ## 返回 Java Bean
 有时候，我们需要返回一个 Java Bean 而不是`Map`。SqlMan 提供了一个简单的方法来实现这一点，只需要将 Java Bean 类作为查询方法的参数传入：

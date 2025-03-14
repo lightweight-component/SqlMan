@@ -42,6 +42,7 @@ public class TestSqlWrite extends BaseTest {
         String sql3 = "DELETE FROM ${tableName} WHERE  id = 10"; // Delete 也是 update
         result = new Sql(conn).input(sql3, mapOf("tableName", "shop_address")).update();
         assertTrue(result.isOk());
+        System.out.println(result.getEffectedRows());
     }
 
     @Test

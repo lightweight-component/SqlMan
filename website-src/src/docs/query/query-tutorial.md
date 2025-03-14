@@ -38,6 +38,8 @@ assertNotNull(result);
 ```
 It allows to bind multiple named parameters together using a `Map` object.
 
+Mixing `Map` object and the array of parameters is allowed, but `Map` should be the first parameter, and the rest are array of parameters.
+
 ## Return a Java Bean
 Sometimes, we need to return a Java Bean instead of a `Map`. SqlMan provides a simple way to do this, just passing the Java Bean class as the query method as the parameter:
 

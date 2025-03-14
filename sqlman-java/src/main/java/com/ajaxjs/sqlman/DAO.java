@@ -12,12 +12,42 @@ import java.util.Map;
  * Data Access Object
  */
 public interface DAO {
+    /**
+     * 执行 SQL 并返回 DAO 对象
+     *
+     * @param sql       SQL 语句
+     * @param params    可变参数，用于替换 SQL 语句中的占位符
+     * @return 返回一个 DAO 对象，该对象包含执行 SQL 后从数据库获取的数据
+     */
     DAO input(String sql, Object... params);
 
+    /**
+     * 执行 SQL 并返回 DAO 对象
+     *
+     * @param sql       SQL 语句
+     * @param keyParams 键值对参数，用于替换 SQL 语句中的变量
+     * @param params    可变参数，用于替换 SQL 语句中的占位符
+     * @return 返回一个 DAO 对象，该对象包含执行 SQL 后从数据库获取的数据
+     */
     DAO input(String sql, Map<String, Object> keyParams, Object... params);
 
+    /**
+     * 输入 XML 里面 SQL 片段的 id，执行 SQL 并返回 DAO 对象
+     *
+     * @param sqlId  SQL标识符，用于定位特定的 SQL 语句
+     * @param params 可变参数，用于替换 SQL 语句中的占位符
+     * @return 返回一个 DAO 对象，该对象包含执行 SQL 后从数据库获取的数据
+     */
     DAO inputXml(String sqlId, Object... params);
 
+    /**
+     * 输入 XML 里面 SQL 片段的 id，执行 SQL 并返回 DAO 对象
+     *
+     * @param sqlId     SQL标识符，用于定位特定的 SQL 语句
+     * @param keyParams 键值对参数，用于替换 SQL 语句中的变量
+     * @param params    可变参数，用于替换 SQL 语句中的占位符
+     * @return 返回一个 DAO 对象，该对象包含执行 SQL 后从数据库获取的数据
+     */
     DAO inputXml(String sqlId, Map<String, Object> keyParams, Object... params);
 
     /**

@@ -7,56 +7,99 @@ tags:
   - last one
 layout: layouts/docs.njk
 ---
-# Query Concept
-## The Concept before start
+# SQL in XML
+## Why SQL in XML?
 
-The most straightforward expression that produces results from the DB is a SQL query.To issue a query with a SqlMan Handle, we have to, at least:
+Like the famous framework MyBatis, SQL statements can be stored in XML files. There are several reasons for this approach. Here are some advantages of storing SQL in XML:
 
-- create the query, 
-- choose how to pass parameters to the query
-- choose how to represent the result(s), after the query is executed
+1. **Separation of Concerns**: Keeping SQL statements in XML files helps separate the SQL logic from the Java code. This makes the codebase cleaner and easier to manage.
+1. **Readability**: Long SQL statements can be more readable when stored in XML. The structure of the XML file can help make the SQL queries more organized and easier to understand.
+1. **Maintainability**: When SQL statements are stored in XML, it is easier to update and maintain them without changing the Java code. This is particularly useful for large projects with many SQL queries.
 
-We’ll now look at each of the points above.
+SqlMan follows a similar approach to MyBatis in handling SQL statements.
 
-## Create the query
-We assume that the query is ready to be executed, it's pure SQL statement. Of course, the connection is already established. Then we create a new `Sql` instance, pass `conn` to the constructor and SQL statement to `input()` method.
 
-```java
-Map<String, Object> result = new Sql(conn).input("SELECT * FROM shop_address").query(); // fetch the first one
+## How to use SQL in XML?
+Before we begin, we should have the SQL fragments defined in an XML file, named `sql.xml`, stored in the classpath `/sql`.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <sql id="foo">SELECT COUNT(*) AS total FROM shop_address</sql>
+    <sql id="foo-2">SELECT COUNT(*) AS total FROM shop_address WHERE id = ?</sql>
+    <sql id="foo-3">SELECT id FROM ${tableName} WHERE id = #{stat}</sql>
+    <sql id="foo-4">SELECT * FROM ${tableName} WHERE id = ?</sql>
+    <sql id="foo-5">
+        <if test="type=='address'">
+            SELECT COUNT(*) AS total FROM shop_address
+        </if>
+        <if test="type=='article'">
+            SELECT COUNT(*) AS total FROM ${tableName}
+        </if>
+    </sql>
+    <sql id="foo-6">SELECT id FROM ${tableName} WHERE ${T(com.ajaxjs.sqlman.sql.TestXml).w()}</sql>
+</root>
 ```
 
-Currently we didn't pass any parameters to the query. We'll talk about how to pass parameters in the next section.
-
-Here is a question about how to represent the result(s), it can be divded into two parts: 
-
-- How many results to fetch? a single one? or a row? or list?
-- Which format to represent the result(s)?
-
-SQlMan abstracts away from the JDBC ResultSet, which has a quite cumbersome API.
-
-Therefore, it offers several possibilities to access the columns resulting from a query or some other statement that returns a result. 
-
-From the return structure of value(s), we can identify several types:
-
-- A single element, such as a number, a string, a date, etc.
-- A single database row, where fields are mapped to the values like key/value pairs, corresponding to `Map` in Java.
-- Multiple rows, which form a two-dimensional structure, corresponding to `List<Map>` in Java.
-
-These types correspond to the following methods in SqlMan:
-
-
-- `queryOne(Type.class)`- Fetches the single value, means the first column of the first row. The return type matches what you pass in
-- `query()`- Fetches the first row, returning a `Map<String, Object>`.
-- `queryList()`- Fetch the list of values, means all the columns of all the rows, returning a `List<Map<String, Object>>`.
-
-Here are complete examples:
+This method executes an SQL statement defined in an XML fragment by its identifier (`sqlId`) and returns a DAO object containing the result.
 
 ```java
-Map<String, Object> result = new Sql(conn).input("SELECT * FROM shop_address").query(); // fetch the first one
-int result = new Sql(conn).input("SELECT COUNT(*) AS total FROM shop_address").queryOne(int.class); // fetch the first one
-List<Map<String, Object>> result = new Sql(conn).input("SELECT * FROM shop_address").queryList();
+int result = new Sql(conn).inputXml("foo").queryOne(int.class); // fetch the first one
+System.out.println(result);
+assertTrue(result > 0);
 ```
-## Return Format
-There is the last question: Which format to represent the result(s)?
 
----- We’ll now see the simplest ones: Map, we’ll see the more complex ones in the next section.
+Now that we’ve seen before, values, and parameters, we can go back to statements in XML file and apply the same knowledge.
+
+```java
+int result;
+result = new Sql(conn).inputXml("foo-2", 1).queryOne(int.class);
+assertEquals(1, result);
+
+result = new Sql(conn).inputXml("foo-3", mapOf("tableName", "shop_address", "stat", 1)).queryOne(int.class);
+assertEquals(1, result);
+
+result = new Sql(conn).inputXml("foo-4", mapOf("tableName", "shop_address", "abc", 2), 1).queryOne(int.class);
+System.out.println(result); // TODO, should be return 0
+```
+This method executes an SQL statement defined in an XML fragment by its identifier (`sqlId`) with key-value pairs and variable parameters.
+
+```java
+/**
+ * Executes an SQL statement defined in an XML fragment and returns a DAO object.
+ *
+ * @param sqlId     SQL identifier used to locate the specific SQL statement.
+ * @param keyParams Key-value pair parameters used to replace variables in the SQL statement.
+ * @param params    Variable parameters used to replace placeholders in the SQL statement.
+ * @return A DAO object containing the data retrieved from the database.
+ */
+public DAO inputXml(String sqlId, Map<String, Object> keyParams, Object... params) {
+    // Implementation to execute the SQL and return DAO object
+}
+```
+
+## Tag Support
+For dynamic SQL generation, SqlMan supports the following tags:`IF`.
+
+```xml
+<sql id="foo-5">
+    <if test="type=='address'">
+        SELECT COUNT(*) AS total FROM shop_address
+    </if>
+    <if test="type=='article'">
+        SELECT COUNT(*) AS total FROM ${tableName}
+    </if>
+</sql>
+```
+
+The value in `test` attribute is a expression, like `i > 10`. It can be a simple boolean expression or a more complex expression that returns a boolean value. Any expression that matches the pattern of Spring Expression is illegal.
+
+More tags like `if...else`, `foreach` are on the way.
+
+## Calling Java Methods
+
+Some tasks cloud not be accomplished by SQL alone. In such cases, it's better to call Java methods to do the job. SqlMan supports calling Java methods in SQL using the syntax `${T(com.ajaxjs.sqlman.sql.TestXml).w()}`.
+
+```xml
+<sql id="foo-6">SELECT id FROM ${tableName} WHERE ${T(com.ajaxjs.sqlman.sql.TestXml).w()}</sql>
+```

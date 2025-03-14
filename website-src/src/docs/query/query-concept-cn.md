@@ -24,6 +24,7 @@ layout: layouts/docs-cn.njk
 ```java
 Map<String, Object> result = new Sql(conn).input("SELECT * FROM shop_address").query(); // fetch the first one
 ```
+需要注意的是，`input()`方法接受 SQL 语句及其参数，但查询并不会立即执行，直到调用`query()`方法时才会执行。
 
 目前我们还没有向查询传递任何参数。我们将在下一节讨论如何传递参数。
 
