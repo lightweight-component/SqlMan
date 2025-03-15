@@ -26,6 +26,6 @@ Runs on Java11+. Maven:
 <dependency>
     <groupId>com.ajaxjs</groupId>
     <artifactId>sqlman</artifactId>
-    <version>1.0</version>
+    <version>1.3</version>
 </dependency>
 ```
