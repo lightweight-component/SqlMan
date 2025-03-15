@@ -198,3 +198,11 @@ function highlightCode() {
 
 // 页面加载完成后，调用 highlightCode 函数
 document.addEventListener('DOMContentLoaded', highlightCode);
+
+// 获取用户的默认语言
+var userLang = navigator.language || navigator.userLanguage;
+
+// 检查是否为中文环境（包括简体和繁体）
+if (userLang.startsWith('zh') && location.pathname.indexOf('cn') == -1) {
+    confirm('欢迎！您改为访问中文内容。是否继续？') && location.assign('/cn');  // 如果是中文，则弹出提示
+}

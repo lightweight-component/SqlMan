@@ -18,18 +18,18 @@
         <nav>
             <div>
                 <div class="links">
-                    <a href="/">🏠 Home</a>
+                    <a href="/">🏠 首页</a>
                     |
-                                                        ⚙️ Source:
+                                                                            ⚙️ 源码：
                     <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
                     
-                    | <a  href="/docs">English Version</a>
+                    |
+                    <a href="/docs">English Version</a>
                 </div>
                 <h1>
                     <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
                 </h1>
-                <h3>Lightweight Data Access Tools -- User Manual
-                </h3>
+                <h3>轻量级 JDBC 助手——用户手册</h3>
             </div>
         </nav>
         <div>
@@ -61,7 +61,8 @@
                 <h3>写入数据</h3>
                 <ul>
                     <li>
-                        <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a></li>
+                        <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a>
+                    </li>
                     <li>
                         <a href="/docs/write/batch-cn">批量更新</a>
                     </li>
@@ -69,7 +70,8 @@
                 <h3>其他用法</h3>
                 <ul>
                     <li>
-                        <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a></li>
+                        <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a>
+                    </li>
                     <li>
                         <a href="/docs/other/entity-cn">“类” ORM</a>
                     </li>
@@ -81,7 +83,107 @@
                 </ul>
             </menu>
             <article>
-                <p>TODO</p>
+                <h1>批量更新</h1>
+<p>SqlMan 中的 BatchUpdate 类提供了高效的批量数据库操作方法，特别适用于需要同时插入或更新多条记录的场景。</p>
+<h2>基本批量插入操作</h2>
+<h3>方法一：简单批量插入</h3>
+<p>对于基本的批量插入操作，使用原始字段值：</p>
+<pre><code class="language-java">BatchUpdate batchUpdate = new BatchUpdate();
+batchUpdate.setTableName(&quot;users&quot;);
+
+// 准备数据
+String fields = &quot;name, email, age&quot;;
+List&lt;String&gt; values = Arrays.asList(
+    &quot;('John', 'john@email.com', 25)&quot;,
+    &quot;('Jane', 'jane@email.com', 30)&quot;
+);
+
+// 执行批量插入
+batchUpdate.createBatch(fields, values);
+</code></pre>
+<h3>方法二：使用 Map 对象批量插入</h3>
+<p>使用 Map 对象插入多条记录：</p>
+<pre><code class="language-java">List&lt;Map&lt;String, Object&gt;&gt; users = new ArrayList&lt;&gt;();
+
+Map&lt;String, Object&gt; user1 = new HashMap&lt;&gt;();
+user1.put(&quot;name&quot;, &quot;John&quot;);
+user1.put(&quot;email&quot;, &quot;john@email.com&quot;);
+users.add(user1);
+
+Map&lt;String, Object&gt; user2 = new HashMap&lt;&gt;();
+user2.put(&quot;name&quot;, &quot;Jane&quot;);
+user2.put(&quot;email&quot;, &quot;jane@email.com&quot;);
+users.add(user2);
+
+batchUpdate.createBatchMap(users, &quot;users&quot;);
+</code></pre>
+<h3>方法三：使用 Java Bean 批量插入</h3>
+<p>使用 Java 对象插入多条记录：</p>
+<pre><code class="language-java">List&lt;User&gt; users = new ArrayList&lt;&gt;();
+User user1 = new User();
+user1.setName(&quot;John&quot;);
+user1.setEmail(&quot;john@email.com&quot;);
+users.add(user1);
+
+User user2 = new User();
+user2.setName(&quot;Jane&quot;);
+user2.setEmail(&quot;jane@email.com&quot;);
+users.add(user2);
+
+batchUpdate.setTableName(&quot;users&quot;);
+batchUpdate.createBatch(users);
+</code></pre>
+<h2>批量删除操作</h2>
+<p>通过 ID 删除多条记录：</p>
+<pre><code class="language-java">BatchUpdate batchUpdate = new BatchUpdate();
+batchUpdate.setTableName(&quot;users&quot;);
+batchUpdate.setIdField(&quot;id&quot;);
+
+List&lt;Integer&gt; idsToDelete = Arrays.asList(1, 2, 3, 4);
+UpdateResult result = batchUpdate.deleteBatch(idsToDelete);
+
+if (result.isOk()) {
+    System.out.println(&quot;批量删除成功&quot;);
+}
+</code></pre>
+<h2>最佳实践</h2>
+<ol>
+<li>
+<p><strong>事务管理</strong></p>
+<ul>
+<li>类自动处理事务</li>
+<li>批量操作期间自动禁用自动提交</li>
+<li>失败时自动回滚</li>
+</ul>
+</li>
+<li>
+<p><strong>数据类型处理</strong>
+该类自动处理各种数据类型：</p>
+<ul>
+<li>字符串会被正确引用</li>
+<li>布尔值转换为 1/0</li>
+<li>日期格式化处理</li>
+<li>支持 LocalDateTime</li>
+</ul>
+</li>
+<li>
+<p><strong>性能提示</strong></p>
+<ul>
+<li>使用批量操作替代单条插入以提高性能</li>
+<li>保持合理的批量大小（通常为 100-1000 条记录）</li>
+<li>处理大数据集时监控内存使用</li>
+</ul>
+</li>
+<li>
+<p><strong>错误处理</strong></p>
+<ul>
+<li>操作过程有日志记录</li>
+<li>失败时事务回滚</li>
+<li>可验证执行结果</li>
+</ul>
+</li>
+</ol>
+<p>这个 BatchUpdate 类通过减少数据库往返次数，显著提高了处理多条数据库操作时的性能。</p>
 
             </article>
         </div>

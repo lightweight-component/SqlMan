@@ -87,22 +87,55 @@
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;com.ajaxjs&lt;/groupId&gt;
     &lt;artifactId&gt;sqlman&lt;/artifactId&gt;
-    &lt;version&gt;1.0&lt;/version&gt;
+    &lt;version&gt;1.2&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre>
 <p>Over the course of this article, we’ll show examples using the HSQL database:</p>
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;org.hsqldb&lt;/groupId&gt;
     &lt;artifactId&gt;hsqldb&lt;/artifactId&gt;
-    &lt;version&gt;2.4.0&lt;/version&gt;
-    &lt;scope&gt;test&lt;/scope&gt;
+    &lt;version&gt;2.2.220&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre>
-<p>We can find the latest version of SqlMan on <a href="">Maven Central</a>.</p>
-<blockquote>
-<p>About Java Version</p>
-<p>Currently, SqlMan only supports <strong>Java 11</strong> and above. However, we are aware that there is a significant user base still using JDK 8. Should the need arise, we are committed to maintaining compatibility with Java 8 by making a few modifications to the code.</p>
-</blockquote>
+<p>We can find the latest version of SqlMan on <a href="https://central.sonatype.com/artifact/com.ajaxjs/sqlman">Maven Central</a>.</p>
+<!-- > About Java Version
+>
+> Currently, SqlMan only supports **Java 11** and above. However, we are aware that there is a significant user base still using JDK 8. Should the need arise, we are committed to maintaining compatibility with Java 8 by making a few modifications to the code. -->
+<p>Next we going to write Java code as follows:</p>
+<pre><code class="language-java">public static void main(String[] args) throws SQLException {
+    JdbcDataSource dataSource = new JdbcDataSource();
+    dataSource.setURL(&quot;jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1&quot;);
+    dataSource.setUser(&quot;sa&quot;);
+    dataSource.setPassword(&quot;password&quot;);
+
+    Connection conn = dataSource.getConnection();
+
+    try (Statement stmt = conn.createStatement()) {
+        stmt.execute(&quot;CREATE TABLE shop_address (\n&quot; +
+                &quot;    id INT AUTO_INCREMENT PRIMARY KEY,\n&quot; +
+                &quot;    name VARCHAR(255) NOT NULL,\n&quot; +
+                &quot;    address VARCHAR(255) NOT NULL,\n&quot; +
+                &quot;    phone VARCHAR(20),\n&quot; +
+                &quot;    receiver VARCHAR(255),\n&quot; +
+                &quot;    stat INT,\n&quot; +
+                &quot;    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n&quot; +
+                &quot;    update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP\n&quot; +
+                &quot;);&quot;);
+
+        stmt.execute(&quot;INSERT INTO shop_address (name, address, phone, receiver, stat)\n&quot; +
+                &quot;VALUES\n&quot; +
+                &quot;('Shop A', '123 Main St', '123-456-7890', 'John Doe', 0),\n&quot; +
+                &quot;('Shop B', '456 Elm St', '234-567-8901', 'Jane Smith',0),\n&quot; +
+                &quot;('Shop C', '789 Oak St', '345-678-9012', 'Alice Johnson', 0),\n&quot; +
+                &quot;('Shop D', '101 Maple St', '456-789-0123', 'Bob Brown', 1),\n&quot; +
+                &quot;('Shop E', '202 Birch St', '567-890-1234', 'Charlie Davis', 1);&quot;);
+    }
+
+    List&lt;Map&lt;String, Object&gt;&gt; result = new Sql(conn).input(&quot;SELECT * FROM shop_address&quot;).queryList();
+    System.out.println(result);
+    conn.close();
+}
+</code></pre>
 
             </article>
         </div>

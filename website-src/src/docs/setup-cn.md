@@ -7,28 +7,29 @@ tags:
   - last one
 layout: layouts/docs-cn.njk
 ---
-# 🔧 Setup SqlMan
 
-## Requirements
+# 🔧 配置 SqlMan
+
+## 系统要求
 ### Java
-SqlMan runs on Java 8+.
+SqlMan 运行需要 Java 8 或更高版本。
 
-### Supported Databases
+### 支持的数据库
 
 - MySQL
 - PostgreSQL
-- H2 Database
+- H2 数据库
 - Apache Derby
 
-# Connecting to your database
-Normally, you just tell Sqlman either a `DataSource` or a `Connection` to work. These're standard JDBC object that contain the connection information of database like URL, username, password, etc.
+# 连接数据库
+通常情况下，你只需要为 SqlMan 提供一个 `DataSource` 或 `Connection` 对象即可工作。这些是标准的 JDBC 对象，包含了数据库连接所需的信息，如 URL、用户名、密码等。
 
 ```java
 Connection conn = JdbcConnection.getConnection("jdbc:mysql://localhost:3306/test", "root", "psw");
-Map<String, Object> result = new Sql(conn).input("SELECT * FROM shop_address").query(); // fetch the first one
+Map<String, Object> result = new Sql(conn).input("SELECT * FROM shop_address").query(); // 获取第一条记录
 ```
 
-The code above is hardcoded, which is ONLY for demo/test purposes. In real world, you should use a connection pool to manage your connections.
+上面的代码是硬编码的，仅用于演示/测试目的。在实际应用中，你应该使用连接池来管理数据库连接。
 
-
-## Config in Spring
+## Spring 框架中的配置
+待完善

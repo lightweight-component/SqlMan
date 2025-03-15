@@ -88,7 +88,7 @@
 <pre><code class="language-java">PageResult&lt;Map&lt;String, Object&gt;&gt; result = new Sql(conn).input(&quot;SELECT * FROM article&quot;).page();
 </code></pre>
 <h2>Paging with Custom Page Size and Number</h2>
-<p>The second example shows how to retrieve paginated results by specifying the page number and page size:</p>
+<p>The second example shows how to retrieve paginated results by specifying the record start and limit, like MySQL paging query:</p>
 <pre><code class="language-java">PageResult&lt;Map&lt;String, Object&gt;&gt; result = new Sql(conn).input(&quot;SELECT * FROM article&quot;).page(3, 5);
 </code></pre>
 <h3>Paging with Custom Class Mapping</h3>

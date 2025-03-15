@@ -5,7 +5,7 @@ description: TODO
 date: 2022-01-05
 tags:
   - last one
-layout: layouts/docs-cn.njk
+layout: layouts/docs.njk
 ---
 # 🔧 Setup SqlMan
 
@@ -32,3 +32,4 @@ The code above is hardcoded, which is ONLY for demo/test purposes. In real world
 
 
 ## Config in Spring
+ TODO

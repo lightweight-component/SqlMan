@@ -23,7 +23,7 @@ This is a Java helper library for data manipulation of RDBMS (Databases), from l
     - `@Insert`、`@Update`、`@Delete`、`@Query` annotations -- Highly compatible with JPA.
     - Automatically populate JavaBean properties from ResultSets. You don't need to manually copy column values into bean instances by calling setter methods. Each row of the ResultSet can be represented by one fully populated bean instance. Besides, Map type is optional.
 - Core philosophy centers around SQL. Enhanced SQL logic, supporting dynamic SQL (IF/ForEach).
-- Built-in common CRUD functionality, allowing simple systems to write 0% SQL, and saving 50% of the workload in complex projects.
+- Built-in common CRUD//Paging functionality, allowing simple systems to write 0% SQL, and saving 50% of the workload in complex projects.
 - Offers a rich set of extension features, with 80% of the functionality being customizable and expandable.
 <!-- - LowCode Platform ready for advanced integration,  [check it out!](low-code) -->
 

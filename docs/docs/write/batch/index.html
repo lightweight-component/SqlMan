@@ -81,7 +81,107 @@
                 </ul>
             </menu>
             <article>
-                <p>TODO</p>
+                <h1>Batch Update</h1>
+<p>The BatchUpdate class in SqlMan provides efficient methods for performing batch operations on database records, particularly useful when you need to insert or update multiple records simultaneously.</p>
+<h2>Basic Batch Insert Operations</h2>
+<h3>Method 1: Simple Batch Insert</h3>
+<p>For basic batch inserts with raw field values:</p>
+<pre><code class="language-java">BatchUpdate batchUpdate = new BatchUpdate();
+batchUpdate.setTableName(&quot;users&quot;);
+
+// Prepare your data
+String fields = &quot;name, email, age&quot;;
+List&lt;String&gt; values = Arrays.asList(
+    &quot;('John', 'john@email.com', 25)&quot;,
+    &quot;('Jane', 'jane@email.com', 30)&quot;
+);
+
+// Execute batch insert
+batchUpdate.createBatch(fields, values);
+</code></pre>
+<h3>Method 2: Batch Insert with Maps</h3>
+<p>For inserting multiple records using Map objects:</p>
+<pre><code class="language-java">List&lt;Map&lt;String, Object&gt;&gt; users = new ArrayList&lt;&gt;();
+
+Map&lt;String, Object&gt; user1 = new HashMap&lt;&gt;();
+user1.put(&quot;name&quot;, &quot;John&quot;);
+user1.put(&quot;email&quot;, &quot;john@email.com&quot;);
+users.add(user1);
+
+Map&lt;String, Object&gt; user2 = new HashMap&lt;&gt;();
+user2.put(&quot;name&quot;, &quot;Jane&quot;);
+user2.put(&quot;email&quot;, &quot;jane@email.com&quot;);
+users.add(user2);
+
+batchUpdate.createBatchMap(users, &quot;users&quot;);
+</code></pre>
+<h3>Method 3: Batch Insert with Java Beans</h3>
+<p>For inserting multiple records using Java objects:</p>
+<pre><code class="language-java">List&lt;User&gt; users = new ArrayList&lt;&gt;();
+User user1 = new User();
+user1.setName(&quot;John&quot;);
+user1.setEmail(&quot;john@email.com&quot;);
+users.add(user1);
+
+User user2 = new User();
+user2.setName(&quot;Jane&quot;);
+user2.setEmail(&quot;jane@email.com&quot;);
+users.add(user2);
+
+batchUpdate.setTableName(&quot;users&quot;);
+batchUpdate.createBatch(users);
+</code></pre>
+<h2>Batch Delete Operations</h2>
+<p>To delete multiple records by their IDs:</p>
+<pre><code class="language-java">BatchUpdate batchUpdate = new BatchUpdate();
+batchUpdate.setTableName(&quot;users&quot;);
+batchUpdate.setIdField(&quot;id&quot;);
+
+List&lt;Integer&gt; idsToDelete = Arrays.asList(1, 2, 3, 4);
+UpdateResult result = batchUpdate.deleteBatch(idsToDelete);
+
+if (result.isOk()) {
+    System.out.println(&quot;Batch delete successful&quot;);
+}
+</code></pre>
+<h2>Best Practices</h2>
+<ol>
+<li>
+<p><strong>Transaction Management</strong></p>
+<ul>
+<li>The class handles transactions automatically</li>
+<li>Auto-commit is disabled during batch operations</li>
+<li>Rollback is performed automatically on failure</li>
+</ul>
+</li>
+<li>
+<p><strong>Data Type Handling</strong>
+The class automatically handles various data types:</p>
+<ul>
+<li>Strings are properly quoted</li>
+<li>Booleans are converted to 1/0</li>
+<li>Dates are formatted appropriately</li>
+<li>LocalDateTime is supported</li>
+</ul>
+</li>
+<li>
+<p><strong>Performance Tips</strong></p>
+<ul>
+<li>Use batch operations instead of individual inserts for better performance</li>
+<li>Keep batch sizes reasonable (typically 100-1000 records)</li>
+<li>Monitor memory usage when dealing with large datasets</li>
+</ul>
+</li>
+<li>
+<p><strong>Error Handling</strong></p>
+<ul>
+<li>Operations are logged</li>
+<li>Transactions are rolled back on failure</li>
+<li>Execution results are available for verification</li>
+</ul>
+</li>
+</ol>
+<p>This BatchUpdate class significantly improves performance when dealing with multiple database operations by reducing the number of database round-trips.</p>
 
             </article>
         </div>

@@ -16,10 +16,9 @@
  */
 package com.ajaxjs.sqlman.crud;
 
-import com.ajaxjs.sqlman.annotation.Column;
-import com.ajaxjs.sqlman.annotation.IgnoreDB;
-import com.ajaxjs.sqlman.annotation.Transient;
 import com.ajaxjs.sqlman.JdbcConstants;
+import com.ajaxjs.sqlman.annotation.Column;
+import com.ajaxjs.sqlman.annotation.Transient;
 import com.ajaxjs.sqlman.crud.model.SqlParams;
 import com.ajaxjs.sqlman.util.Utils;
 import com.ajaxjs.util.StrUtil;
@@ -223,7 +222,7 @@ public class BeanWriter implements JdbcConstants {
                 }
 
                 Method method = property.getReadMethod(); // 获取字段对应的读取方法
-                if (method.getAnnotation(IgnoreDB.class) != null) // 忽略的字段，不参与
+                if (method.getAnnotation(Transient.class) != null) // 忽略的字段，不参与
                     continue;
 
                 Object value = method.invoke(entity);

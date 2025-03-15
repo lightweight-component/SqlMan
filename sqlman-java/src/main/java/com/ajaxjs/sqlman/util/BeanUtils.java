@@ -1,7 +1,7 @@
 package com.ajaxjs.sqlman.util;
 
 
-import com.ajaxjs.sqlman.annotation.IgnoreDB;
+import com.ajaxjs.sqlman.annotation.Transient;
 import com.ajaxjs.util.StrUtil;
 import com.ajaxjs.util.reflect.Clazz;
 import com.ajaxjs.util.reflect.Methods;
@@ -120,7 +120,7 @@ public class BeanUtils {
                 String key = property.getName();
                 Method getter = property.getReadMethod();// 得到 property 对应的 getter 方法
 
-                if (getter.getAnnotation(IgnoreDB.class) != null)
+                if (getter.getAnnotation(Transient.class) != null)
                     continue;
 
                 Object value = getter.invoke(bean); // 原始默认值，不过通常是没有指定的

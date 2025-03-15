@@ -21,7 +21,7 @@ PageResult<Map<String, Object>> result = new Sql(conn).input("SELECT * FROM arti
 
 ## Paging with Custom Page Size and Number
 
-The second example shows how to retrieve paginated results by specifying the page number and page size:
+The second example shows how to retrieve paginated results by specifying the record start and limit, like MySQL paging query:
 
 ```java
 PageResult<Map<String, Object>> result = new Sql(conn).input("SELECT * FROM article").page(3, 5);

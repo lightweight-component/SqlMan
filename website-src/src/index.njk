@@ -3,22 +3,123 @@
   <head>
     {% include "component/head.njk" %} <link rel="stylesheet" href="/style/reset.css"/>
     <title>SQLMan</title>
-    
+    <style>
+      .content {
+        padding: 20px;
+        line-height: 1.8;
+      }
+      .features {
+        width: 45%;
+      }
+      .features ul {
+        list-style-type: square;
+        padding-left: 20px;
+      }
+      :root {
+        --primary-color: #2563eb;
+        --secondary-color: #1e40af;
+        --text-color: #1f2937;
+        --bg-color: #ffffff;
+        --gray-light: #f3f4f6;
+      }
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+      }
+      .feature-card {
+        background: var(--gray-light);
+        padding: 2rem;
+        border-radius: 0.5rem;
+      }
+      .feature-card h3 {
+        margin-bottom: 1rem;
+      }
+      @media(max-width: 768px) {
+        .nav-links {
+          display: none;
+        }
+        .hero h1 {
+          font-size: 3rem;
+        }
+        section {
+          padding: 3rem 5%;
+        }
+      }
+    </style>
   </head>
   <body class="">
     {% include "component/top.njk" %}
     <div class="content main">
-      <h1>
-        Lightweight Data Access Library for Java, and MUCH MORE!
-      </h1>
-      <section>
-        <h2>Usage:</h2>
-        <div></div>
+      <section id="features">
+        <h1>Design Philosophy</h1>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h3>Small</h3>
+            <p>Simple philosophy, easy to understand the whole package quickly</p>
+          </div>
+          <div class="feature-card">
+            <h3>Transparent</h3>
+            <p>No magic behind the scenes, straightforward execution</p>
+          </div>
+          <div class="feature-card">
+            <h3>Fast</h3>
+            <p>Minimal object creation, efficient database operations</p>
+          </div>
+          <div class="feature-card">
+            <h3>Restraint</h3>
+            <p>Minimal introduction of third-party dependencies, small code size</p>
+          </div>
+        </div>
       </section>
-      <section>
-        <h2>Something I would like to say:</h2>
-        <div></div>
-      </section>
+      <div class="features" style="float:left">
+        <br/>
+        <h2>Some of the advantages of using SqlMan are:</h2>
+        <ul>
+          <li>Familiar way for you:
+            <ul>
+              <li>
+                <code>sql().input('SELECT * FROM table WHERE id=?', 1).query()</code>
+              </li>
+              <li>Multiple lines of SQL written in XML</li>
+              <li>
+                <code>@Insert</code>,
+                <code>@Update</code>,
+                <code>@Delete</code>,
+                <code>@Query</code>
+                annotations</li>
+              <li>Automatically populate JavaBean properties from ResultSets.</li>
+            </ul>
+          </li>
+          <li>Core philosophy centers around SQL. Enhanced SQL logic, supporting dynamic SQL (IF/ForEach).</li>
+          <li>Built-in common CRUD/Paging functionality.</li>
+          <li>Offers a rich set of extension features.</li>
+        </ul>
+      </div>
+      <div class="features" style="float:right">
+        <br/>
+        <h2>SqlMan is NOT:</h2>
+        <ul>
+          <li>An Object/Relational bridge.</li>
+          <li>Does not provide a functional-style chained call.</li>
+          <li>A heavyweight framework of any kind.</li>
+        </ul>
+      </div>
+      <div style="clear:both;text-align:center">
+        <br/>
+        <h2>Source Code</h2>
+        <p>Under GNU GENERAL PUBLIC LICENSE v3.0.</p>
+        <a href="https://github.com/lightweight-component/SqlMan">Github</a>
+        |
+        <a href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
+        <div>
+          <a href="https://sqlman.ajaxjs.com">Website</a>
+          |
+          <a href="https://sqlman.ajaxjs.com/docs">Documents</a>
+          |
+          <a href="https://github.com/lightweight-component/SqlMan">JavaDoc</a>
+        </div>
+      </div>
     </div>
     {% include "component/footer.njk" %}
   </body>

@@ -81,47 +81,126 @@
                 </ul>
             </menu>
             <article>
-                <h1>Query Concept</h1>
-<h2>The Concept before start</h2>
-<p>The most straightforward expression that produces results from the DB is a SQL query.To issue a query with a SqlMan Handle, we have to, at least:</p>
-<ul>
-<li>create the query,</li>
-<li>choose how to pass parameters to the query</li>
-<li>choose how to represent the result(s), after the query is executed</li>
-</ul>
-<p>We’ll now look at each of the points above.</p>
-<h2>Create the query</h2>
-<p>We assume that the query is ready to be executed, it's pure SQL statement. Of course, the connection is already established. Then we create a new <code>Sql</code> instance, pass <code>conn</code> to the constructor and SQL statement to <code>input()</code> method.</p>
-<pre><code class="language-java">Map&lt;String, Object&gt; result = new Sql(conn).input(&quot;SELECT * FROM shop_address&quot;).query(); // fetch the first one
+                <h1>Interact with Entity</h1>
+<p>So far, we've been discussing SqlMan with SQL statements. It might seem that we can't work without SQL, but that's not true. SqlMan provides a way to interact with databases using Entities, without writing a single line of SQL code.</p>
+<p>Entity here, means either a Java Bean(POJO) or a <code>Map</code> object.</p>
+<p>The Entity class in SqlMan provides a high-level abstraction for performing CRUD (Create, Read, Update, Delete) operations on database entities. It simplifies database interactions by allowing you to work with Java objects (POJOs) or Maps directly, without writing SQL statements.</p>
+<h2>Basic Setup</h2>
+<p>There are three ways to create an Entity instance:</p>
+<pre><code class="language-java">// Using default connection
+Entity entity = new Entity();
+
+// Using specific connection
+Entity entity = new Entity(connection);
+
+// Using DataSource
+Entity entity = new Entity(dataSource);
 </code></pre>
-<p>Currently we didn't pass any parameters to the query. We'll talk about how to pass parameters in the next section.</p>
-<p>Here is a question about how to represent the result(s), it can be divded into two parts:</p>
-<ul>
-<li>How many results to fetch? a single one? or a row? or list?</li>
-<li>Which format to represent the result(s)?</li>
-</ul>
-<p>SQlMan abstracts away from the JDBC ResultSet, which has a quite cumbersome API.</p>
-<p>Therefore, it offers several possibilities to access the columns resulting from a query or some other statement that returns a result.</p>
-<p>From the return structure of value(s), we can identify several types:</p>
-<ul>
-<li>A single element, such as a number, a string, a date, etc.</li>
-<li>A single database row, where fields are mapped to the values like key/value pairs, corresponding to <code>Map</code> in Java.</li>
-<li>Multiple rows, which form a two-dimensional structure, corresponding to <code>List&lt;Map&gt;</code> in Java.</li>
-</ul>
-<p>These types correspond to the following methods in SqlMan:</p>
-<ul>
-<li><code>queryOne(Type.class)</code>- Fetches the single value, means the first column of the first row. The return type matches what you pass in</li>
-<li><code>query()</code>- Fetches the first row, returning a <code>Map&lt;String, Object&gt;</code>.</li>
-<li><code>queryList()</code>- Fetch the list of values, means all the columns of all the rows, returning a <code>List&lt;Map&lt;String, Object&gt;&gt;</code>.</li>
-</ul>
-<p>Here are complete examples:</p>
-<pre><code class="language-java">Map&lt;String, Object&gt; result = new Sql(conn).input(&quot;SELECT * FROM shop_address&quot;).query(); // fetch the first one
-int result = new Sql(conn).input(&quot;SELECT COUNT(*) AS total FROM shop_address&quot;).queryOne(int.class); // fetch the first one
-List&lt;Map&lt;String, Object&gt;&gt; result = new Sql(conn).input(&quot;SELECT * FROM shop_address&quot;).queryList();
+<h2>Query Entity</h2>
+<p>Let's say we have a table <code>shop_address</code> in our database, and we want to query all records from it. At minimum, we need know that which table will be queried, so we can do it like this:</p>
+<pre><code class="language-java">// To fetch all records from a table:
+List&lt;Map&lt;String, Object&gt;&gt; result2 = new Entity(conn).setTableName(&quot;shop_address&quot;).list().queryList();
+assertFalse(result2.isEmpty());
 </code></pre>
-<h2>Return Format</h2>
-<p>There is the last question: Which format to represent the result(s)?</p>
-<p>---- We’ll now see the simplest ones: Map, we’ll see the more complex ones in the next section.</p>
+<p>By default, it will generate the following SQL statement:</p>
+<pre><code class="language-sql">SELECT * FROM shop_address WHERE 1=1 ORDER BY create_date DESC
+</code></pre>
+<p>Following the &quot;Convention over Configuration&quot; principle, it assumes there's a column named <code>create_date</code> in the table.It will automatically perform a descending order query.</p>
+<p>What if such a column doesn't exist? We can specify which column to query. This is perfectly fine, but it requires more code:</p>
+<pre><code class="language-java">TableModel tableModel = new TableModel();
+tableModel.setTableName(&quot;shop_address&quot;);
+tableModel.setCreateDateField(&quot;create_at&quot;); // specify the column name
+tableModel.setHasIsDeleted(false);
+
+List&lt;Map&lt;String, Object&gt;&gt; result = new Entity(conn).setTableModel(tableModel).list().queryList();
+assertFalse(result.isEmpty());
+</code></pre>
+<p><code>TableModel</code> is all about how to query a table.</p>
+<h3>Custom condition query</h3>
+<p>Although you can't pass the parameters directly like SQL statement, you can still pass <code>WHERE</code> statement to the query:</p>
+<pre><code class="language-java">List&lt;Address&gt; addresses = new Entity(conn).setTableModel(tableModel).list(&quot;AND stat = 1&quot;).queryList(Address.class);
+assertNotNull(addresses);
+</code></pre>
+<p>Remember to add <code>AND</code> before your condition statement.</p>
+<p>Besides, this example shows the result as Java Bean object, not Map object.</p>
+<h3>Query with Java Bean</h3>
+<p>Using a Java Bean is also possible:</p>
+<pre><code class="language-java">Address bean = new Entity(conn).setTableName(&quot;shop_address&quot;).info(1L).query(Address.class);
+</code></pre>
+<h3>Paging Query</h3>
+<p>The paging functionality works the same way as above:</p>
+<pre><code class="language-java">PageResult&lt;Object&gt; article = new Entity(conn).setTableName(&quot;shop_address&quot;).list().page();
+assertFalse(article.isEmpty());
+</code></pre>
+<h1>Insert Entity</h1>
+<p>This code demonstrates how to insert a new record into the database using SqlMan's Entity functionality. First, it creates a new Address object and sets its properties:</p>
+<pre><code class="language-java">Address address = new Address();
+address.setName(&quot;出差&quot;);
+address.setAddress(&quot;广州&quot;);
+address.setPhone(&quot;188&quot;);
+address.setPhone2(&quot;188&quot;);
+address.setRe(&quot;Tom&quot;);
+</code></pre>
+<p>Then, it configures the table settings using <code>TableModel</code>:</p>
+<pre><code class="language-java">TableModel tableModel = new TableModel();
+tableModel.setTableName(&quot;shop_address&quot;);
+tableModel.setAutoIns(true);
+tableModel.setIdTypeClz(Integer.class);
+</code></pre>
+<p>Finally, it performs the insert operation</p>
+<pre><code class="language-java">CreateResult&lt;Integer&gt; result = new Entity(conn).setTableModel(tableModel).input(address).create(Integer.class);
+assertNotNull(result.getNewlyId());
+assertTrue(result.isOk());
+</code></pre>
+<p>This code will automatically generate and execute an INSERT SQL statement based on the Address object's properties. The <code>CreateResult</code> object returns information about the operation, including the newly generated ID for the inserted record.</p>
+<h1>Update Entity</h1>
+<p>This code demonstrates how to update an existing record in the database using SqlMan's Entity functionality.</p>
+<pre><code class="language-java">Address address = new Address();
+address.setId(1);
+address.setName(&quot;出差&quot;);
+address.setAddress(&quot;广州&quot;);
+address.setPhone(&quot;188&quot;);
+address.setPhone2(&quot;188&quot;);
+address.setRe(&quot;Tom&quot;);
+
+TableModel tableModel = new TableModel();
+tableModel.setTableName(&quot;shop_address&quot;);
+tableModel.setAutoIns(true);
+tableModel.setIdTypeClz(Integer.class);
+
+UpdateResult result;
+result = new Entity(conn).setTableModel(tableModel).input(address).update();
+
+assertTrue(result.isOk());
+</code></pre>
+<p>The main difference from the insert operation is:</p>
+<ul>
+<li>The <code>Address</code> object includes an ID value ( <code>setId(1)</code> ), which tells SqlMan which record to update</li>
+<li>It uses the <code>update()</code> method instead of <code>create()</code></li>
+<li>The result is an <code>UpdateResult</code> object that indicates whether the operation succeeded
+This code will automatically generate and execute an UPDATE SQL statement based on the Address object's properties, updating the record where ID = 1.</li>
+</ul>
+<h2>Column name mapping</h2>
+<p>What if the column name in the database is different from the property name in the Java Bean? SqlMan provides a way to map the column name to the property name, just use a Java annotation <code>@Column(name =&quot;xxxx&quot;)</code> to specify it:</p>
+<pre><code class="language-java">@Data
+public class Address {
+    private Integer id;
+
+    private String name;
+
+    private String address;
+
+    private String phone;
+
+    @Transient // not persistent
+    private String phone2;
+
+    @Column(name =&quot;receiver&quot;) // real database column name is &quot;receiver&quot;
+    private String re;
+}
+</code></pre>
+<h2>Not persistent field</h2>
+<p>By default, properties and fields are persistent. If you don't want a field to be updated, you can specify that the property or field is not persistent by adding the <code>@Transient</code> annotation.</p>
 
             </article>
         </div>

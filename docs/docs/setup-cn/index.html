@@ -18,18 +18,18 @@
         <nav>
             <div>
                 <div class="links">
-                    <a href="/">🏠 Home</a>
+                    <a href="/">🏠 首页</a>
                     |
-                                                        ⚙️ Source:
+                                                                            ⚙️ 源码：
                     <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
                     
-                    | <a  href="/docs">English Version</a>
+                    |
+                    <a href="/docs">English Version</a>
                 </div>
                 <h1>
                     <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
                 </h1>
-                <h3>Lightweight Data Access Tools -- User Manual
-                </h3>
+                <h3>轻量级 JDBC 助手——用户手册</h3>
             </div>
         </nav>
         <div>
@@ -61,7 +61,8 @@
                 <h3>写入数据</h3>
                 <ul>
                     <li>
-                        <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a></li>
+                        <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a>
+                    </li>
                     <li>
                         <a href="/docs/write/batch-cn">批量更新</a>
                     </li>
@@ -69,7 +70,8 @@
                 <h3>其他用法</h3>
                 <ul>
                     <li>
-                        <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a></li>
+                        <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a>
+                    </li>
                     <li>
                         <a href="/docs/other/entity-cn">“类” ORM</a>
                     </li>
@@ -81,24 +83,25 @@
                 </ul>
             </menu>
             <article>
-                <h1>🔧 Setup SqlMan</h1>
-<h2>Requirements</h2>
+                <h1>🔧 配置 SqlMan</h1>
+<h2>系统要求</h2>
 <h3>Java</h3>
-<p>SqlMan runs on Java 8+.</p>
-<h3>Supported Databases</h3>
+<p>SqlMan 运行需要 Java 8 或更高版本。</p>
+<h3>支持的数据库</h3>
 <ul>
 <li>MySQL</li>
 <li>PostgreSQL</li>
-<li>H2 Database</li>
+<li>H2 数据库</li>
 <li>Apache Derby</li>
 </ul>
-<h1>Connecting to your database</h1>
-<p>Normally, you just tell Sqlman either a <code>DataSource</code> or a <code>Connection</code> to work. These're standard JDBC object that contain the connection information of database like URL, username, password, etc.</p>
+<h1>连接数据库</h1>
+<p>通常情况下，你只需要为 SqlMan 提供一个 <code>DataSource</code> 或 <code>Connection</code> 对象即可工作。这些是标准的 JDBC 对象，包含了数据库连接所需的信息，如 URL、用户名、密码等。</p>
 <pre><code class="language-java">Connection conn = JdbcConnection.getConnection(&quot;jdbc:mysql://localhost:3306/test&quot;, &quot;root&quot;, &quot;psw&quot;);
-Map&lt;String, Object&gt; result = new Sql(conn).input(&quot;SELECT * FROM shop_address&quot;).query(); // fetch the first one
+Map&lt;String, Object&gt; result = new Sql(conn).input(&quot;SELECT * FROM shop_address&quot;).query(); // 获取第一条记录
 </code></pre>
-<p>The code above is hardcoded, which is ONLY for demo/test purposes. In real world, you should use a connection pool to manage your connections.</p>
-<h2>Config in Spring</h2>
+<p>上面的代码是硬编码的，仅用于演示/测试目的。在实际应用中，你应该使用连接池来管理数据库连接。</p>
+<h2>Spring 框架中的配置</h2>
+<p>待完善</p>
 
             </article>
         </div>

@@ -19,7 +19,7 @@ layout: layouts/docs-cn.njk
     - `@Insert`、`@Update`、`@Delete`、`@Query` 注解 -- 高度兼容 JPA。
     - 自动将 ResultSet 填充到 JavaBean 属性中。无需手动调用 setter 方法将列值复制到 bean 实例中。ResultSet 的每一行都可以由一个完全填充的 bean 实例表示。此外，Map 类型是可选的。
 - 核心理念围绕 SQL。增强的 SQL 逻辑，支持动态 SQL（IF/ForEach）。
-- 内置常用的 CRUD 功能，使简单系统可以实现 0% SQL 编写，在复杂项目中可节省 50% 的工作量。
+- 内置常用的 CRUD/分页 功能，使简单系统可以实现 0% SQL 编写，在复杂项目中可节省 50% 的工作量。
 - 提供丰富的扩展功能，80% 的功能都可以自定义和扩展。
 
 ### SqlMan 的设计理念：

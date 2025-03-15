@@ -19,28 +19,27 @@ public class TestEntity extends BaseTest {
         TableModel tableModel = new TableModel();
         tableModel.setTableName("shop_address");
 
-        Map<String, Object> result =  new Entity(conn).setTableModel(tableModel).info(1L).query();
+        Map<String, Object> result = new Entity(conn).setTableModel(tableModel).info(1L).query();
         assertFalse(result.isEmpty());
 
-        Address bean =  new Entity(conn).query(Address.class);
+        Address bean = new Entity(conn).setTableName("shop_address").info(1L).query(Address.class);
         assertNotNull(bean);
     }
 
     @Test
     void testList() {
+        List<Map<String, Object>> result2 = new Entity(conn).setTableName("shop_address").list().queryList();
+        assertFalse(result2.isEmpty());
+
         TableModel tableModel = new TableModel();
         tableModel.setTableName("shop_address");
         tableModel.setHasIsDeleted(false);
 
-        Entity entity = new Entity(conn);
-        List<Map<String, Object>> result = entity.setTableModel(tableModel).list().queryList();
+        List<Map<String, Object>> result = new Entity(conn).setTableModel(tableModel).list().queryList();
         assertFalse(result.isEmpty());
 
-        List<Address> addresses = entity.queryList(Address.class);
+        List<Address> addresses = new Entity(conn).setTableModel(tableModel).list("AND stat = 1").queryList(Address.class);
         assertNotNull(addresses);
-
-        List<Map<String, Object>> result2 = new Entity(conn).setTableName("shop_address").list().queryList();
-        assertFalse(result2.isEmpty());
     }
 
     @Test

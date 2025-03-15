@@ -20,7 +20,7 @@ PageResult<Map<String, Object>> result = new Sql(conn).input("SELECT * FROM arti
 ```
 
 ## 使用自定义页面大小和页码的分页
-第二个示例展示如何通过指定页码和页面大小来获取分页结果：
+第二个示例展示如何通过指定记录起始位置和 limit大小来获取分页结果，如同 MySQL 的 LIMIT 3,5 分页方式：
 
 ```java
 PageResult<Map<String, Object>> result = new Sql(conn).input("SELECT * FROM article").page(3, 5);

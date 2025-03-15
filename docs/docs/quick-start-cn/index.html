@@ -18,18 +18,18 @@
         <nav>
             <div>
                 <div class="links">
-                    <a href="/">🏠 Home</a>
+                    <a href="/">🏠 首页</a>
                     |
-                                                        ⚙️ Source:
+                                                                            ⚙️ 源码：
                     <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
                     
-                    | <a  href="/docs">English Version</a>
+                    |
+                    <a href="/docs">English Version</a>
                 </div>
                 <h1>
                     <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
                 </h1>
-                <h3>Lightweight Data Access Tools -- User Manual
-                </h3>
+                <h3>轻量级 JDBC 助手——用户手册</h3>
             </div>
         </nav>
         <div>
@@ -61,7 +61,8 @@
                 <h3>写入数据</h3>
                 <ul>
                     <li>
-                        <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a></li>
+                        <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a>
+                    </li>
                     <li>
                         <a href="/docs/write/batch-cn">批量更新</a>
                     </li>
@@ -69,7 +70,8 @@
                 <h3>其他用法</h3>
                 <ul>
                     <li>
-                        <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a></li>
+                        <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a>
+                    </li>
                     <li>
                         <a href="/docs/other/entity-cn">“类” ORM</a>
                     </li>
@@ -81,28 +83,63 @@
                 </ul>
             </menu>
             <article>
-                <h1>Quick Start</h1>
-<h2>🔧 Install SqlMan</h2>
-<p>To get started, we just have to include the one SqlMan module in our dependencies:</p>
+                <h1>快速开始</h1>
+<h2>🔧 安装 SqlMan</h2>
+<p>首先，我们需要在项目依赖中添加 SqlMan 模块：</p>
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;com.ajaxjs&lt;/groupId&gt;
     &lt;artifactId&gt;sqlman&lt;/artifactId&gt;
-    &lt;version&gt;1.0&lt;/version&gt;
+    &lt;version&gt;1.2&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre>
-<p>Over the course of this article, we’ll show examples using the HSQL database:</p>
+<p>在本文中，我们将使用 HSQL 数据库作为示例：</p>
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;org.hsqldb&lt;/groupId&gt;
     &lt;artifactId&gt;hsqldb&lt;/artifactId&gt;
-    &lt;version&gt;2.4.0&lt;/version&gt;
-    &lt;scope&gt;test&lt;/scope&gt;
+    &lt;version&gt;2.2.220&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre>
-<p>We can find the latest version of SqlMan on <a href="">Maven Central</a>.</p>
-<blockquote>
-<p>About Java Version</p>
-<p>Currently, SqlMan only supports <strong>Java 11</strong> and above. However, we are aware that there is a significant user base still using JDK 8. Should the need arise, we are committed to maintaining compatibility with Java 8 by making a few modifications to the code.</p>
-</blockquote>
+<p>你可以在 <a href="https://central.sonatype.com/artifact/com.ajaxjs/sqlman">Maven Central</a> 上找到 SqlMan 的最新版本。</p>
+<p>接下来，我们将编写如下 Java 代码：</p>
+<pre><code class="language-java">public static void main(String[] args) throws SQLException {
+    // 配置 H2 数据源
+    JdbcDataSource dataSource = new JdbcDataSource();
+    dataSource.setURL(&quot;jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1&quot;);
+    dataSource.setUser(&quot;sa&quot;);
+    dataSource.setPassword(&quot;password&quot;);
+
+    // 获取数据库连接
+    Connection conn = dataSource.getConnection();
+
+    try (Statement stmt = conn.createStatement()) {
+        // 创建商店地址表
+        stmt.execute(&quot;CREATE TABLE shop_address (\n&quot; +
+                &quot;    id INT AUTO_INCREMENT PRIMARY KEY,\n&quot; +
+                &quot;    name VARCHAR(255) NOT NULL,\n&quot; +
+                &quot;    address VARCHAR(255) NOT NULL,\n&quot; +
+                &quot;    phone VARCHAR(20),\n&quot; +
+                &quot;    receiver VARCHAR(255),\n&quot; +
+                &quot;    stat INT,\n&quot; +
+                &quot;    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n&quot; +
+                &quot;    update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP\n&quot; +
+                &quot;);&quot;);
+
+        // 插入示例数据
+        stmt.execute(&quot;INSERT INTO shop_address (name, address, phone, receiver, stat)\n&quot; +
+                &quot;VALUES\n&quot; +
+                &quot;('商店 A', '主街 123 号', '123-456-7890', '张三', 0),\n&quot; +
+                &quot;('商店 B', '榆树街 456 号', '234-567-8901', '李四', 0),\n&quot; +
+                &quot;('商店 C', '橡树街 789 号', '345-678-9012', '王五', 0),\n&quot; +
+                &quot;('商店 D', '枫树街 101 号', '456-789-0123', '赵六', 1),\n&quot; +
+                &quot;('商店 E', '桦树街 202 号', '567-890-1234', '钱七', 1);&quot;);
+    }
+
+    // 查询所有记录并打印
+    List&lt;Map&lt;String, Object&gt;&gt; result = new Sql(conn).input(&quot;SELECT * FROM shop_address&quot;).queryList();
+    System.out.println(result);
+    conn.close();
+}
+</code></pre>
 
             </article>
         </div>
