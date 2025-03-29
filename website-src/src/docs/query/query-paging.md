@@ -1,10 +1,9 @@
 ---
 title: Paging Query
 subTitle: 2024-12-05 by Frank Cheung
-description: TODO
+description: This tutorial will guide you through the process of paging database data in SqlMan using a sample test code.
 date: 2022-01-05
-tags:
-  - last one
+tags: paging query
 layout: layouts/docs.njk
 ---
 # Paging Query

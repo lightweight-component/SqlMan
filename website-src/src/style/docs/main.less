@@ -212,7 +212,7 @@ article {
 
     p {
         margin-bottom: 3%;
-       
+
         // text-indent: 2em;
         text-align: justify;
         line-height: 160%;
@@ -263,7 +263,7 @@ article {
     code {
         background-color: #eee;
         color: cadetblue;
-        padding: 2px 5px;
+        padding: 2px 0px;
         word-break: break-all;
     }
 
@@ -377,22 +377,28 @@ article {
         width: 90%;
         overflow-x: auto;
         position: relative;
-        pointer-events: none;
+        // pointer-events: none;
 
         code {
             background-color: initial
         }
 
-        &::before {
-            pointer-events: auto;
-            content: '📋';
+        &>div {
             position: absolute;
             right: 20px;
             cursor: pointer;
         }
 
-        &.copied::before {
-            content: '📋Copied.';
-        }
+        // &::before {
+        //     pointer-events: auto;
+        //     content: '📋';
+        //     position: absolute;
+        //     right: 20px;
+        //     cursor: pointer;
+        // }
+
+        // &.copied::before {
+        //     content: '📋Copied.';
+        // }
     }
 }

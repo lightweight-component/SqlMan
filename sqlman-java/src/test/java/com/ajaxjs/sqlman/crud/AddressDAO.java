@@ -1,2 +1,6 @@
-package com.ajaxjs.sqlman.crud;public interface AddressDAO {
+package com.ajaxjs.sqlman.crud;
+
+import com.ajaxjs.sqlman.Address;
+
+public interface AddressDAO extends JpaStyle<Address, Integer> {
 }

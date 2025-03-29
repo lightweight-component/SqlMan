@@ -1,10 +1,9 @@
 ---
 title: 查询教程
 subTitle: 2024-12-05 by Frank Cheung
-description: TODO
+description: 在 SqlMan 中 如何使用参数化查询
 date: 2022-01-05
-tags:
-  - last one
+tags: query
 layout: layouts/docs-cn.njk
 ---
 # 查询教程
@@ -46,7 +45,6 @@ assertNotNull(result);
 ```java
 Address result = new Sql(conn).input("SELECT * FROM shop_address").query(Address.class); 
 List<Address> results = new Sql(conn).input("SELECT * FROM shop_address").queryList(Address.class);
- ```
 ```
 
 最后，我们可以将查询结果行映射到一个 bean 或其他自定义类。

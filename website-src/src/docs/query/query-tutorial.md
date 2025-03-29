@@ -1,10 +1,9 @@
 ---
 title: Query Concept
 subTitle: 2024-12-05 by Frank Cheung
-description: TODO
+description:  How to page query in SqlMan
 date: 2022-01-05
-tags:
-  - last one
+tags: Query
 layout: layouts/docs.njk
 ---
 # Query Tutorial

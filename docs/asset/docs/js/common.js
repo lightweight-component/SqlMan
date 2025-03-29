@@ -32,17 +32,24 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     document.querySelectorAll('pre').forEach(pre => {
-        pre.onclick = function () {
+        var div = document.createElement('div');
+        div.innerHTML = '📋';
+        var codeEl = pre.querySelector('code');
+        pre.insertBefore(div, codeEl);
+        div.onclick = function (e) {
             let code = pre.dataset.code;
-            code = code.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
 
-            navigator.clipboard.writeText(code).then(() => {
-                console.log('文本已成功复制到剪贴板');
-                pre.classList.add('copied');
-            }).catch(err => {
-                console.error('无法复制文本: ', err);
-                fallbackCopyTextToClipboard(text); // 回退方案
-            });
+            if (code) {
+                code = code.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+
+                navigator.clipboard.writeText(code).then(() => {
+                    console.log('文本已成功复制到剪贴板');
+                    div.innerHTML = '📋Copied.'
+                }).catch(err => {
+                    console.error('无法复制文本: ', err);
+                    fallbackCopyTextToClipboard(text); // 回退方案
+                });
+            }
         }
     });
 });
@@ -143,6 +150,7 @@ function highlightCode() {
 
     codeElement && codeElement.length && codeElement.forEach(item => {
         let code = item.innerHTML;
+        item.parentNode.dataset.code = code;
         code = code.replace(matchString, m => `<span class="code-string">${m}</span>`);
         code = code.replace(matchSqlField, m => `<span class="sql-field">${m}</span>`);
 
@@ -153,16 +161,18 @@ function highlightCode() {
 
     codeElement && codeElement.length && codeElement.forEach(item => {
         let code = item.innerHTML;
+        item.parentNode.dataset.code = code;
         code = code.replace(matchString, m => `<span class="code-string">${m}</span>`);
         code = code.replace(matchSqlField, m => `<span class="sql-field">${m}</span>`);
 
         item.innerHTML = highlightDDLKeywords(code);
     });
 
-    codeElement = document.querySelectorAll('.java-code');
+    codeElement = document.querySelectorAll('.language-java');
 
     codeElement && codeElement.length && codeElement.forEach(item => {
         let code = item.innerHTML;
+        item.parentNode.dataset.code = code;
         code = code.replace(matchString2, m => `<span Class="code-string">${m}</span>`);
         code = code.replace(javaKeywordsRegex, '<span class="java-keyword">$1</span>');
         code = code.replace(matchJavaAnn, m => `<span class="java-anno">${m}</span>`);
@@ -174,7 +184,7 @@ function highlightCode() {
 
     codeElement && codeElement.length && codeElement.forEach(item => {
         let code = item.innerHTML;
-
+        item.parentNode.dataset.code = code;
         const yamlKeywords = ["true", "false", "null"];
 
         // YAML语法规则的正则表达式
@@ -204,5 +214,5 @@ var userLang = navigator.language || navigator.userLanguage;
 
 // 检查是否为中文环境（包括简体和繁体）
 if (userLang.startsWith('zh') && location.pathname.indexOf('cn') == -1) {
-    confirm('欢迎！您改为访问中文内容。是否继续？') && location.assign('/cn');  // 如果是中文，则弹出提示
+    confirm('欢迎！您可以改为访问中文内容。是否继续？') && location.assign('/cn');  // 如果是中文，则弹出提示
 }

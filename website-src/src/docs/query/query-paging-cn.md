@@ -1,10 +1,9 @@
 ---
 title: 分页查询
 subTitle: 2024-12-05 by Frank Cheung
-description: TODO
+description: 本教程将通过示例代码指导您如何在 SqlMan 中实现数据库数据的分页。
 date: 2022-01-05
-tags:
-  - last one
+tags: 分页
 layout: layouts/docs-cn.njk
 ---
 # 分页查询
