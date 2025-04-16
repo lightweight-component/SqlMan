@@ -3,24 +3,27 @@
 ![coverage](https://img.shields.io/badge/coverage-80%25-yellowgreen.svg?maxAge=2592000)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg?longCache=true&style=flat)](http://www.apache.org/licenses/LICENSE-2.0.txt)
 [![Email](https://img.shields.io/badge/Contact--me-Email-orange.svg)](mailto:frank@ajaxjs.com)
-[![中文](https://img.shields.io/badge/lang-中文-red)](./README.zh-CN.md)
 [![QQ群](https://framework.ajaxjs.com/static/qq.svg)](https://shang.qq.com/wpa/qunwpa?idkey=3877893a4ed3a5f0be01e809e7ac120e346102bd550deb6692239bb42de38e22)
 
 # SqlMan
 
-SqlMan is a lightweight wrapper over JDBC. It is NOT an ORM but follows a SQL-first approach. It allows you to use pure SQL with IF/forEach and pass Map parameters for queries or executions. The results you receive are either 'isOk' indicators and 'Map' or Java Bean object(s). SqlMan enables fast CRUD database operations with ZERO dependencies, except for the JDK.
+SqlMan 是一个轻量级的 JDBC 封装工具。它**不是**一个 ORM 框架，而是采用 SQL 优先的策略。它允许你使用纯 SQL，并支持 IF/forEach 等逻辑控制，同时可以通过 Map 参数传递查询或执行语句。返回的结果可以是“Map”或 Java Bean 对象。SqlMan 能够以零依赖的方式（除了 JDK 外）快速实现数据库的 CRUD 操作。
 
-## Source code
+## 源代码
 
-[Github](https://github.com/lightweight-component/SqlMan) | [Gitcode](https://gitcode.com/lightweight-component/SqlMan)
+[GitHub](https://github.com/lightweight-component/SqlMan) | [Gitcode](https://gitcode.com/lightweight-component/SqlMan)
 
-## Link
+## 链接
 
-[Web Site](https://sqlman.ajaxjs.com) | [Tutorials](https://javadoc.io/doc/com.ajaxjs/sqlman) | [Java Documents](https://javadoc.io/doc/com.ajaxjs/sqlman) 
+[官方网站](https://sqlman.ajaxjs.com) | [教程](https://javadoc.io/doc/com.ajaxjs/sqlman) | [Java 文档](https://javadoc.io/doc/com.ajaxjs/sqlman)
 
-## Install
+## 安装
 
-Runs on Java8+. Maven:
+运行环境：Java 8 及以上版本。
+
+### Maven 依赖
+
+在你的 `pom.xml` 文件中添加以下依赖项来引入 SqlMan：
 
 ```xml
 
