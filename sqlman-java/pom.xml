@@ -17,6 +17,7 @@
     <packaging>jar</packaging>
     <description>A easy, small, straight forward Java CRUD Helper.</description>
 
+    <url>https://sqlman.ajaxjs.com/</url>
     <scm>
         <url>https://github.com/lightweight-component/SqlMan</url>
         <connection>scm:git:https://github.com/lightweight-component/SqlMan.git</connection>

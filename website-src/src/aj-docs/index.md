@@ -5,7 +5,7 @@ description: TODO
 date: 2022-01-05
 tags:
   - last one
-layout: layouts/aj-util.njk
+layout: layouts/aj-docs.njk
 ---
 # AJ Framework 简介
 
