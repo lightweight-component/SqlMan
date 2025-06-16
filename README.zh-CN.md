@@ -1,7 +1,8 @@
 [![Maven Central](https://img.shields.io/maven-central/v/com.ajaxjs/sqlman?label=Latest%20Release)](https://central.sonatype.com/artifact/com.ajaxjs/sqlman)
-[![Javadoc](https://img.shields.io/badge/javadoc-1.0-brightgreen.svg?)](https://javadoc.io/doc/com.ajaxjs/sqlman)
+[![Javadoc](https://img.shields.io/badge/javadoc-1.3-brightgreen.svg?)](https://javadoc.io/doc/com.ajaxjs/sqlman)
 ![coverage](https://img.shields.io/badge/coverage-80%25-yellowgreen.svg?maxAge=2592000)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg?longCache=true&style=flat)](http://www.apache.org/licenses/LICENSE-2.0.txt)
+[![询问 DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/lightweight-component/aj-mcp)
 [![Email](https://img.shields.io/badge/Contact--me-Email-orange.svg)](mailto:frank@ajaxjs.com)
 [![QQ群](https://framework.ajaxjs.com/static/qq.svg)](https://shang.qq.com/wpa/qunwpa?idkey=3877893a4ed3a5f0be01e809e7ac120e346102bd550deb6692239bb42de38e22)
 
@@ -15,7 +16,7 @@ SqlMan 是一个轻量级的 JDBC 封装工具。它**不是**一个 ORM 框架�
 
 ## 链接
 
-[官方网站](https://sqlman.ajaxjs.com) | [教程](https://javadoc.io/doc/com.ajaxjs/sqlman) | [Java 文档](https://javadoc.io/doc/com.ajaxjs/sqlman)
+[官方网站](https://sqlman.ajaxjs.com) | [教程](https://sqlman.ajaxjs.com/docs/) | [Java 文档](https://javadoc.io/doc/com.ajaxjs/sqlman)
 
 ## 安装
 
