@@ -21,4 +21,9 @@ public @interface Table {
      * @return v
      */
     boolean isReturnNewlyId() default false;
+
+    /**
+     * 是否自增 id
+     */
+    boolean isAutoIns() default false;
 }

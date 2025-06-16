@@ -16,14 +16,14 @@
  */
 package com.ajaxjs.sqlman.crud;
 
-import com.ajaxjs.sqlman.annotation.Id;
-import com.ajaxjs.sqlman.annotation.Table;
-import com.ajaxjs.sqlman.model.CreateResult;
-import com.ajaxjs.sqlman.crud.model.SqlParams;
-import com.ajaxjs.sqlman.crud.model.TableModel;
-import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman.DataAccessException;
 import com.ajaxjs.sqlman.Sql;
+import com.ajaxjs.sqlman.annotation.Id;
+import com.ajaxjs.sqlman.annotation.Table;
+import com.ajaxjs.sqlman.crud.model.SqlParams;
+import com.ajaxjs.sqlman.crud.model.TableModel;
+import com.ajaxjs.sqlman.model.CreateResult;
+import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman.util.Utils;
 import com.ajaxjs.util.reflect.Methods;
 import lombok.Data;
@@ -89,6 +89,18 @@ public class Entity extends Sql implements IEntity {
     @Override
     public IEntity input(Object javaBean) {
         this.javaBean = javaBean;
+
+        if (tableModel == null) { // 表示省略 setTableModel() 配置，那么的话，从实体 class 获取元数据
+            tableModel = new TableModel();
+
+            Table annotation = javaBean.getClass().getAnnotation(Table.class);
+
+            if (annotation == null)
+                throw new IllegalStateException("未指定 @Table 注解，无法获取表名");
+
+            tableModel.setTableName(annotation.value());
+            tableModel.setAutoIns(annotation.isAutoIns());
+        }
 
         return this;
     }

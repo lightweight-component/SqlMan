@@ -7,6 +7,8 @@ package com.ajaxjs.sqlman.util;
  *
  * @author <a href="https://www.cnblogs.com/yangzhilong/p/10290862.html">...</a>
  */
+
+
 public class SnowflakeId {
     /**
      * 时间起始标记点，作为基准，一般取系统的最近时间 此处以2018-01-01为基准时间
@@ -16,7 +18,7 @@ public class SnowflakeId {
     /**
      * 机器标识位数
      */
-    private final long workerIdBits = 4L;
+    private final long workerIdBits = 3L;
 
     /**
      * 毫秒内自增位
@@ -101,5 +103,9 @@ public class SnowflakeId {
      */
     public static synchronized long get() {
         return INSTANCE.nextId();
+    }
+
+    public static void main(String[] args) {
+        System.out.println(get());
     }
 }

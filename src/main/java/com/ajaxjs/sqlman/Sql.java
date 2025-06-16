@@ -7,6 +7,7 @@ import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman.util.JsonUtil;
 import com.ajaxjs.sqlman.util.Utils;
 import com.ajaxjs.util.ConvertBasicValue;
+import com.ajaxjs.util.EncodeTools;
 import com.ajaxjs.util.reflect.Clazz;
 import com.ajaxjs.util.reflect.Methods;
 import com.ajaxjs.util.reflect.Types;
@@ -19,10 +20,7 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 @EqualsAndHashCode(callSuper = true)
@@ -196,17 +194,25 @@ public class Sql extends JdbcCommand implements DAO {
         for (int i = 1; i <= metaData.getColumnCount(); i++) {// 遍历结果集
             String key = Utils.changeColumnToFieldName(metaData.getColumnLabel(i));
             Object value = rs.getObject(i);
+            String columnTypeName = metaData.getColumnTypeName(i);
+//            log.info(key + "::" + columnTypeName);
 
-//            log.debug(key+"::"+metaData.getColumnTypeName(i));
-            /* mysql 8 json 字段对应 jdbc 的类型是？有没有办法让 jdbc 得知这个是一个 json 类型的字段？ */
-            if (value != null && JSON_TYPE_MYSQL8.equals(metaData.getColumnTypeName(i))) {
+            if (value != null) {
+                if ("BLOB".equals(columnTypeName)) {
+                    // 获取 BLOB 数据
+                    Blob blob = rs.getBlob(i);
+                    // 将 BLOB 转为字节数组
+                    byte[] blobBytes = blob.getBytes(1, (int) blob.length());
 
-                /* JSON 类型会返回字符串 null 而不是 null */
-                if ("null".equals(value))
-                    value = null;
-                else {
-                    String jsonStr = value.toString();
-                    value = jsonStr.startsWith("[") ? JsonUtil.INSTANCE.json2mapList(jsonStr) : JsonUtil.INSTANCE.json2map(jsonStr);
+                    value = EncodeTools.base64EncodeToString(blobBytes);
+                } else if (JSON_TYPE_MYSQL8.equals(columnTypeName)) { /* mysql 8 json 字段对应 jdbc 的类型是？有没有办法让 jdbc 得知这个是一个 json 类型的字段？ */
+                    /* JSON 类型会返回字符串 null 而不是 null */
+                    if ("null".equals(value))
+                        value = null;
+                    else {
+                        String jsonStr = value.toString();
+                        value = jsonStr.startsWith("[") ? JsonUtil.INSTANCE.json2mapList(jsonStr) : JsonUtil.INSTANCE.json2map(jsonStr);
+                    }
                 }
             }
 

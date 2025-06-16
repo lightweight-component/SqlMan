@@ -1,1 +1,0 @@
-SqlMan's main project

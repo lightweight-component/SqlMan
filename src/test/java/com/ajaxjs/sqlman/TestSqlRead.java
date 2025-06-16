@@ -3,11 +3,14 @@ package com.ajaxjs.sqlman;
 import com.ajaxjs.sqlman.model.PageResult;
 import org.junit.jupiter.api.Test;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static com.ajaxjs.util.ObjectHelper.mapOf;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestSqlRead extends BaseTest {
     @Test
@@ -27,6 +30,15 @@ public class TestSqlRead extends BaseTest {
     }
 
     @Test
+    public void testQueryBlob() throws SQLException {
+        try (Connection conn = DriverManager.getConnection(String.format(JdbcConnection.MYSQL_CONN, "", "user_interaction"), "root", "")) {
+            Map<String, Object> result;
+            result = new Sql(conn).input("SELECT * FROM user WHERE id = 8").query();
+            System.out.println(result);
+        }
+    }
+
+    @Test
     public void testQueryInfo() {
         Map<String, Object> result;
         result = new Sql(conn).input("SELECT * FROM shop_address").query(); // fetch the first one
@@ -40,7 +52,6 @@ public class TestSqlRead extends BaseTest {
 
         result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE id = ?", mapOf("tableName", "shop_address", "abc", 2), 1).query();
         assertNotNull(result);
-
     }
 
     @Test
