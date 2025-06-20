@@ -21,6 +21,7 @@ import com.ajaxjs.sqlman.annotation.Column;
 import com.ajaxjs.sqlman.annotation.Transient;
 import com.ajaxjs.sqlman.crud.model.SqlParams;
 import com.ajaxjs.sqlman.util.Utils;
+import com.ajaxjs.util.JsonUtil;
 import com.ajaxjs.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -165,16 +166,20 @@ public class BeanWriter implements JdbcConstants {
         return sp;
     }
 
-
     /**
      * Bean 的值转换为符合 SQL 格式的。这个适用于 ? 会自动转换类型
+     *
+     * @param value Java Bean 的值
+     * @return
      */
     private static Object beanValue2SqlValue(Object value) {
         if (value instanceof Enum) // 枚举类型，取其字符串保存
             return value.toString();
         else if (NULL_DATE.equals(value) || NULL_INT.equals(value) || NULL_LONG.equals(value) || NULL_STRING.equals(value)) // 如何设数据库 null 值
             return null;
-        else
+        else if(value instanceof List) {
+            return JsonUtil.toJson(value);// 假設數據庫是 text，於是一律轉換 json
+        } else
             return value;
     }
 

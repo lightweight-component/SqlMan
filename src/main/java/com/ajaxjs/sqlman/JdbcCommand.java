@@ -190,9 +190,10 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
             setParam2Ps(ps, params);
             log.info(PrettyLog.LOG_TEXT, "Update", sql, Arrays.toString(params), PrettyLog.printRealSql(sql, params));
 
+            int effectedRows = ps.executeUpdate();
             UpdateResult result = new UpdateResult();
-            result.setOk(true);
-            result.setEffectedRows(ps.executeUpdate());
+            result.setOk(effectedRows > 0);
+            result.setEffectedRows(effectedRows);
 
             resultText = result.toString();
             return result;
