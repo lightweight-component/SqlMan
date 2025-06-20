@@ -17,6 +17,7 @@
 package com.ajaxjs.sqlman.crud;
 
 import com.ajaxjs.sqlman.DataAccessException;
+import com.ajaxjs.sqlman.JdbcConnection;
 import com.ajaxjs.sqlman.Sql;
 import com.ajaxjs.sqlman.annotation.Id;
 import com.ajaxjs.sqlman.annotation.Table;
@@ -276,5 +277,9 @@ public class Entity extends Sql implements IEntity {
 
         setSql(sql);
         return this;
+    }
+
+    public static Entity newInstance() {
+        return new Entity(JdbcConnection.getConnection());
     }
 }

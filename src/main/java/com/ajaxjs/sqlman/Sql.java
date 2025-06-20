@@ -23,9 +23,9 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.util.*;
 
-@EqualsAndHashCode(callSuper = true)
-@Slf4j
 @Data
+@Slf4j
+@EqualsAndHashCode(callSuper = true)
 public class Sql extends JdbcCommand implements DAO {
     /**
      * Create a JDBC action with global connection
@@ -402,5 +402,9 @@ public class Sql extends JdbcCommand implements DAO {
         setKeyParams(keyParams);
 
         return inputXml(sqlId, params);
+    }
+
+    public static Sql newInstance() {
+        return new Sql(JdbcConnection.getConnection());
     }
 }
