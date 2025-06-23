@@ -14,7 +14,9 @@ import javax.sql.DataSource;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -215,8 +217,14 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
         if ((params == null || params.length == 0))
             return;
 
-        for (int i = 0; i < params.length; i++)
-            ps.setObject(i + 1, params[i]);
+        for (int i = 0; i < params.length; i++) {
+            Object ele = params[i];
+
+            if(ele instanceof List)
+                throw new UnsupportedOperationException("暂不支持 List 类型参数。如果你入參用於 IN (?)，請直接拼接 SQL 語句而不是使用 PreparedStatement。這是系統的限制，無法支持 List");
+
+            ps.setObject(i + 1, ele);
+        }
     }
 
     /**
@@ -233,4 +241,12 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
 
         return update();
     }
+
+    public static String toSqlValues(List<java.lang.String> ele) {
+        List<String> result = new ArrayList<>(ele.size());
+        ele.forEach(el -> result.add("'" + el + "'"));
+
+        return String.join(",", result);
+    }
+
 }
