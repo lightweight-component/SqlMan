@@ -407,4 +407,9 @@ public class Sql extends JdbcCommand implements DAO {
     public static Sql newInstance() {
         return new Sql(JdbcConnection.getConnection());
     }
+
+    // shorthand
+    public static Sql instance() {
+        return newInstance();
+    }
 }

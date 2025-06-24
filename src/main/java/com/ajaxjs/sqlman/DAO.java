@@ -15,8 +15,8 @@ public interface DAO {
     /**
      * 执行 SQL 并返回 DAO 对象
      *
-     * @param sql       SQL 语句
-     * @param params    可变参数，用于替换 SQL 语句中的占位符
+     * @param sql    SQL 语句
+     * @param params 可变参数，用于替换 SQL 语句中的占位符
      * @return 返回一个 DAO 对象，该对象包含执行 SQL 后从数据库获取的数据
      */
     DAO input(String sql, Object... params);
@@ -66,6 +66,12 @@ public interface DAO {
      */
     Map<String, Object> query();
 
+    /**
+     * 查询单行记录(单个结果)，保存为 Java Bean 结构。如果查询不到任何数据返回 null。
+     *
+     * @param clz Bean 实体的类
+     * @return Java Bean 的结果。如果查询不到任何数据返回 null。
+     */
     <T> T query(Class<T> clz);
 
     /**

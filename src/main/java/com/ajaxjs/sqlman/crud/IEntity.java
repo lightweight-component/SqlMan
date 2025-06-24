@@ -50,5 +50,12 @@ public interface IEntity extends DAO {
      */
     <T extends Serializable> CreateResult<T> create(Class<T> idTypeClz);
 
+    /**
+     * 新建记录
+     *
+     * @return 新建的结果，不关心新增主键
+     */
+    CreateResult<?> create();
+
     UpdateResult update(String where);
 }

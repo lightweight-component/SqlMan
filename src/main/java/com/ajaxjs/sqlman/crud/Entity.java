@@ -115,6 +115,15 @@ public class Entity extends Sql implements IEntity {
         return create(tableModel.isAutoIns(), idTypeClz);
     }
 
+    @Override
+    public  CreateResult<?> create() {
+        SqlParams sp = BeanWriter.entity2InsertSql(getTableName(), javaBean);
+        setSql(sp.sql);
+        setParams(sp.values);
+
+        return create(tableModel.isAutoIns(), null);
+    }
+
     /**
      * 修改实体
      * 将一个 Map 转换成更新语句的 SqlParams 对象，可允许任意的过滤条件，而不只是 WHERE id = 1
@@ -281,5 +290,10 @@ public class Entity extends Sql implements IEntity {
 
     public static Entity newInstance() {
         return new Entity(JdbcConnection.getConnection());
+    }
+
+    // shorthand
+    public static Entity instance() {
+        return newInstance();
     }
 }

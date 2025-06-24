@@ -142,7 +142,8 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
                             if (newlyId instanceof BigInteger)
                                 newlyId = ((BigInteger) newlyId).longValue();
 
-                            result.setNewlyId((T) newlyId);
+                            if (idType != null)
+                                result.setNewlyId((T) newlyId);
 
 //                            if (idType.equals(Long.class))
 //                                return (Long) newlyId;
@@ -154,16 +155,18 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
                     }
                 } else {
                     // 不是自增，但不能返回 null，返回 null 就表示没插入成功
-                    T v = null;
+                    if (idType != null) {
+                        T v = null;
 
-                    if (idType.equals(Long.class))
-                        v = (T) INSERT_OK_LONG;
-                    else if (idType.equals(Integer.class))
-                        v = (T) INSERT_OK_INT;
-                    else if (idType.equals(String.class))
-                        v = (T) INSERT_OK_STR;
+                        if (idType.equals(Long.class)) {
+                            v = (T) INSERT_OK_LONG;
+                        } else if (idType.equals(Integer.class))
+                            v = (T) INSERT_OK_INT;
+                        else if (idType.equals(String.class))
+                            v = (T) INSERT_OK_STR;
 
-                    result.setNewlyId(v);
+                        result.setNewlyId(v);
+                    }
                 }
 
                 resultText = result.toString();
@@ -220,7 +223,7 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
         for (int i = 0; i < params.length; i++) {
             Object ele = params[i];
 
-            if(ele instanceof List)
+            if (ele instanceof List)
                 throw new UnsupportedOperationException("暂不支持 List 类型参数。如果你入參用於 IN (?)，請直接拼接 SQL 語句而不是使用 PreparedStatement。這是系統的限制，無法支持 List");
 
             ps.setObject(i + 1, ele);
