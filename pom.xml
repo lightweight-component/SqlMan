@@ -1,70 +1,80 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>com.ajaxjs</groupId>
         <artifactId>ajaxjs-parent</artifactId>
-        <version>1.31</version>
+        <version>1.21</version>
         <relativePath/>
     </parent>
 
-    <artifactId>sqlman</artifactId>
-    <version>1.3</version>
-    <name>SqlMan</name>
+    <artifactId>ajaxjs-data</artifactId>
+    <name>aj-data</name>
+    <version>1.1.7</version>
+    <description>Lightweight Data Access Object</description>
     <packaging>jar</packaging>
-    <description>A easy, small, straight forward Java CRUD Helper.</description>
 
-    <url>https://sqlman.ajaxjs.com/</url>
+    <url>https://framework.ajaxjs.com/docs/aj/?section=data</url>
     <scm>
-        <url>https://github.com/lightweight-component/SqlMan</url>
-        <connection>scm:git:https://github.com/lightweight-component/SqlMan.git</connection>
+        <url>https://github.com/lightweight-component/aj-data</url>
+        <connection>scm:git:https://github.com/lightweight-component/aj-data.git</connection>
     </scm>
 
     <issueManagement>
-        <system>Github Issues</system>
-        <url>https://github.com/lightweight-component/SqlMan/issues</url>
+        <system>GitHub Issues</system>
+        <url>https://github.com/lightweight-component/aj-data/issues</url>
     </issueManagement>
 
     <dependencies>
         <dependency>
             <groupId>com.ajaxjs</groupId>
-            <artifactId>ajaxjs-util</artifactId>
-            <version>1.2.4</version>
+            <artifactId>spring</artifactId>
+            <version>1.0</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${springboot.version}</version>
+            <scope>provided</scope>
         </dependency>
 
+
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-expression</artifactId>
-            <version>5.3.31</version>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.14.2.0</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>com.github.jsqlparser</groupId>
             <artifactId>jsqlparser</artifactId>
+            <version>4.4</version>
         </dependency>
 
-        <!-- 编译为 jar 包时依赖的 -->
+        <!--        <dependency>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-webmvc</artifactId>
+                    <version>${spring.version}</version>
+                    <scope>provided</scope>
+                </dependency>-->
+
+        <!--        <dependency>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
+                    <version>${spring.version}</version>
+                    <scope>provided</scope>
+                </dependency>-->
+
+        <!-- Tomcat JNDI 数据源 -->
         <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-jdbc</artifactId>
+            <version>8.5.100</version>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-
-            <scope>test</scope>
-        </dependency>
-
-        <!-- MySQL 数据库驱动 -->
-        <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
