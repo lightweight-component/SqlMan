@@ -8,6 +8,8 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 @Slf4j
@@ -65,6 +67,15 @@ public class Utils {
             str = str.substring(1);
 
         return str;
+    }
+
+    public static Map<String, Object> changeFieldToColumnName(Map<String, Object> map) {
+        Map<String, Object> n = new HashMap<>();
+
+        for (String key : map.keySet())
+            n.put(changeFieldToColumnName(key), map.get(key));
+
+        return n;
     }
 
     /**
