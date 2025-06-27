@@ -15,7 +15,7 @@ public class IdField {
     /**
      * 是否自增 id
      */
-    private boolean isAutoIns;
+    private boolean isAutoIns = true;
 
     /**
      * ID 类型，1=自增；2=雪花；3=UUID

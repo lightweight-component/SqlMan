@@ -294,8 +294,14 @@ public class Sql extends JdbcCommand implements DAO {
                                 value = JsonUtil.INSTANCE.fromJson(jsonStr, propertyType);
                             else if (jsonStr.startsWith("[")) {
 //                            Class<?> listType =  propertyType; // it might be a List
+
                                 Class<?> _beanClz = Types.getGenericFirstReturnType(property.getReadMethod());
-                                value = JsonUtil.INSTANCE.json2list(jsonStr, _beanClz);
+
+                                if (_beanClz == Integer.class || _beanClz == Long.class || _beanClz == String.class) {
+                                    value = com.ajaxjs.util.JsonUtil.json2list(jsonStr, _beanClz);
+                                } else
+//                                value="foo";
+                                    value = JsonUtil.INSTANCE.json2list(jsonStr, _beanClz);
                             } else {
                                 value = null;
                                 log.warn("非法 JSON 字符串： {}", jsonStr);
