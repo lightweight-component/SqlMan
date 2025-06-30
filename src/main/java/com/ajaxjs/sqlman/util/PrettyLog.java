@@ -68,41 +68,49 @@ public class PrettyLog {
         if (!StrUtil.hasText(sql))
             throw new IllegalArgumentException("SQL 语句不能为空！");
 
-        //        if (isClosePrintRealSql)
-        //            return null;
-        sql = sql.replaceAll(SPACE_LINE, StrUtil.EMPTY_STRING);
+        try {
 
-        if (params == null || params.length == 0) // 完整的 SQL 无须填充
-            return sql;
+            //        if (isClosePrintRealSql)
+            //            return null;
+            sql = sql.replaceAll(SPACE_LINE, StrUtil.EMPTY_STRING);
 
-        if (!match(sql, params))
-            log.info("SQL 语句中的占位符与值参数（个数上）不匹配。SQL：{}，\nparams:{}", sql, Arrays.toString(params));
+            if (params == null || params.length == 0) // 完整的 SQL 无须填充
+                return sql;
 
-        if (sql.endsWith("?"))
-            sql += " ";
+            if (!match(sql, params))
+                log.info("SQL 语句中的占位符与值参数（个数上）不匹配。SQL：{}，\nparams:{}", sql, Arrays.toString(params));
 
-        String[] arr = sql.split("\\?");
+            if (sql.endsWith("?"))
+                sql += " ";
 
-        for (int i = 0; i < arr.length - 1; i++) {
-            Object value = params[i];
-            String inSql;
+            String[] arr = sql.split("\\?");
 
-            if (value instanceof Date) // 只考虑了字符串、布尔、数字和日期类型的转换
-                inSql = "'" + value + "'";
-            else if (value instanceof String)
-                inSql = "'" + value + "'";
-            else if (value instanceof Boolean)
-                inSql = (Boolean) value ? "1" : "0";
-            else if (value != null)
-                inSql = value.toString();// number
-            else
-                inSql = StrUtil.EMPTY_STRING;
+            for (int i = 0; i < arr.length - 1; i++) {
+                Object value = params[i];
+                String inSql;
 
-            arr[i] = arr[i] + inSql;
+                if (value instanceof Date) // 只考虑了字符串、布尔、数字和日期类型的转换
+                    inSql = "'" + value + "'";
+                else if (value instanceof String)
+                    inSql = "'" + value + "'";
+                else if (value instanceof Boolean)
+                    inSql = (Boolean) value ? "1" : "0";
+                else if (value != null)
+                    inSql = value.toString();// number
+                else
+                    inSql = StrUtil.EMPTY_STRING;
+
+                arr[i] = arr[i] + inSql;
+            }
+
+            String str = String.join(" ", arr).trim();
+
+            return insertNewline(str, 25);
+        } catch (Throwable e) {
+            log.warn("打印真实 SQL 执行语句异常", e);
+
+            return "打印真实 SQL 执行语句异常";
         }
-
-        String str = String.join(" ", arr).trim();
-        return insertNewline(str, 25);
     }
 
 
