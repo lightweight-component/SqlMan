@@ -30,6 +30,15 @@ import com.ajaxjs.util.reflect.Methods;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.JdbcParameter;
+import net.sf.jsqlparser.expression.LongValue;
+import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
+import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.schema.Column;
+import net.sf.jsqlparser.statement.update.Update;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
@@ -116,7 +125,7 @@ public class Entity extends Sql implements IEntity {
     }
 
     @Override
-    public  CreateResult<?> create() {
+    public CreateResult<?> create() {
         SqlParams sp = BeanWriter.entity2InsertSql(getTableName(), javaBean);
         setSql(sp.sql);
         setParams(sp.values);
@@ -152,20 +161,65 @@ public class Entity extends Sql implements IEntity {
     public UpdateResult update() {
         if (javaBean != null) { // do bean update
             Object id = getIdValue();
-
-            if (id == null) {
-                log.warn("You're executing UPDATE, R U sure?? All records will be effected!");
-                throw new DataAccessException("未指定 id，这将会是批量全体更新！");
-            }
-
-            SqlParams sp = BeanWriter.entity2UpdateSql(getTableName(), javaBean, tableModel.getIdField(), id);
+            SqlParams sp = BeanWriter.entity2UpdateSql(getTableName(), javaBean, getIdFieldName(), id);
             setSql(sp.sql);
             setParams(sp.values);
+
+            if (id == null) {
+                /* TODO  实体不会吧，在 SQL 时候会有。有时候直接输入 UPDATE SQL，没有设置表元数据的（id=null）。
+                    这时候检测一下是否 WHERE 是否有 id 部分，如果没有则警告 */
+                if (!checkIdEquals(sp.sql)) {
+                    log.warn("You're executing UPDATE, R U sure?? All records will be effected!");
+                    throw new DataAccessException("未指定 id，这将会是批量全体更新！");
+                }
+            }
         }
 
         // if there's no bean, then keeps the old way
 
         return super.update();
+    }
+
+    // 判断 WHERE 是否有 id = ? 或 id = 常量
+    public static boolean checkIdEquals(String sql) {
+        Update update;
+
+        try {
+            update = (Update) CCJSqlParserUtil.parse(sql);
+        } catch (JSQLParserException e) {
+            return false;
+        }
+
+        return containsIdEquals(update.getWhere());
+    }
+
+    // 递归解析 WHERE 条件
+    public static boolean containsIdEquals(Expression expression) {
+        if (expression instanceof OrExpression) {
+            OrExpression or = (OrExpression) expression;
+            return containsIdEquals(or.getLeftExpression()) || containsIdEquals(or.getRightExpression());
+        }
+
+        if (expression instanceof EqualsTo) {
+            EqualsTo eq = (EqualsTo) expression;
+            // 左右是否是 id = ? 或 id = 数字
+            if (eq.getLeftExpression() instanceof Column &&
+                    "id".equalsIgnoreCase(((Column) eq.getLeftExpression()).getColumnName())) {
+                if (eq.getRightExpression() instanceof JdbcParameter) return true;
+                if (eq.getRightExpression() instanceof LongValue) return true;
+            }
+
+            // 反过来也支持 ? = id 或 1 = id
+            if (eq.getRightExpression() instanceof Column &&
+                    "id".equalsIgnoreCase(((Column) eq.getRightExpression()).getColumnName())) {
+                if (eq.getLeftExpression() instanceof JdbcParameter)
+                    return true;
+                if (eq.getLeftExpression() instanceof LongValue)
+                    return true;
+            }
+        }
+        // 这里可扩展更多运算符支持
+        return false;
     }
 
     private String getTableName() {
@@ -189,19 +243,19 @@ public class Entity extends Sql implements IEntity {
             Map<String, Object> map = (Map<String, Object>) javaBean;
             id = map.get(tableModel.getIdField());
         } else {
-            String idFieldName;
-            Id annotation = javaBean.getClass().getAnnotation(Id.class);
-
-            if (annotation != null)
-                idFieldName = annotation.value();
-            else
-                idFieldName = tableModel.getIdField();
+            String idFieldName = getIdFieldName();
 
             String getId = Utils.changeColumnToFieldName("get_" + idFieldName);
             id = Methods.executeMethod(javaBean, getId);
         }
 
         return id;
+    }
+
+    String getIdFieldName() {
+        Id annotation = javaBean.getClass().getAnnotation(Id.class);
+
+        return annotation != null ? annotation.value() : tableModel.getIdField();
     }
 
     /**

@@ -291,7 +291,8 @@ public class Sql extends JdbcCommand implements DAO {
                             if (jsonStr.startsWith("{"))
 //                        value = ConvertComplexValue.getConvertValue().convert(jsonStr, propertyType);
 
-                                value = JsonUtil.INSTANCE.fromJson(jsonStr, propertyType);
+//                                value = JsonUtil.INSTANCE.fromJson(jsonStr, propertyType);
+                                value = com.ajaxjs.util.JsonUtil.fromJson(jsonStr, propertyType);
                             else if (jsonStr.startsWith("[")) {
 //                            Class<?> listType =  propertyType; // it might be a List
 

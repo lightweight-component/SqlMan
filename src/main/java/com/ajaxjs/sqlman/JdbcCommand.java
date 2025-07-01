@@ -6,6 +6,7 @@ import com.ajaxjs.sqlman.model.CreateResult;
 import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman.util.PrettyLog;
 import com.ajaxjs.util.CollUtils;
+import com.ajaxjs.util.JsonUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -222,7 +223,8 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
 
         for (int i = 0; i < params.length; i++) {
             Object ele = params[i];
-
+            if (ele instanceof Map)
+                ele = com.ajaxjs.util.JsonUtil.toJson(ele); // Map to JSON
             if (ele instanceof List)
                 throw new UnsupportedOperationException("暂不支持 List 类型参数。如果你入參用於 IN (?)，請直接拼接 SQL 語句而不是使用 PreparedStatement。這是系統的限制，無法支持 List");
 
