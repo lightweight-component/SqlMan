@@ -112,6 +112,14 @@ public class Utils {
     }
 
     /**
+     * 侦测 SQL 脚本的正则
+     */
+    private static final String reg = "(?:')|(?:--)|(/\\*(?:.|[\\n\\r])*?\\*/)|"
+            + "(\\b(select|update|union|delete|insert|trancate|char|into|substr|ascii|declare|exec|count|master|into|drop|execute)\\b)";
+
+    private static final Pattern SQL_Pattern = Pattern.compile(reg, Pattern.CASE_INSENSITIVE);
+
+    /**
      * 利用反射获取数据源连接信息
      *
      * @param dataSource 数据源
