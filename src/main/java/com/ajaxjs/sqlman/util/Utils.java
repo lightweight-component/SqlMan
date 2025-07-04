@@ -97,7 +97,11 @@ public class Utils {
         return false;
     }
 
-    private static final Pattern PATTERN = Pattern.compile("(?i)select|update|delete|insert|drop|truncate|union|\\*|--|;");
+    /**
+     * 侦测 SQL 脚本的正则
+     */
+    private static final Pattern SQL_INJECTION_PATTERN = Pattern.compile("'|--|(/\\*(?:.|[\\n\\r])*?\\*/)|"
+            + "(\\b(select|update|union|delete|insert|truncate|char|into|substr|ascii|declare|exec|count|master|drop|execute)\\b)", Pattern.CASE_INSENSITIVE);
 
     /**
      * 过滤输入字符串以避免 SQL 注入攻击。
@@ -108,16 +112,8 @@ public class Utils {
      * @return 过滤后的字符串，移除了可能的 SQL 注入关键字或字符
      */
     public static String escapeSqlInjection(String input) {
-        return PATTERN.matcher(input).replaceAll(StrUtil.EMPTY_STRING);
+        return SQL_INJECTION_PATTERN.matcher(input).replaceAll(StrUtil.EMPTY_STRING);
     }
-
-    /**
-     * 侦测 SQL 脚本的正则
-     */
-    private static final String reg = "(?:')|(?:--)|(/\\*(?:.|[\\n\\r])*?\\*/)|"
-            + "(\\b(select|update|union|delete|insert|trancate|char|into|substr|ascii|declare|exec|count|master|into|drop|execute)\\b)";
-
-    private static final Pattern SQL_Pattern = Pattern.compile(reg, Pattern.CASE_INSENSITIVE);
 
     /**
      * 利用反射获取数据源连接信息

@@ -255,6 +255,7 @@ public class Sql extends JdbcCommand implements DAO {
 
             for (int i = 1; i <= metaData.getColumnCount(); i++) {// 遍历结果集
                 String key = metaData.getColumnLabel(i);
+
                 if (getDatabaseVendor() == JdbcConstants.DatabaseVendor.H2)  // H2 的数据库字段名称是大写的，需要转换为小写
                     key = key.toLowerCase();
 
@@ -302,10 +303,10 @@ public class Sql extends JdbcCommand implements DAO {
                                     value = com.ajaxjs.util.JsonUtil.json2list(jsonStr, _beanClz);
                                 } else
 //                                value="foo";
-                                    value = JsonUtil.INSTANCE.json2list(jsonStr, _beanClz);
+                                    value = com.ajaxjs.util.JsonUtil.json2list(jsonStr, _beanClz);
                             } else {
                                 value = null;
-                                log.warn("非法 JSON 字符串： {}", jsonStr);
+                                log.warn("非法 JSON 字符串： {}，字段：{}", jsonStr, key);
                             }
                         }
                     } else
