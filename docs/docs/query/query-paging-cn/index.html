@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>SqlMan/分页查询</title>
+        <meta name="description" content="本教程将通过示例代码指导您如何在 SqlMan 中实现数据库数据的分页。"/>
+        <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, 分页"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/> 
+        <meta
+        name="viewport" content="width=device-width, initial-scale=1"/> 
+        <link rel="stylesheet" href="/style/docs/main.css"/>
+        <link rel="icon" type="image/png" href="/asset/favicon.png"/>
+        <script src="/asset/docs/js/common.js"></script>
+    </head>
+    <body>
+        <nav>
+            <div>
+                <div class="links">
+                    <a href="/">🏠 首页</a>
+                    |
+                                                                            ⚙️ 源码：
+                    <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
+                    
+                    |
+                    <a href="/docs">English Version</a>
+                </div>
+                <h1>
+                    <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
+                </h1>
+                <h3>轻量级 JDBC 助手——用户手册</h3>
+            </div>
+        </nav>
+        <div>
+            <menu>
+                
+                <ul>
+                    <li class="selected">
+                        <a href="/docs/cn">首页</a>
+                    </li>
+                    <li>
+                        <a href="/docs/quick-start-cn">快速开始</a>
+                    </li>
+                    <li>
+                        <a href="/docs/setup-cn">安装与配置</a>
+                    </li>
+                </ul>
+                <h3>数据库查询</h3>
+                <ul>
+                    <li>
+                        <a href="/docs/query/query-concept-cn">基础概念</a>
+                    </li>
+                    <li>
+                        <a href="/docs/query/query-tutorial-cn">查询教程</a>
+                    </li>
+                    <li>
+                        <a href="/docs/query/query-paging-cn">分页查询</a>
+                    </li>
+                </ul>
+                <h3>写入数据</h3>
+                <ul>
+                    <li>
+                        <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a>
+                    </li>
+                    <li>
+                        <a href="/docs/write/batch-cn">批量更新</a>
+                    </li>
+                </ul>
+                <h3>其他用法</h3>
+                <ul>
+                    <li>
+                        <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a>
+                    </li>
+                    <li>
+                        <a href="/docs/other/entity-cn">“类” ORM</a>
+                    </li>
+                </ul>
+                <h3>Misc</h3>
+                <ul>
+                    <li><a href="/docs/common/versions-cn">更新历史</a></li>
+                    <li><a href="/docs/common/contact-cn">联系</a></li>
+                </ul>
+            </menu>
+            <article>
+                <h1>分页查询</h1>
+<p>在应用程序中，对大型数据集进行分页是一个常见需求，这可以提高性能并提供更好的用户体验。本教程将通过示例代码指导您如何在 SqlMan 中实现数据库数据的分页。</p>
+<h2>使用默认设置的分页</h2>
+<p>第一个分页示例演示如何使用默认设置获取分页结果：获取第 1 行到第 9 行之间的数据。我们不带任何参数使用 <code>page</code> 方法：</p>
+<pre><code class="language-java">PageResult&lt;Map&lt;String, Object&gt;&gt; result = new Sql(conn).input(&quot;SELECT * FROM article&quot;).page();
+</code></pre>
+<h2>使用自定义页面大小和页码的分页</h2>
+<p>第二个示例展示如何通过指定记录起始位置和 limit大小来获取分页结果，如同 MySQL 的 LIMIT 3,5 分页方式：</p>
+<pre><code class="language-java">PageResult&lt;Map&lt;String, Object&gt;&gt; result = new Sql(conn).input(&quot;SELECT * FROM article&quot;).page(3, 5);
+</code></pre>
+<h2>使用自定义类映射的分页</h2>
+<p>第三个示例演示如何将结果映射到自定义类（Address）并获取分页结果：</p>
+<pre><code class="language-java">PageResult&lt;Address&gt; result = new Sql(conn).input(&quot;SELECT * FROM shop_address&quot;).page(Address.class, 1, 2);
+</code></pre>
+<h2>检查空结果</h2>
+<p>第四个示例展示如何处理分页结果为空的情况：</p>
+<pre><code class="language-java">PageResult&lt;Map&lt;String, Object&gt;&gt; result = new Sql(conn).input(&quot;SELECT * FROM shop_address&quot;).page(Address.class, 100, 2);
+assertEquals(0, result.size());
+</code></pre>
+<h2>参数绑定</h2>
+<p>分页查询同样支持参数绑定。使用方式与普通查询相同：</p>
+<pre><code class="language-java">PageResult&lt;Map&lt;String, Object&gt;&gt; result = new Sql(conn).input(&quot;SELECT * FROM shop_address where stat = ?&quot;, 1).page();
+</code></pre>
+<h2>使用自定义数据库供应商的分页</h2>
+<p>最后一个示例演示如何设置自定义数据库供应商（例如 SQL Server）并获取分页结果：</p>
+<pre><code class="language-java">Sql sqlServer = new Sql(conn);
+sqlServer.setDatabaseVendor(JdbcConstants.DatabaseVendor.SQL_SERVER);
+PageResult&lt;Map&lt;String, Object&gt;&gt; result = sqlServer.input(&quot;SELECT * FROM article&quot;).page();
+</code></pre>
+<p>在这种情况下，您将不能使用方法链式调用。</p>
+<h2>JSQLParser</h2>
+<p>我们使用 JSQLParser 库 来实现分页功能。它使解析 SQL 语句和提取信息变得更容易，同时还提供了一种动态生成 SQL 语句的便捷方式。</p>
+
+            </article>
+
+        </div>
+        <footer>
+    SqlMan, a part of <a href="https://framework.ajaxjs.com" target="_blank">AJ-Framework</a> open source. Mail:
+    frank@ajaxjs.com, visit <a href="https://blog.csdn.net/zhangxin09" target="_blank">my blog(In Chinese)</a>.
+    <br />
+    <br />
+     Copyright © 2025 Frank Cheung. All rights reserved.
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?3cb62106ad945fc91efddfe250e1542e";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</footer>
+    </body>
+</html>
