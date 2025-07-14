@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>sqlman</artifactId>
-    <version>1.3</version>
+    <version>1.4</version>
     <name>SqlMan</name>
     <packaging>jar</packaging>
     <description>A easy, small, straight forward Java CRUD Helper.</description>
@@ -32,7 +32,7 @@
         <dependency>
             <groupId>com.ajaxjs</groupId>
             <artifactId>ajaxjs-util</artifactId>
-            <version>1.2.5</version>
+            <version>1.2.6</version>
         </dependency>
 
         <dependency>
