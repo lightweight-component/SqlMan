@@ -75,13 +75,22 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
         sql = SmallMyBatis.handleSql(sql, keyParams);
         String resultText = null;
 
+        System.out.println("\u001B[31mRed Text\u001B[0m"); // 红色文本
+        System.out.println("\u001B[32mGreen Text\u001B[0m"); // 绿色文本
+        System.out.println("\u001B[33mYellow Text\u001B[0m"); // 黄色文本
+//        log.info("Processing request: {}", "lkjlj");
+//        log.warn("This is a warning");
+//        log.error("This is an error");
+
         try (PreparedStatement ps = getConn().prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)) {
+            String tabSql = PrettyLog.addPrefixToEachLine(sql);
+
             if (!CollUtils.isEmpty(params)) {
-                log.info(PrettyLog.LOG_TEXT, "Query", sql, Arrays.toString(params), PrettyLog.printRealSql(sql, params));
+                log.info(PrettyLog.LOG_TEXT, "Query", tabSql, PrettyLog.padding(Arrays.toString(params)), PrettyLog.addPrefixToEachLine(PrettyLog.printRealSql(sql, params)));
 //            log.info("Querying SQL-->[{}]", Utils.printRealSql(sql, params));
                 setParam2Ps(ps, params);
             } else
-                log.info(PrettyLog.LOG_TEXT, "Query", sql, "none", sql);
+                log.info(PrettyLog.LOG_TEXT, "Query", tabSql, PrettyLog.padding("none"), tabSql);
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {

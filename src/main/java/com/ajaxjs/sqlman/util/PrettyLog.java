@@ -12,16 +12,62 @@ import java.util.regex.Pattern;
 @Slf4j
 public class PrettyLog {
     public static final String LOG_TEXT = "\n" +
-            "┌───────── Debugging {} ───────────\n" +
-            "│ SQL:      {}\n" +
-            "│ params:   {}\n" +
+            "┌─────────────────────────────────────────── Debugging {} ───────────────────────────────────────┐\n" +
+            "│ SQL:      {} \n" +
+            "│ params:   {} \n" +
             "│ Real:     {}";
 
     public static void end(JdbcCommand jdbcCommand, String result) {
-        System.out.println("│ Duration: " + (System.currentTimeMillis() - jdbcCommand.getStartTime()) + "ms");
-        System.out.println("│ Result:   " + result);
-        System.out.println("└───────── Debugging END ───────────");
+//        System.out.println("\u001B[31mRed Text\u001B[0m"); // 红色文本
+        String duration = "│ Duration: " + (System.currentTimeMillis() - jdbcCommand.getStartTime()) + "ms";
+        duration = padding(duration);
+        System.out.println(duration);
 
+        String _result = "│ Result:   " + result;
+        _result = padding(_result);
+        System.out.println(_result);
+        System.out.println("└───────────────────────────────── Debugging END ───────────────────────────────────────────────────┘");
+    }
+
+    static final String prefix = "│       ";
+
+    static final int lineWidth = 100;
+
+    public static String padding(String str) {
+        int left = lineWidth - str.length();
+
+        if (left > 0)
+            str += createString(left, ' ') + "│";
+
+        return str;
+    }
+
+    public static String addPrefixToEachLine(String text) {
+        String[] lines = text.split("\n");
+
+        for (int i = 0; i < lines.length; i++) {
+            if (i != 0)
+                lines[i] = prefix + lines[i];
+
+            int left = (i == 0 ? lineWidth - 12 : lineWidth) - lines[i].length();
+
+            if (left > 0)
+                lines[i] += createString(left, ' ') + "│";
+        }
+
+        return String.join("\n", lines);
+    }
+
+    public static String createString(int i, char c) {
+        if (i < 0)
+            throw new IllegalArgumentException("Input i must be non-negative");
+
+        StringBuilder sb = new StringBuilder();
+
+        for (int j = 0; j < i; j++)
+            sb.append(c);
+
+        return sb.toString();
     }
 
     public static String trimResult(Object result) {
@@ -51,6 +97,7 @@ public class PrettyLog {
 
         Matcher m = Pattern.compile("(\\?)").matcher(sql);
         int count = 0;
+
         while (m.find())
             count++;
 
@@ -69,7 +116,6 @@ public class PrettyLog {
             throw new IllegalArgumentException("SQL 语句不能为空！");
 
         try {
-
             //        if (isClosePrintRealSql)
             //            return null;
             sql = sql.replaceAll(SPACE_LINE, StrUtil.EMPTY_STRING);
