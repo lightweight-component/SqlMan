@@ -158,7 +158,7 @@ public class Pager {
 
         this.start = start;
         this.limit = limit;
-        this.currentPage = pageNo;
+        this.currentPage = pageNo == null ? 0 : pageNo;
     }
 
     /**
