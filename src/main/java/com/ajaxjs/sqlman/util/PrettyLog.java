@@ -1,6 +1,5 @@
 package com.ajaxjs.sqlman.util;
 
-import com.ajaxjs.sqlman.JdbcCommand;
 import com.ajaxjs.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,74 +10,6 @@ import java.util.regex.Pattern;
 
 @Slf4j
 public class PrettyLog {
-    public static final String LOG_TEXT = "\n" +
-            "┌─────────────────────────────────────────── Debugging {} ───────────────────────────────────────┐\n" +
-            "│ SQL:      {} \n" +
-            "│ params:   {} \n" +
-            "│ Real:     {}";
-
-    public static void end(JdbcCommand jdbcCommand, String result) {
-//        System.out.println("\u001B[31mRed Text\u001B[0m"); // 红色文本
-        String duration = "│ Duration: " + (System.currentTimeMillis() - jdbcCommand.getStartTime()) + "ms";
-        duration = padding(duration);
-        System.out.println(duration);
-
-        String _result = "│ Result:   " + result;
-        _result = padding(_result);
-        System.out.println(_result);
-        System.out.println("└───────────────────────────────── Debugging END ───────────────────────────────────────────────────┘");
-    }
-
-    static final String prefix = "│       ";
-
-    static final int lineWidth = 100;
-
-    public static String padding(String str) {
-        int left = lineWidth - str.length();
-
-        if (left > 0)
-            str += createString(left, ' ') + "│";
-
-        return str;
-    }
-
-    public static String addPrefixToEachLine(String text) {
-        String[] lines = text.split("\n");
-
-        for (int i = 0; i < lines.length; i++) {
-            if (i != 0)
-                lines[i] = prefix + lines[i];
-
-            int left = (i == 0 ? lineWidth - 12 : lineWidth) - lines[i].length();
-
-            if (left > 0)
-                lines[i] += createString(left, ' ') + "│";
-        }
-
-        return String.join("\n", lines);
-    }
-
-    public static String createString(int i, char c) {
-        if (i < 0)
-            throw new IllegalArgumentException("Input i must be non-negative");
-
-        StringBuilder sb = new StringBuilder();
-
-        for (int j = 0; j < i; j++)
-            sb.append(c);
-
-        return sb.toString();
-    }
-
-    public static String trimResult(Object result) {
-        String s = result.toString();
-
-        if (s.length() > 200)
-            s = s.substring(0, 200);
-
-        return s;
-    }
-
     /**
      * 多行空行
      */
@@ -158,8 +89,7 @@ public class PrettyLog {
             return "打印真实 SQL 执行语句异常";
         }
     }
-
-
+    
     /**
      * 指定行数时插入换行符
      *
@@ -184,4 +114,6 @@ public class PrettyLog {
 
         return sb.toString().trim();
     }
+
+
 }

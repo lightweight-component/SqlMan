@@ -5,6 +5,7 @@ import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
 import com.ajaxjs.sqlman.model.CreateResult;
 import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman.util.PrettyLog;
+import com.ajaxjs.sqlman.util.PrettyLogger;
 import com.ajaxjs.util.CollUtils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * To execute basic JDBC commands, read and write data to database.
@@ -71,31 +73,17 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
      * @return 查询结果，如果为 null 表示没有数据
      */
     protected <T> T query(ResultSetProcessor<T> processor) {
-//        if (keyParams != null)
         sql = SmallMyBatis.handleSql(sql, keyParams);
         String resultText = null;
 
-        System.out.println("\u001B[31mRed Text\u001B[0m"); // 红色文本
-        System.out.println("\u001B[32mGreen Text\u001B[0m"); // 绿色文本
-        System.out.println("\u001B[33mYellow Text\u001B[0m"); // 黄色文本
-//        log.info("Processing request: {}", "lkjlj");
-//        log.warn("This is a warning");
-//        log.error("This is an error");
-
         try (PreparedStatement ps = getConn().prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)) {
-            String tabSql = PrettyLog.addPrefixToEachLine(sql);
-
-            if (!CollUtils.isEmpty(params)) {
-                log.info(PrettyLog.LOG_TEXT, "Query", tabSql, PrettyLog.padding(Arrays.toString(params)), PrettyLog.addPrefixToEachLine(PrettyLog.printRealSql(sql, params)));
-//            log.info("Querying SQL-->[{}]", Utils.printRealSql(sql, params));
+            if (!CollUtils.isEmpty(params))
                 setParam2Ps(ps, params);
-            } else
-                log.info(PrettyLog.LOG_TEXT, "Query", tabSql, PrettyLog.padding("none"), tabSql);
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     T _result = processor.process(rs);
-                    resultText = PrettyLog.trimResult(_result);
+                    resultText = _result.toString();
 
                     return _result;
                 } else {
@@ -109,7 +97,9 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
             log.warn(e.getMessage());
             throw new RuntimeException("SQL query error.", e);
         } finally {
-            PrettyLog.end(this, resultText);
+            String _resultText = resultText;
+
+            CompletableFuture.runAsync(() -> PrettyLogger.printLog("Query", sql, params, PrettyLog.printRealSql(sql, params), this, _resultText, true));
         }
     }
 
@@ -133,10 +123,6 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
 
         try (PreparedStatement ps = isAutoIns ? getConn().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS) : getConn().prepareStatement(sql)) {
             setParam2Ps(ps, params);
-            log.info(PrettyLog.LOG_TEXT, "Create", sql, Arrays.toString(params), PrettyLog.printRealSql(sql, params));
-
-//            SimpleLogger.info(PrettyLog.LOG_TEXT, "Create", sql, Arrays.toString(params), PrettyLog.printRealSql(sql, params));
-
             int effectRows = ps.executeUpdate();
 
             if (effectRows > 0) {// 插入成功
@@ -184,7 +170,9 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
         } catch (SQLException e) {
             throw new RuntimeException("SQL insert error.", e);
         } finally {
-            PrettyLog.end(this, resultText);
+            String _resultText = resultText;
+
+            CompletableFuture.runAsync(() -> PrettyLogger.printLog("Create", sql, params, PrettyLog.printRealSql(sql, params), this, _resultText, true));
         }
 
         return null;
@@ -202,7 +190,6 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
 
         try (PreparedStatement ps = getConn().prepareStatement(sql)) {
             setParam2Ps(ps, params);
-            log.info(PrettyLog.LOG_TEXT, "Update", sql, Arrays.toString(params), PrettyLog.printRealSql(sql, params));
 
             int effectedRows = ps.executeUpdate();
             UpdateResult result = new UpdateResult();
@@ -214,7 +201,9 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
         } catch (SQLException e) {
             throw new RuntimeException("SQL update error.", e);
         } finally {
-            PrettyLog.end(this, resultText);
+            String _resultText = resultText;
+
+            CompletableFuture.runAsync(() -> PrettyLogger.printLog("Update", sql, params, PrettyLog.printRealSql(sql, params), this, _resultText, true));
         }
     }
 
