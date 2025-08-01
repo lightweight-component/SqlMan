@@ -1,23 +1,22 @@
 package com.ajaxjs.sqlman.util;
 
 import com.ajaxjs.sqlman.JdbcCommand;
+import com.ajaxjs.util.BoxLogger;
 import com.ajaxjs.util.CollUtils;
 import com.ajaxjs.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class PrettyLogger {
+@Slf4j
+public class PrettyLogger extends BoxLogger {
     // 日志方框宽度
     private static final int BOX_WIDTH = 137;
 
-    private static final String ANSI_GREEN = "\u001B[33m";
-    private static final String ANSI_RESET = "\u001B[0m";
     private static final String REGEXP = "[\n\r\t]";
-
-    private static final String END_TITLE = " Debugging END ";
-    private static final String NONE = "none";
 
     /**
      * 打印数据库操作日志
@@ -31,7 +30,7 @@ public class PrettyLogger {
      * @param wrapLongLines 是否允许完整显示超长字符串，自动换行
      */
     public static void printLog(String type, String sql, Object _params, String realSql, JdbcCommand jdbcCommand, Object result, boolean wrapLongLines) {
-        String title = " Debugging  " + type;
+        String title = " Debugging " + type + " ";
         String params;
 
         if (_params instanceof String)
@@ -58,18 +57,20 @@ public class PrettyLogger {
         StringBuilder sb = new StringBuilder();
 
         sb.append(ANSI_GREEN).append(boxLine('┌', '─', '┐', title)).append('\n');
-        printBoxContent(sb,"SQL:      ", sql.replaceAll(REGEXP, StrUtil.EMPTY_STRING), wrapLongLines);
-        printBoxContent(sb,"Params:   ", params, wrapLongLines);
-        printBoxContent(sb,"Real:     ", realSql.replaceAll(REGEXP, StrUtil.EMPTY_STRING), wrapLongLines);
-        printBoxContent(sb,"Duration: ", duration + "ms", wrapLongLines);
-        printBoxContent(sb,"Result:   ", (result == null ? "null" : String.valueOf(result)), false);
-        sb.append(boxLine('└', '─', '┘', END_TITLE)).append(ANSI_RESET);
+        printBoxContent(sb, "TraceId:  ", MDC.get(TRACE_KEY), wrapLongLines);
+        printBoxContent(sb, "SQL:      ", sql.replaceAll(REGEXP, " "), wrapLongLines);
+        printBoxContent(sb, "Params:   ", params, wrapLongLines);
+        printBoxContent(sb, "Real:     ", realSql.replaceAll(REGEXP, " "), wrapLongLines);
+        printBoxContent(sb, "Duration: ", duration + "ms", wrapLongLines);
+        printBoxContent(sb, "Result:   ", (result == null ? "null" : String.valueOf(result)), false);
+        sb.append(boxLine('└', '─', '┘', StrUtil.EMPTY_STRING)).append(ANSI_RESET);
 
-        System.out.println(sb);
+//        System.out.println(sb);
+        log.info('\n' + sb.toString());
     }
 
     // 打印边框行
-    private static String boxLine(char left, char fill, char right, String title) {
+    public static String boxLine(char left, char fill, char right, String title) {
         int fillLen = BOX_WIDTH - 1 - title.length();
         int leftFill = fillLen / 2;
         int rightFill = fillLen - leftFill;
@@ -84,7 +85,7 @@ public class PrettyLogger {
         if (!wrapLongLines) {
             String val = truncate(value, maxLen);
             int pad = BOX_WIDTH - 1 - key.length() - getDisplayWidth(val);
-            sb.append("│ ").append(key).append(val).append(repeat(' ', pad - 0)).append("│").append('\n');
+            sb.append("│ ").append(key).append(val).append(repeat(' ', pad - 1)).append("│").append('\n');
         } else {
             List<String> lines = wrap(value, maxLen);
 
@@ -96,72 +97,18 @@ public class PrettyLogger {
         }
     }
 
-    // 重复字符
-    private static String repeat(char c, int n) {
-        if (n <= 0) return "";
-        StringBuilder sb = new StringBuilder(n);
-        for (int i = 0; i < n; i++)
-            sb.append(c);
-
-        return sb.toString();
-    }
-
-    // 截断字符串并加省略号
-    private static String truncate(String s, int maxDisplayLen) {
-        if (s == null)
-            return "";
-        int dlen = getDisplayWidth(s);
-
-        if (dlen <= maxDisplayLen)
-            return s;
-
-        String ellipsis = "...";
-        int keep = maxDisplayLen - ellipsis.length();
-
-        if (keep <= 0)
-            return ellipsis;
-
-        int count = 0, i = 0;
-
-        for (; i < s.length() && count < keep; i++) {
-            char ch = s.charAt(i);
-            count += isWideChar(ch) ? 2 : 1;
-            if (count > keep) break;
-        }
-
-        return s.substring(0, i) + ellipsis;
-    }
-
-    // 获取字符串的显示宽度（中文2，英文1）
-    private static int getDisplayWidth(String s) {
-        if (s == null)
-            return 0;
-
-        int width = 0;
-        for (char c : s.toCharArray())
-            width += isWideChar(c) ? 2 : 1;
-
-        return width;
-    }
-
-    // 判断是否宽字符（简化，只判断 CJK）
-    private static boolean isWideChar(char ch) {
-        return (ch >= 0x4E00 && ch <= 0x9FA5) || // CJK
-                (ch >= 0xFF01 && ch <= 0xFF60) || // Fullwidth
-                (ch >= 0x3000 && ch <= 0x303F);   // CJK Symbols
-    }
-
     // 按最大宽度自动换行，返回每行内容
     private static List<String> wrap(String s, int maxDisplayLen) {
         List<String> result = new ArrayList<>();
 
         if (s == null) {
-            result.add("");
+            result.add(StrUtil.EMPTY_STRING);
             return result;
         }
 
         StringBuilder line = new StringBuilder();
         int width = 0;
+
         for (int i = 0; i < s.length(); i++) {
             char ch = s.charAt(i);
             int w = isWideChar(ch) ? 2 : 1;
@@ -175,10 +122,11 @@ public class PrettyLogger {
             line.append(ch);
             width += w;
         }
+
         if (line.length() > 0)
             result.add(line.toString());
         if (result.isEmpty())
-            result.add("");
+            result.add(StrUtil.EMPTY_STRING);
 
         return result;
     }
