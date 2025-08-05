@@ -1,6 +1,7 @@
 package com.ajaxjs.sqlman;
 
 import com.ajaxjs.util.StrUtil;
+import com.ajaxjs.util.Version;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -188,10 +189,12 @@ public class JdbcConnection {
         try {
             if (conn != null && !conn.isClosed()) {
                 conn.close();
-                log.info("关闭数据库连接成功！ Closed database OK！");
+
+                if (Version.isDebug)
+                    log.info("Database Connection Closed.");
             }
         } catch (SQLException e) {
-            throw new RuntimeException("关闭数据库连接失败", e);
+            throw new RuntimeException("Database Connection Closes failed.", e);
         }
     }
 

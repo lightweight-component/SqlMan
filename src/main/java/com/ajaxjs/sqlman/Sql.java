@@ -1,13 +1,12 @@
 package com.ajaxjs.sqlman;
 
-
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
 import com.ajaxjs.sqlman.model.PageResult;
 import com.ajaxjs.sqlman.model.UpdateResult;
-import com.ajaxjs.sqlman.util.JsonUtil;
 import com.ajaxjs.sqlman.util.Utils;
 import com.ajaxjs.util.ConvertBasicValue;
 import com.ajaxjs.util.EncodeTools;
+import com.ajaxjs.util.JsonUtil;
 import com.ajaxjs.util.reflect.Clazz;
 import com.ajaxjs.util.reflect.Methods;
 import com.ajaxjs.util.reflect.Types;
@@ -211,7 +210,7 @@ public class Sql extends JdbcCommand implements DAO {
                         value = null;
                     else {
                         String jsonStr = value.toString();
-                        value = jsonStr.startsWith("[") ? JsonUtil.INSTANCE.json2mapList(jsonStr) : JsonUtil.INSTANCE.json2map(jsonStr);
+                        value = jsonStr.startsWith("[") ? JsonUtil.json2mapList(jsonStr) : JsonUtil.json2map(jsonStr);
                     }
                 }
             }

@@ -1,6 +1,5 @@
 package com.ajaxjs.sqlman.util;
 
-import com.ajaxjs.sqlman.JdbcCommand;
 import com.ajaxjs.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,28 +10,6 @@ import java.util.regex.Pattern;
 
 @Slf4j
 public class PrettyLog {
-    public static final String LOG_TEXT = "\n" +
-            "┌───────── Debugging {} ───────────\n" +
-            "│ SQL:      {}\n" +
-            "│ params:   {}\n" +
-            "│ Real:     {}";
-
-    public static void end(JdbcCommand jdbcCommand, String result) {
-        System.out.println("│ Duration: " + (System.currentTimeMillis() - jdbcCommand.getStartTime()) + "ms");
-        System.out.println("│ Result:   " + result);
-        System.out.println("└───────── Debugging END ───────────");
-
-    }
-
-    public static String trimResult(Object result) {
-        String s = result.toString();
-
-        if (s.length() > 200)
-            s = s.substring(0, 200);
-
-        return s;
-    }
-
     /**
      * 多行空行
      */
@@ -51,6 +28,7 @@ public class PrettyLog {
 
         Matcher m = Pattern.compile("(\\?)").matcher(sql);
         int count = 0;
+
         while (m.find())
             count++;
 
@@ -69,7 +47,6 @@ public class PrettyLog {
             throw new IllegalArgumentException("SQL 语句不能为空！");
 
         try {
-
             //        if (isClosePrintRealSql)
             //            return null;
             sql = sql.replaceAll(SPACE_LINE, StrUtil.EMPTY_STRING);
@@ -112,8 +89,7 @@ public class PrettyLog {
             return "打印真实 SQL 执行语句异常";
         }
     }
-
-
+    
     /**
      * 指定行数时插入换行符
      *
@@ -138,4 +114,6 @@ public class PrettyLog {
 
         return sb.toString().trim();
     }
+
+
 }
