@@ -1,12 +1,3 @@
-/* 百度统计 */
-var _hmt = _hmt || [];
-(function () {
-    var hm = document.createElement("script");
-    hm.src = "https://hm.baidu.com/hm.js?061f86e97629f2d5b916a718bf2fe516";
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(hm, s);
-})();
-
 document.addEventListener('DOMContentLoaded', function () {
     var arr = location.pathname.split('/');
     if (arr && arr.length > 3) {
@@ -214,5 +205,5 @@ var userLang = navigator.language || navigator.userLanguage;
 
 // 检查是否为中文环境（包括简体和繁体）
 if (userLang.startsWith('zh') && location.pathname.indexOf('cn') == -1) {
-    confirm('欢迎！您可以改为访问中文内容。是否继续？') && location.assign('/cn');  // 如果是中文，则弹出提示
+    confirm('欢迎！您可以改为访问中文内容。是否继续？') && location.assign('cn');  // 如果是中文，则弹出提示
 }
