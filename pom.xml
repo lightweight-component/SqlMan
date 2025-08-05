@@ -7,15 +7,15 @@
     <parent>
         <groupId>com.ajaxjs</groupId>
         <artifactId>ajaxjs-parent</artifactId>
-        <version>1.32</version>
+        <version>1.33</version>
         <relativePath/>
     </parent>
 
     <artifactId>sqlman</artifactId>
-    <version>1.4</version>
+    <version>1.5</version>
     <name>SqlMan</name>
     <packaging>jar</packaging>
-    <description>A easy, small, straight forward Java CRUD Helper.</description>
+    <description>A easy, small, straightforward Java CRUD Helper.</description>
 
     <url>https://sqlman.ajaxjs.com/</url>
     <scm>
@@ -32,13 +32,13 @@
         <dependency>
             <groupId>com.ajaxjs</groupId>
             <artifactId>ajaxjs-util</artifactId>
-            <version>1.2.6</version>
+            <version>1.2.7</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
-            <version>5.3.39</version>
+            <version>5.3.31</version>
         </dependency>
 
         <dependency>
@@ -56,7 +56,6 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-
             <scope>test</scope>
         </dependency>
 
