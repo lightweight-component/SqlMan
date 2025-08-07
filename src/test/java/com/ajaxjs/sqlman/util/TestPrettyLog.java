@@ -15,7 +15,7 @@ public class TestPrettyLog {
         long durationMs = 33;
         Object result = "{COUNT(*)=1}";
 
-        printLog("Query", sql, null, realSql, null, result, true);
+        printLog("Query", null, sql, null, realSql, null, result, true);
 
         // 测试超长内容
         String longSql = "SELECT * FROM a_very_long_table_name_with_many_columns" +
@@ -24,6 +24,6 @@ public class TestPrettyLog {
                 "                  'id', id, 'pid', pid, 'name', name, 'namespace', namespa(SELECT JSON_ARRAYAGG(JSON_OBJECT(\n" +
                 "                  'id', id, 'pid', pid, 'name', name, 'namespace', namespa";
         Object[] longParams = new Object[]{"param1", "param2", "param3", "param4"};
-        printLog("Query", longSql, Arrays.toString(longParams), longSql, null, result, true);
+        printLog("Query", null, longSql, Arrays.toString(longParams), longSql, null, result, true);
     }
 }

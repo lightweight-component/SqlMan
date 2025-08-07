@@ -5,7 +5,6 @@ import com.ajaxjs.util.BoxLogger;
 import com.ajaxjs.util.CollUtils;
 import com.ajaxjs.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +21,7 @@ public class PrettyLogger extends BoxLogger {
      * 打印数据库操作日志
      *
      * @param type          类型
+     * @param traceId       链路 id
      * @param sql           SQL 语句
      * @param _params       参数（字符串，或者拼接好的参数描述）
      * @param realSql       实际执行SQL（带参数）
@@ -29,7 +29,7 @@ public class PrettyLogger extends BoxLogger {
      * @param result        执行结果（Object）
      * @param wrapLongLines 是否允许完整显示超长字符串，自动换行
      */
-    public static void printLog(String type, String sql, Object _params, String realSql, JdbcCommand jdbcCommand, Object result, boolean wrapLongLines) {
+    public static void printLog(String type, String traceId, String sql, Object _params, String realSql, JdbcCommand jdbcCommand, Object result, boolean wrapLongLines) {
         String title = " Debugging " + type + " ";
         String params;
 
@@ -57,7 +57,7 @@ public class PrettyLogger extends BoxLogger {
         StringBuilder sb = new StringBuilder();
 
         sb.append(ANSI_GREEN).append(boxLine('┌', '─', '┐', title)).append('\n');
-        printBoxContent(sb, "TraceId:  ", MDC.get(TRACE_KEY), wrapLongLines);
+        printBoxContent(sb, "TraceId:  ", traceId, wrapLongLines);
         printBoxContent(sb, "SQL:      ", sql.replaceAll(REGEXP, " "), wrapLongLines);
         printBoxContent(sb, "Params:   ", params, wrapLongLines);
         printBoxContent(sb, "Real:     ", realSql.replaceAll(REGEXP, " "), wrapLongLines);
