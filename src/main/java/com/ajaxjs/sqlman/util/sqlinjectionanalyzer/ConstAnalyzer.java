@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman.util;
+package com.ajaxjs.sqlman.util.sqlinjectionanalyzer;
 
 import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.expression.operators.arithmetic.*;

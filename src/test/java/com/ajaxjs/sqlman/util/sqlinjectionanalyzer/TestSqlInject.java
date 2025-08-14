@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman.util;
+package com.ajaxjs.sqlman.util.sqlinjectionanalyzer;
 
 import org.junit.jupiter.api.Test;
 
@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestSqlInject {
     @Test
-    public void test() {
+    void test() {
         assertFalse(SqlInjectionAnalyzer.check("select * from dc_device where id in (select id from other)"));
         assertFalse(SqlInjectionAnalyzer.check("select * from dc_device where 2=2.0 or 2 != 4"));
         assertFalse(SqlInjectionAnalyzer.check("select * from dc_device where 1!=2.0"));
@@ -29,5 +29,4 @@ public class TestSqlInject {
         boolean check = SqlInjectionAnalyzer.check("SELECT * FROM mytable WHERE id = ;DROP TABLE mytable;");
         System.out.println(check);
     }
-
 }

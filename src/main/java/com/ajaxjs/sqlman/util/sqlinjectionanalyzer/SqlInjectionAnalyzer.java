@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman.util;
+package com.ajaxjs.sqlman.util.sqlinjectionanalyzer;
 
 import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.Expression;
@@ -160,7 +160,7 @@ public class SqlInjectionAnalyzer extends TablesNamesFinder {
         return null != column && null == column.getTable() && BOL.matcher(column.getColumnName()).matches();
     }
 
-    private static final SqlInjectionAnalyzer injectionChecker = new SqlInjectionAnalyzer();
+    private static final SqlInjectionAnalyzer INJECTION_CHECKER = new SqlInjectionAnalyzer();
 
     /**
      * SQL 注入攻击分析器
@@ -175,7 +175,7 @@ public class SqlInjectionAnalyzer extends TablesNamesFinder {
         boolean allowComplexParsing = CCJSqlParserUtil.getNestingDepth(sql) <= CCJSqlParserUtil.ALLOWED_NESTING_DEPTH;
 
         try {
-            CCJSqlParserUtil.newParser(sql).withAllowComplexParsing(allowComplexParsing).Statement().accept(injectionChecker);
+            CCJSqlParserUtil.newParser(sql).withAllowComplexParsing(allowComplexParsing).Statement().accept(INJECTION_CHECKER);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
