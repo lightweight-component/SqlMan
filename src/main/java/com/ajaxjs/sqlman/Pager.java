@@ -71,7 +71,8 @@ public class Pager {
                 pageSql = sql + " LIMIT " + start + ", " + limit;
             else if (databaseVendor == JdbcConstants.DatabaseVendor.DERBY)
                 pageSql = sql + " OFFSET " + start + " ROWS FETCH NEXT " + limit + " ROWS ONLY";
-            else throw new DataAccessException("TODO: add db vendor");
+            else
+                throw new DataAccessException("TODO: add db vendor");
 
             // 移除 排序 语句
             if (sql.toUpperCase().contains("ORDER BY")) {
