@@ -7,11 +7,19 @@
         <meta name="description" content="TODO"/>
         <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, last one"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <link rel="stylesheet" href="https://framework.ajaxjs.com/static/font/font.css" />
-        <link rel="stylesheet" href="/style/docs/main.css" />
+        <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css" />
+        <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
         <link rel="icon" type="image/png" href="/asset/favicon.png"/>
-        <script src="/asset/docs/js/common.js"></script>
+        <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
         <script>
+            // 获取用户的默认语言
+            var userLang = navigator.language || navigator.userLanguage;
+
+            // 检查是否为中文环境（包括简体和繁体）
+            if (userLang.startsWith('zh') && location.pathname.indexOf('cn') == -1) {
+                 confirm('欢迎！您可以改为访问中文内容。是否继续？') && location.assign('/cn');  // 如果是中文，则弹出提示
+            }
+
             var _hmt = _hmt || [];
             (function() {
               var hm = document.createElement("script");
@@ -87,7 +95,7 @@
                     <li><a href="/docs/common/contact">Contact</a></li>
                 </ul>
             </menu>
-            <article>
+            <article class="aj-text">
                 <h1>Quick Start</h1>
 <h2>🔧 Install SqlMan</h2>
 <p>To get started, we just have to include the one SqlMan module in our dependencies:</p>
