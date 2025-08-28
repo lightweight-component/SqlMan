@@ -1,6 +1,5 @@
 package com.ajaxjs.sqlman;
 
-
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
 import com.ajaxjs.sqlman.model.CreateResult;
 import com.ajaxjs.sqlman.model.UpdateResult;
@@ -18,7 +17,6 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -101,8 +99,9 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
         } finally {
             String _resultText = resultText;
             String traceId = MDC.get(BoxLogger.TRACE_KEY);
+            String bizAction = MDC.get(BoxLogger.BIZ_ACTION);
 
-            CompletableFuture.runAsync(() -> PrettyLogger.printLog("Query", traceId, sql, params, PrettyLog.printRealSql(sql, params), this, _resultText, true));
+            CompletableFuture.runAsync(() -> PrettyLogger.printLog("Query", traceId, bizAction, sql, params, PrettyLog.printRealSql(sql, params), this, _resultText, true));
         }
     }
 
@@ -175,8 +174,9 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
         } finally {
             String _resultText = resultText;
             String traceId = MDC.get(BoxLogger.TRACE_KEY);
+            String bizAction = MDC.get(BoxLogger.BIZ_ACTION);
 
-            CompletableFuture.runAsync(() -> PrettyLogger.printLog("Create", traceId, sql, params, PrettyLog.printRealSql(sql, params), this, _resultText, true));
+            CompletableFuture.runAsync(() -> PrettyLogger.printLog("Create", traceId, bizAction, sql, params, PrettyLog.printRealSql(sql, params), this, _resultText, true));
         }
 
         return null;
@@ -207,8 +207,9 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
         } finally {
             String _resultText = resultText;
             String traceId = MDC.get(BoxLogger.TRACE_KEY);
+            String bizAction = MDC.get(BoxLogger.BIZ_ACTION);
 
-            CompletableFuture.runAsync(() -> PrettyLogger.printLog("Update", traceId, sql, params, PrettyLog.printRealSql(sql, params), this, _resultText, true));
+            CompletableFuture.runAsync(() -> PrettyLogger.printLog("Update", traceId, bizAction, sql, params, PrettyLog.printRealSql(sql, params), this, _resultText, true));
         }
     }
 
