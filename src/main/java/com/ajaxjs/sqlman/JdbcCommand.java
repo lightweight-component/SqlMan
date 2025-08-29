@@ -3,7 +3,7 @@ package com.ajaxjs.sqlman;
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
 import com.ajaxjs.sqlman.model.CreateResult;
 import com.ajaxjs.sqlman.model.UpdateResult;
-import com.ajaxjs.sqlman.util.PrettyLog;
+import com.ajaxjs.sqlman.util.PrintRealSql;
 import com.ajaxjs.sqlman.util.PrettyLogger;
 import com.ajaxjs.util.BoxLogger;
 import com.ajaxjs.util.CollUtils;
@@ -101,7 +101,7 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
             String traceId = MDC.get(BoxLogger.TRACE_KEY);
             String bizAction = MDC.get(BoxLogger.BIZ_ACTION);
 
-            CompletableFuture.runAsync(() -> PrettyLogger.printLog("Query", traceId, bizAction, sql, params, PrettyLog.printRealSql(sql, params), this, _resultText, true));
+            CompletableFuture.runAsync(() -> PrettyLogger.printLog("Query", traceId, bizAction, sql, params, PrintRealSql.printRealSql(sql, params), this, _resultText, true));
         }
     }
 
@@ -176,7 +176,7 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
             String traceId = MDC.get(BoxLogger.TRACE_KEY);
             String bizAction = MDC.get(BoxLogger.BIZ_ACTION);
 
-            CompletableFuture.runAsync(() -> PrettyLogger.printLog("Create", traceId, bizAction, sql, params, PrettyLog.printRealSql(sql, params), this, _resultText, true));
+            CompletableFuture.runAsync(() -> PrettyLogger.printLog("Create", traceId, bizAction, sql, params, PrintRealSql.printRealSql(sql, params), this, _resultText, true));
         }
 
         return null;
@@ -209,7 +209,7 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
             String traceId = MDC.get(BoxLogger.TRACE_KEY);
             String bizAction = MDC.get(BoxLogger.BIZ_ACTION);
 
-            CompletableFuture.runAsync(() -> PrettyLogger.printLog("Update", traceId, bizAction, sql, params, PrettyLog.printRealSql(sql, params), this, _resultText, true));
+            CompletableFuture.runAsync(() -> PrettyLogger.printLog("Update", traceId, bizAction, sql, params, PrintRealSql.printRealSql(sql, params), this, _resultText, true));
         }
     }
 
