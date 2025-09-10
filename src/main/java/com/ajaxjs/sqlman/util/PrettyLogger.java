@@ -16,6 +16,7 @@ public class PrettyLogger extends BoxLogger {
     private static final int BOX_WIDTH = 137;
 
     private static final String REGEXP = "[\n\r\t]";
+    private static final int WORDS_SIZE_LIMIT = 800;
 
     /**
      * 打印数据库操作日志
@@ -48,6 +49,19 @@ public class PrettyLogger extends BoxLogger {
         else
             params = _params.toString();
 
+        if (params.length() > WORDS_SIZE_LIMIT) // 限制长度
+            params = params.substring(0, WORDS_SIZE_LIMIT) + "...";
+
+        String _result = result == null ? "null" : String.valueOf(result);
+
+        if (_result.length() > WORDS_SIZE_LIMIT) // 限制长度
+            _result = _result.substring(0, WORDS_SIZE_LIMIT) + "...";
+
+        if (realSql.length() > WORDS_SIZE_LIMIT) // 限制长度
+            realSql = realSql.substring(0, WORDS_SIZE_LIMIT) + "...";
+
+        realSql = realSql.replaceAll(REGEXP, " ");
+
         String duration;
 
         if (jdbcCommand != null)
@@ -62,9 +76,9 @@ public class PrettyLogger extends BoxLogger {
         printBoxContent(sb, "BizAction:", bizAction, wrapLongLines);
         printBoxContent(sb, "SQL:      ", sql.replaceAll(REGEXP, " "), wrapLongLines);
         printBoxContent(sb, "Params:   ", params, wrapLongLines);
-        printBoxContent(sb, "Real:     ", realSql.replaceAll(REGEXP, " "), wrapLongLines);
+        printBoxContent(sb, "Real:     ", realSql, wrapLongLines);
         printBoxContent(sb, "Duration: ", duration + "ms", wrapLongLines);
-        printBoxContent(sb, "Result:   ", (result == null ? "null" : String.valueOf(result)), false);
+        printBoxContent(sb, "Result:   ", _result, false);
         sb.append(boxLine('└', '─', '┘', StrUtil.EMPTY_STRING)).append(ANSI_RESET);
 
 //        System.out.println(sb);
