@@ -3,8 +3,8 @@ package com.ajaxjs.sqlman;
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
 import com.ajaxjs.sqlman.model.CreateResult;
 import com.ajaxjs.sqlman.model.UpdateResult;
-import com.ajaxjs.sqlman.util.PrintRealSql;
 import com.ajaxjs.sqlman.util.PrettyLogger;
+import com.ajaxjs.sqlman.util.PrintRealSql;
 import com.ajaxjs.util.BoxLogger;
 import com.ajaxjs.util.CollUtils;
 import lombok.Data;
@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 
 import javax.sql.DataSource;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.sql.*;
@@ -226,12 +227,18 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
 
         for (int i = 0; i < params.length; i++) {
             Object ele = params[i];
+
             if (ele instanceof Map)
                 ele = com.ajaxjs.util.JsonUtil.toJson(ele); // Map to JSON
             if (ele instanceof List)
                 throw new UnsupportedOperationException("暂不支持 List 类型参数。如果你入參用於 IN (?)，請直接拼接 SQL 語句而不是使用 PreparedStatement。這是系統的限制，無法支持 List");
 
-            ps.setObject(i + 1, ele);
+            if (ele instanceof InputStream) {
+                InputStream in = (InputStream) ele;
+                ps.setBinaryStream(i + 1, in);
+            } else
+                ps.setObject(i + 1, ele);
+//            ps.setBinaryStream(i + 1, );        }
         }
     }
 

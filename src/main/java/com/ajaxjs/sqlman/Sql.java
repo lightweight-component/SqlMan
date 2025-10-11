@@ -197,14 +197,9 @@ public class Sql extends JdbcCommand implements DAO {
 //            log.info(key + "::" + columnTypeName);
 
             if (value != null) {
-                if ("BLOB".equals(columnTypeName)) {
-                    // 获取 BLOB 数据
-                    Blob blob = rs.getBlob(i);
-                    // 将 BLOB 转为字节数组
-                    byte[] blobBytes = blob.getBytes(1, (int) blob.length());
-
-                    value = EncodeTools.base64EncodeToString(blobBytes);
-                } else if (JSON_TYPE_MYSQL8.equals(columnTypeName)) { /* mysql 8 json 字段对应 jdbc 的类型是？有没有办法让 jdbc 得知这个是一个 json 类型的字段？ */
+                if (BLOB_TYPE_MYSQL.equals(columnTypeName))
+                    value = rs2Base64Str(rs, i);
+                else if (JSON_TYPE_MYSQL8.equals(columnTypeName)) { /* mysql 8 json 字段对应 jdbc 的类型是？有没有办法让 jdbc 得知这个是一个 json 类型的字段？ */
                     /* JSON 类型会返回字符串 null 而不是 null */
                     if ("null".equals(value))
                         value = null;
@@ -222,6 +217,8 @@ public class Sql extends JdbcCommand implements DAO {
     }
 
     private static final String JSON_TYPE_MYSQL8 = "JSON";
+
+    private static final String BLOB_TYPE_MYSQL = "BLOB";
 
     /**
      * 记录集合转换为 bean 的高阶函数
@@ -254,6 +251,7 @@ public class Sql extends JdbcCommand implements DAO {
 
             for (int i = 1; i <= metaData.getColumnCount(); i++) {// 遍历结果集
                 String key = metaData.getColumnLabel(i);
+                String columnTypeName = metaData.getColumnTypeName(i);
 
                 if (getDatabaseVendor() == JdbcConstants.DatabaseVendor.H2)  // H2 的数据库字段名称是大写的，需要转换为小写
                     key = key.toLowerCase();
@@ -281,7 +279,7 @@ public class Sql extends JdbcCommand implements DAO {
 //						value = dbValue2Enum(propertyType, _value);
 //					else {
 
-                    if (_value != null && JSON_TYPE_MYSQL8.equals(metaData.getColumnTypeName(i))) {
+                    if (_value != null && JSON_TYPE_MYSQL8.equals(columnTypeName)) {
                         /* JSON 类型会返回字符串 null 而不是 null */
                         if ("null".equals(_value))
                             value = null;
@@ -308,7 +306,9 @@ public class Sql extends JdbcCommand implements DAO {
                                 log.warn("非法 JSON 字符串： {}，字段：{}", jsonStr, key);
                             }
                         }
-                    } else
+                    } else if (_value != null && BLOB_TYPE_MYSQL.equals(columnTypeName))
+                        value = rs2Base64Str(rs, i);
+                    else
                         try {
                             value = ConvertBasicValue.basicConvert(_value, propertyType);
                         } catch (NumberFormatException e) {
@@ -348,6 +348,15 @@ public class Sql extends JdbcCommand implements DAO {
 
             return bean;
         };
+    }
+
+    private static String rs2Base64Str(ResultSet rs, int index) throws SQLException {
+        // 获取 BLOB 数据
+        Blob blob = rs.getBlob(index);
+        // 将 BLOB 转为字节数组
+        byte[] blobBytes = blob.getBytes(1, (int) blob.length());
+
+        return EncodeTools.base64EncodeToString(blobBytes);
     }
 
     /**
