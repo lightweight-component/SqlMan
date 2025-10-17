@@ -117,11 +117,16 @@ public class Entity extends Sql implements IEntity {
 
     @Override
     public <T extends Serializable> CreateResult<T> create(Class<T> idTypeClz) {
+        return create(tableModel.isAutoIns(), idTypeClz);
+    }
+
+    @Override
+    public <T extends Serializable> CreateResult<T> create(boolean isAutoIns, Class<T> idTypeClz) {
         SqlParams sp = BeanWriter.entity2InsertSql(getTableName(), javaBean);
         setSql(sp.sql);
         setParams(sp.values);
 
-        return create(tableModel.isAutoIns(), idTypeClz);
+        return super.create(isAutoIns, idTypeClz);
     }
 
     @Override
