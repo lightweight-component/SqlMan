@@ -16,10 +16,10 @@
  */
 package com.ajaxjs.sqlman.crud;
 
+import com.ajaxjs.sqlman.JdbcCommand;
 import com.ajaxjs.sqlman.crud.model.TableModel;
 import com.ajaxjs.sqlman.model.UpdateResult;
-import com.ajaxjs.sqlman.JdbcCommand;
-import com.ajaxjs.util.DateHelper;
+import com.ajaxjs.util.date.Formatter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -226,9 +226,9 @@ public class BatchUpdate extends TableModel {
         else if (value instanceof Boolean)
             return ((Boolean) value) ? 1 : 0;
         else if (value instanceof Date)
-            return "'" + DateHelper.formatDateTime((Date) value) + "'";
+            return "'" + new Formatter((Date) value).format() + "'";
         else if (value instanceof LocalDateTime)
-            return "'" + DateHelper.formatDateTime((LocalDateTime) value) + "'";
+            return "'" + new Formatter((LocalDateTime) value).format() + "'";
 
         return value.toString();
     }

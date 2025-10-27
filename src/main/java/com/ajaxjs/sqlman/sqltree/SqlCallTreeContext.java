@@ -182,8 +182,7 @@ public class SqlCallTreeContext {
 
                 if (!parentSqlNodes.isEmpty()) {
                     SqlNode parentSql = parentSqlNodes.get(parentSqlNodes.size() - 1);
-                    log.info("跨Service查找父节点: 父Service={}, 父节点={}[深度={}]", parentService.getServiceName(), parentSql.getServiceName() + "." + parentSql.getMethodName(),
-                        parentSql.getDepth());
+                    log.info("跨Service查找父节点: 父Service={}, 父节点={}[深度={}]", parentService.getServiceName(), parentSql.getServiceName() + "." + parentSql.getMethodName(), parentSql.getDepth());
                     return parentSql;
                 }
             }
