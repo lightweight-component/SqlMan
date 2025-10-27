@@ -1,6 +1,6 @@
 package com.ajaxjs.sqlman.util;
 
-import com.ajaxjs.util.StrUtil;
+import com.ajaxjs.util.ObjectHelper;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
@@ -14,7 +14,6 @@ import net.sf.jsqlparser.statement.select.OrderByElement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.util.TablesNamesFinder;
-import net.sf.jsqlparser.util.deparser.StatementDeParser;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -63,7 +62,7 @@ public class CanonicalColumnVisitor extends TablesNamesFinder {
         /* 为列名增加表名前缀，优先使用表的别名 */
         Table table = column.getTable();
 
-        if (StrUtil.hasText(tableName)) {
+        if (ObjectHelper.hasText(tableName)) {
             if (null == table) {
                 String aliasName = aliaFunction.apply(tableName);
                 column.setTable(new Table(null != aliasName ? aliasName : tableName));

@@ -22,7 +22,7 @@ import com.ajaxjs.sqlman.annotation.Transient;
 import com.ajaxjs.sqlman.crud.model.SqlParams;
 import com.ajaxjs.sqlman.util.Utils;
 import com.ajaxjs.util.JsonUtil;
-import com.ajaxjs.util.StrUtil;
+import com.ajaxjs.util.ObjectHelper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.beans.BeanInfo;
@@ -152,7 +152,7 @@ public class BeanWriter implements JdbcConstants {
         sb.deleteCharAt(sb.length() - 1);// 删除最后一个 ,
         Object[] arr = values.toArray();  // 将 List 转为数组
 
-        if (StrUtil.hasText(idField) && idValue != null) {
+        if (ObjectHelper.hasText(idField) && idValue != null) {
             sb.append(" WHERE ").append(idField).append(" = ?");
 
             arr = Arrays.copyOf(arr, arr.length + 1);
@@ -222,7 +222,7 @@ public class BeanWriter implements JdbcConstants {
                 if (field2 != null && field2.getAnnotation(Column.class) != null) {
                     Column column = field2.getAnnotation(Column.class);
 
-                    if (StrUtil.hasText(column.name())) // Real field name in DB
+                    if (ObjectHelper.hasText(column.name())) // Real field name in DB
                         filedName = column.name();
                 }
 

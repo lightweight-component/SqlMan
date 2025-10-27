@@ -1,7 +1,7 @@
 package com.ajaxjs.sqlman.util;
 
 import com.ajaxjs.util.DateHelper;
-import com.ajaxjs.util.StrUtil;
+import com.ajaxjs.util.ObjectHelper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
@@ -79,7 +79,7 @@ public class PrintRealSql {
      * @return 包含实际值的 SQL 字符串，若出错则返回带错误信息的描述
      */
     public static String printRealSql(String sql, Object[] params) {
-        if (!StrUtil.hasText(sql))
+        if (!ObjectHelper.hasText(sql))
             throw new IllegalArgumentException("SQL 语句不能为空！");
 
         // 处理 null 参数

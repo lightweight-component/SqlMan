@@ -4,8 +4,8 @@ import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
 import com.ajaxjs.sqlman.model.PageResult;
 import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman.util.Utils;
+import com.ajaxjs.util.Base64Utils;
 import com.ajaxjs.util.ConvertBasicValue;
-import com.ajaxjs.util.EncodeTools;
 import com.ajaxjs.util.JsonUtil;
 import com.ajaxjs.util.reflect.Clazz;
 import com.ajaxjs.util.reflect.Methods;
@@ -356,7 +356,7 @@ public class Sql extends JdbcCommand implements DAO {
         // 将 BLOB 转为字节数组
         byte[] blobBytes = blob.getBytes(1, (int) blob.length());
 
-        return EncodeTools.base64EncodeToString(blobBytes);
+        return new Base64Utils(blobBytes).encodeAsString();
     }
 
     /**

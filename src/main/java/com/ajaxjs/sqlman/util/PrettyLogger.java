@@ -2,8 +2,8 @@ package com.ajaxjs.sqlman.util;
 
 import com.ajaxjs.sqlman.JdbcCommand;
 import com.ajaxjs.util.BoxLogger;
-import com.ajaxjs.util.CollUtils;
-import com.ajaxjs.util.StrUtil;
+import com.ajaxjs.util.CommonConstant;
+import com.ajaxjs.util.ObjectHelper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class PrettyLogger extends BoxLogger {
         else if (_params instanceof Object[]) {
             Object[] arr = (Object[]) _params;
 
-            if (CollUtils.isEmpty(arr))
+            if (ObjectHelper.isEmpty(arr))
                 params = NONE;
             else
                 params = Arrays.toString(arr);
@@ -79,7 +79,7 @@ public class PrettyLogger extends BoxLogger {
         printBoxContent(sb, "Real:     ", realSql, wrapLongLines);
         printBoxContent(sb, "Duration: ", duration + "ms", wrapLongLines);
         printBoxContent(sb, "Result:   ", _result, false);
-        sb.append(boxLine('└', '─', '┘', StrUtil.EMPTY_STRING)).append(ANSI_RESET);
+        sb.append(boxLine('└', '─', '┘', CommonConstant.EMPTY_STRING)).append(ANSI_RESET);
 
 //        System.out.println(sb);
         log.info('\n' + sb.toString());
@@ -118,7 +118,7 @@ public class PrettyLogger extends BoxLogger {
         List<String> result = new ArrayList<>();
 
         if (s == null) {
-            result.add(StrUtil.EMPTY_STRING);
+            result.add(CommonConstant.EMPTY_STRING);
             return result;
         }
 
@@ -142,7 +142,7 @@ public class PrettyLogger extends BoxLogger {
         if (line.length() > 0)
             result.add(line.toString());
         if (result.isEmpty())
-            result.add(StrUtil.EMPTY_STRING);
+            result.add(CommonConstant.EMPTY_STRING);
 
         return result;
     }

@@ -2,7 +2,7 @@ package com.ajaxjs.sqlman.util;
 
 
 import com.ajaxjs.sqlman.annotation.Transient;
-import com.ajaxjs.util.StrUtil;
+import com.ajaxjs.util.CommonConstant;
 import com.ajaxjs.util.reflect.Clazz;
 import com.ajaxjs.util.reflect.Methods;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ public class BeanUtils {
      * @return 属性名称
      */
     public static String getFieldName(String method, String action) {
-        method = method.replace(action, StrUtil.EMPTY_STRING);
+        method = method.replace(action, CommonConstant.EMPTY_STRING);
 
         return Character.toString(method.charAt(0)).toLowerCase() + method.substring(1);
     }

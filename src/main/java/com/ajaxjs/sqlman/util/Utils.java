@@ -1,6 +1,6 @@
 package com.ajaxjs.sqlman.util;
 
-import com.ajaxjs.util.StrUtil;
+import com.ajaxjs.util.CommonConstant;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
@@ -112,7 +112,7 @@ public class Utils {
      * @return 过滤后的字符串，移除了可能的 SQL 注入关键字或字符
      */
     public static String escapeSqlInjection(String input) {
-        return SQL_INJECTION_PATTERN.matcher(input).replaceAll(StrUtil.EMPTY_STRING);
+        return SQL_INJECTION_PATTERN.matcher(input).replaceAll(CommonConstant.EMPTY_STRING);
     }
 
     /**

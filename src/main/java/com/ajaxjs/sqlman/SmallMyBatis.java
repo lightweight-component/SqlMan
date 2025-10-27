@@ -1,10 +1,7 @@
 package com.ajaxjs.sqlman;
 
-
-import com.ajaxjs.util.CollUtils;
+import com.ajaxjs.util.*;
 import com.ajaxjs.util.ObjectHelper;
-import com.ajaxjs.util.StrUtil;
-import com.ajaxjs.util.XmlHelper;
 import com.ajaxjs.util.io.Resources;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.expression.MapAccessor;
@@ -45,7 +42,7 @@ public class SmallMyBatis {
 
             if (xmlBody != null) {
                 // 删除注释
-                xmlBody = pattern.matcher(xmlBody).replaceAll(StrUtil.EMPTY_STRING);
+                xmlBody = pattern.matcher(xmlBody).replaceAll(CommonConstant.EMPTY_STRING);
                 XmlHelper.parseXML(xmlBody, (node, nodeList) -> {
                     if ("sql".equals(node.getNodeName())) {
                         String id = XmlHelper.getNodeAttribute(node, "id");
@@ -76,7 +73,7 @@ public class SmallMyBatis {
             log.warn("文件路径没有 xml", e);
         }
 
-        if (CollUtils.isEmpty(resources))
+        if (ObjectHelper.isEmpty(resources))
             throw new RuntimeException("文件路径[" + sqlLocations + "]没有 xml");
 
         // 写死 sql 目录下。Resource 不能返回相对目录
@@ -93,7 +90,7 @@ public class SmallMyBatis {
     public String getSqlById(String id) {
         String sql = ALL_SQL.get(id);
 
-        if (StrUtil.isEmptyText(sql))
+        if (ObjectHelper.isEmptyText(sql))
             throw new IllegalArgumentException("查询 id 为 " + id + "　的 SQL 为空");
 
         return sql;
@@ -221,12 +218,12 @@ public class SmallMyBatis {
 
             if (placeholder.startsWith("T(")) { // 调用 Java 类的方法
                 Object value = EXP_PARSER.parseExpression(placeholder).getValue();
-                strValue = value == null ? StrUtil.EMPTY_STRING : value.toString();
+                strValue = value == null ? CommonConstant.EMPTY_STRING : value.toString();
             } else {
                 Object value = paramMap.get(placeholder); // 获取键名对应的值
 
                 if (value == null) {
-                    strValue = StrUtil.EMPTY_STRING; // 如果值为空，替换为空字符串
+                    strValue = CommonConstant.EMPTY_STRING; // 如果值为空，替换为空字符串
                 } else {
                     strValue = value.toString().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"); // 处理转义字符和 $ 符号
 

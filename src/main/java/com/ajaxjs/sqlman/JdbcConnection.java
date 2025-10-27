@@ -1,7 +1,7 @@
 package com.ajaxjs.sqlman;
 
-import com.ajaxjs.util.StrUtil;
-import com.ajaxjs.util.Version;
+import com.ajaxjs.util.DebugTools;
+import com.ajaxjs.util.ObjectHelper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -105,6 +105,7 @@ public class JdbcConnection {
             else if (databaseProductName.contains("h2"))
                 databaseVendor = JdbcConstants.DatabaseVendor.H2;
         } catch (SQLException e) {
+            log.error("Getting database name error.", e);
             throw new RuntimeException("Getting database name error.", e);
         }
     }
@@ -123,14 +124,15 @@ public class JdbcConnection {
         Connection conn;
 
         try {
-            if (StrUtil.hasText(userName) && StrUtil.hasText(password))
+            if (ObjectHelper.hasText(userName) && ObjectHelper.hasText(password))
                 conn = DriverManager.getConnection(jdbcUrl, userName, password);
             else
                 conn = DriverManager.getConnection(jdbcUrl);
 
             log.info("数据库连接成功： {}", conn.getMetaData().getURL());
         } catch (SQLException e) {
-            throw new RuntimeException("数据库连接失败！", e);
+            log.error("Connect to database failed！", e);
+            throw new RuntimeException("Connect to database failed！", e);
         }
 
         return conn;
@@ -157,6 +159,7 @@ public class JdbcConnection {
         try {
             return dataSource.getConnection();
         } catch (SQLException e) {
+            log.warn("Can't get a connection from a DataSource: " + dataSource, e);
             throw new RuntimeException("Can't get a connection from a DataSource: " + dataSource, e);
         }
     }
@@ -190,10 +193,11 @@ public class JdbcConnection {
             if (conn != null && !conn.isClosed()) {
                 conn.close();
 
-                if (Version.isDebug)
+                if (DebugTools.isDebug)
                     log.info("Database Connection Closed.");
             }
         } catch (SQLException e) {
+            log.warn("Database Connection Closes failed.", e);
             throw new RuntimeException("Database Connection Closes failed.", e);
         }
     }

@@ -6,7 +6,7 @@ import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman.util.PrettyLogger;
 import com.ajaxjs.sqlman.util.PrintRealSql;
 import com.ajaxjs.util.BoxLogger;
-import com.ajaxjs.util.CollUtils;
+import com.ajaxjs.util.ObjectHelper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -78,7 +78,7 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
         String resultText = null;
 
         try (PreparedStatement ps = getConn().prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)) {
-            if (!CollUtils.isEmpty(params))
+            if (!ObjectHelper.isEmpty(params))
                 setParam2Ps(ps, params);
 
             try (ResultSet rs = ps.executeQuery()) {
