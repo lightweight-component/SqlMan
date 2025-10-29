@@ -1,178 +1,61 @@
-package com.ajaxjs.sqlman;
+package com.ajaxjs.sqlman_v2;
 
+import com.ajaxjs.sqlman.DataAccessException;
+import com.ajaxjs.sqlman.JdbcConstants;
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
-import com.ajaxjs.sqlman.model.PageResult;
-import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman.util.Utils;
 import com.ajaxjs.util.Base64Utils;
 import com.ajaxjs.util.ConvertBasicValue;
 import com.ajaxjs.util.JsonUtil;
+import com.ajaxjs.util.ObjectHelper;
 import com.ajaxjs.util.reflect.Clazz;
 import com.ajaxjs.util.reflect.Methods;
 import com.ajaxjs.util.reflect.Types;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.sql.DataSource;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-@Data
 @Slf4j
-@EqualsAndHashCode(callSuper = true)
-public class Sql extends JdbcCommand implements DAO {
-    /**
-     * Create a JDBC action with global connection
-     */
-    public Sql() {
-        super();
+public abstract class BaseAction {
+    protected Action action;
+
+    public BaseAction(Action action) {
+        this.action = action;
     }
 
-    /**
-     * Create a JDBC action with specified connection
-     */
-    public Sql(Connection conn) {
-        super(conn);
-    }
+    protected void setParam2Ps(PreparedStatement ps) throws SQLException {
+        Object[] params = action.getParams();
 
-    /**
-     * Create a JDBC action with specified data source
-     */
-    public Sql(DataSource dataSource) {
-        super(dataSource);
-    }
+        if (ObjectHelper.isEmpty(action.getParams()))
+            return;
 
-    @Override
-    public DAO input(String sql, Object... params) {
-        setSql(sql);
-        setParams(params);
+        for (int i = 0; i < params.length; i++) {
+            Object ele = params[i];
 
-        return this;
-    }
-
-    @Override
-    public DAO input(String sql, Map<String, Object> keyParams, Object... params) {
-        setSql(sql);
-        setParams(params);
-        setKeyParams(keyParams);
-
-        return this;
-    }
-
-    @Override
-    public <T> T queryOne(Class<T> clz) {
-        Map<String, Object> map = query();
-
-        if (map == null)
-            return null;
-
-        for (String key : map.keySet()) {// 有且只有一个记录
-            Object obj = map.get(key);
-
-            if (obj == null)
-                return null;
-            else
-                return ConvertBasicValue.basicCast(obj, clz);
+            if (ele instanceof Map)
+                ele = com.ajaxjs.util.JsonUtil.toJson(ele); // Map to JSON
+            else if (ele instanceof List)
+                throw new UnsupportedOperationException("暂不支持 List 类型参数。如果你入參用於 IN (?)，請直接拼接 SQL 語句而不是使用 PreparedStatement。這是系統的限制，無法支持 List");
+            else if (ele instanceof byte[]) { // for small file
+                byte[] bytes = (byte[]) ele;
+                ps.setBytes(i + 1, bytes);
+            } else if (ele instanceof InputStream) { // for large file
+                InputStream in = (InputStream) ele;
+                ps.setBinaryStream(i + 1, in);
+            } else
+                ps.setObject(i + 1, ele);
         }
-
-        return null;
     }
 
-    @Override
-    public Map<String, Object> query() {
-        return query(Sql::getResultMap);
-    }
-
-    @Override
-    public <T> T query(Class<T> beanClz) {
-        return query(getResultBean(beanClz));
-    }
-
-    @Override
-    public List<Map<String, Object>> queryList() {
-        return query(rs -> forEachRs(rs, Sql::getResultMap));
-    }
-
-    @Override
-    public <T> List<T> queryList(Class<T> beanClz) {
-        return query(rs -> forEachRs(rs, getResultBean(beanClz)));
-    }
-
-    @Override
-    public <T> PageResult<T> page() {
-        return page(null, null, null);
-    }
-    // TODO make page() returns Map, not the T
-
-    @Override
-    public <T> PageResult<T> page(Integer start, Integer limit) {
-        return page(null, start, limit);
-    }
-
-    @Override
-    public <T> PageResult<T> page(Class<T> beanClz) {
-        return page(beanClz, null, null);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> PageResult<T> page(Class<T> beanClz, Integer start, Integer limit) {
-        Pager pager = new Pager();
-        pager.setDatabaseVendor(getDatabaseVendor());
-
-        if (start != null && limit != null) {
-            pager.setStart(start);
-            pager.setLimit(limit);
-        }
-
-        pager.parse(getSql());
-        setSql(pager.getCountTotal());
-        Long total = queryOne(Long.class);
-
-        PageResult<T> result = new PageResult<>();
-
-        if (total != null && total > 0) {
-            List<T> list;
-            setSql(pager.getPageSql());
-
-            // 如果 beanCls 为 null，则将查询结果作为 Map 列表返回
-            // 否则将查询结果转换为指定实体类的列表
-            if (beanClz == null)
-                list = (List<T>) queryList();
-            else
-                list = queryList(beanClz);
-
-            if (list != null) {
-                result.setCurrentPage(pager.getCurrentPage());
-                result.setTotalCount(total.intValue());
-                result.addAll(list);
-
-                return result;
-            }
-        }
-
-        result.setTotalCount(0);
-        result.setZero(true);
-
-        return result;
-    }
-
-    @Override
-    public UpdateResult delete() {
-        return null;
-    }
-
-    /**
-     * 记录集合转换为 Map
-     *
-     * @param rs 记录集合
-     * @return Map 结果
-     * @throws SQLException 转换时的 SQL 异常
-     */
     public static Map<String, Object> getResultMap(ResultSet rs) throws SQLException {
         // LinkedHashMap 是 HashMap 的一个子类，保存了记录的插入顺序
         Map<String, Object> map = new LinkedHashMap<>();
@@ -208,6 +91,15 @@ public class Sql extends JdbcCommand implements DAO {
 
     private static final String BLOB_TYPE_MYSQL = "BLOB";
 
+    static String rs2Base64Str(ResultSet rs, int index) throws SQLException {
+        // 获取 BLOB 数据
+        Blob blob = rs.getBlob(index);
+        // 将 BLOB 转为字节数组
+        byte[] blobBytes = blob.getBytes(1, (int) blob.length());
+
+        return new Base64Utils(blobBytes).encodeAsString();
+    }
+
     /**
      * 记录集合转换为 bean 的高阶函数
      *
@@ -241,7 +133,7 @@ public class Sql extends JdbcCommand implements DAO {
                 String key = metaData.getColumnLabel(i);
                 String columnTypeName = metaData.getColumnTypeName(i);
 
-                if (getDatabaseVendor() == JdbcConstants.DatabaseVendor.H2)  // H2 的数据库字段名称是大写的，需要转换为小写
+                if (action.getDatabaseVendor() == JdbcConstants.DatabaseVendor.H2)  // H2 的数据库字段名称是大写的，需要转换为小写
                     key = key.toLowerCase();
 
                 Object _value = rs.getObject(i); // Real value in DB
@@ -336,84 +228,5 @@ public class Sql extends JdbcCommand implements DAO {
 
             return bean;
         };
-    }
-
-    private static String rs2Base64Str(ResultSet rs, int index) throws SQLException {
-        // 获取 BLOB 数据
-        Blob blob = rs.getBlob(index);
-        // 将 BLOB 转为字节数组
-        byte[] blobBytes = blob.getBytes(1, (int) blob.length());
-
-        return new Base64Utils(blobBytes).encodeAsString();
-    }
-
-    /**
-     * ResultSet 迭代器
-     *
-     * @param rs        结果集合
-     * @param processor 单行处理器
-     * @return 多行记录列表集合
-     * @throws SQLException 异常
-     */
-    static <T> List<T> forEachRs(ResultSet rs, ResultSetProcessor<T> processor) throws SQLException {
-        List<T> list = new ArrayList<>();
-
-        do {
-            T d = processor.process(rs);
-            list.add(d);
-        } while (rs.next());
-
-//        return list.size() > 0 ? list : null; // 找不到记录返回 null，不返回空的 list
-        return list; // 找不到记录返回 null，不返回空的 list
-    }
-
-    public static Sql sql(String sql, Object... params) {
-        Sql _sql = new Sql();
-        _sql.setSql(sql);
-        _sql.setParams(params);
-
-        return _sql;
-    }
-
-    public static Sql sql(Connection conn, String sql, Object... params) {
-        Sql _sql = new Sql(conn);
-        _sql.setSql(sql);
-        _sql.setParams(params);
-
-        return _sql;
-    }
-
-    public static Sql sql(DataSource dataSource, String sql, Object... params) {
-        Connection conn = getConnection(dataSource);
-
-        return sql(conn, sql, params);
-    }
-
-    @Override
-    public DAO inputXml(String sqlId, Object... params) {
-        setParams(params);
-
-        SmallMyBatis smallMyBatis = new SmallMyBatis();
-        smallMyBatis.loadBySqlLocations("classpath*:sql/**/*.xml");
-        String sql = smallMyBatis.getSqlById(sqlId);
-        setSql(sql);
-
-        return this;
-    }
-
-    @Override
-    public DAO inputXml(String sqlId, Map<String, Object> keyParams, Object... params) {
-        setKeyParams(keyParams);
-
-        return inputXml(sqlId, params);
-    }
-
-    public static Sql newInstance() {
-        return new Sql(JdbcConnection.getConnection());
-    }
-
-    // shorthand
-    public static Sql instance() {
-        return newInstance();
     }
 }
