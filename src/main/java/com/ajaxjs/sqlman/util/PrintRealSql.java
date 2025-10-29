@@ -1,6 +1,5 @@
 package com.ajaxjs.sqlman.util;
 
-import com.ajaxjs.util.DateHelper;
 import com.ajaxjs.util.ObjectHelper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,7 +56,7 @@ public class PrintRealSql {
 
         if (value instanceof Date) {
             Date date = (Date) value;
-            return "'" + DateHelper.formatDateTime(date) + "'";
+            return "''";
         }
 
         if (value instanceof Boolean) {

@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * To execute basic JDBC commands, read and write data to database.
+ * To execute basic JDBC commands, read and write data to a database.
  * Usually we don't use this class directly, use class Sql instead.
  */
 @EqualsAndHashCode(callSuper = true)
@@ -233,7 +233,10 @@ public class JdbcCommand extends JdbcConnection implements JdbcConstants {
             if (ele instanceof List)
                 throw new UnsupportedOperationException("暂不支持 List 类型参数。如果你入參用於 IN (?)，請直接拼接 SQL 語句而不是使用 PreparedStatement。這是系統的限制，無法支持 List");
 
-            if (ele instanceof InputStream) {
+            if (ele instanceof byte[]) { // for small file
+                byte[] bytes = (byte[]) ele;
+                ps.setBytes(i + 1, bytes);
+            } else if (ele instanceof InputStream) { // for large file
                 InputStream in = (InputStream) ele;
                 ps.setBinaryStream(i + 1, in);
             } else
