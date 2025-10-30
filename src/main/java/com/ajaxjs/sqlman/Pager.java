@@ -54,7 +54,6 @@ public class Pager {
             throw new RuntimeException("Parsed Paging SQL error.", e);
         }
 
-        assert selectStatement != null;
         SelectBody selectBody = selectStatement.getSelectBody();
 
         if (selectBody instanceof PlainSelect) {
@@ -78,16 +77,15 @@ public class Pager {
             if (sql.toUpperCase().contains("ORDER BY")) {
                 List<OrderByElement> orderBy = plainSelect.getOrderByElements();
 
-                if (orderBy != null) plainSelect.setOrderByElements(null);
+                if (orderBy != null)
+                    plainSelect.setOrderByElements(null);
             }
 
-            // 创建一个 count 函数的表达式
-            Function countFunc = new Function();
+            Function countFunc = new Function();// 创建一个 count 函数的表达式
             countFunc.setName("COUNT");
             countFunc.setParameters(new ExpressionList(new AllColumns()));
 
-            // 替换所有的 Select Item
-            List<SelectItem> selectItems = plainSelect.getSelectItems();
+            List<SelectItem> selectItems = plainSelect.getSelectItems();// 替换所有的 Select Item
             selectItems.clear();
             selectItems.add(new SelectExpressionItem(countFunc));
 
