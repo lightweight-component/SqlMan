@@ -86,6 +86,8 @@ public abstract class BaseTest {
                     "('Shop E', '202 Birch St', '567-890-1234', 'Charlie Davis', 1);");
         }
 
+        System.out.println("init ok");
+
         // 在这里放置一次性初始化代码
 //        conn = JdbcConnection.getMySqlConnection(config.get("database.ipPort").toString(), "aj_base",
 //                config.get("database.username").toString(), config.get("database.password").toString());

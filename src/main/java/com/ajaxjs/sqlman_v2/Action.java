@@ -1,11 +1,17 @@
 package com.ajaxjs.sqlman_v2;
 
 import com.ajaxjs.sqlman.JdbcConnection;
-import com.ajaxjs.sqlman.JdbcConstants;
 import com.ajaxjs.sqlman.SmallMyBatis;
+import com.ajaxjs.sqlman.model.CreateResult;
+import com.ajaxjs.sqlman.model.UpdateResult;
+import com.ajaxjs.sqlman_v2.constant.DatabaseVendor;
+import com.ajaxjs.sqlman_v2.crud.Create;
+import com.ajaxjs.sqlman_v2.meta.DbMetaInfoCreate;
+import com.ajaxjs.sqlman_v2.sqlgenerator.Entity2WriteSql;
 import lombok.Data;
 
 import javax.sql.DataSource;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.util.Map;
 
@@ -16,10 +22,61 @@ public class Action {
      */
     Connection conn;
 
+    public Action() {
+    }
+
+    public Action(Map<String, Object> entity, String tableName) {
+        setConn();
+        entityMap = entity;
+        this.tableName = tableName;
+    }
+
+    public Action(Connection conn, Map<String, Object> entity, String tableName) {
+        this.conn = conn;
+        entityMap = entity;
+        this.tableName = tableName;
+    }
+
+    public Action(Object entity, String tableName) {
+        setConn();
+        entityBean = entity;
+        this.tableName = tableName;
+    }
+
+    public Action(Connection conn, Object entity, String tableName) {
+        this.conn = conn;
+        entityBean = entity;
+        this.tableName = tableName;
+    }
+
+    public Action(Object entity) {
+        setConn();
+        entityBean = entity;
+    }
+
+    public Action(Connection conn, Object entity) {
+        this.conn = conn;
+        entityBean = entity;
+    }
+
+    String tableName;
+
+    Map<String, Object> entityMap;
+
+    Object entityBean;
+
+    /**
+     * The data source to be used to obtain the connection
+     *
+     * @param dataSource DataSource
+     */
     public void setDataSource(DataSource dataSource) {
         conn = JdbcConnection.getConnection(dataSource);
     }
 
+    /**
+     * Default way to initialize the connection. Obtained a connection from local thread.
+     */
     public void setConn() {
         conn = JdbcConnection.getConnection();
     }
@@ -43,7 +100,35 @@ public class Action {
     Object[] params;
 
     /**
-     * 当前数据库厂商，默认 MySQL
+     * The vendor of the database that using, default is MYSQL.
      */
-    JdbcConstants.DatabaseVendor databaseVendor = JdbcConstants.DatabaseVendor.MYSQL;
+    DatabaseVendor databaseVendor = DatabaseVendor.MYSQL;
+
+    public <T extends Serializable> CreateResult<T> create(boolean isAutoIns, Class<T> idType) {
+        Entity2WriteSql generator;
+
+        if (entityMap != null)
+            generator = new Entity2WriteSql(entityMap);
+        else if (entityBean != null)
+            generator = new Entity2WriteSql(entityBean);
+        else
+            throw new UnsupportedOperationException("entityMap or entityBean is null.");
+
+        if (entityBean != null && tableName == null)
+            tableName = new DbMetaInfoCreate<T>(entityBean).getTableNameByAnnotation();
+
+        generator.setTableName(tableName);
+        generator.getInsertSql();
+
+        sql = generator.getSql();
+        params = generator.getParams();
+
+        return new Create(this).create(isAutoIns, idType);
+    }
+
+    public UpdateResult update(String where) {
+        sql += " WHERE " + where;
+
+        return null;
+    }
 }

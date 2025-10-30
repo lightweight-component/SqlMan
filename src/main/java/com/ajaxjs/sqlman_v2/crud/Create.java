@@ -1,10 +1,9 @@
 package com.ajaxjs.sqlman_v2.crud;
 
 import com.ajaxjs.sqlman.model.CreateResult;
-import com.ajaxjs.sqlman.util.PrettyLogger;
 import com.ajaxjs.sqlman.util.PrintRealSql;
 import com.ajaxjs.sqlman_v2.Action;
-import com.ajaxjs.sqlman_v2.BaseAction;
+import com.ajaxjs.sqlman_v2.util.PrettyLogger;
 import com.ajaxjs.util.BoxLogger;
 import org.slf4j.MDC;
 
@@ -31,6 +30,7 @@ public class Create extends BaseAction {
      */
     @SuppressWarnings("unchecked")
     public <T extends Serializable> CreateResult<T> create(boolean isAutoIns, Class<T> idType) {
+        startTime = System.currentTimeMillis();
         String resultText = null;
 
         try (PreparedStatement ps = isAutoIns
@@ -89,7 +89,8 @@ public class Create extends BaseAction {
             String traceId = MDC.get(BoxLogger.TRACE_KEY);
             String bizAction = MDC.get(BoxLogger.BIZ_ACTION);
 
-//            CompletableFuture.runAsync(() -> PrettyLogger.printLog("Create", traceId, bizAction, sql, params, PrintRealSql.printRealSql(sql, params), this, _resultText, true));
+            CompletableFuture.runAsync(() -> PrettyLogger.printLog("Create", traceId, bizAction,
+                    action.getSql(), action.getParams(), PrintRealSql.printRealSql(action.getSql(), action.getParams()), this, _resultText, true));
         }
 
         return null;

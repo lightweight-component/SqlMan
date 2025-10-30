@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman.v2temp;
+package com.ajaxjs.sqlman_v2;
 
 import com.ajaxjs.sqlman.model.CreateResult;
 import com.ajaxjs.sqlman.model.UpdateResult;

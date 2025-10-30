@@ -1,6 +1,4 @@
-package com.ajaxjs.sqlman.v2temp.meta;
-
-import lombok.Data;
+package com.ajaxjs.sqlman_v2.meta;
 
 import java.util.Map;
 

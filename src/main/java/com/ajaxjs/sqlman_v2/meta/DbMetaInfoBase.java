@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman.v2temp.meta;
+package com.ajaxjs.sqlman_v2.meta;
 
 import com.ajaxjs.sqlman.annotation.Table;
 

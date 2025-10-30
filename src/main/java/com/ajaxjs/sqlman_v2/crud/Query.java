@@ -3,7 +3,6 @@ package com.ajaxjs.sqlman_v2.crud;
 import com.ajaxjs.sqlman.Sql;
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
 import com.ajaxjs.sqlman_v2.Action;
-import com.ajaxjs.sqlman_v2.BaseAction;
 import com.ajaxjs.util.BoxLogger;
 import com.ajaxjs.util.ConvertBasicValue;
 import lombok.extern.slf4j.Slf4j;

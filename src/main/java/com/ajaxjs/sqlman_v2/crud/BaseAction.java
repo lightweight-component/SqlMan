@@ -1,9 +1,10 @@
-package com.ajaxjs.sqlman_v2;
+package com.ajaxjs.sqlman_v2.crud;
 
 import com.ajaxjs.sqlman.DataAccessException;
-import com.ajaxjs.sqlman.JdbcConstants;
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
 import com.ajaxjs.sqlman.util.Utils;
+import com.ajaxjs.sqlman_v2.Action;
+import com.ajaxjs.sqlman_v2.constant.DatabaseVendor;
 import com.ajaxjs.util.Base64Utils;
 import com.ajaxjs.util.ConvertBasicValue;
 import com.ajaxjs.util.JsonUtil;
@@ -31,6 +32,8 @@ public abstract class BaseAction {
     public BaseAction(Action action) {
         this.action = action;
     }
+
+    public long startTime;
 
     protected void setParam2Ps(PreparedStatement ps) throws SQLException {
         Object[] params = action.getParams();
@@ -133,7 +136,7 @@ public abstract class BaseAction {
                 String key = metaData.getColumnLabel(i);
                 String columnTypeName = metaData.getColumnTypeName(i);
 
-                if (action.getDatabaseVendor() == JdbcConstants.DatabaseVendor.H2)  // H2 的数据库字段名称是大写的，需要转换为小写
+                if (action.getDatabaseVendor() == DatabaseVendor.H2)  // H2 的数据库字段名称是大写的，需要转换为小写
                     key = key.toLowerCase();
 
                 Object _value = rs.getObject(i); // Real value in DB

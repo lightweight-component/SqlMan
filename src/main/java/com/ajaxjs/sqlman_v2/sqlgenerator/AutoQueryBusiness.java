@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman.v2temp.sqlgenerator;
+package com.ajaxjs.sqlman_v2.sqlgenerator;
 
 import java.io.Serializable;
 

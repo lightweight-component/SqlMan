@@ -1,10 +1,11 @@
-package com.ajaxjs.sqlman.v2temp.sqlgenerator;
+package com.ajaxjs.sqlman_v2.sqlgenerator;
 
 import com.ajaxjs.sqlman.JdbcConstants;
 import com.ajaxjs.sqlman.annotation.Column;
 import com.ajaxjs.sqlman.annotation.Table;
 import com.ajaxjs.sqlman.annotation.Transient;
 import com.ajaxjs.sqlman.util.Utils;
+import com.ajaxjs.sqlman_v2.meta.DbMetaInfoUpdate;
 import com.ajaxjs.util.CommonConstant;
 import com.ajaxjs.util.JsonUtil;
 import com.ajaxjs.util.ObjectHelper;
@@ -25,6 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+/**
+ * No matter which type of entity you have, they finally are generated to SQL.
+ */
 @Slf4j
 @Data
 public class Entity2WriteSql implements JdbcConstants {
@@ -53,12 +57,12 @@ public class Entity2WriteSql implements JdbcConstants {
     }
 
     /**
-     * 给 PrepareStatement 用的 SQL 语句
+     * The result of SQL.
      */
     String sql;
 
     /**
-     * 参数值列表
+     * The result of parameters.
      */
     Object[] params;
 
@@ -70,25 +74,37 @@ public class Entity2WriteSql implements JdbcConstants {
 
         if (entityMap != null)
             entityMap.forEach((field, value) -> {
-                sb.append(" `").append(field).append("`,");
-                valuesHolder.add(" ?");
+                sb.append("`").append(field).append("`, ");
+                valuesHolder.add("?");
                 values.add(value);
             });
         else if (entityBean != null)
             everyBeanField(entityBean, (field, value) -> {
-                sb.append(" `").append(field).append("`,");
-                valuesHolder.add(" ?");
+                sb.append("`").append(field).append("`, ");
+                valuesHolder.add("?");
                 values.add(beanValue2SqlValue(value));
             });
 
-        sb.deleteCharAt(sb.length() - 1);// 删除最后一个 ,
-        sb.append(") VALUES (").append(String.join(",", valuesHolder)).append(")");
+        sb.deleteCharAt(sb.length() - 2);// 删除最后一个 ,
+        sb.append(") VALUES (").append(String.join(", ", valuesHolder)).append(")");
 
         sql = sb.toString();
         params = values.toArray();
     }
 
+    /**
+     * Generate SQL for update.
+     *
+     * @param idField Which row to update, we need the name of that field.
+     * @param idValue The value of ID.
+     */
     public void getUpdateSql(String idField, Object idValue) {
+        if (ObjectHelper.isEmptyText(idField) && idValue == null) {
+            log.warn("You're going to update ALL rows on the table {}, which is SO dangerous! " +
+                    "All records will be effected!", tableName);
+            return;
+        }
+
         StringBuilder sb = new StringBuilder();
         List<Object> values = new ArrayList<>();
         sb.append("UPDATE ").append(tableName).append(" SET");
@@ -110,23 +126,37 @@ public class Entity2WriteSql implements JdbcConstants {
                 values.add(beanValue2SqlValue(value));
             });
 
-
         sb.deleteCharAt(sb.length() - 1);// 删除最后一个 ,
-        Object[] arr = values.toArray();  // 将 List 转为数组
-
-        if (ObjectHelper.isEmptyText(idField) && idValue == null) {
-            log.warn("You're going to update ALL rows on the table {}, which is SO dangerous! " +
-                    "All records will be effected!", tableName);
-            return;
-        }
-
         sb.append(" WHERE ").append(idField).append(" = ?");
 
+        Object[] arr = values.toArray();  // 将 List 转为数组
         arr = Arrays.copyOf(arr, arr.length + 1);
         arr[arr.length - 1] = idValue; // 将新值加入数组末尾
 
         sql = sb.toString();
-        params = values.toArray();
+        params = arr;
+    }
+
+    /**
+     * Generate SQL for update.
+     * There is already ID in the entity, so we can take it out.
+     *
+     * @param idField Which row to update, we need the name of that field.
+     */
+    public void getUpdateSql(String idField) {
+        Object idValue = null;
+
+        if (entityMap != null)
+            idValue = entityMap.get(idField);
+        else if (entityBean != null) {
+            DbMetaInfoUpdate meta = new DbMetaInfoUpdate(entityBean, idField);
+            idValue = meta.getIdValue();
+        }
+
+        if (idValue == null)
+            throw new NullPointerException("Since you didn't pass the id value, that means it's already in the entity, however it's not...");
+
+        getUpdateSql(idField, idValue);
     }
 
     /**
@@ -155,7 +185,7 @@ public class Entity2WriteSql implements JdbcConstants {
 
                     Column column = field.getAnnotation(Column.class); // mapping another field name
 
-                    if (ObjectHelper.hasText(column.name())) // Real field name in DB
+                    if (column != null && ObjectHelper.hasText(column.name())) // Real field name in DB
                         filedName = column.name();
                 }
 
@@ -170,6 +200,7 @@ public class Entity2WriteSql implements JdbcConstants {
                     everyBeanField.accept(Utils.changeFieldToColumnName(filedName), value);
             }
         } catch (IntrospectionException | InvocationTargetException | IllegalAccessException e) {
+
             log.warn("Error occurred when iterating a Java bean.", e);
         }
     }

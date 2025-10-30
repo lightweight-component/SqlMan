@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman.v2temp.meta;
+package com.ajaxjs.sqlman_v2.meta;
 
 import com.ajaxjs.sqlman.annotation.Id;
 import com.ajaxjs.sqlman.util.Utils;
@@ -20,6 +20,11 @@ public class DbMetaInfoUpdate extends DbMetaInfoBase {
 
     public DbMetaInfoUpdate(Map<String, Object> map, String tableName) {
         this(map, tableName, "id");
+    }
+
+    public DbMetaInfoUpdate(Object bean, String idField) {
+        super(bean);
+        this.idField = idField;
     }
 
     public String getIdFieldNameByAnnotation() {

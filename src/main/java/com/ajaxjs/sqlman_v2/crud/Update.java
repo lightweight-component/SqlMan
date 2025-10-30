@@ -2,7 +2,6 @@ package com.ajaxjs.sqlman_v2.crud;
 
 import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman_v2.Action;
-import com.ajaxjs.sqlman_v2.BaseAction;
 import com.ajaxjs.util.BoxLogger;
 import org.slf4j.MDC;
 
@@ -17,7 +16,7 @@ public class Update extends BaseAction {
     public UpdateResult update() {
         String resultText = null;
 
-        try (PreparedStatement ps = action.getConn().prepareStatement(action.sql)) {
+        try (PreparedStatement ps = action.getConn().prepareStatement(action.getSql())) {
             setParam2Ps(ps);
 
             int effectedRows = ps.executeUpdate();
