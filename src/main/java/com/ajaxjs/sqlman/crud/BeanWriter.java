@@ -23,6 +23,7 @@ import com.ajaxjs.sqlman.crud.model.SqlParams;
 import com.ajaxjs.sqlman.util.Utils;
 import com.ajaxjs.util.JsonUtil;
 import com.ajaxjs.util.ObjectHelper;
+import com.ajaxjs.util.reflect.Fields;
 import lombok.extern.slf4j.Slf4j;
 
 import java.beans.BeanInfo;
@@ -177,7 +178,7 @@ public class BeanWriter implements JdbcConstants {
             return value.toString();
         else if (NULL_DATE.equals(value) || NULL_INT.equals(value) || NULL_LONG.equals(value) || NULL_STRING.equals(value)) // 如何设数据库 null 值
             return null;
-        else if(value instanceof List) {
+        else if (value instanceof List) {
             return JsonUtil.toJson(value);// 假設數據庫是 text，於是一律轉換 json
         } else
             return value;
@@ -193,7 +194,7 @@ public class BeanWriter implements JdbcConstants {
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) entity;
         if (map.isEmpty())
-            throw new NullPointerException("该实体没有任何字段和数据");
+            throw new IllegalArgumentException("This entity is a empty entity.");
 
         map.forEach(everyMapField);
     }
@@ -215,7 +216,7 @@ public class BeanWriter implements JdbcConstants {
                 if ("class".equals(filedName))
                     continue;
 
-                Field field2 = findField(clz, filedName);
+                Field field2 = Fields.findField(clz, filedName);
                 if (field2 != null && field2.getAnnotation(Transient.class) != null)
                     continue;
 
@@ -240,19 +241,5 @@ public class BeanWriter implements JdbcConstants {
         } catch (IntrospectionException | InvocationTargetException | IllegalAccessException e) {
             log.warn("WARN>>", e);
         }
-    }
-
-    private static Field findField(Class<?> clazz, String fieldName) {
-        try {
-            return clazz.getDeclaredField(fieldName);
-        } catch (NoSuchFieldException e) {
-            // 如果当前类没有该字段，则尝试在父类中查找
-            Class<?> superClass = clazz.getSuperclass();
-
-            if (superClass != null)
-                return findField(superClass, fieldName);
-        }
-
-        return null;
     }
 }

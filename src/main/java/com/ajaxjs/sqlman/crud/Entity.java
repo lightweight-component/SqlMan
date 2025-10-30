@@ -208,21 +208,23 @@ public class Entity extends Sql implements IEntity {
         if (expression instanceof EqualsTo) {
             EqualsTo eq = (EqualsTo) expression;
             // 左右是否是 id = ? 或 id = 数字
-            if (eq.getLeftExpression() instanceof Column &&
-                    "id".equalsIgnoreCase(((Column) eq.getLeftExpression()).getColumnName())) {
-                if (eq.getRightExpression() instanceof JdbcParameter) return true;
-                if (eq.getRightExpression() instanceof LongValue) return true;
+            if (eq.getLeftExpression() instanceof Column && "id".equalsIgnoreCase(((Column) eq.getLeftExpression()).getColumnName())) {
+                if (eq.getRightExpression() instanceof JdbcParameter)
+                    return true;
+                if (eq.getRightExpression() instanceof LongValue)
+                    return true;
             }
 
             // 反过来也支持 ? = id 或 1 = id
-            if (eq.getRightExpression() instanceof Column &&
-                    "id".equalsIgnoreCase(((Column) eq.getRightExpression()).getColumnName())) {
+            if (eq.getRightExpression() instanceof Column && "id".equalsIgnoreCase(((Column) eq.getRightExpression()).getColumnName())) {
                 if (eq.getLeftExpression() instanceof JdbcParameter)
                     return true;
+
                 if (eq.getLeftExpression() instanceof LongValue)
                     return true;
             }
         }
+
         // 这里可扩展更多运算符支持
         return false;
     }
@@ -262,11 +264,6 @@ public class Entity extends Sql implements IEntity {
 
         return annotation != null ? annotation.value() : tableModel.getIdField();
     }
-
-    /**
-     * 命名空间，标识
-     */
-    private String namespace;
 
     /**
      * 查询列表的时候，是否自动加上按照日期排序
@@ -310,6 +307,7 @@ public class Entity extends Sql implements IEntity {
 //            sql = TenantService.addTenantIdQuery(sql);
 
         setSql(sql);
+
         return this;
     }
 
