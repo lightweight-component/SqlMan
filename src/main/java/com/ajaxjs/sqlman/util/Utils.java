@@ -91,6 +91,7 @@ public class Utils {
             if (rs.next())
                 return true;
         } catch (SQLException e) {
+            log.warn("检查表是否存在时发生异常。表名: " + tableName, e);
             throw new RuntimeException(e);
         }
 

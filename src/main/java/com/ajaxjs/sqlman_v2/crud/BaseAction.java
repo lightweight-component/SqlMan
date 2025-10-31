@@ -12,6 +12,7 @@ import com.ajaxjs.util.ObjectHelper;
 import com.ajaxjs.util.reflect.Clazz;
 import com.ajaxjs.util.reflect.Methods;
 import com.ajaxjs.util.reflect.Types;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.beans.IntrospectionException;
@@ -25,17 +26,32 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Base operation abstraction
+ */
 @Slf4j
+@Data
 public abstract class BaseAction {
-    protected Action action;
+    /**
+     * An action contains many input fields.
+     */
+    Action action;
 
+    /**
+     * Default constructor
+     *
+     * @param action An action contains many input fields.
+     */
     public BaseAction(Action action) {
         this.action = action;
     }
 
+    /**
+     * To log the duration of SQL operation.
+     */
     public long startTime;
 
-    protected void setParam2Ps(PreparedStatement ps) throws SQLException {
+    void setParam2Ps(PreparedStatement ps) throws SQLException {
         Object[] params = action.getParams();
 
         if (ObjectHelper.isEmpty(action.getParams()))
@@ -45,16 +61,15 @@ public abstract class BaseAction {
             Object ele = params[i];
 
             if (ele instanceof Map)
-                ele = com.ajaxjs.util.JsonUtil.toJson(ele); // Map to JSON
-            else if (ele instanceof List)
+                ele = JsonUtil.toJson(ele); // Map to JSON
+
+            if (ele instanceof List)
                 throw new UnsupportedOperationException("暂不支持 List 类型参数。如果你入參用於 IN (?)，請直接拼接 SQL 語句而不是使用 PreparedStatement。這是系統的限制，無法支持 List");
-            else if (ele instanceof byte[]) { // for small file
-                byte[] bytes = (byte[]) ele;
-                ps.setBytes(i + 1, bytes);
-            } else if (ele instanceof InputStream) { // for large file
-                InputStream in = (InputStream) ele;
-                ps.setBinaryStream(i + 1, in);
-            } else
+            else if (ele instanceof byte[])  // for small file
+                ps.setBytes(i + 1, (byte[]) ele);
+            else if (ele instanceof InputStream)  // for large file
+                ps.setBinaryStream(i + 1, (InputStream) ele);
+            else
                 ps.setObject(i + 1, ele);
         }
     }
@@ -173,17 +188,17 @@ public abstract class BaseAction {
 //                        value = ConvertComplexValue.getConvertValue().convert(jsonStr, propertyType);
 
 //                                value = JsonUtil.INSTANCE.fromJson(jsonStr, propertyType);
-                                value = com.ajaxjs.util.JsonUtil.fromJson(jsonStr, propertyType);
+                                value = JsonUtil.fromJson(jsonStr, propertyType);
                             else if (jsonStr.startsWith("[")) {
 //                            Class<?> listType =  propertyType; // it might be a List
 
                                 Class<?> _beanClz = Types.getGenericFirstReturnType(property.getReadMethod());
 
                                 if (_beanClz == Integer.class || _beanClz == Long.class || _beanClz == String.class) {
-                                    value = com.ajaxjs.util.JsonUtil.json2list(jsonStr, _beanClz);
+                                    value = JsonUtil.json2list(jsonStr, _beanClz);
                                 } else
 //                                value="foo";
-                                    value = com.ajaxjs.util.JsonUtil.json2list(jsonStr, _beanClz);
+                                    value = JsonUtil.json2list(jsonStr, _beanClz);
                             } else {
                                 value = null;
                                 log.warn("非法 JSON 字符串： {}，字段：{}", jsonStr, key);

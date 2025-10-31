@@ -1,17 +1,16 @@
 package com.ajaxjs.sqlman.util;
 
-
 import org.junit.jupiter.api.Test;
 
-public class TestSnowflakeId {
+class TestSnowflakeId {
     @Test
-    public void test1() {
+    void test1() {
         for (int i = 0; i < 30; i++)
             System.out.println(SnowflakeId.get());
     }
 
     @Test
-    public void test2() {
+    void test2() {
         SnowflakeId worker = new SnowflakeId(1);
 
         for (int i = 0; i < 30; i++)
@@ -19,7 +18,7 @@ public class TestSnowflakeId {
     }
 
     @Test
-    public void test3() {
+    void test3() {
         for (int i = 0; i < 30; i++)
             System.out.println(SnowflakeId.get());
     }

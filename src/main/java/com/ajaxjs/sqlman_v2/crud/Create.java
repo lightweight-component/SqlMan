@@ -3,6 +3,8 @@ package com.ajaxjs.sqlman_v2.crud;
 import com.ajaxjs.sqlman.model.CreateResult;
 import com.ajaxjs.sqlman.util.PrintRealSql;
 import com.ajaxjs.sqlman_v2.Action;
+import com.ajaxjs.sqlman_v2.meta.DbMetaInfoCreate;
+import com.ajaxjs.sqlman_v2.sqlgenerator.Entity2WriteSql;
 import com.ajaxjs.sqlman_v2.util.PrettyLogger;
 import com.ajaxjs.util.BoxLogger;
 import org.slf4j.MDC;
@@ -13,20 +15,30 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Create operation.
+ */
 public class Create extends BaseAction {
+    /**
+     * Do the create operation by an action.
+     *
+     * @param action an action object with input Sql, data and config.
+     */
     public Create(Action action) {
         super(action);
     }
 
     /**
-     * 新建记录
-     * 也可以作为执行任意 SQL 的方法，例如执行 CreateTable
+     * Create by SQL.
+     * This is the low-level API.
      *
-     * @param isAutoIns 是否自增 id
-     * @param idType    id 字段类型，可以雪花 id（Long）、自增（Integer）、UUID（String）
-     * @return 新增主键，为兼顾主键类型，返回的类型设为同时兼容 int/long/string 的 Serializable
+     * @param isAutoIns Is this auto increment id?
+     * @param idType    The type of newly id. If you provided, it'll avoid a type case.
+     * @param <T>       The type of id. It can be Long, Integer, String, or their type in common: Serializable
+     * @return The result object.
      */
     @SuppressWarnings("unchecked")
     public <T extends Serializable> CreateResult<T> create(boolean isAutoIns, Class<T> idType) {
@@ -100,4 +112,37 @@ public class Create extends BaseAction {
     public static final Integer INSERT_OK_INT = -1;
     public static final String INSERT_OK_STR = "INSERT_OK";
 
+    /**
+     * Execute the creation
+     *
+     * @param isAutoIns Is this auto increment id?
+     * @param idType    The type of newly id. If you provided, it'll avoid a type case.
+     * @param <T>       The type of id. It can be Long, Integer, String, or their type in common: Serializable
+     * @return The result object.
+     */
+    public <T extends Serializable> CreateResult<T> execute(boolean isAutoIns, Class<T> idType) {
+        Map<String, Object> entityMap = action.getEntityMap();
+        Object entityBean = action.getEntityBean();
+        String tableName = action.getTableName();
+
+        if (entityMap != null || entityBean != null) {
+            Entity2WriteSql generator;
+
+            if (entityMap != null)
+                generator = new Entity2WriteSql(entityMap);
+            else
+                generator = new Entity2WriteSql(entityBean);
+
+            if (entityBean != null && tableName == null)
+                tableName = new DbMetaInfoCreate<T>(entityBean).getTableNameByAnnotation();
+
+            generator.setTableName(tableName);
+            generator.getInsertSql();
+
+            action.setSql(generator.getSql());
+            action.setParams(generator.getParams());
+        }
+
+        return create(isAutoIns, idType);
+    }
 }

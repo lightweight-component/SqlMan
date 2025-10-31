@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-public class TestPrintRealSql {
+class TestPrintRealSql {
     @Test
     void test() {
         // 示例 1：正常情况（含单引号）
@@ -29,7 +29,7 @@ public class TestPrintRealSql {
     }
 
     @Test
-    void test2(){
+    void test2() {
         String sql = "SELECT \n" +
                 "    u.id AS user_id,\n" +
                 "    u.name,\n" +

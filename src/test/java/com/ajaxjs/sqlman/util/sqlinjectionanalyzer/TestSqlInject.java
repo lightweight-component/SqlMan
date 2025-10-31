@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestSqlInject {
+class TestSqlInject {
     @Test
     void test() {
         assertFalse(SqlInjectionAnalyzer.check("select * from dc_device where id in (select id from other)"));

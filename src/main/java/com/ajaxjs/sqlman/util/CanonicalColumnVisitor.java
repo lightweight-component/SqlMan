@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-
 /**
  * 规范化列访问器，继承自 TablesNamesFinder，用于为 SQL 语句中的列添加表名前缀或别名。
  * 该访问器会遍历 SQL 语句中的各个部分，包括 WHERE 子句、JOIN 条件、排序和分组等，

@@ -7,7 +7,7 @@ import static com.ajaxjs.util.ObjectHelper.mapOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestXml extends BaseTest {
+class TestXml extends BaseTest {
     @Test
     void test() {
         int result;
@@ -37,7 +37,7 @@ public class TestXml extends BaseTest {
         assertTrue(result > 0);
     }
 
-    public static String w() {
+    static String w() {
         return " id = 1";
     }
 

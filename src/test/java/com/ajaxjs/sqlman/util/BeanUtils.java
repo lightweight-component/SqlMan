@@ -1,6 +1,5 @@
 package com.ajaxjs.sqlman.util;
 
-
 import com.ajaxjs.sqlman.annotation.Transient;
 import com.ajaxjs.util.CommonConstant;
 import com.ajaxjs.util.reflect.Clazz;

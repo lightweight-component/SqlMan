@@ -8,10 +8,9 @@ package com.ajaxjs.sqlman.util;
  * @author <a href="https://www.cnblogs.com/yangzhilong/p/10290862.html">...</a>
  */
 
-
 public class SnowflakeId {
     /**
-     * 时间起始标记点，作为基准，一般取系统的最近时间 此处以2018-01-01为基准时间
+     * 时间起始标记点，作为基准，一般取系统的最近时间 此处以 2018-01-01 为基准时间
      */
     private final long epoch = 1514736000000L;
 

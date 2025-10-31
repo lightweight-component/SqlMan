@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 import static com.ajaxjs.sqlman.util.PrettyLogger.printLog;
 
-public class TestPrettyLogger {
+class TestPrettyLogger {
     @Test
     void test() {
         String sql = "SELECT COUNT(*) FROM user WHERE 1 = 1 AND tenant_id = 3";

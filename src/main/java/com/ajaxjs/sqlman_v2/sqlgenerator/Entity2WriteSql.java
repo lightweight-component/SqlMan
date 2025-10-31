@@ -94,16 +94,11 @@ public class Entity2WriteSql implements JdbcConstants {
 
     /**
      * Generate SQL for update.
-     *
-     * @param idField Which row to update, we need the name of that field.
-     * @param idValue The value of ID.
      */
-    public void getUpdateSql(String idField, Object idValue) {
-        if (ObjectHelper.isEmptyText(idField) && idValue == null) {
+    public void getUpdateSql(boolean isUpdateAllRow, String idField) {
+        if (isUpdateAllRow)
             log.warn("You're going to update ALL rows on the table {}, which is SO dangerous! " +
                     "All records will be effected!", tableName);
-            return;
-        }
 
         StringBuilder sb = new StringBuilder();
         List<Object> values = new ArrayList<>();
@@ -127,23 +122,38 @@ public class Entity2WriteSql implements JdbcConstants {
             });
 
         sb.deleteCharAt(sb.length() - 1);// 删除最后一个 ,
-        sb.append(" WHERE ").append(idField).append(" = ?");
-
-        Object[] arr = values.toArray();  // 将 List 转为数组
-        arr = Arrays.copyOf(arr, arr.length + 1);
-        arr[arr.length - 1] = idValue; // 将新值加入数组末尾
 
         sql = sb.toString();
-        params = arr;
+        params = values.toArray();
     }
 
     /**
-     * Generate SQL for update.
-     * There is already ID in the entity, so we can take it out.
+     * Generate SQL for update with ID specified row.
      *
      * @param idField Which row to update, we need the name of that field.
+     * @param idValue The value of ID.
      */
-    public void getUpdateSql(String idField) {
+    public void getUpdateSqlWithId(String idField, Object idValue) {
+        if (ObjectHelper.isEmptyText(idField) && idValue == null) {
+            log.warn("You're going to update ALL rows on the table {}, which is SO dangerous! " +
+                    "All records will be effected!", tableName);
+            return;
+        }
+
+        getUpdateSql(false, idField);
+        sql += " WHERE " + idField + " = ?";
+
+        params = Arrays.copyOf(params, params.length + 1);
+        params[params.length - 1] = idValue; // 将新值加入数组末尾
+    }
+
+    /**
+     * Generate SQL for update with ID specified row.
+     * There is already ID in the entity, so we can take it out.
+     *
+     * @param idField Which row to update, we need the name of that field. Actually, the field is already ID in the entity, just tell me.
+     */
+    public void getUpdateSqlWithId(String idField) {
         Object idValue = null;
 
         if (entityMap != null)
@@ -156,7 +166,18 @@ public class Entity2WriteSql implements JdbcConstants {
         if (idValue == null)
             throw new NullPointerException("Since you didn't pass the id value, that means it's already in the entity, however it's not...");
 
-        getUpdateSql(idField, idValue);
+        getUpdateSqlWithId(idField, idValue);
+    }
+
+    public void getUpdateSql(String where) {
+        if (ObjectHelper.isEmptyText(where)) {
+            log.warn("You're going to update ALL rows on the table {}, which is SO dangerous! " +
+                    "All records will be effected!", tableName);
+            return;
+        }
+
+        getUpdateSql(false, null);
+        sql += " WHERE " + where;
     }
 
     /**

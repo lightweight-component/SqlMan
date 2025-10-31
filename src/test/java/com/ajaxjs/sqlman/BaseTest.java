@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-
 public abstract class BaseTest {
     static final Properties config = Resources.getProperties("test-demo.properties");
 

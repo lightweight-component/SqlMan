@@ -1,14 +1,13 @@
 package com.ajaxjs.sqlman.util;
 
-
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.util.function.BiConsumer;
 
-public class TestBeanUtils {
+class TestBeanUtils {
     @Test
-    public void testEachFields() {
+    void testEachFields() {
         // Given
         TestClass testClass = new TestClass();
         BiConsumer<String, Object> fn = (fieldName, fieldValue) -> {
@@ -16,10 +15,10 @@ public class TestBeanUtils {
         };
 
         BeanUtils.eachFields(testClass, fn);
-
     }
+
     @Test
-    public void testEachField() {
+    void testEachField() {
         // Given
         TestClass testClass = new TestClass();
         BeanUtils.EachFieldArg fn = (key, value, property) -> {
@@ -27,11 +26,11 @@ public class TestBeanUtils {
         };
 
         // When
-       BeanUtils.eachField(testClass, fn);
+        BeanUtils.eachField(testClass, fn);
     }
 
     @Test
-    public void testEachFields2() {
+    void testEachFields2() {
         // Given
         Class<?> clz = TestClass.class;
         BiConsumer<String, Field> fn = (fieldName, field) -> {

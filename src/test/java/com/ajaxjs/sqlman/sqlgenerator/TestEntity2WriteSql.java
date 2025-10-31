@@ -1,8 +1,9 @@
-package com.ajaxjs.sqlman_v2.sqlgenerator;
+package com.ajaxjs.sqlman.sqlgenerator;
 
 import com.ajaxjs.sqlman.annotation.Column;
 import com.ajaxjs.sqlman.annotation.Table;
 import com.ajaxjs.sqlman.annotation.Transient;
+import com.ajaxjs.sqlman_v2.sqlgenerator.Entity2WriteSql;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
 
@@ -74,11 +75,11 @@ class TestEntity2WriteSql {
         Entity2WriteSql generator = new Entity2WriteSql(map);
         generator.setTableName(TABLE_NAME);
 
-        generator.getUpdateSql("id");
+        generator.getUpdateSqlWithId("id");
         assertEquals("UPDATE test_table SET `name` = ?, `age` = ? WHERE id = ?", generator.getSql());
         assertArrayEquals(new Object[]{"Charlie", 35, 1L}, generator.getParams());
 
-        generator.getUpdateSql("id", 2L);
+        generator.getUpdateSqlWithId("id", 2L);
         assertEquals("UPDATE test_table SET `name` = ?, `age` = ? WHERE id = ?", generator.getSql());
         assertArrayEquals(new Object[]{"Charlie", 35, 2L}, generator.getParams());
     }
@@ -95,12 +96,12 @@ class TestEntity2WriteSql {
         bean.setAge(40);
 
         Entity2WriteSql generator = new Entity2WriteSql(bean);
-        generator.getUpdateSql("id");
+        generator.getUpdateSqlWithId("id");
 
         assertEquals("UPDATE test_table SET `real_age` = ?, `name` = ? WHERE id = ?", generator.getSql());
         assertArrayEquals(new Object[]{40, "David", 1L}, generator.getParams());
 
-        generator.getUpdateSql("id", 2L);
+        generator.getUpdateSqlWithId("id", 2L);
 
         assertEquals("UPDATE test_table SET `real_age` = ?, `name` = ? WHERE id = ?", generator.getSql());
         assertArrayEquals(new Object[]{40, "David", 2L}, generator.getParams());

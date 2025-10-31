@@ -4,7 +4,7 @@ import com.ajaxjs.sqlman.model.CreateResult;
 import com.ajaxjs.sqlman.model.PageResult;
 import com.ajaxjs.sqlman.crud.model.TableModel;
 import com.ajaxjs.sqlman.model.UpdateResult;
-import com.ajaxjs.sqlman.Address;
+import com.ajaxjs.sqlman.testcase.Address;
 import com.ajaxjs.sqlman.BaseTest;
 import org.junit.jupiter.api.Test;
 

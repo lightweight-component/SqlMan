@@ -1,9 +1,8 @@
 package com.ajaxjs.sqlman.crud;
 
-import com.ajaxjs.sqlman.Address;
+import com.ajaxjs.sqlman.testcase.Address;
+import com.ajaxjs.sqlman.testcase.AddressDAO;
 import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Method;
 
 public class TestJpaStyle {
 
@@ -22,7 +21,6 @@ public class TestJpaStyle {
             return null;
         }
     }
-
 
 
     @Test

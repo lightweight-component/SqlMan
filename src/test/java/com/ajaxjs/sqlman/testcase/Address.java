@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman;
+package com.ajaxjs.sqlman.testcase;
 
 import com.ajaxjs.sqlman.annotation.Column;
 import com.ajaxjs.sqlman.annotation.Table;

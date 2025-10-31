@@ -87,8 +87,7 @@ public class PrintRealSql {
         try {
             // 检查占位符与参数个数是否匹配
             if (!match(sql, safeParams))
-                log.warn("SQL 占位符 '?' 个数与参数个数不匹配。SQL: [{}], 参数个数: {}, 占位符个数: {}",
-                        sql, safeParams.length, countPlaceholders(sql));
+                log.warn("SQL 占位符 '?' 个数与参数个数不匹配。SQL: [{}], 参数个数: {}, 占位符个数: {}", sql, safeParams.length, countPlaceholders(sql));
 
             // 使用 Matcher 进行安全替换
             Matcher matcher = PARAM_PATTERN.matcher(sql);
