@@ -2,18 +2,20 @@ package com.ajaxjs.sqlman_v2.sqlgenerator;
 
 import com.ajaxjs.sqlman.crud.model.TableModel;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.io.Serializable;
 
 @Data
+@RequiredArgsConstructor
 public class AutoQuery {
     public final static String DUMMY_STR = "1=1";
 
     private final static String SELECT_SQL = "SELECT * FROM %s WHERE " + DUMMY_STR;
 
-    TableModel tableModel;
+    final TableModel tableModel;
 
-    AutoQueryBusiness autoQueryBusiness;
+    final AutoQueryBusiness autoQueryBusiness;
 
     public String info() {
         String sql = String.format(SELECT_SQL, tableModel.getTableName());
