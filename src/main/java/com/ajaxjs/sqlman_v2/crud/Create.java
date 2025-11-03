@@ -44,10 +44,11 @@ public class Create extends BaseAction {
     public <T extends Serializable> CreateResult<T> create(boolean isAutoIns, Class<T> idType) {
         startTime = System.currentTimeMillis();
         String resultText = null;
+        String sql = action.getSql();
 
         try (PreparedStatement ps = isAutoIns
-                ? action.getConn().prepareStatement(action.getSql(), Statement.RETURN_GENERATED_KEYS)
-                : action.getConn().prepareStatement(action.getSql())) {
+                ? action.getConn().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)
+                : action.getConn().prepareStatement(sql)) {
 
             setParam2Ps(ps);
             int effectRows = ps.executeUpdate();
@@ -144,5 +145,9 @@ public class Create extends BaseAction {
         }
 
         return create(isAutoIns, idType);
+    }
+
+    public CreateResult<Serializable> execute(boolean isAutoIns) {
+        return execute(isAutoIns, Serializable.class);
     }
 }

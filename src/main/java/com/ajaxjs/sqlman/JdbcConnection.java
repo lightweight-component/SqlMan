@@ -43,7 +43,12 @@ public class JdbcConnection {
      * @return 当前进程的数据库连接对象
      */
     public static Connection getConnection() {
-        return CONNECTION.get();
+        Connection conn = CONNECTION.get();
+
+        if (conn == null)
+            throw new UnsupportedOperationException("No DB connection is in the local thread. Please check your config.");
+
+        return conn;
     }
 
     /**
@@ -156,6 +161,9 @@ public class JdbcConnection {
      * @throws RuntimeException 如果无法从数据源获取连接，则抛出运行时异常
      */
     public static Connection getConnection(DataSource dataSource) {
+        if (dataSource == null)
+            throw new UnsupportedOperationException("DataSource is NULL, please check your config.");
+
         try {
             return dataSource.getConnection();
         } catch (SQLException e) {

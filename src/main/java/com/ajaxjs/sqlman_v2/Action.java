@@ -2,6 +2,7 @@ package com.ajaxjs.sqlman_v2;
 
 import com.ajaxjs.sqlman.JdbcConnection;
 import com.ajaxjs.sqlman.SmallMyBatis;
+import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman_v2.constant.DatabaseVendor;
 import com.ajaxjs.sqlman_v2.crud.Create;
 import com.ajaxjs.sqlman_v2.crud.Query;
@@ -10,6 +11,7 @@ import com.ajaxjs.util.ObjectHelper;
 import lombok.Data;
 
 import javax.sql.DataSource;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.util.Arrays;
 import java.util.Map;
@@ -155,5 +157,36 @@ public class Action {
         setParams(params);
 
         return new Update(this);
+    }
+
+    /**
+     * Execute delete operation.
+     * The only argument needed for delete operation is the `connection` when constructing the action,
+     * and then is: tableName, idField and id.
+     * This is a physical deletion.
+     * If you want to delete a logical deletion, please use the update method.
+     *
+     * @param tableName Which table?
+     * @param idField   The name of the field
+     * @param id        The value of id field
+     * @return The result object, contains effected rows.
+     */
+    public UpdateResult delete(String tableName, String idField, Serializable id) {
+        return new Update(this).delete(tableName, idField, id);
+    }
+
+    /**
+     * Execute delete operation.
+     * The only argument needed for delete operation is the `connection` when constructing the action,
+     * and then is: tableName, where clause.
+     * This is a physical deletion.
+     * If you want to delete a logical deletion, please use the update method.
+     *
+     * @param tableName Which table?
+     * @param where     The where clause
+     * @return The result object, contains effected rows.
+     */
+    public UpdateResult delete(String tableName, String where) {
+        return new Update(this).delete(tableName, where);
     }
 }

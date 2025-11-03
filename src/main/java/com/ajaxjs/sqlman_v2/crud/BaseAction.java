@@ -54,7 +54,7 @@ public abstract class BaseAction {
     void setParam2Ps(PreparedStatement ps) throws SQLException {
         Object[] params = action.getParams();
 
-        if (ObjectHelper.isEmpty(action.getParams()))
+        if (ObjectHelper.isEmpty(params))
             return;
 
         for (int i = 0; i < params.length; i++) {

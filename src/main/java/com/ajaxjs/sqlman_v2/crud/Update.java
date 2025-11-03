@@ -45,7 +45,7 @@ public class Update extends BaseAction {
 
             int effectedRows = ps.executeUpdate();
             UpdateResult result = new UpdateResult();
-            result.setOk(true); // when executing CREATE TABLE, it'll return rows = 0, so `effectedRows > 0` is not enough
+            result.setOk(true); // when CREATE TABLE executing, it'll return rows = 0, so `effectedRows > 0` is not enough
             result.setEffectedRows(effectedRows);
             resultText = result.toString();
 
