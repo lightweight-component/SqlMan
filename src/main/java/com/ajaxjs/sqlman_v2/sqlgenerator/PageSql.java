@@ -4,7 +4,7 @@ import com.ajaxjs.sqlman.DataAccessException;
 import com.ajaxjs.sqlman_v2.Action;
 import com.ajaxjs.sqlman_v2.constant.DatabaseVendor;
 import com.ajaxjs.sqlman_v2.crud.Query;
-import com.ajaxjs.sqlman_v2.model.PageResult;
+import com.ajaxjs.sqlman_v2.page.PageResult;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
@@ -140,8 +140,7 @@ public class PageSql {
             List<T> list;
             action.setSql(getPageSql());
 
-            // 如果 beanCls 为 null，则将查询结果作为 Map 列表返回 否则将查询结果转换为指定实体类的列表
-            if (beanClz == null)
+            if (beanClz == null) // 如果 beanCls 为 null，则将查询结果作为 Map 列表返回 否则将查询结果转换为指定实体类的列表
                 list = (List<T>) query.list();
             else
                 list = query.list(beanClz);
@@ -231,6 +230,6 @@ public class PageSql {
     public static int pageNo2start(int pageNo, int limit) {
         int start = (pageNo - 1) * limit;
 
-        return (start < 0) ? 0 : start;
+        return Math.max(start, 0);
     }
 }

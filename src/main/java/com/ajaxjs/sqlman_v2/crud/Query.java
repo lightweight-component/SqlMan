@@ -4,8 +4,8 @@ import com.ajaxjs.sqlman.Sql;
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
 import com.ajaxjs.sqlman.util.PrintRealSql;
 import com.ajaxjs.sqlman_v2.Action;
-import com.ajaxjs.sqlman_v2.model.PageResult;
-import com.ajaxjs.sqlman_v2.sqlgenerator.PageSql;
+import com.ajaxjs.sqlman_v2.page.PageQuery;
+import com.ajaxjs.sqlman_v2.page.PageResult;
 import com.ajaxjs.sqlman_v2.util.PrettyLogger;
 import com.ajaxjs.util.BoxLogger;
 import com.ajaxjs.util.ConvertBasicValue;
@@ -138,15 +138,37 @@ public class Query extends BaseAction {
         return page(beanClz, null, null);
     }
 
-    public <T> PageResult<T> page(Class<T> beanClz, Integer start, Integer limit) {
-        PageSql pager = new PageSql(this);
-        pager.setDatabaseVendor(action.getDatabaseVendor());
 
-        if (start != null && limit != null) {
-            pager.setStart(start);
-            pager.setLimit(limit);
-        }
+    // pag
+    public static boolean isPageByPageNo;
 
-        return pager.page(beanClz);
+//    public <T> PageResult<T> page(Class<T> beanClz) {
+//        return isPageByPageNo ? pageByPageNo(beanClz, null, null) : pageByStartLimit(beanClz, null, null);
+//    }
+//
+//    public <T> PageResult<T> page(Class<T> beanClz, Integer int1, Integer int2) {
+//        return isPageByPageNo ? pageByPageNo(beanClz, int1, int2) : pageByStartLimit(beanClz, int1, int2);
+//    }
+
+    public <T> PageResult<T> pageByStartLimit(Class<T> beanClz, Integer start, Integer limit) {
+        return PageQuery.page(this, beanClz, start, limit);
+    }
+
+    public <T> PageResult<T> pageByPageNo(Class<T> beanClz, Integer pageNo, Integer pageSize) {
+        return pageByStartLimit(beanClz, pageNo2start(pageNo, pageSize), pageSize);
+    }
+
+    /**
+     * 将页码和每页数量转换为起始位置
+     * pageSize 转换为 MySQL 的 start 分页
+     *
+     * @param pageNo 页码
+     * @param limit  每页数量
+     * @return 起始位置
+     */
+    public static int pageNo2start(int pageNo, int limit) {
+        int start = (pageNo - 1) * limit;
+
+        return Math.max(start, 0);
     }
 }
