@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman_v2.page;
+package com.ajaxjs.sqlman_v2.crud.page;
 
 import lombok.Data;
 

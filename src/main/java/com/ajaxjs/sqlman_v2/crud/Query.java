@@ -4,14 +4,15 @@ import com.ajaxjs.sqlman.Sql;
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
 import com.ajaxjs.sqlman.util.PrintRealSql;
 import com.ajaxjs.sqlman_v2.Action;
-import com.ajaxjs.sqlman_v2.page.PageQuery;
-import com.ajaxjs.sqlman_v2.page.PageResult;
+import com.ajaxjs.sqlman_v2.crud.page.PageQuery;
+import com.ajaxjs.sqlman_v2.crud.page.PageResult;
 import com.ajaxjs.sqlman_v2.util.PrettyLogger;
 import com.ajaxjs.util.BoxLogger;
 import com.ajaxjs.util.ConvertBasicValue;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -126,49 +127,95 @@ public class Query extends BaseAction {
         return list; // 找不到记录返回 null，不返回空的 list
     }
 
-    public <T> PageResult<T> page() {
-        return page(null, null, null);
-    }
-
-    public <T> PageResult<T> page(Integer start, Integer limit) {
-        return page(null, start, limit);
-    }
-
-    public <T> PageResult<T> page(Class<T> beanClz) {
-        return page(beanClz, null, null);
-    }
-
-
-    // pag
-    public static boolean isPageByPageNo;
-
-//    public <T> PageResult<T> page(Class<T> beanClz) {
-//        return isPageByPageNo ? pageByPageNo(beanClz, null, null) : pageByStartLimit(beanClz, null, null);
-//    }
-//
-//    public <T> PageResult<T> page(Class<T> beanClz, Integer int1, Integer int2) {
-//        return isPageByPageNo ? pageByPageNo(beanClz, int1, int2) : pageByStartLimit(beanClz, int1, int2);
-//    }
-
-    public <T> PageResult<T> pageByStartLimit(Class<T> beanClz, Integer start, Integer limit) {
+    /**
+     * Do the pagination by start/limit.
+     *
+     * @param start The start position
+     * @param limit The limit of records, equals to page size
+     * @return The page result in Java Bean format.
+     */
+    public <T> PageResult<T> pageByStartLimit(Integer start, Integer limit, Class<T> beanClz) {
         return PageQuery.page(this, beanClz, start, limit);
     }
 
-    public <T> PageResult<T> pageByPageNo(Class<T> beanClz, Integer pageNo, Integer pageSize) {
-        return pageByStartLimit(beanClz, pageNo2start(pageNo, pageSize), pageSize);
+    /**
+     * Do the pagination by start/limit.
+     *
+     * @param start The start position
+     * @param limit The limit of records, equals to page size
+     * @return The page result in Map format.
+     */
+    public PageResult<Map<String, Object>> pageByStartLimit(Integer start, Integer limit) {
+        return PageQuery.page(this, null, start, limit);
     }
 
     /**
-     * 将页码和每页数量转换为起始位置
-     * pageSize 转换为 MySQL 的 start 分页
+     * Do the pagination by start/limit. The parameters are from the request automatically.
      *
-     * @param pageNo 页码
-     * @param limit  每页数量
-     * @return 起始位置
+     * @param req     The request object.
+     * @param beanClz The type of result object, null for Map.
+     * @return The page result.
      */
-    public static int pageNo2start(int pageNo, int limit) {
-        int start = (pageNo - 1) * limit;
+    public <T> PageResult<T> pageByStartLimit(HttpServletRequest req, Class<T> beanClz) {
+        int start = PageQuery.getParameter(req, PageQuery.START, 0);
+        int limit = PageQuery.getParameter(req, PageQuery.PAGE_SIZE, PageQuery.DEFAULT_PAGE_SIZE);
 
-        return Math.max(start, 0);
+        return pageByStartLimit(start, limit, beanClz);
+    }
+
+    /**
+     * Do the pagination by start/limit. The parameters are from the request automatically.
+     *
+     * @param req The request object.
+     * @return The page result.
+     */
+    public PageResult<Map<String, Object>> pageByStartLimit(HttpServletRequest req) {
+        return pageByStartLimit(req, null);
+    }
+
+    /**
+     * Do the pagination by pageNo/pageSize.
+     *
+     * @param pageNo   The number of pages.
+     * @param pageSize The size of every page.
+     * @return The page result in Java Bean format.
+     */
+    public <T> PageResult<T> pageByPageNo(Integer pageNo, Integer pageSize, Class<T> beanClz) {
+        return pageByStartLimit(PageQuery.pageNo2start(pageNo, pageSize), pageSize, beanClz);
+    }
+
+    /**
+     * Do the pagination by pageNo/pageSize.
+     *
+     * @param pageNo   The number of pages.
+     * @param pageSize The size of every page.
+     * @return The page result in Map format.
+     */
+    public PageResult<Map<String, Object>> pageByPageNo(Integer pageNo, Integer pageSize) {
+        return pageByStartLimit(PageQuery.pageNo2start(pageNo, pageSize), pageSize);
+    }
+
+    /**
+     * Do the pagination by pageNo/pageSize. The parameters are from the request automatically.
+     *
+     * @param req     The request object.
+     * @param beanClz The type of result object, null for Map.
+     * @return The page result.
+     */
+    public <T> PageResult<T> pageByPageNo(HttpServletRequest req, Class<T> beanClz) {
+        int pageNo = PageQuery.getParameter(req, PageQuery.PAGE_NO, 1);
+        int pageSize = PageQuery.getParameter(req, PageQuery.PAGE_SIZE, PageQuery.DEFAULT_PAGE_SIZE);
+
+        return pageByPageNo(pageNo, pageSize, beanClz);
+    }
+
+    /**
+     * Do the pagination by pageNo/pageSize. The parameters are from the request automatically.
+     *
+     * @param req The request object.
+     * @return The page result.
+     */
+    public PageResult<Map<String, Object>> pageByPageNo(HttpServletRequest req) {
+        return pageByPageNo(req, null);
     }
 }

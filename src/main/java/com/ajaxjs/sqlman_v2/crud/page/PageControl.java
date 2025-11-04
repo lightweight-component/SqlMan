@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman_v2.page;
+package com.ajaxjs.sqlman_v2.crud.page;
 
 import com.ajaxjs.sqlman_v2.constant.DatabaseVendor;
 import lombok.Data;
@@ -40,14 +40,14 @@ public class PageControl {
         SelectBody selectBody = selectStatement.getSelectBody();
 
         if (selectBody instanceof PlainSelect)
-            f(selectBody);
-//        else if (selectBody instanceof SetOperationList)
+            getCount(selectBody);
+//        else if (selectBody instanceof SetOperationList) /* It might be unuseful */
 //            setOperationList(selectBody);
 
         countSql = selectStatement.toString();
     }
 
-    private void f(SelectBody selectBody) {
+    private void getCount(SelectBody selectBody) {
         PlainSelect plainSelect = (PlainSelect) selectBody;
 
         // 设置分页语句

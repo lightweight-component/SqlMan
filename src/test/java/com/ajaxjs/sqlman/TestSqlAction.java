@@ -4,6 +4,7 @@ import com.ajaxjs.sqlman.model.CreateResult;
 import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman.testcase.Address;
 import com.ajaxjs.sqlman_v2.Action;
+import com.ajaxjs.sqlman_v2.crud.page.PageResult;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -94,29 +95,27 @@ class TestSqlAction extends BaseTest {
         assertEquals(2, result.size());
     }
 
-//    @Test
-//    void testPage() {
-//        PageResult<Map<String, Object>> result;
-//        result = new Sql(conn).input("SELECT * FROM shop_address").page();
-//        assertNotNull(result);
-//
-//        result = new Sql(conn).input("SELECT * FROM shop_address where stat = ?", 1).page();
-//        assertNotNull(result);
-//
-//        result = new Sql(conn).input("SELECT * FROM shop_address").page(3, 5);
-//        assertNotNull(result);
-//
-//        PageResult<Address> result2;
-//        result2 = new Sql(conn).input("SELECT * FROM shop_address").page(Address.class, 1, 2);
-//        assertNotNull(result2);
-//
-//        result2 = new Sql(conn).input("SELECT * FROM shop_address").page(Address.class, 100, 2);
-//        assertEquals(0, result2.size());
-//
-////Sql sqlServer = new Sql(conn);
-////sqlServer.setDatabaseVendor(JdbcConstants.DatabaseVendor.SQL_SERVER);
-////sqlServer.input("SELECT * FROM article").page();
-//    }
+    @Test
+    void testPage() {
+        PageResult<Map<String, Object>> result;
+        result = new Action(conn, "SELECT * FROM shop_address").query().pageByPageNo(1, 3);
+        assertEquals(3, result.getList().size());
+        assertNotNull(result);
+
+        result = new Action(conn, "SELECT * FROM shop_address where stat = ?").query(1).pageByPageNo(1, 3);
+        assertNotNull(result);
+        assertEquals(2, result.getList().size());
+
+        result = new Action(conn, "SELECT * FROM shop_address").query().pageByStartLimit(3, 5);
+        assertNotNull(result);
+
+        PageResult<Address> result2;
+        result2 = new Action(conn, "SELECT * FROM shop_address").query().pageByStartLimit(1, 2, Address.class);
+        assertNotNull(result2);
+
+        result2 = new Action(conn, "SELECT * FROM shop_address").query().pageByStartLimit(100, 2, Address.class);
+        assertEquals(0, result2.getTotalCount());
+    }
 
     @Test
     public void testCreate() {
