@@ -1,6 +1,5 @@
-package com.ajaxjs.sqlman.util;
+package com.ajaxjs.sqlman.v1;
 
-import com.ajaxjs.sqlman.crud.BaseAction;
 import com.ajaxjs.util.BoxLogger;
 import com.ajaxjs.util.CommonConstant;
 import com.ajaxjs.util.ObjectHelper;
@@ -16,7 +15,6 @@ public class PrettyLogger extends BoxLogger {
     private static final int BOX_WIDTH = 137;
 
     private static final String REGEXP = "[\n\r\t]";
-
     private static final int WORDS_SIZE_LIMIT = 800;
 
     /**
@@ -28,11 +26,11 @@ public class PrettyLogger extends BoxLogger {
      * @param sql           SQL 语句
      * @param _params       参数（字符串，或者拼接好的参数描述）
      * @param realSql       实际执行SQL（带参数）
-     * @param action   用于计算耗时（如 33ms）
+     * @param jdbcCommand   用于计算耗时（如 33ms）
      * @param result        执行结果（Object）
      * @param wrapLongLines 是否允许完整显示超长字符串，自动换行
      */
-    public static void printLog(String type, String traceId, String bizAction, String sql, Object _params, String realSql, BaseAction action, Object result, boolean wrapLongLines) {
+    public static void printLog(String type, String traceId, String bizAction, String sql, Object _params, String realSql, JdbcCommand jdbcCommand, Object result, boolean wrapLongLines) {
         String title = " Debugging " + type + " ";
         String params;
 
@@ -65,8 +63,8 @@ public class PrettyLogger extends BoxLogger {
 
         String duration;
 
-        if (action != null)
-            duration = String.valueOf(System.currentTimeMillis() - action.startTime);
+        if (jdbcCommand != null)
+            duration = String.valueOf(System.currentTimeMillis() - jdbcCommand.getStartTime());
         else
             duration = NONE;
 

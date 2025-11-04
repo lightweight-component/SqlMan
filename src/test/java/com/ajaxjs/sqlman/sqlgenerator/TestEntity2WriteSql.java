@@ -3,7 +3,6 @@ package com.ajaxjs.sqlman.sqlgenerator;
 import com.ajaxjs.sqlman.annotation.Column;
 import com.ajaxjs.sqlman.annotation.Table;
 import com.ajaxjs.sqlman.annotation.Transient;
-import com.ajaxjs.sqlman_v2.sqlgenerator.Entity2WriteSql;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
 

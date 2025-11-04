@@ -48,8 +48,6 @@ public abstract class BaseTest {
                     "('Shop E', '202 Birch St', '567-890-1234', 'Charlie Davis', 1);");
         }
 
-        List<Map<String, Object>> result = new Sql(conn).input("SELECT * FROM shop_address").queryList();
-        System.out.println(result);
         conn.close();
     }
 

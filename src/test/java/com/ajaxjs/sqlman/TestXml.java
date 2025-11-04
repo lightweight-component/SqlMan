@@ -1,5 +1,6 @@
 package com.ajaxjs.sqlman;
 
+import com.ajaxjs.sqlman.v1.Sql;
 import org.junit.jupiter.api.Test;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 

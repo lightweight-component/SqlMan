@@ -2,6 +2,7 @@ package com.ajaxjs.sqlman.crud;
 
 import com.ajaxjs.sqlman.testcase.Address;
 import com.ajaxjs.sqlman.testcase.AddressDAO;
+import com.ajaxjs.sqlman.v1.JpaStyle;
 import org.junit.jupiter.api.Test;
 
 public class TestJpaStyle {

@@ -3,9 +3,8 @@ package com.ajaxjs.sqlman;
 import com.ajaxjs.sqlman.model.CreateResult;
 import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman.testcase.Address;
-import com.ajaxjs.sqlman_v2.Action;
-import com.ajaxjs.sqlman_v2.crud.Create;
-import com.ajaxjs.sqlman_v2.sqlgenerator.Entity2WriteSql;
+import com.ajaxjs.sqlman.crud.Create;
+import com.ajaxjs.sqlman.sqlgenerator.Entity2WriteSql;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
