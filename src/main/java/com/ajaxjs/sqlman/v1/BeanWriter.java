@@ -16,7 +16,6 @@
  */
 package com.ajaxjs.sqlman.v1;
 
-import com.ajaxjs.sqlman.JdbcConstants;
 import com.ajaxjs.sqlman.annotation.Column;
 import com.ajaxjs.sqlman.annotation.Transient;
 import com.ajaxjs.sqlman.util.Utils;

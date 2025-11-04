@@ -1,10 +1,10 @@
 package com.ajaxjs.sqlman;
 
+import com.ajaxjs.sqlman.crud.Create;
 import com.ajaxjs.sqlman.model.CreateResult;
 import com.ajaxjs.sqlman.model.UpdateResult;
-import com.ajaxjs.sqlman.testcase.Address;
-import com.ajaxjs.sqlman.crud.Create;
 import com.ajaxjs.sqlman.sqlgenerator.Entity2WriteSql;
+import com.ajaxjs.sqlman.testcase.Address;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -116,5 +116,36 @@ class TestEntityAction extends BaseTest {
 
         updateResult = new Action(conn, address).update().execute("id = 1");
         assertTrue(updateResult.isOk());
+    }
+
+    @Test
+    void testEntityDelete() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", "Alice");
+        map.put("address", "HK");
+        map.put("phone", "110");
+
+        UpdateResult updateResult = new Action(conn, map, "shop_address").update().delete("id", 1);
+        assertTrue(updateResult.isOk());
+
+        updateResult = new Action(conn, map, "shop_address").update().delete(2);
+        assertTrue(updateResult.isOk());
+
+        map.put("id", 3);
+        updateResult = new Action(conn, map, "shop_address").update().delete();
+        assertTrue(updateResult.isOk());
+
+//        updateResult = new Action(conn, map, "shop_address").update().delete("id", 1);
+//        assertTrue(updateResult.isOk());
+//
+//        Address address = new Address();
+//        address.setName("出差");
+//        address.setAddress("广州");
+//        address.setPhone("188");
+//        address.setPhone2("188");
+//        address.setRe("Tom");
+//
+//        updateResult = new Action(conn, address).update().execute("id = 1");
+//        assertTrue(updateResult.isOk());
     }
 }

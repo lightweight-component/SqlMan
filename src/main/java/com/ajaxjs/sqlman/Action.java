@@ -1,10 +1,10 @@
 package com.ajaxjs.sqlman;
 
-import com.ajaxjs.sqlman.model.UpdateResult;
-import com.ajaxjs.sqlman.model.DatabaseVendor;
 import com.ajaxjs.sqlman.crud.Create;
 import com.ajaxjs.sqlman.crud.Query;
 import com.ajaxjs.sqlman.crud.Update;
+import com.ajaxjs.sqlman.model.DatabaseVendor;
+import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.util.ObjectHelper;
 import lombok.Data;
 
@@ -50,6 +50,9 @@ public class Action {
 
     public Action(Object entity, String tableName) {
         this(JdbcConnection.getConnection(), entity, tableName);
+
+        if (entity instanceof String)
+            throw new UnsupportedOperationException("Can't pass string here. Try to used another one.");
     }
 
     public Action(Connection conn, Object entity, String tableName) {
@@ -184,7 +187,7 @@ public class Action {
      * @param where     The where clause
      * @return The result object, contains effected rows.
      */
-    public UpdateResult delete(String tableName, String where) {
-        return new Update(this).delete(tableName, where);
+    public UpdateResult deleteWhere(String tableName, String where) {
+        return new Update(this).deleteWhere(tableName, where);
     }
 }

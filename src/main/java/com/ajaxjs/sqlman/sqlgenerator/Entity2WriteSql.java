@@ -1,11 +1,11 @@
 package com.ajaxjs.sqlman.sqlgenerator;
 
-import com.ajaxjs.sqlman.JdbcConstants;
 import com.ajaxjs.sqlman.annotation.Column;
 import com.ajaxjs.sqlman.annotation.Table;
 import com.ajaxjs.sqlman.annotation.Transient;
-import com.ajaxjs.sqlman.util.Utils;
 import com.ajaxjs.sqlman.meta.DbMetaInfoUpdate;
+import com.ajaxjs.sqlman.model.NullValue;
+import com.ajaxjs.sqlman.util.Utils;
 import com.ajaxjs.util.CommonConstant;
 import com.ajaxjs.util.JsonUtil;
 import com.ajaxjs.util.ObjectHelper;
@@ -31,7 +31,7 @@ import java.util.function.BiConsumer;
  */
 @Slf4j
 @Data
-public class Entity2WriteSql implements JdbcConstants {
+public class Entity2WriteSql {
     /**
      * A data entity in Map format.
      */
@@ -180,13 +180,30 @@ public class Entity2WriteSql implements JdbcConstants {
         sql += " WHERE " + where;
     }
 
+    public void getDeleteSql(String idField, Object idValue) {
+        if (idValue == null) {
+            if (entityMap != null)
+                idValue = entityMap.get(idField);
+            else if (entityBean != null) {
+                DbMetaInfoUpdate meta = new DbMetaInfoUpdate(entityBean, idField);
+                idValue = meta.getIdValue();
+            }
+        }
+
+        if (idValue == null)
+            throw new NullPointerException("Since you didn't pass the id value, that means it's already in the entity, however it's not...");
+
+        sql = "DELETE FROM " + tableName + " WHERE " + idField + " = ?";
+        params = new Object[]{idValue};
+    }
+
     /**
      * Do the iteration of a Java Bean
      *
      * @param entity         Entity
      * @param everyBeanField An iterator for a Java Bean
      */
-    static void everyBeanField(Object entity, BiConsumer<String, Object> everyBeanField) {
+    public static void everyBeanField(Object entity, BiConsumer<String, Object> everyBeanField) {
         Class<?> clz = entity.getClass();
 
         try {
@@ -235,7 +252,8 @@ public class Entity2WriteSql implements JdbcConstants {
     private static Object beanValue2SqlValue(Object value) {
         if (value instanceof Enum) // 枚举类型，取其字符串保存
             return value.toString();
-        else if (NULL_DATE.equals(value) || NULL_INT.equals(value) || NULL_LONG.equals(value) || NULL_STRING.equals(value)) // 如何设数据库 null 值
+        else if (NullValue.NULL_DATE.equals(value) || NullValue.NULL_INT.equals(value)
+                || NullValue.NULL_LONG.equals(value) || NullValue.NULL_STRING.equals(value)) // 如何设数据库 null 值
             return null;
         else if (value instanceof List)
             return JsonUtil.toJson(value);// 假設數據庫是 text，於是一律轉換 json

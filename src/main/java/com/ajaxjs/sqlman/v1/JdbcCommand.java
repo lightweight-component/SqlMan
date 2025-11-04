@@ -1,12 +1,10 @@
 package com.ajaxjs.sqlman.v1;
 
 import com.ajaxjs.sqlman.JdbcConnection;
-import com.ajaxjs.sqlman.JdbcConstants;
 import com.ajaxjs.sqlman.SmallMyBatis;
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
 import com.ajaxjs.sqlman.model.CreateResult;
 import com.ajaxjs.sqlman.model.UpdateResult;
-import com.ajaxjs.sqlman.v1.PrettyLogger;
 import com.ajaxjs.sqlman.util.PrintRealSql;
 import com.ajaxjs.util.BoxLogger;
 import com.ajaxjs.util.ObjectHelper;

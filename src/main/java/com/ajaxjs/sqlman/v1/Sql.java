@@ -241,7 +241,7 @@ public class Sql extends JdbcCommand implements DAO {
                 String key = metaData.getColumnLabel(i);
                 String columnTypeName = metaData.getColumnTypeName(i);
 
-                if (getDatabaseVendor() == JdbcConstants.DatabaseVendor.H2)  // H2 的数据库字段名称是大写的，需要转换为小写
+                if (getDatabaseVendor() == com.ajaxjs.sqlman.model.DatabaseVendor.H2)  // H2 的数据库字段名称是大写的，需要转换为小写
                     key = key.toLowerCase();
 
                 Object _value = rs.getObject(i); // Real value in DB

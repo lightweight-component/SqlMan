@@ -1,5 +1,6 @@
 package com.ajaxjs.sqlman;
 
+import com.ajaxjs.sqlman.model.DatabaseVendor;
 import com.ajaxjs.util.DebugTools;
 import com.ajaxjs.util.ObjectHelper;
 import lombok.Data;
@@ -25,7 +26,7 @@ public class JdbcConnection {
     /**
      * 当前数据库厂商，默认 MySQL
      */
-    private JdbcConstants.DatabaseVendor databaseVendor = JdbcConstants.DatabaseVendor.MYSQL;
+    private DatabaseVendor databaseVendor = DatabaseVendor.MYSQL;
 
     /**
      * 获取数据库连接的回调函数
@@ -104,11 +105,11 @@ public class JdbcConnection {
             String databaseProductName = conn.getMetaData().getDatabaseProductName().toLowerCase();
 
             if (databaseProductName.contains("mysql"))
-                databaseVendor = JdbcConstants.DatabaseVendor.MYSQL;
+                databaseVendor = DatabaseVendor.MYSQL;
             else if (databaseProductName.contains("oracle"))
-                databaseVendor = JdbcConstants.DatabaseVendor.ORACLE;
+                databaseVendor = DatabaseVendor.ORACLE;
             else if (databaseProductName.contains("h2"))
-                databaseVendor = JdbcConstants.DatabaseVendor.H2;
+                databaseVendor = DatabaseVendor.H2;
         } catch (SQLException e) {
             log.error("Getting database name error.", e);
             throw new RuntimeException("Getting database name error.", e);

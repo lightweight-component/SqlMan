@@ -1,6 +1,5 @@
 package com.ajaxjs.sqlman.model.tablemodel;
 
-import com.ajaxjs.sqlman.JdbcConstants;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -20,7 +19,7 @@ public class IdField {
     /**
      * ID 类型，1=自增；2=雪花；3=UUID
      */
-    private JdbcConstants.IdType idType;
+    private IdType idType;
 
     /**
      * ID 类型的类引用

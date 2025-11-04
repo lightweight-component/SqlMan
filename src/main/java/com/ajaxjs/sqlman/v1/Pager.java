@@ -1,6 +1,6 @@
 package com.ajaxjs.sqlman.v1;
 
-import com.ajaxjs.sqlman.JdbcConstants;
+import com.ajaxjs.sqlman.model.DatabaseVendor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
@@ -38,7 +38,7 @@ public class Pager {
      */
     private String pageSql;
 
-    private JdbcConstants.DatabaseVendor databaseVendor = JdbcConstants.DatabaseVendor.MYSQL;
+    private DatabaseVendor databaseVendor = DatabaseVendor.MYSQL;
 
     /**
      * 分页
@@ -67,9 +67,9 @@ public class Pager {
 //            plainSelect.setLimit(limitObj);
 
 //            pageSql = selectStatement.toString();
-            if (databaseVendor == JdbcConstants.DatabaseVendor.MYSQL)
+            if (databaseVendor == DatabaseVendor.MYSQL)
                 pageSql = sql + " LIMIT " + start + ", " + limit;
-            else if (databaseVendor == JdbcConstants.DatabaseVendor.DERBY)
+            else if (databaseVendor == DatabaseVendor.DERBY)
                 pageSql = sql + " OFFSET " + start + " ROWS FETCH NEXT " + limit + " ROWS ONLY";
             else
                 throw new DataAccessException("TODO: add db vendor");

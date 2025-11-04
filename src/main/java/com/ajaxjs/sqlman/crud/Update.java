@@ -1,11 +1,11 @@
 package com.ajaxjs.sqlman.crud;
 
-import com.ajaxjs.sqlman.model.UpdateResult;
-import com.ajaxjs.sqlman.util.PrintRealSql;
 import com.ajaxjs.sqlman.Action;
 import com.ajaxjs.sqlman.meta.DbMetaInfoCreate;
+import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman.sqlgenerator.Entity2WriteSql;
 import com.ajaxjs.sqlman.util.PrettyLogger;
+import com.ajaxjs.sqlman.util.PrintRealSql;
 import com.ajaxjs.util.BoxLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -162,6 +162,24 @@ public class Update extends BaseAction {
         return update();
     }
 
+    public UpdateResult delete() {
+        return delete("id", null);
+    }
+
+    public UpdateResult delete(Object idValue) {
+        return delete("id", idValue);
+    }
+
+    public UpdateResult delete(String idField, Object idValue) {
+        Entity2WriteSql generator = initEntity2WriteSql();
+        generator.getDeleteSql(idField, idValue);
+
+        action.setSql(generator.getSql());
+        action.setParams(generator.getParams());
+
+        return update();
+    }
+
     /**
      * Physical delete by id field and id value.
      *
@@ -185,7 +203,7 @@ public class Update extends BaseAction {
      * @param where     The where clause
      * @return The result object, contains effected rows.
      */
-    public UpdateResult delete(String tableName, String where) {
+    public UpdateResult deleteWhere(String tableName, String where) {
         String sql = "DELETE FROM " + tableName + " WHERE " + where;
         action.setSql(sql);
 

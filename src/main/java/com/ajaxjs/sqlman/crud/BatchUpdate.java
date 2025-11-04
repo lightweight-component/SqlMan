@@ -14,10 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.ajaxjs.sqlman.v1;
+package com.ajaxjs.sqlman.crud;
 
-import com.ajaxjs.sqlman.model.tablemodel.TableModel;
+import com.ajaxjs.sqlman.Action;
+import com.ajaxjs.sqlman.JdbcConnection;
 import com.ajaxjs.sqlman.model.UpdateResult;
+import com.ajaxjs.sqlman.model.tablemodel.TableModel;
+import com.ajaxjs.sqlman.sqlgenerator.Entity2WriteSql;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +29,10 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 批量更新
@@ -35,8 +41,6 @@ import java.util.*;
 @Slf4j
 @Data
 public class BatchUpdate extends TableModel {
-    private JdbcCommand crud;
-
     /**
      * 批量插入数据
      *
@@ -61,7 +65,7 @@ public class BatchUpdate extends TableModel {
         log.info(sql);
 
         int[] result = null;
-        Connection conn = getCrud().getConn();
+        Connection conn = JdbcConnection.getConnection();
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             conn.setAutoCommit(false);// 取消自动提交
@@ -110,13 +114,13 @@ public class BatchUpdate extends TableModel {
 
         Map<String, Object> firstEntity = arr[0];
         sb.append("INSERT INTO ").append(tableName).append(" (");
-        BeanWriter.everyMapField(firstEntity, (field, value) -> sb.append(" `").append(field).append("`,"));
+        firstEntity.forEach((field, value) -> sb.append(" `").append(field).append("`,"));
         sb.deleteCharAt(sb.length() - 1);// 删除最后一个
         sb.append(") VALUES");
 
         for (Map<String, Object> entity : arr) {
             sb.append(" (");
-            BeanWriter.everyMapField(entity, (field, value) -> sb.append(toSqlValue(value)).append(", "));
+            entity.forEach((field, value) -> sb.append(toSqlValue(value)).append(", "));
             sb.deleteCharAt(sb.length() - 1);// 删除最后一个
             sb.deleteCharAt(sb.length() - 1);// 删除最后一个
             sb.append("),");
@@ -144,13 +148,13 @@ public class BatchUpdate extends TableModel {
 
         Object firstEntity = arr[0];
         sb.append("INSERT INTO ").append(getTableName()).append(" (");
-        BeanWriter.everyBeanField(firstEntity, (field, value) -> sb.append(" `").append(field).append("`,"));
+        Entity2WriteSql.everyBeanField(firstEntity, (field, value) -> sb.append(" `").append(field).append("`,"));
         sb.deleteCharAt(sb.length() - 1);// 删除最后一个
         sb.append(") VALUES");
 
         for (Object entity : arr) {
             sb.append(" (");
-            BeanWriter.everyBeanField(entity, (field, value) -> sb.append(toSqlValue(value)).append(", "));
+            Entity2WriteSql.everyBeanField(entity, (field, value) -> sb.append(toSqlValue(value)).append(", "));
             sb.deleteCharAt(sb.length() - 1);// 删除最后一个
             sb.deleteCharAt(sb.length() - 1);// 删除最后一个
             sb.append("),");
@@ -175,7 +179,7 @@ public class BatchUpdate extends TableModel {
         log.info("批量插入：：{}", sql);
         int[] result;
 
-        Connection conn = getCrud().getConn(); // TODO close this connection? above also
+        Connection conn = JdbcConnection.getConnection(); // TODO close this connection? above also
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.addBatch();
             result = ps.executeBatch();
@@ -208,10 +212,7 @@ public class BatchUpdate extends TableModel {
         sb.append(String.join(",", valueHolders));
         sb.append(")");
 
-        getCrud().setSql(sb.toString());
-        getCrud().setParams(params.toArray());
-
-        return getCrud().update();
+        return new Action(sb.toString()).update(params.toArray()).execute();
     }
 
     /**
