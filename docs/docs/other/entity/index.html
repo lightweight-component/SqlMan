@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8"/>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-        <title>SqlMan/Query Concept</title>
-        <meta name="description" content="TODO"/>
-        <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, last one"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css" />
-        <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
-        <link rel="icon" type="image/png" href="/asset/favicon.png"/>
-        <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
-        <script>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>SqlMan/Query Concept</title>
+    <meta name="description" content="TODO"/>
+    <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, last one"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css"/>
+    <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
+    <link rel="icon" type="image/png" href="/asset/favicon.png"/>
+    <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
+    <script>
             // 获取用户的默认语言
             var userLang = navigator.language || navigator.userLanguage;
 
@@ -27,82 +27,85 @@
               var s = document.getElementsByTagName("script")[0];
               s.parentNode.insertBefore(hm, s);
             })();
-        </script>
-    </head>
-    <body>
-        <nav>
-            <div>
-                <div class="links">
-                    <a href="/">🏠 Home</a>
-                    |
-                                                        ⚙️ Source:
-                    <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
-                    
-                    | <a  href="/docs/cn">Chinese Version</a>
-                </div>
-                <h1>
-                    <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
-                </h1>
-                <h3>Lightweight Data Access Tools -- User Manual
-                </h3>
-            </div>
-        </nav>
-        <div>
-            <menu>
-                
-                <ul>
-                    <li class="selected">
-                        <a href="/docs">Home</a>
-                    </li>
-                    <li>
-                        <a href="/docs/quick-start">Quick Start</a>
-                    </li>
-                    <li>
-                        <a href="/docs/setup">Setup</a>
-                    </li>
-                </ul>
-                <h3>Querying the Database</h3>
-                <ul>
-                    <li>
-                        <a href="/docs/query/query-concept">Query Concept</a>
-                    </li>
-                    <li>
-                        <a href="/docs/query/query-tutorial">Query Tutorial</a>
-                    </li>
-                    <li>
-                        <a href="/docs/query/query-paging">Paging Query</a>
-                    </li>
-                </ul>
-                <h3>Writing the data</h3>
-                <ul>
-                    <li>
-                        <a href="/docs/write/Create-Update-Delete">Create/Update/Delete</a></li>
-                    <li>
-                        <a href="/docs/write/batch">Batch Update</a>
-                    </li>
-                </ul>
-                <h3>Other Usage</h3>
-                <ul>
-                    <li>
-                        <a href="/docs/other/sql-xml">SQL in XML</a></li>
-                    <li>
-                        <a href="/docs/other/entity">No SQL but Entity</a>
-                    </li>
-                </ul>
-                <h3>Misc</h3>
-                <ul>
-                    <li><a href="/docs/common/versions">Release History</a></li>
-                    <li><a href="/docs/common/contact">Contact</a></li>
-                </ul>
-            </menu>
-            <article class="aj-text">
-                <h1>Interact with Entity</h1>
-<p>So far, we've been discussing SqlMan with SQL statements. It might seem that we can't work without SQL, but that's not true. SqlMan provides a way to interact with databases using Entities, without writing a single line of SQL code.</p>
-<p>Entity here, means either a Java Bean(POJO) or a <code>Map</code> object.</p>
-<p>The Entity class in SqlMan provides a high-level abstraction for performing CRUD (Create, Read, Update, Delete) operations on database entities. It simplifies database interactions by allowing you to work with Java objects (POJOs) or Maps directly, without writing SQL statements.</p>
-<h2>Basic Setup</h2>
-<p>There are three ways to create an Entity instance:</p>
-<pre><code class="language-java">// Using default connection
+
+    </script>
+</head>
+<body>
+<nav>
+    <div>
+        <div class="links">
+            <a href="/">🏠 Home</a>
+            |
+            ⚙️ Source:
+            <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
+
+            | <a href="/docs/cn">Chinese Version</a>
+        </div>
+        <h1>
+            <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
+        </h1>
+        <h3>Lightweight Data Access Tools -- User Manual
+        </h3>
+    </div>
+</nav>
+<div>
+    <menu>
+
+        <ul>
+            <li class="selected">
+                <a href="/docs">Home</a>
+            </li>
+            <li>
+                <a href="/docs/quick-start">Quick Start</a>
+            </li>
+            <li>
+                <a href="/docs/setup">Setup</a>
+            </li>
+        </ul>
+        <h3>Querying the Database</h3>
+        <ul>
+            <li>
+                <a href="/docs/query/query-concept">Query Concept</a>
+            </li>
+            <li>
+                <a href="/docs/query/query-tutorial">Query Tutorial</a>
+            </li>
+            <li>
+                <a href="/docs/query/query-paging">Paging Query</a>
+            </li>
+        </ul>
+        <h3>Writing the data</h3>
+        <ul>
+            <li>
+                <a href="/docs/write/Create-Update-Delete">Create/Update/Delete</a></li>
+            <li>
+                <a href="/docs/write/batch">Batch Update</a>
+            </li>
+        </ul>
+        <h3>Other Usage</h3>
+        <ul>
+            <li>
+                <a href="/docs/other/sql-xml">SQL in XML</a></li>
+            <li>
+                <a href="/docs/other/entity">No SQL but Entity</a>
+            </li>
+        </ul>
+        <h3>Misc</h3>
+        <ul>
+            <li><a href="/docs/common/versions">Release History</a></li>
+            <li><a href="/docs/common/contact">Contact</a></li>
+        </ul>
+    </menu>
+    <article class="aj-text">
+        <h1>Interact with Entity</h1>
+        <p>So far, we've been discussing SqlMan with SQL statements. It might seem that we can't work without SQL, but that's not true. SqlMan provides a way to interact with databases using Entities, without writing a
+            single line of SQL code.</p>
+        <p>Entity here, means either a Java Bean(POJO) or a <code>Map</code> object.</p>
+        <p>The Entity class in SqlMan provides a high-level abstraction for performing CRUD (Create, Read, Update, Delete) operations on database entities. It simplifies database interactions by allowing you to work with
+            Java objects (POJOs) or Maps directly, without writing SQL statements.</p>
+        <h2>Basic Setup</h2>
+        <p>There are three ways to create an Entity instance:</p>
+        <pre><code class="language-java">// Using default connection
 Entity entity = new Entity();
 
 // Using specific connection
@@ -111,18 +114,18 @@ Entity entity = new Entity(connection);
 // Using DataSource
 Entity entity = new Entity(dataSource);
 </code></pre>
-<h2>Query Entity</h2>
-<p>Let's say we have a table <code>shop_address</code> in our database, and we want to query all records from it. At minimum, we need know that which table will be queried, so we can do it like this:</p>
-<pre><code class="language-java">// To fetch all records from a table:
+        <h2>Query Entity</h2>
+        <p>Let's say we have a table <code>shop_address</code> in our database, and we want to query all records from it. At minimum, we need know that which table will be queried, so we can do it like this:</p>
+        <pre><code class="language-java">// To fetch all records from a table:
 List&lt;Map&lt;String, Object&gt;&gt; result2 = new Entity(conn).setTableName(&quot;shop_address&quot;).list().queryList();
 assertFalse(result2.isEmpty());
 </code></pre>
-<p>By default, it will generate the following SQL statement:</p>
-<pre><code class="language-sql">SELECT * FROM shop_address WHERE 1=1 ORDER BY create_date DESC
+        <p>By default, it will generate the following SQL statement:</p>
+        <pre><code class="language-sql">SELECT * FROM shop_address WHERE 1=1 ORDER BY create_date DESC
 </code></pre>
-<p>Following the &quot;Convention over Configuration&quot; principle, it assumes there's a column named <code>create_date</code> in the table.It will automatically perform a descending order query.</p>
-<p>What if such a column doesn't exist? We can specify which column to query. This is perfectly fine, but it requires more code:</p>
-<pre><code class="language-java">TableModel tableModel = new TableModel();
+        <p>Following the &quot;Convention over Configuration&quot; principle, it assumes there's a column named <code>create_date</code> in the table.It will automatically perform a descending order query.</p>
+        <p>What if such a column doesn't exist? We can specify which column to query. This is perfectly fine, but it requires more code:</p>
+        <pre><code class="language-java">TableModel tableModel = new TableModel();
 tableModel.setTableName(&quot;shop_address&quot;);
 tableModel.setCreateDateField(&quot;create_at&quot;); // specify the column name
 tableModel.setHasIsDeleted(false);
@@ -130,47 +133,48 @@ tableModel.setHasIsDeleted(false);
 List&lt;Map&lt;String, Object&gt;&gt; result = new Entity(conn).setTableModel(tableModel).list().queryList();
 assertFalse(result.isEmpty());
 </code></pre>
-<p><code>TableModel</code> is all about how to query a table.</p>
-<h3>Custom condition query</h3>
-<p>Although you can't pass the parameters directly like SQL statement, you can still pass <code>WHERE</code> statement to the query:</p>
-<pre><code class="language-java">List&lt;Address&gt; addresses = new Entity(conn).setTableModel(tableModel).list(&quot;AND stat = 1&quot;).queryList(Address.class);
+        <p><code>TableModel</code> is all about how to query a table.</p>
+        <h3>Custom condition query</h3>
+        <p>Although you can't pass the parameters directly like SQL statement, you can still pass <code>WHERE</code> statement to the query:</p>
+        <pre><code class="language-java">List&lt;Address&gt; addresses = new Entity(conn).setTableModel(tableModel).list(&quot;AND stat = 1&quot;).queryList(Address.class);
 assertNotNull(addresses);
 </code></pre>
-<p>Remember to add <code>AND</code> before your condition statement.</p>
-<p>Besides, this example shows the result as Java Bean object, not Map object.</p>
-<h3>Query with Java Bean</h3>
-<p>Using a Java Bean is also possible:</p>
-<pre><code class="language-java">Address bean = new Entity(conn).setTableName(&quot;shop_address&quot;).info(1L).query(Address.class);
+        <p>Remember to add <code>AND</code> before your condition statement.</p>
+        <p>Besides, this example shows the result as Java Bean object, not Map object.</p>
+        <h3>Query with Java Bean</h3>
+        <p>Using a Java Bean is also possible:</p>
+        <pre><code class="language-java">Address bean = new Entity(conn).setTableName(&quot;shop_address&quot;).info(1L).query(Address.class);
 </code></pre>
-<h3>Paging Query</h3>
-<p>The paging functionality works the same way as above:</p>
-<pre><code class="language-java">PageResult&lt;Object&gt; article = new Entity(conn).setTableName(&quot;shop_address&quot;).list().page();
+        <h3>Paging Query</h3>
+        <p>The paging functionality works the same way as above:</p>
+        <pre><code class="language-java">PageResult&lt;Object&gt; article = new Entity(conn).setTableName(&quot;shop_address&quot;).list().page();
 assertFalse(article.isEmpty());
 </code></pre>
-<h1>Insert Entity</h1>
-<p>This code demonstrates how to insert a new record into the database using SqlMan's Entity functionality. First, it creates a new Address object and sets its properties:</p>
-<pre><code class="language-java">Address address = new Address();
+        <h1>Insert Entity</h1>
+        <p>This code demonstrates how to insert a new record into the database using SqlMan's Entity functionality. First, it creates a new Address object and sets its properties:</p>
+        <pre><code class="language-java">Address address = new Address();
 address.setName(&quot;出差&quot;);
 address.setAddress(&quot;广州&quot;);
 address.setPhone(&quot;188&quot;);
 address.setPhone2(&quot;188&quot;);
 address.setRe(&quot;Tom&quot;);
 </code></pre>
-<p>Then, it configures the table settings using <code>TableModel</code>:</p>
-<pre><code class="language-java">TableModel tableModel = new TableModel();
+        <p>Then, it configures the table settings using <code>TableModel</code>:</p>
+        <pre><code class="language-java">TableModel tableModel = new TableModel();
 tableModel.setTableName(&quot;shop_address&quot;);
 tableModel.setAutoIns(true);
 tableModel.setIdTypeClz(Integer.class);
 </code></pre>
-<p>Finally, it performs the insert operation</p>
-<pre><code class="language-java">CreateResult&lt;Integer&gt; result = new Entity(conn).setTableModel(tableModel).input(address).create(Integer.class);
+        <p>Finally, it performs the insert operation</p>
+        <pre><code class="language-java">CreateResult&lt;Integer&gt; result = new Entity(conn).setTableModel(tableModel).input(address).create(Integer.class);
 assertNotNull(result.getNewlyId());
 assertTrue(result.isOk());
 </code></pre>
-<p>This code will automatically generate and execute an INSERT SQL statement based on the Address object's properties. The <code>CreateResult</code> object returns information about the operation, including the newly generated ID for the inserted record.</p>
-<h1>Update Entity</h1>
-<p>This code demonstrates how to update an existing record in the database using SqlMan's Entity functionality.</p>
-<pre><code class="language-java">Address address = new Address();
+        <p>This code will automatically generate and execute an INSERT SQL statement based on the Address object's properties. The <code>CreateResult</code> object returns information about the operation, including the
+            newly generated ID for the inserted record.</p>
+        <h1>Update Entity</h1>
+        <p>This code demonstrates how to update an existing record in the database using SqlMan's Entity functionality.</p>
+        <pre><code class="language-java">Address address = new Address();
 address.setId(1);
 address.setName(&quot;出差&quot;);
 address.setAddress(&quot;广州&quot;);
@@ -188,16 +192,18 @@ result = new Entity(conn).setTableModel(tableModel).input(address).update();
 
 assertTrue(result.isOk());
 </code></pre>
-<p>The main difference from the insert operation is:</p>
-<ul>
-<li>The <code>Address</code> object includes an ID value ( <code>setId(1)</code> ), which tells SqlMan which record to update</li>
-<li>It uses the <code>update()</code> method instead of <code>create()</code></li>
-<li>The result is an <code>UpdateResult</code> object that indicates whether the operation succeeded
-This code will automatically generate and execute an UPDATE SQL statement based on the Address object's properties, updating the record where ID = 1.</li>
-</ul>
-<h2>Column name mapping</h2>
-<p>What if the column name in the database is different from the property name in the Java Bean? SqlMan provides a way to map the column name to the property name, just use a Java annotation <code>@Column(name =&quot;xxxx&quot;)</code> to specify it:</p>
-<pre><code class="language-java">@Data
+        <p>The main difference from the insert operation is:</p>
+        <ul>
+            <li>The <code>Address</code> object includes an ID value ( <code>setId(1)</code> ), which tells SqlMan which record to update</li>
+            <li>It uses the <code>update()</code> method instead of <code>create()</code></li>
+            <li>The result is an <code>UpdateResult</code> object that indicates whether the operation succeeded
+                This code will automatically generate and execute an UPDATE SQL statement based on the Address object's properties, updating the record where ID = 1.
+            </li>
+        </ul>
+        <h2>Column name mapping</h2>
+        <p>What if the column name in the database is different from the property name in the Java Bean? SqlMan provides a way to map the column name to the property name, just use a Java annotation <code>@Column(name =&quot;xxxx&quot;)</code>
+            to specify it:</p>
+        <pre><code class="language-java">@Data
 public class Address {
     private Integer id;
 
@@ -214,17 +220,17 @@ public class Address {
     private String re;
 }
 </code></pre>
-<h2>Not persistent field</h2>
-<p>By default, properties and fields are persistent. If you don't want a field to be updated, you can specify that the property or field is not persistent by adding the <code>@Transient</code> annotation.</p>
+        <h2>Not persistent field</h2>
+        <p>By default, properties and fields are persistent. If you don't want a field to be updated, you can specify that the property or field is not persistent by adding the <code>@Transient</code> annotation.</p>
 
-            </article>
-        </div>
-        <footer>
+    </article>
+</div>
+<footer>
     SqlMan, a part of <a href="https://framework.ajaxjs.com" target="_blank">AJ-Framework</a> open source. Mail:
     frank@ajaxjs.com, visit <a href="https://blog.csdn.net/zhangxin09" target="_blank">my blog(In Chinese)</a>.
-    <br />
-    <br />
-     Copyright © 2025 Frank Cheung. All rights reserved.
+    <br/>
+    <br/>
+    Copyright © 2025 Frank Cheung. All rights reserved.
     <script>
         var _hmt = _hmt || [];
         (function() {
@@ -233,7 +239,8 @@ public class Address {
           var s = document.getElementsByTagName("script")[0];
           s.parentNode.insertBefore(hm, s);
         })();
+
     </script>
 </footer>
-    </body>
+</body>
 </html>

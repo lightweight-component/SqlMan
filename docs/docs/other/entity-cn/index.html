@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8"/>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-        <title>SqlMan/Query Concept</title>
-        <meta name="description" content="TODO"/>
-        <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, last one"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/> 
-        <meta
-        name="viewport" content="width=device-width, initial-scale=1"/>
-        <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css" />
-        <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
-        <link rel="icon" type="image/png" href="/asset/favicon.png"/>
-        <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
-         <script>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>SqlMan/Query Concept</title>
+    <meta name="description" content="TODO"/>
+    <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, last one"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta
+            name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css"/>
+    <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
+    <link rel="icon" type="image/png" href="/asset/favicon.png"/>
+    <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
+    <script>
              var _hmt = _hmt || [];
              (function() {
                var hm = document.createElement("script");
@@ -21,91 +21,92 @@
                var s = document.getElementsByTagName("script")[0];
                s.parentNode.insertBefore(hm, s);
              })();
-         </script>
-    </head>
-    <body>
-        <nav>
-            <div>
-                <div class="links">
-                    <a href="/">🏠 首页</a>
-                    |
-                                                                            ⚙️ 源码：
-                    <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
-                    
-                    |
-                    <a href="/docs">English Version</a>
-                </div>
-                <h1>
-                    <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
-                </h1>
-                <h3>轻量级 JDBC 助手——用户手册</h3>
-            </div>
-        </nav>
-        <div>
-            <menu>
-                
-                <ul>
-                    <li class="selected">
-                        <a href="/docs/cn">首页</a>
-                    </li>
-                    <li>
-                        <a href="/docs/quick-start-cn">快速开始</a>
-                    </li>
-                    <li>
-                        <a href="/docs/setup-cn">安装与配置</a>
-                    </li>
-                </ul>
-                <h3>数据库查询</h3>
-                <ul>
-                    <li>
-                        <a href="/docs/query/query-concept-cn">基础概念</a>
-                    </li>
-                    <li>
-                        <a href="/docs/query/query-tutorial-cn">查询教程</a>
-                    </li>
-                    <li>
-                        <a href="/docs/query/query-paging-cn">分页查询</a>
-                    </li>
-                </ul>
-                <h3>写入数据</h3>
-                <ul>
-                    <li>
-                        <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a>
-                    </li>
-                    <li>
-                        <a href="/docs/write/batch-cn">批量更新</a>
-                    </li>
-                </ul>
-                <h3>其他用法</h3>
-                <ul>
-                    <li>
-                        <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a>
-                    </li>
-                    <li>
-                        <a href="/docs/other/entity-cn">“类” ORM</a>
-                    </li>
-                </ul>
-                <h3>Misc</h3>
-                <ul>
-                    <li><a href="/docs/common/versions-cn">更新历史</a></li>
-                    <li><a href="/docs/common/contact-cn">联系</a></li>
-                </ul>
-            </menu>
-            <article class="aj-text chinese">
-                <h1>与实体交互</h1>
-<p>到目前为止，我们一直在讨论使用 SQL 语句的 SqlMan。可能看起来我们离不开 SQL，但事实并非如此。SqlMan 提供了一种使用实体与数据库交互的方式，无需编写任何 SQL 代码。</p>
-<p>这里的实体指的是 Java Bean（POJO）或 <code>Map</code> 对象。</p>
-<h2>查询实体</h2>
-<p>假设我们的数据库中有一个 <code>shop_address</code> 表，我们想要查询其中的所有记录。最基本的，我们需要知道要查询哪个表，所以可以这样做：</p>
-<pre><code class="language-java">List&lt;Map&lt;String, Object&gt;&gt; result2 = new Entity(conn).setTableName(&quot;shop_address&quot;).list().queryList();
+
+    </script>
+</head>
+<body>
+<nav>
+    <div>
+        <div class="links">
+            <a href="/">🏠 首页</a>
+            |
+            ⚙️ 源码：
+            <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
+
+            |
+            <a href="/docs">English Version</a>
+        </div>
+        <h1>
+            <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
+        </h1>
+        <h3>轻量级 JDBC 助手——用户手册</h3>
+    </div>
+</nav>
+<div>
+    <menu>
+
+        <ul>
+            <li class="selected">
+                <a href="/docs/cn">首页</a>
+            </li>
+            <li>
+                <a href="/docs/quick-start-cn">快速开始</a>
+            </li>
+            <li>
+                <a href="/docs/setup-cn">安装与配置</a>
+            </li>
+        </ul>
+        <h3>数据库查询</h3>
+        <ul>
+            <li>
+                <a href="/docs/query/query-concept-cn">基础概念</a>
+            </li>
+            <li>
+                <a href="/docs/query/query-tutorial-cn">查询教程</a>
+            </li>
+            <li>
+                <a href="/docs/query/query-paging-cn">分页查询</a>
+            </li>
+        </ul>
+        <h3>写入数据</h3>
+        <ul>
+            <li>
+                <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a>
+            </li>
+            <li>
+                <a href="/docs/write/batch-cn">批量更新</a>
+            </li>
+        </ul>
+        <h3>其他用法</h3>
+        <ul>
+            <li>
+                <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a>
+            </li>
+            <li>
+                <a href="/docs/other/entity-cn">“类” ORM</a>
+            </li>
+        </ul>
+        <h3>Misc</h3>
+        <ul>
+            <li><a href="/docs/common/versions-cn">更新历史</a></li>
+            <li><a href="/docs/common/contact-cn">联系</a></li>
+        </ul>
+    </menu>
+    <article class="aj-text chinese">
+        <h1>与实体交互</h1>
+        <p>到目前为止，我们一直在讨论使用 SQL 语句的 SqlMan。可能看起来我们离不开 SQL，但事实并非如此。SqlMan 提供了一种使用实体与数据库交互的方式，无需编写任何 SQL 代码。</p>
+        <p>这里的实体指的是 Java Bean（POJO）或 <code>Map</code> 对象。</p>
+        <h2>查询实体</h2>
+        <p>假设我们的数据库中有一个 <code>shop_address</code> 表，我们想要查询其中的所有记录。最基本的，我们需要知道要查询哪个表，所以可以这样做：</p>
+        <pre><code class="language-java">List&lt;Map&lt;String, Object&gt;&gt; result2 = new Entity(conn).setTableName(&quot;shop_address&quot;).list().queryList();
 assertFalse(result2.isEmpty());
 </code></pre>
-<p>默认情况下，它会生成以下 SQL 语句：</p>
-<pre><code class="language-sql">SELECT * FROM shop_address WHERE 1=1 ORDER BY create_date DESC
+        <p>默认情况下，它会生成以下 SQL 语句：</p>
+        <pre><code class="language-sql">SELECT * FROM shop_address WHERE 1=1 ORDER BY create_date DESC
 </code></pre>
-<p>遵循&quot;约定优于配置&quot;原则，它假设表中有一个名为 <code>create_date</code> 的列。它会自动执行降序查询。</p>
-<p>如果这样的列不存在怎么办？我们可以指定要查询的列。这完全可以，但需要更多代码：</p>
-<pre><code class="language-java">TableModel tableModel = new TableModel();
+        <p>遵循&quot;约定优于配置&quot;原则，它假设表中有一个名为 <code>create_date</code> 的列。它会自动执行降序查询。</p>
+        <p>如果这样的列不存在怎么办？我们可以指定要查询的列。这完全可以，但需要更多代码：</p>
+        <pre><code class="language-java">TableModel tableModel = new TableModel();
 tableModel.setTableName(&quot;shop_address&quot;);
 tableModel.setCreateDateField(&quot;create_at&quot;); // 指定列名
 tableModel.setHasIsDeleted(false);
@@ -113,47 +114,47 @@ tableModel.setHasIsDeleted(false);
 List&lt;Map&lt;String, Object&gt;&gt; result = new Entity(conn).setTableModel(tableModel).list().queryList();
 assertFalse(result.isEmpty());
 </code></pre>
-<p><code>TableModel</code> 定义了如何查询表。</p>
-<h3>自定义条件查询</h3>
-<p>虽然你不能像 SQL 语句那样直接传递参数，但你仍然可以传递 <code>WHERE</code> 子句到查询中：</p>
-<pre><code class="language-java">List&lt;Address&gt; addresses = new Entity(conn).setTableModel(tableModel).list(&quot;AND stat = 1&quot;).queryList(Address.class);
+        <p><code>TableModel</code> 定义了如何查询表。</p>
+        <h3>自定义条件查询</h3>
+        <p>虽然你不能像 SQL 语句那样直接传递参数，但你仍然可以传递 <code>WHERE</code> 子句到查询中：</p>
+        <pre><code class="language-java">List&lt;Address&gt; addresses = new Entity(conn).setTableModel(tableModel).list(&quot;AND stat = 1&quot;).queryList(Address.class);
 assertNotNull(addresses);
 </code></pre>
-<p>记住在条件语句前添加 <code>AND</code>。</p>
-<p>另外，这个例子展示了结果是 Java Bean 对象而不是 Map 对象。</p>
-<h3>使用 Java Bean 查询</h3>
-<p>使用 Java Bean 也是可以的：</p>
-<pre><code class="language-java">Address bean = new Entity(conn).setTableName(&quot;shop_address&quot;).info(1L).query(Address.class);
+        <p>记住在条件语句前添加 <code>AND</code>。</p>
+        <p>另外，这个例子展示了结果是 Java Bean 对象而不是 Map 对象。</p>
+        <h3>使用 Java Bean 查询</h3>
+        <p>使用 Java Bean 也是可以的：</p>
+        <pre><code class="language-java">Address bean = new Entity(conn).setTableName(&quot;shop_address&quot;).info(1L).query(Address.class);
 </code></pre>
-<h3>分页查询</h3>
-<p>分页功能的使用方式与上面相同：</p>
-<pre><code class="language-java">PageResult&lt;Object&gt; article = new Entity(conn).setTableName(&quot;shop_address&quot;).list().page();
+        <h3>分页查询</h3>
+        <p>分页功能的使用方式与上面相同：</p>
+        <pre><code class="language-java">PageResult&lt;Object&gt; article = new Entity(conn).setTableName(&quot;shop_address&quot;).list().page();
 assertFalse(article.isEmpty());
 </code></pre>
-<h1>插入实体</h1>
-<p>这段代码演示了如何使用 SqlMan 的实体功能向数据库插入新记录。首先，创建一个新的 Address 对象并设置其属性：</p>
-<pre><code class="language-java">Address address = new Address();
+        <h1>插入实体</h1>
+        <p>这段代码演示了如何使用 SqlMan 的实体功能向数据库插入新记录。首先，创建一个新的 Address 对象并设置其属性：</p>
+        <pre><code class="language-java">Address address = new Address();
 address.setName(&quot;出差&quot;);
 address.setAddress(&quot;广州&quot;);
 address.setPhone(&quot;188&quot;);
 address.setPhone2(&quot;188&quot;);
 address.setRe(&quot;Tom&quot;);
 </code></pre>
-<p>然后，使用 <code>TableModel</code> 配置表设置：</p>
-<pre><code class="language-java">TableModel tableModel = new TableModel();
+        <p>然后，使用 <code>TableModel</code> 配置表设置：</p>
+        <pre><code class="language-java">TableModel tableModel = new TableModel();
 tableModel.setTableName(&quot;shop_address&quot;);
 tableModel.setAutoIns(true);
 tableModel.setIdTypeClz(Integer.class);
 </code></pre>
-<p>最后，执行插入操作：</p>
-<pre><code class="language-java">CreateResult&lt;Integer&gt; result = new Entity(conn).setTableModel(tableModel).input(address).create(Integer.class);
+        <p>最后，执行插入操作：</p>
+        <pre><code class="language-java">CreateResult&lt;Integer&gt; result = new Entity(conn).setTableModel(tableModel).input(address).create(Integer.class);
 assertNotNull(result.getNewlyId());
 assertTrue(result.isOk());
 </code></pre>
-<p>这段代码会根据 Address 对象的属性自动生成并执行 INSERT SQL 语句。<code>CreateResult</code> 对象返回操作的相关信息，包括新生成的记录 ID。</p>
-<h1>更新实体</h1>
-<p>这段代码演示了如何使用 SqlMan 的实体功能更新数据库中的现有记录。</p>
-<pre><code class="language-java">Address address = new Address();
+        <p>这段代码会根据 Address 对象的属性自动生成并执行 INSERT SQL 语句。<code>CreateResult</code> 对象返回操作的相关信息，包括新生成的记录 ID。</p>
+        <h1>更新实体</h1>
+        <p>这段代码演示了如何使用 SqlMan 的实体功能更新数据库中的现有记录。</p>
+        <pre><code class="language-java">Address address = new Address();
 address.setId(1);
 address.setName(&quot;出差&quot;);
 address.setAddress(&quot;广州&quot;);
@@ -171,16 +172,16 @@ result = new Entity(conn).setTableModel(tableModel).input(address).update();
 
 assertTrue(result.isOk());
 </code></pre>
-<p>与插入操作的主要区别是：</p>
-<ul>
-<li><code>Address</code> 对象包含一个 ID 值（<code>setId(1)</code>），告诉 SqlMan 要更新哪条记录</li>
-<li>使用 <code>update()</code> 方法而不是 <code>create()</code></li>
-<li>结果是一个 <code>UpdateResult</code> 对象，表示操作是否成功</li>
-</ul>
-<p>这段代码会根据 Address 对象的属性自动生成并执行 UPDATE SQL 语句，更新 ID = 1 的记录。</p>
-<h2>列名映射</h2>
-<p>如果数据库中的列名与 Java Bean 中的属性名不同怎么办？SqlMan 提供了一种将列名映射到属性名的方法，只需使用 Java 注解 <code>@Column(name =&quot;xxxx&quot;)</code> 来指定：</p>
-<pre><code class="language-java">@Data
+        <p>与插入操作的主要区别是：</p>
+        <ul>
+            <li><code>Address</code> 对象包含一个 ID 值（<code>setId(1)</code>），告诉 SqlMan 要更新哪条记录</li>
+            <li>使用 <code>update()</code> 方法而不是 <code>create()</code></li>
+            <li>结果是一个 <code>UpdateResult</code> 对象，表示操作是否成功</li>
+        </ul>
+        <p>这段代码会根据 Address 对象的属性自动生成并执行 UPDATE SQL 语句，更新 ID = 1 的记录。</p>
+        <h2>列名映射</h2>
+        <p>如果数据库中的列名与 Java Bean 中的属性名不同怎么办？SqlMan 提供了一种将列名映射到属性名的方法，只需使用 Java 注解 <code>@Column(name =&quot;xxxx&quot;)</code> 来指定：</p>
+        <pre><code class="language-java">@Data
 public class Address {
     private Integer id;
 
@@ -197,18 +198,18 @@ public class Address {
     private String re;
 }
 </code></pre>
-<h2>非持久化字段</h2>
-<p>默认情况下，属性和字段都是持久化的。如果你不希望某个字段被更新，可以通过添加 <code>@Transient</code> 注解将该属性或字段标记为非持久化。</p>
+        <h2>非持久化字段</h2>
+        <p>默认情况下，属性和字段都是持久化的。如果你不希望某个字段被更新，可以通过添加 <code>@Transient</code> 注解将该属性或字段标记为非持久化。</p>
 
-            </article>
+    </article>
 
-        </div>
-        <footer>
+</div>
+<footer>
     SqlMan, a part of <a href="https://framework.ajaxjs.com" target="_blank">AJ-Framework</a> open source. Mail:
     frank@ajaxjs.com, visit <a href="https://blog.csdn.net/zhangxin09" target="_blank">my blog(In Chinese)</a>.
-    <br />
-    <br />
-     Copyright © 2025 Frank Cheung. All rights reserved.
+    <br/>
+    <br/>
+    Copyright © 2025 Frank Cheung. All rights reserved.
     <script>
         var _hmt = _hmt || [];
         (function() {
@@ -217,7 +218,8 @@ public class Address {
           var s = document.getElementsByTagName("script")[0];
           s.parentNode.insertBefore(hm, s);
         })();
+
     </script>
 </footer>
-    </body>
+</body>
 </html>

@@ -1,11 +1,11 @@
 package com.ajaxjs.sqlman.crud;
 
-import com.ajaxjs.sqlman.model.CreateResult;
-import com.ajaxjs.sqlman.util.PrintRealSql;
 import com.ajaxjs.sqlman.Action;
 import com.ajaxjs.sqlman.meta.DbMetaInfoCreate;
+import com.ajaxjs.sqlman.model.CreateResult;
 import com.ajaxjs.sqlman.sqlgenerator.Entity2WriteSql;
 import com.ajaxjs.sqlman.util.PrettyLogger;
+import com.ajaxjs.sqlman.util.PrintRealSql;
 import com.ajaxjs.util.BoxLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;

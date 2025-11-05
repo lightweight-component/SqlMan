@@ -1,7 +1,8 @@
 package com.ajaxjs.sqlman;
 
-import com.ajaxjs.util.*;
+import com.ajaxjs.util.CommonConstant;
 import com.ajaxjs.util.ObjectHelper;
+import com.ajaxjs.util.XmlHelper;
 import com.ajaxjs.util.io.Resources;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.expression.MapAccessor;

@@ -7,10 +7,13 @@ tags:
   - last one
 layout: layouts/docs.njk
 ---
+
 # 🔧 Setup SqlMan
 
 ## Requirements
+
 ### Java
+
 SqlMan runs on Java 8+.
 
 ### Supported Databases
@@ -21,6 +24,7 @@ SqlMan runs on Java 8+.
 - Apache Derby
 
 # Connecting to your database
+
 Normally, you just tell Sqlman either a `DataSource` or a `Connection` to work. These're standard JDBC object that contain the connection information of database like URL, username, password, etc.
 
 ```java
@@ -30,6 +34,6 @@ Map<String, Object> result = new Sql(conn).input("SELECT * FROM shop_address").q
 
 The code above is hardcoded, which is ONLY for demo/test purposes. In real world, you should use a connection pool to manage your connections.
 
-
 ## Config in Spring
- TODO
+
+TODO

@@ -8,13 +8,14 @@ tags:
 layout: layouts/docs.njk
 ---
 
-# Batch Update 
+# Batch Update
 
 The BatchUpdate class in SqlMan provides efficient methods for performing batch operations on database records, particularly useful when you need to insert or update multiple records simultaneously.
 
 ## Basic Batch Insert Operations
 
 ### Method 1: Simple Batch Insert
+
 For basic batch inserts with raw field values:
 
 ```java
@@ -33,6 +34,7 @@ batchUpdate.createBatch(fields, values);
 ```
 
 ### Method 2: Batch Insert with Maps
+
 For inserting multiple records using Map objects:
 
 ```java
@@ -52,6 +54,7 @@ batchUpdate.createBatchMap(users, "users");
 ```
 
 ### Method 3: Batch Insert with Java Beans
+
 For inserting multiple records using Java objects:
 
 ```java
@@ -71,6 +74,7 @@ batchUpdate.createBatch(users);
 ```
 
 ## Batch Delete Operations
+
 To delete multiple records by their IDs:
 
 ```java
@@ -89,25 +93,25 @@ if (result.isOk()) {
 ## Best Practices
 
 1. **Transaction Management**
-   - The class handles transactions automatically
-   - Auto-commit is disabled during batch operations
-   - Rollback is performed automatically on failure
+    - The class handles transactions automatically
+    - Auto-commit is disabled during batch operations
+    - Rollback is performed automatically on failure
 
 2. **Data Type Handling**
    The class automatically handles various data types:
-   - Strings are properly quoted
-   - Booleans are converted to 1/0
-   - Dates are formatted appropriately
-   - LocalDateTime is supported
+    - Strings are properly quoted
+    - Booleans are converted to 1/0
+    - Dates are formatted appropriately
+    - LocalDateTime is supported
 
 3. **Performance Tips**
-   - Use batch operations instead of individual inserts for better performance
-   - Keep batch sizes reasonable (typically 100-1000 records)
-   - Monitor memory usage when dealing with large datasets
+    - Use batch operations instead of individual inserts for better performance
+    - Keep batch sizes reasonable (typically 100-1000 records)
+    - Monitor memory usage when dealing with large datasets
 
 4. **Error Handling**
-   - Operations are logged
-   - Transactions are rolled back on failure
-   - Execution results are available for verification
+    - Operations are logged
+    - Transactions are rolled back on failure
+    - Execution results are available for verification
 
 This BatchUpdate class significantly improves performance when dealing with multiple database operations by reducing the number of database round-trips.

@@ -7,6 +7,7 @@ tags:
   - last one
 layout: layouts/docs.njk
 ---
+
     <h1>Release History</h1>
     <h3>v1.2 <span class="release-date">2025-03-21</span></h3>
 

@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8"/>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-        <title>SqlMan/查询概念</title>
-        <meta name="description" content="TODO"/>
-        <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, last one"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/> 
-        <meta
-        name="viewport" content="width=device-width, initial-scale=1"/>
-        <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css" />
-        <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
-        <link rel="icon" type="image/png" href="/asset/favicon.png"/>
-        <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
-         <script>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>SqlMan/查询概念</title>
+    <meta name="description" content="TODO"/>
+    <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, last one"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta
+            name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css"/>
+    <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
+    <link rel="icon" type="image/png" href="/asset/favicon.png"/>
+    <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
+    <script>
              var _hmt = _hmt || [];
              (function() {
                var hm = document.createElement("script");
@@ -21,128 +21,129 @@
                var s = document.getElementsByTagName("script")[0];
                s.parentNode.insertBefore(hm, s);
              })();
-         </script>
-    </head>
-    <body>
-        <nav>
-            <div>
-                <div class="links">
-                    <a href="/">🏠 首页</a>
-                    |
-                                                                            ⚙️ 源码：
-                    <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
-                    
-                    |
-                    <a href="/docs">English Version</a>
-                </div>
-                <h1>
-                    <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
-                </h1>
-                <h3>轻量级 JDBC 助手——用户手册</h3>
-            </div>
-        </nav>
-        <div>
-            <menu>
-                
-                <ul>
-                    <li class="selected">
-                        <a href="/docs/cn">首页</a>
-                    </li>
-                    <li>
-                        <a href="/docs/quick-start-cn">快速开始</a>
-                    </li>
-                    <li>
-                        <a href="/docs/setup-cn">安装与配置</a>
-                    </li>
-                </ul>
-                <h3>数据库查询</h3>
-                <ul>
-                    <li>
-                        <a href="/docs/query/query-concept-cn">基础概念</a>
-                    </li>
-                    <li>
-                        <a href="/docs/query/query-tutorial-cn">查询教程</a>
-                    </li>
-                    <li>
-                        <a href="/docs/query/query-paging-cn">分页查询</a>
-                    </li>
-                </ul>
-                <h3>写入数据</h3>
-                <ul>
-                    <li>
-                        <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a>
-                    </li>
-                    <li>
-                        <a href="/docs/write/batch-cn">批量更新</a>
-                    </li>
-                </ul>
-                <h3>其他用法</h3>
-                <ul>
-                    <li>
-                        <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a>
-                    </li>
-                    <li>
-                        <a href="/docs/other/entity-cn">“类” ORM</a>
-                    </li>
-                </ul>
-                <h3>Misc</h3>
-                <ul>
-                    <li><a href="/docs/common/versions-cn">更新历史</a></li>
-                    <li><a href="/docs/common/contact-cn">联系</a></li>
-                </ul>
-            </menu>
-            <article class="aj-text chinese">
-                <h1>查询概念</h1>
-<h2>开始前的概念</h2>
-<p>从数据库获取结果最直接的方式就是 SQL 查询。要使用 SqlMan Handle 执行查询，我们至少需要：</p>
-<ul>
-<li>创建查询</li>
-<li>选择如何传递查询参数</li>
-<li>选择如何表示查询结果</li>
-</ul>
-<p>让我们逐一来看这些要点。</p>
-<h2>创建查询</h2>
-<p>我们假设查询语句已经准备好执行，它是一个纯 SQL 语句。当然，数据库连接也已经建立。然后我们创建一个新的 <code>Sql</code> 实例，将 <code>conn</code> 传递给构造函数，并将 SQL 语句传递给 <code>input()</code> 方法。</p>
-<pre><code class="language-java">Map&lt;String, Object&gt; result = new Sql(conn).input(&quot;SELECT * FROM shop_address&quot;).query(); // fetch the first one
+
+    </script>
+</head>
+<body>
+<nav>
+    <div>
+        <div class="links">
+            <a href="/">🏠 首页</a>
+            |
+            ⚙️ 源码：
+            <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
+
+            |
+            <a href="/docs">English Version</a>
+        </div>
+        <h1>
+            <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
+        </h1>
+        <h3>轻量级 JDBC 助手——用户手册</h3>
+    </div>
+</nav>
+<div>
+    <menu>
+
+        <ul>
+            <li class="selected">
+                <a href="/docs/cn">首页</a>
+            </li>
+            <li>
+                <a href="/docs/quick-start-cn">快速开始</a>
+            </li>
+            <li>
+                <a href="/docs/setup-cn">安装与配置</a>
+            </li>
+        </ul>
+        <h3>数据库查询</h3>
+        <ul>
+            <li>
+                <a href="/docs/query/query-concept-cn">基础概念</a>
+            </li>
+            <li>
+                <a href="/docs/query/query-tutorial-cn">查询教程</a>
+            </li>
+            <li>
+                <a href="/docs/query/query-paging-cn">分页查询</a>
+            </li>
+        </ul>
+        <h3>写入数据</h3>
+        <ul>
+            <li>
+                <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a>
+            </li>
+            <li>
+                <a href="/docs/write/batch-cn">批量更新</a>
+            </li>
+        </ul>
+        <h3>其他用法</h3>
+        <ul>
+            <li>
+                <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a>
+            </li>
+            <li>
+                <a href="/docs/other/entity-cn">“类” ORM</a>
+            </li>
+        </ul>
+        <h3>Misc</h3>
+        <ul>
+            <li><a href="/docs/common/versions-cn">更新历史</a></li>
+            <li><a href="/docs/common/contact-cn">联系</a></li>
+        </ul>
+    </menu>
+    <article class="aj-text chinese">
+        <h1>查询概念</h1>
+        <h2>开始前的概念</h2>
+        <p>从数据库获取结果最直接的方式就是 SQL 查询。要使用 SqlMan Handle 执行查询，我们至少需要：</p>
+        <ul>
+            <li>创建查询</li>
+            <li>选择如何传递查询参数</li>
+            <li>选择如何表示查询结果</li>
+        </ul>
+        <p>让我们逐一来看这些要点。</p>
+        <h2>创建查询</h2>
+        <p>我们假设查询语句已经准备好执行，它是一个纯 SQL 语句。当然，数据库连接也已经建立。然后我们创建一个新的 <code>Sql</code> 实例，将 <code>conn</code> 传递给构造函数，并将 SQL 语句传递给 <code>input()</code> 方法。</p>
+        <pre><code class="language-java">Map&lt;String, Object&gt; result = new Sql(conn).input(&quot;SELECT * FROM shop_address&quot;).query(); // fetch the first one
 </code></pre>
-<p>需要注意的是，<code>input()</code>方法接受 SQL 语句及其参数，但查询并不会立即执行，直到调用<code>query()</code>方法时才会执行。</p>
-<p>目前我们还没有向查询传递任何参数。我们将在下一节讨论如何传递参数。</p>
-<p>关于如何表示查询结果，可以分为两个部分：</p>
-<ul>
-<li>需要获取多少结果？单个值？一行？还是列表？</li>
-<li>用什么格式来表示结果？</li>
-</ul>
-<p>SqlMan 对 JDBC ResultSet 进行了抽象封装，因为 ResultSet 的 API 使用起来比较繁琐。</p>
-<p>因此，它提供了多种方式来访问查询或其他返回结果的语句所产生的列数据。</p>
-<p>从返回值的结构来看，我们可以识别出几种类型：</p>
-<ul>
-<li>单个元素，比如数字、字符串、日期等</li>
-<li>单行数据库记录，其中字段和值以键值对的形式映射，对应 Java 中的 <code>Map</code></li>
-<li>多行记录，形成二维结构，对应 Java 中的 <code>List&lt;Map&gt;</code></li>
-</ul>
-<p>这些类型对应 SqlMan 中的以下方法：</p>
-<ul>
-<li><code>queryOne(Type.class)</code> - 获取单个值（第一行第一列）。返回类型与传入的类型相匹配</li>
-<li><code>query()</code> - 获取第一行数据，返回类型为 <code>Map&lt;String, Object&gt;</code></li>
-<li><code>queryList()</code> - 获取所有行的数据，即所有列的所有行，返回类型为 <code>List&lt;Map&lt;String, Object&gt;&gt;</code></li>
-</ul>
-<p>以下是完整示例：</p>
-<pre><code class="language-java">Map&lt;String, Object&gt; result = new Sql(conn).input(&quot;SELECT * FROM shop_address&quot;).query(); // fetch the first one
+        <p>需要注意的是，<code>input()</code>方法接受 SQL 语句及其参数，但查询并不会立即执行，直到调用<code>query()</code>方法时才会执行。</p>
+        <p>目前我们还没有向查询传递任何参数。我们将在下一节讨论如何传递参数。</p>
+        <p>关于如何表示查询结果，可以分为两个部分：</p>
+        <ul>
+            <li>需要获取多少结果？单个值？一行？还是列表？</li>
+            <li>用什么格式来表示结果？</li>
+        </ul>
+        <p>SqlMan 对 JDBC ResultSet 进行了抽象封装，因为 ResultSet 的 API 使用起来比较繁琐。</p>
+        <p>因此，它提供了多种方式来访问查询或其他返回结果的语句所产生的列数据。</p>
+        <p>从返回值的结构来看，我们可以识别出几种类型：</p>
+        <ul>
+            <li>单个元素，比如数字、字符串、日期等</li>
+            <li>单行数据库记录，其中字段和值以键值对的形式映射，对应 Java 中的 <code>Map</code></li>
+            <li>多行记录，形成二维结构，对应 Java 中的 <code>List&lt;Map&gt;</code></li>
+        </ul>
+        <p>这些类型对应 SqlMan 中的以下方法：</p>
+        <ul>
+            <li><code>queryOne(Type.class)</code> - 获取单个值（第一行第一列）。返回类型与传入的类型相匹配</li>
+            <li><code>query()</code> - 获取第一行数据，返回类型为 <code>Map&lt;String, Object&gt;</code></li>
+            <li><code>queryList()</code> - 获取所有行的数据，即所有列的所有行，返回类型为 <code>List&lt;Map&lt;String, Object&gt;&gt;</code></li>
+        </ul>
+        <p>以下是完整示例：</p>
+        <pre><code class="language-java">Map&lt;String, Object&gt; result = new Sql(conn).input(&quot;SELECT * FROM shop_address&quot;).query(); // fetch the first one
 int result = new Sql(conn).input(&quot;SELECT COUNT(*) AS total FROM shop_address&quot;).queryOne(int.class); // fetch the first one
 List&lt;Map&lt;String, Object&gt;&gt; result = new Sql(conn).input(&quot;SELECT * FROM shop_address&quot;).queryList();
 </code></pre>
-<p>最后一个问题：用哪种格式来表示结果？</p>
-<p>---- 我们现在将看到最简单的格式：Map（映射），在下一节中我们将介绍其他的格式。</p>
+        <p>最后一个问题：用哪种格式来表示结果？</p>
+        <p>---- 我们现在将看到最简单的格式：Map（映射），在下一节中我们将介绍其他的格式。</p>
 
-            </article>
+    </article>
 
-        </div>
-        <footer>
+</div>
+<footer>
     SqlMan, a part of <a href="https://framework.ajaxjs.com" target="_blank">AJ-Framework</a> open source. Mail:
     frank@ajaxjs.com, visit <a href="https://blog.csdn.net/zhangxin09" target="_blank">my blog(In Chinese)</a>.
-    <br />
-    <br />
-     Copyright © 2025 Frank Cheung. All rights reserved.
+    <br/>
+    <br/>
+    Copyright © 2025 Frank Cheung. All rights reserved.
     <script>
         var _hmt = _hmt || [];
         (function() {
@@ -151,7 +152,8 @@ List&lt;Map&lt;String, Object&gt;&gt; result = new Sql(conn).input(&quot;SELECT 
           var s = document.getElementsByTagName("script")[0];
           s.parentNode.insertBefore(hm, s);
         })();
+
     </script>
 </footer>
-    </body>
+</body>
 </html>

@@ -7,8 +7,11 @@ tags:
   - last one
 layout: layouts/docs.njk
 ---
+
 # Quick Start
+
 ## 🔧 Install SqlMan
+
 To get started, we just have to include the one SqlMan module in our dependencies:
 
 ```xml
@@ -20,6 +23,7 @@ To get started, we just have to include the one SqlMan module in our dependencie
 ```
 
 Over the course of this article, we’ll show examples using the HSQL database:
+
 ```xml
 <dependency>
     <groupId>org.hsqldb</groupId>
@@ -27,6 +31,7 @@ Over the course of this article, we’ll show examples using the HSQL database:
     <version>2.2.220</version>
 </dependency>
 ```
+
 We can find the latest version of SqlMan on [Maven Central](https://central.sonatype.com/artifact/com.ajaxjs/sqlman).
 
 <!-- > About Java Version

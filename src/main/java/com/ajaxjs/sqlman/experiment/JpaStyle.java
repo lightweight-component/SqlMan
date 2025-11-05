@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman.v1;
+package com.ajaxjs.sqlman.experiment;
 
 import java.io.Serializable;
 

@@ -3,36 +3,18 @@ package com.ajaxjs.sqlman;
 import com.ajaxjs.sqlman.model.DatabaseVendor;
 import com.ajaxjs.util.DebugTools;
 import com.ajaxjs.util.ObjectHelper;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.function.Supplier;
 
 /**
  * JDBC Connection
  */
 @Slf4j
-@Data
 public class JdbcConnection {
-    /**
-     * Database connection
-     */
-    private Connection conn;
-
-    /**
-     * 当前数据库厂商，默认 MySQL
-     */
-    private DatabaseVendor databaseVendor = DatabaseVendor.MYSQL;
-
-    /**
-     * 获取数据库连接的回调函数
-     */
-    public static Supplier<Connection> GET_CONN_SUPPLIER;
-
     /**
      * 当前进程的数据库连接
      */
@@ -61,58 +43,29 @@ public class JdbcConnection {
         CONNECTION.set(conn);
     }
 
-    private long startTime;
-
-    /**
-     * Create a JDBC action with global connection
-     */
-    public JdbcConnection() {
-        this.startTime = System.currentTimeMillis();
-        Connection conn = getConnection();
-
-        if (conn == null) {
-            if (GET_CONN_SUPPLIER == null)
-                throw new IllegalArgumentException("Database Connection NOT SET by config.");
-            else {
-                conn = GET_CONN_SUPPLIER.get();
-
-                if (conn == null)
-                    throw new IllegalArgumentException("Database Connection is NULL");
-            }
-        }
-
-        this.conn = conn;
-    }
-
-    /**
-     * Create a JDBC action with specified connection
-     */
-    public JdbcConnection(Connection conn) {
-        this.startTime = System.currentTimeMillis();
-        this.conn = conn;
-        initDatabaseVendor();
-    }
-
-    /**
-     * Create a JDBC action with specified data source
-     */
-    public JdbcConnection(DataSource dataSource) {
-        this(getConnection(dataSource));
-    }
-
-    protected void initDatabaseVendor() {
+    protected static DatabaseVendor initDatabaseVendor(Connection conn) {
         try {
             String databaseProductName = conn.getMetaData().getDatabaseProductName().toLowerCase();
 
             if (databaseProductName.contains("mysql"))
-                databaseVendor = DatabaseVendor.MYSQL;
+                return DatabaseVendor.MYSQL;
             else if (databaseProductName.contains("oracle"))
-                databaseVendor = DatabaseVendor.ORACLE;
+                return DatabaseVendor.ORACLE;
+            else if (databaseProductName.contains("postgre"))
+                return DatabaseVendor.POSTGRESQL;
             else if (databaseProductName.contains("h2"))
-                databaseVendor = DatabaseVendor.H2;
+                return DatabaseVendor.H2;
+            else if (databaseProductName.contains("derby"))
+                return DatabaseVendor.DERBY;
+            else if (databaseProductName.contains("sqlserver"))
+                return DatabaseVendor.SQL_SERVER;
+            else if (databaseProductName.contains("db2"))
+                return DatabaseVendor.DB2;
+
+            throw new UnsupportedOperationException("Unsupported database: " + databaseProductName);
         } catch (SQLException e) {
-            log.error("Getting database name error.", e);
-            throw new RuntimeException("Getting database name error.", e);
+            log.error("Obtains database name error.", e);
+            throw new RuntimeException("Obtains database name error.", e);
         }
     }
 

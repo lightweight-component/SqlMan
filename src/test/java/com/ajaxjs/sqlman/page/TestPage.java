@@ -1,7 +1,7 @@
 package com.ajaxjs.sqlman.page;
 
-import com.ajaxjs.sqlman.model.DatabaseVendor;
 import com.ajaxjs.sqlman.crud.page.PageControl;
+import com.ajaxjs.sqlman.model.DatabaseVendor;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

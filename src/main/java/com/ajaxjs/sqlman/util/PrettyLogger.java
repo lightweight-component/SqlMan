@@ -28,7 +28,7 @@ public class PrettyLogger extends BoxLogger {
      * @param sql           SQL 语句
      * @param _params       参数（字符串，或者拼接好的参数描述）
      * @param realSql       实际执行SQL（带参数）
-     * @param action   用于计算耗时（如 33ms）
+     * @param action        用于计算耗时（如 33ms）
      * @param result        执行结果（Object）
      * @param wrapLongLines 是否允许完整显示超长字符串，自动换行
      */

@@ -1,7 +1,7 @@
 package com.ajaxjs.sqlman.crud.page;
 
-import com.ajaxjs.sqlman.crud.Query;
 import com.ajaxjs.sqlman.Action;
+import com.ajaxjs.sqlman.crud.Query;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;

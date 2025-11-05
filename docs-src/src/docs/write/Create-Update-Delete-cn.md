@@ -9,6 +9,7 @@ layout: layouts/docs-cn.njk
 ---
 
 # 数据库数据的更新、创建和删除
+
 本教程将指导您如何使用 SqlMan 在数据库中更新、创建和删除数据。我们将使用示例测试代码来演示如何执行这些操作。
 
 ## 创建记录
@@ -41,9 +42,11 @@ public void testCreate() {
 在`input()`方法中，同时支持位置参数和命名参数，并且允许混合使用它们。
 
 ### 提取自增列值
+
 当我们有一个包含自动生成列（通常是自增或序列）的插入语句时，我们可能想要获取生成的值。为此，我们可以使用`create()`方法，并将 isReturnGeneratedKeys 参数设置为`true`。然后，我们可以使用`result.getNewlyId()`方法来获取生成的值。
 
 ## 更新记录
+
 testUpdate 方法展示了如何更新 shop_address 表中的现有记录：
 
 ```java
@@ -68,6 +71,7 @@ public void testUpdate() {
 ```
 
 ## 删除记录
+
 testDelete 方法演示了如何从 shop_address 表中删除记录：
 
 ```java

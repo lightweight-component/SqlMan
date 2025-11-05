@@ -6,7 +6,9 @@ date: 2022-01-05
 tags: query
 layout: layouts/docs-cn.njk
 ---
+
 # 查询教程
+
 ## 绑定参数
 
 查询语句通常包含固定部分和参数化部分。这样做有几个优点：
@@ -22,6 +24,7 @@ SqlMan 同时支持位置参数和命名参数。
 ```java
 Map<String, Object> result = new Sql(conn).input("SELECT * FROM shop_address WHERE id = ?", 1).query();
 ```
+
 这与我们在经典 JDBC 查询中使用预处理语句的方式相同。参数可以多个。
 
 命名参数则是以 ${ 开头，后面跟着参数名，以 } 结尾：
@@ -40,6 +43,7 @@ assertNotNull(result);
 允许混合使用`Map`对象和参数数组，但 Map 必须作为第一个参数，其余的则作为参数数组。
 
 ## 返回 Java Bean
+
 有时候，我们需要返回一个 Java Bean 而不是`Map`。SqlMan 提供了一个简单的方法来实现这一点，只需要将 Java Bean 类作为查询方法的参数传入：
 
 ```java

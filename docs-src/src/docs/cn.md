@@ -7,9 +7,11 @@ tags:
   - last one
 layout: layouts/docs-cn.njk
 ---
+
 # 欢迎来到 SqlMan 文档中心
 
-这是一个用于关系型数据库（RDBMS）数据操作的 Java 辅助库，涵盖从底层 SQL 操作到高级低代码快速开发集成。首先，它封装了常见的 JDBC 操作，同时保留原始 SQL 语句输入（SQL 可以存储在 XML 或 Java 注解中）；其次，它为 Java 实体提供便捷的 CRUD（创建、读取、更新、删除）操作，无需编写 SQL；最后，它提供了一个集成前两者特性的快速开发平台，只需提供 SQL 语句即可生成 API 接口，使用更加便捷。
+这是一个用于关系型数据库（RDBMS）数据操作的 Java 辅助库，涵盖从底层 SQL 操作到高级低代码快速开发集成。首先，它封装了常见的 JDBC 操作，同时保留原始 SQL 语句输入（SQL 可以存储在 XML 或 Java 注解中）；其次，它为 Java 实体提供便捷的
+CRUD（创建、读取、更新、删除）操作，无需编写 SQL；最后，它提供了一个集成前两者特性的快速开发平台，只需提供 SQL 语句即可生成 API 接口，使用更加便捷。
 
 ### 使用 SqlMan 的一些优势：
 
@@ -23,6 +25,7 @@ layout: layouts/docs-cn.njk
 - 提供丰富的扩展功能，80% 的功能都可以自定义和扩展。
 
 ### SqlMan 的设计理念：
+
 - 小巧 - 近乎偏执的简单哲学。您应该能在短时间内理解整个包的内容。
 - 透明 - SqlMan 不会在后台进行任何魔法操作。您提供查询，它执行并为您清理。
 - 快速 - 您无需创建大量临时对象就能使用 SqlMan。
@@ -34,8 +37,9 @@ layout: layouts/docs-cn.njk
 - 任何形式的重量级框架 - 这里的目标是成为一个直接且易用的 JDBC 辅助库。
 
 ## 源代码
+
 基于 GNU GENERAL PUBLIC LICENSE v3.0 许可。
- 
+
 - Github：[https://github.com/lightweight-component/SqlMan](https://github.com/lightweight-component/SqlMan)
 - Gitcode：[https://gitcode.com/lightweight-component/SqlMan](https://gitcode.com/lightweight-component/SqlMan)，供中国用户更快访问。
 

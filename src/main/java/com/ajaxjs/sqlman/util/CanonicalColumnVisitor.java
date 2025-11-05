@@ -37,7 +37,7 @@ public class CanonicalColumnVisitor extends TablesNamesFinder {
      *
      * @param tableName 表名，用于为列名添加表名前缀
      */
-    public  CanonicalColumnVisitor(String tableName) {
+    public CanonicalColumnVisitor(String tableName) {
         this(tableName, null);
     }
 

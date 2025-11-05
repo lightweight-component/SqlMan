@@ -1,12 +1,11 @@
 package com.ajaxjs.sqlman.crud;
 
-import com.ajaxjs.sqlman.v1.Sql;
-import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
-import com.ajaxjs.sqlman.util.PrintRealSql;
 import com.ajaxjs.sqlman.Action;
+import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
 import com.ajaxjs.sqlman.crud.page.PageQuery;
 import com.ajaxjs.sqlman.crud.page.PageResult;
 import com.ajaxjs.sqlman.util.PrettyLogger;
+import com.ajaxjs.sqlman.util.PrintRealSql;
 import com.ajaxjs.util.BoxLogger;
 import com.ajaxjs.util.ConvertBasicValue;
 import lombok.extern.slf4j.Slf4j;
@@ -92,7 +91,7 @@ public class Query extends BaseAction {
     }
 
     public Map<String, Object> one() {
-        return query(Sql::getResultMap);
+        return query(BaseAction::getResultMap);
     }
 
     public <T> T one(Class<T> beanClz) {
@@ -100,7 +99,7 @@ public class Query extends BaseAction {
     }
 
     public List<Map<String, Object>> list() {
-        return query(rs -> forEachRs(rs, Sql::getResultMap));
+        return query(rs -> forEachRs(rs, BaseAction::getResultMap));
     }
 
     public <T> List<T> list(Class<T> beanClz) {

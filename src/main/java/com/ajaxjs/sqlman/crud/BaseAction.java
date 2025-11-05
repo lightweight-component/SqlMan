@@ -1,10 +1,9 @@
 package com.ajaxjs.sqlman.crud;
 
-import com.ajaxjs.sqlman.v1.DataAccessException;
-import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
-import com.ajaxjs.sqlman.util.Utils;
 import com.ajaxjs.sqlman.Action;
+import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
 import com.ajaxjs.sqlman.model.DatabaseVendor;
+import com.ajaxjs.sqlman.util.Utils;
 import com.ajaxjs.util.Base64Utils;
 import com.ajaxjs.util.ConvertBasicValue;
 import com.ajaxjs.util.JsonUtil;
@@ -222,7 +221,7 @@ public abstract class BaseAction {
                     // 数据库返回这个字段，但是 bean 没有对应的方法
 //						LOGGER.info("数据库返回这个字段 {0}，但是 bean {1} 没有对应的方法", key, beanClz);
                     try {
-                        if ((_value != null) && beanClz.getField("extractData") != null) {
+                        if (_value != null) {
                             Object obj = Methods.executeMethod(bean, "getExtractData");
 
 //								LOGGER.info(":::::::::key::"+ key +":::v:::" + _value);
@@ -236,11 +235,11 @@ public abstract class BaseAction {
                             assert map != null;
                             map.put(key, _value);
                         }
-                    } catch (NoSuchFieldException | SecurityException ignored) {
+                    } catch (SecurityException ignored) {
 //                        log.warn("ERROR>>", e2);
                     }
                 } catch (IllegalArgumentException e) {
-                    throw new DataAccessException("记录集合转换为 bean 异常。", e);
+                    throw new IllegalArgumentException("记录集合转换为 bean 异常。", e);
                 }
             }
 

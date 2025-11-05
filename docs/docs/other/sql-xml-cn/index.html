@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8"/>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-        <title>SqlMan/Query Concept</title>
-        <meta name="description" content="TODO"/>
-        <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, last one"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/> 
-        <meta
-        name="viewport" content="width=device-width, initial-scale=1"/>
-        <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css" />
-        <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
-        <link rel="icon" type="image/png" href="/asset/favicon.png"/>
-        <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
-         <script>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>SqlMan/Query Concept</title>
+    <meta name="description" content="TODO"/>
+    <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, last one"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta
+            name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css"/>
+    <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
+    <link rel="icon" type="image/png" href="/asset/favicon.png"/>
+    <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
+    <script>
              var _hmt = _hmt || [];
              (function() {
                var hm = document.createElement("script");
@@ -21,89 +21,90 @@
                var s = document.getElementsByTagName("script")[0];
                s.parentNode.insertBefore(hm, s);
              })();
-         </script>
-    </head>
-    <body>
-        <nav>
-            <div>
-                <div class="links">
-                    <a href="/">🏠 首页</a>
-                    |
-                                                                            ⚙️ 源码：
-                    <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
-                    
-                    |
-                    <a href="/docs">English Version</a>
-                </div>
-                <h1>
-                    <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
-                </h1>
-                <h3>轻量级 JDBC 助手——用户手册</h3>
-            </div>
-        </nav>
-        <div>
-            <menu>
-                
-                <ul>
-                    <li class="selected">
-                        <a href="/docs/cn">首页</a>
-                    </li>
-                    <li>
-                        <a href="/docs/quick-start-cn">快速开始</a>
-                    </li>
-                    <li>
-                        <a href="/docs/setup-cn">安装与配置</a>
-                    </li>
-                </ul>
-                <h3>数据库查询</h3>
-                <ul>
-                    <li>
-                        <a href="/docs/query/query-concept-cn">基础概念</a>
-                    </li>
-                    <li>
-                        <a href="/docs/query/query-tutorial-cn">查询教程</a>
-                    </li>
-                    <li>
-                        <a href="/docs/query/query-paging-cn">分页查询</a>
-                    </li>
-                </ul>
-                <h3>写入数据</h3>
-                <ul>
-                    <li>
-                        <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a>
-                    </li>
-                    <li>
-                        <a href="/docs/write/batch-cn">批量更新</a>
-                    </li>
-                </ul>
-                <h3>其他用法</h3>
-                <ul>
-                    <li>
-                        <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a>
-                    </li>
-                    <li>
-                        <a href="/docs/other/entity-cn">“类” ORM</a>
-                    </li>
-                </ul>
-                <h3>Misc</h3>
-                <ul>
-                    <li><a href="/docs/common/versions-cn">更新历史</a></li>
-                    <li><a href="/docs/common/contact-cn">联系</a></li>
-                </ul>
-            </menu>
-            <article class="aj-text chinese">
-                <h1>XML 中的 SQL</h1>
-<h2>为什么要在 XML 中使用 SQL？</h2>
-<p>像著名的 MyBatis 框架一样，SQL 语句可以存储在 XML 文件中。这种方式有其特定的原因。以下是在 XML 中存储 SQL 的一些优点：</p>
-<ol>
-<li><strong>关注点分离</strong>：将 SQL 语句保存在 XML 文件中有助于将 SQL 逻辑与 Java 代码分离。这使代码库更加整洁，更易于管理。</li>
-<li><strong>可读性</strong>：当存储在 XML 中时，长 SQL 语句可以更具可读性。XML 文件的结构可以帮助使 SQL 查询更有条理，更易于理解。</li>
-<li><strong>可维护性</strong>：当 SQL 语句存储在 XML 中时，无需更改 Java 代码就可以更轻松地更新和维护它们。这对于具有大量 SQL 查询的大型项目特别有用。</li>
-</ol>
-<p>SqlMan 在处理 SQL 语句方面采用了类似 MyBatis 的方法。</p>
-<h2>如何在 XML 中使用 SQL？</h2>
-<p>在开始之前，我们需要在 classpath <code>/sql</code> 目录下定义一个名为 <code>sql.xml</code> 的 XML 文件，其中包含 SQL 片段。</p>
-<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+    </script>
+</head>
+<body>
+<nav>
+    <div>
+        <div class="links">
+            <a href="/">🏠 首页</a>
+            |
+            ⚙️ 源码：
+            <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
+
+            |
+            <a href="/docs">English Version</a>
+        </div>
+        <h1>
+            <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
+        </h1>
+        <h3>轻量级 JDBC 助手——用户手册</h3>
+    </div>
+</nav>
+<div>
+    <menu>
+
+        <ul>
+            <li class="selected">
+                <a href="/docs/cn">首页</a>
+            </li>
+            <li>
+                <a href="/docs/quick-start-cn">快速开始</a>
+            </li>
+            <li>
+                <a href="/docs/setup-cn">安装与配置</a>
+            </li>
+        </ul>
+        <h3>数据库查询</h3>
+        <ul>
+            <li>
+                <a href="/docs/query/query-concept-cn">基础概念</a>
+            </li>
+            <li>
+                <a href="/docs/query/query-tutorial-cn">查询教程</a>
+            </li>
+            <li>
+                <a href="/docs/query/query-paging-cn">分页查询</a>
+            </li>
+        </ul>
+        <h3>写入数据</h3>
+        <ul>
+            <li>
+                <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a>
+            </li>
+            <li>
+                <a href="/docs/write/batch-cn">批量更新</a>
+            </li>
+        </ul>
+        <h3>其他用法</h3>
+        <ul>
+            <li>
+                <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a>
+            </li>
+            <li>
+                <a href="/docs/other/entity-cn">“类” ORM</a>
+            </li>
+        </ul>
+        <h3>Misc</h3>
+        <ul>
+            <li><a href="/docs/common/versions-cn">更新历史</a></li>
+            <li><a href="/docs/common/contact-cn">联系</a></li>
+        </ul>
+    </menu>
+    <article class="aj-text chinese">
+        <h1>XML 中的 SQL</h1>
+        <h2>为什么要在 XML 中使用 SQL？</h2>
+        <p>像著名的 MyBatis 框架一样，SQL 语句可以存储在 XML 文件中。这种方式有其特定的原因。以下是在 XML 中存储 SQL 的一些优点：</p>
+        <ol>
+            <li><strong>关注点分离</strong>：将 SQL 语句保存在 XML 文件中有助于将 SQL 逻辑与 Java 代码分离。这使代码库更加整洁，更易于管理。</li>
+            <li><strong>可读性</strong>：当存储在 XML 中时，长 SQL 语句可以更具可读性。XML 文件的结构可以帮助使 SQL 查询更有条理，更易于理解。</li>
+            <li><strong>可维护性</strong>：当 SQL 语句存储在 XML 中时，无需更改 Java 代码就可以更轻松地更新和维护它们。这对于具有大量 SQL 查询的大型项目特别有用。</li>
+        </ol>
+        <p>SqlMan 在处理 SQL 语句方面采用了类似 MyBatis 的方法。</p>
+        <h2>如何在 XML 中使用 SQL？</h2>
+        <p>在开始之前，我们需要在 classpath <code>/sql</code> 目录下定义一个名为 <code>sql.xml</code> 的 XML 文件，其中包含 SQL 片段。</p>
+        <pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;root&gt;
     &lt;sql id=&quot;foo&quot;&gt;SELECT COUNT(*) AS total FROM shop_address&lt;/sql&gt;
     &lt;sql id=&quot;foo-2&quot;&gt;SELECT COUNT(*) AS total FROM shop_address WHERE id = ?&lt;/sql&gt;
@@ -121,13 +122,13 @@
 &lt;/root&gt;
 
 </code></pre>
-<p>此方法通过标识符（<code>sqlId</code>）执行 XML 片段中定义的 SQL 语句，并返回包含结果的 DAO 对象。</p>
-<pre><code class="language-java">int result = new Sql(conn).inputXml(&quot;foo&quot;).queryOne(int.class); // 获取第一个结果
+        <p>此方法通过标识符（<code>sqlId</code>）执行 XML 片段中定义的 SQL 语句，并返回包含结果的 DAO 对象。</p>
+        <pre><code class="language-java">int result = new Sql(conn).inputXml(&quot;foo&quot;).queryOne(int.class); // 获取第一个结果
 System.out.println(result);
 assertTrue(result &gt; 0);
 </code></pre>
-<p>现在我们已经了解了值和参数，可以将相同的知识应用到 XML 文件中的语句。</p>
-<pre><code class="language-java">int result;
+        <p>现在我们已经了解了值和参数，可以将相同的知识应用到 XML 文件中的语句。</p>
+        <pre><code class="language-java">int result;
 result = new Sql(conn).inputXml(&quot;foo-2&quot;, 1).queryOne(int.class);
 assertEquals(1, result);
 
@@ -137,8 +138,8 @@ assertEquals(1, result);
 result = new Sql(conn).inputXml(&quot;foo-4&quot;, mapOf(&quot;tableName&quot;, &quot;shop_address&quot;, &quot;abc&quot;, 2), 1).queryOne(int.class);
 System.out.println(result); // TODO, 应该返回 0
 </code></pre>
-<p>此方法通过标识符（sqlId）执行 XML 片段中定义的 SQL 语句，并使用键值对和可变参数。</p>
-<pre><code class="language-java">/**
+        <p>此方法通过标识符（sqlId）执行 XML 片段中定义的 SQL 语句，并使用键值对和可变参数。</p>
+        <pre><code class="language-java">/**
  * 执行 XML 片段中定义的 SQL 语句并返回 DAO 对象。
  *
  * @param sqlId     用于定位特定 SQL 语句的 SQL 标识符。
@@ -150,9 +151,9 @@ public DAO inputXml(String sqlId, Map&lt;String, Object&gt; keyParams, Object...
     // 执行 SQL 并返回 DAO 对象的实现
 }
 </code></pre>
-<h2>标签支持</h2>
-<p>对于动态 SQL 生成，SqlMan 支持以下标签：<code>IF</code>。</p>
-<pre><code class="language-xml">&lt;sql id=&quot;foo-5&quot;&gt;
+        <h2>标签支持</h2>
+        <p>对于动态 SQL 生成，SqlMan 支持以下标签：<code>IF</code>。</p>
+        <pre><code class="language-xml">&lt;sql id=&quot;foo-5&quot;&gt;
     &lt;if test=&quot;type=='address'&quot;&gt;
         SELECT COUNT(*) AS total FROM shop_address
     &lt;/if&gt;
@@ -161,22 +162,22 @@ public DAO inputXml(String sqlId, Map&lt;String, Object&gt; keyParams, Object...
     &lt;/if&gt;
 &lt;/sql&gt;
 </code></pre>
-<p><code>test</code>属性中的值是一个表达式，如<code>i &gt; 10</code>。它可以是简单的布尔表达式，也可以是返回布尔值的更复杂表达式。任何符合 Spring Expression 模式的表达式都是有效的。</p>
-<p>更多标签如<code>if...else</code>、<code>foreach</code>正在开发中。</p>
-<h2>调用 Java 方法</h2>
-<p>某些任务无法仅通过 SQL 完成。在这种情况下，最好调用 Java 方法来完成任务。SqlMan 支持使用语法<code>${T(com.ajaxjs.sqlman.sql.TestXml).w()}</code>在 SQL 中调用 Java 方法。</p>
-<pre><code class="language-xml">&lt;sql id=&quot;foo-6&quot;&gt;SELECT id FROM ${tableName} WHERE ${T(com.ajaxjs.sqlman.sql.TestXml).w()}&lt;/sql&gt;
+        <p><code>test</code>属性中的值是一个表达式，如<code>i &gt; 10</code>。它可以是简单的布尔表达式，也可以是返回布尔值的更复杂表达式。任何符合 Spring Expression 模式的表达式都是有效的。</p>
+        <p>更多标签如<code>if...else</code>、<code>foreach</code>正在开发中。</p>
+        <h2>调用 Java 方法</h2>
+        <p>某些任务无法仅通过 SQL 完成。在这种情况下，最好调用 Java 方法来完成任务。SqlMan 支持使用语法<code>${T(com.ajaxjs.sqlman.sql.TestXml).w()}</code>在 SQL 中调用 Java 方法。</p>
+        <pre><code class="language-xml">&lt;sql id=&quot;foo-6&quot;&gt;SELECT id FROM ${tableName} WHERE ${T(com.ajaxjs.sqlman.sql.TestXml).w()}&lt;/sql&gt;
 </code></pre>
 
-            </article>
+    </article>
 
-        </div>
-        <footer>
+</div>
+<footer>
     SqlMan, a part of <a href="https://framework.ajaxjs.com" target="_blank">AJ-Framework</a> open source. Mail:
     frank@ajaxjs.com, visit <a href="https://blog.csdn.net/zhangxin09" target="_blank">my blog(In Chinese)</a>.
-    <br />
-    <br />
-     Copyright © 2025 Frank Cheung. All rights reserved.
+    <br/>
+    <br/>
+    Copyright © 2025 Frank Cheung. All rights reserved.
     <script>
         var _hmt = _hmt || [];
         (function() {
@@ -185,7 +186,8 @@ public DAO inputXml(String sqlId, Map&lt;String, Object&gt; keyParams, Object...
           var s = document.getElementsByTagName("script")[0];
           s.parentNode.insertBefore(hm, s);
         })();
+
     </script>
 </footer>
-    </body>
+</body>
 </html>

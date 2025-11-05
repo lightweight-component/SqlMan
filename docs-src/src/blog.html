@@ -7,61 +7,62 @@
 </head>
 
 <body class="blog">
-    {% include "component/top.njk" %}
-        <div class="content main">
-            <h1>
-                Blog List
-            </h1>
-            <div class="list">
-                <ul>
-                    <li>
-                        <a href="2">
-                            <h1>Why I so recommend 'SQL First'?</h1>
-                        </a>
-                        <p>Looking at backend development as a whole, most of the work revolves around database
-                            development (commonly
-                            referred to as "CRUD Boy"). How we interact with databases is closely related to our
-                            development experience.
-                            The industry frequently discusses the "object-relational impedance mismatch," which lies at
-                            the heart of the
-                            issue: given that we have two different "programming worldviews"—a relational model database
-                            (SQL) and a
-                            programming language (Java, C#, Go)—each with its own methodologies, use cases, and ways of
-                            thinking, how
-                            can they coexist harmoniously and exchange information? Clearly, the "impedance mismatch" is
-                            not an easy
-                            problem to solve.</p>
-                        <div>
-                            <a href="2">Read more »</a>
-                            2024-12-25 by Frank Cheung
-                        </div>
-                    </li>
-                    <li>
-                        <a href="1">
-                            <h1>New code, new project, new site</h1>
-                        </a>
-                        <p>
-                            I can't remember how many iterations this project has gone through. It's been at least eight
-                            years since I first attempted to encapsulate JDBC API, and throughout this time, I've been
-                            obsessed with achieving a better implementation to improve development efficiency.
-                            Gradually, I've developed an overall approach and have implemented it in code, but something
-                            always feels off; the components just don't seem to be as user-friendly as they should be.
-                            This led me to realize that the issue lies with the API style. Having pinpointed the
-                            problem, I plan to refactor once again, aiming to make it more usable, clearer, and more
-                            intuitive. Honestly, designing the right style requires inspiration...
-                            <!-- 
-                            我已经不记得是第几次迭代这个项目了，过去那么多年（起码八年以上），从我第一次尝试封装 JDBC 开始，
-                            我一直执迷于更好的实现，以便提高开发效率。整体思路渐渐是有了，也编码好了，但总感觉哪里别扭，组件都觉得不好用。
-                            于是发现就是 API 风格问题。既然到位了问题 那么就再重构一次，目标是使其更易用、更清晰、更一目了然。老实说，风格的设计需要灵感…… -->
-                        </p>
-                        <div><a href="1">Read more »</a>
-                            2024-12-05 by Frank Cheung</div>
-                    </li>
-                </ul>
-            </div>
-        </div>
+{% include "component/top.njk" %}
+<div class="content main">
+    <h1>
+        Blog List
+    </h1>
+    <div class="list">
+        <ul>
+            <li>
+                <a href="2">
+                    <h1>Why I so recommend 'SQL First'?</h1>
+                </a>
+                <p>Looking at backend development as a whole, most of the work revolves around database
+                    development (commonly
+                    referred to as "CRUD Boy"). How we interact with databases is closely related to our
+                    development experience.
+                    The industry frequently discusses the "object-relational impedance mismatch," which lies at
+                    the heart of the
+                    issue: given that we have two different "programming worldviews"—a relational model database
+                    (SQL) and a
+                    programming language (Java, C#, Go)—each with its own methodologies, use cases, and ways of
+                    thinking, how
+                    can they coexist harmoniously and exchange information? Clearly, the "impedance mismatch" is
+                    not an easy
+                    problem to solve.</p>
+                <div>
+                    <a href="2">Read more »</a>
+                    2024-12-25 by Frank Cheung
+                </div>
+            </li>
+            <li>
+                <a href="1">
+                    <h1>New code, new project, new site</h1>
+                </a>
+                <p>
+                    I can't remember how many iterations this project has gone through. It's been at least eight
+                    years since I first attempted to encapsulate JDBC API, and throughout this time, I've been
+                    obsessed with achieving a better implementation to improve development efficiency.
+                    Gradually, I've developed an overall approach and have implemented it in code, but something
+                    always feels off; the components just don't seem to be as user-friendly as they should be.
+                    This led me to realize that the issue lies with the API style. Having pinpointed the
+                    problem, I plan to refactor once again, aiming to make it more usable, clearer, and more
+                    intuitive. Honestly, designing the right style requires inspiration...
+                    <!--
+                    我已经不记得是第几次迭代这个项目了，过去那么多年（起码八年以上），从我第一次尝试封装 JDBC 开始，
+                    我一直执迷于更好的实现，以便提高开发效率。整体思路渐渐是有了，也编码好了，但总感觉哪里别扭，组件都觉得不好用。
+                    于是发现就是 API 风格问题。既然到位了问题 那么就再重构一次，目标是使其更易用、更清晰、更一目了然。老实说，风格的设计需要灵感…… -->
+                </p>
+                <div><a href="1">Read more »</a>
+                    2024-12-05 by Frank Cheung
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
 
-        {% include "component/footer.njk" %}
+{% include "component/footer.njk" %}
 </body>
 
 </html>

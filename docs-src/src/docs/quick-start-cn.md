@@ -7,8 +7,11 @@ tags:
   - last one
 layout: layouts/docs-cn.njk
 ---
+
 # 快速开始
+
 ## 🔧 安装 SqlMan
+
 首先，我们需要在项目依赖中添加 SqlMan 模块：
 
 ```xml
@@ -20,6 +23,7 @@ layout: layouts/docs-cn.njk
 ```
 
 在本文中，我们将使用 HSQL 数据库作为示例：
+
 ```xml
 <dependency>
     <groupId>org.hsqldb</groupId>
@@ -27,6 +31,7 @@ layout: layouts/docs-cn.njk
     <version>2.2.220</version>
 </dependency>
 ```
+
 你可以在 [Maven Central](https://central.sonatype.com/artifact/com.ajaxjs/sqlman) 上找到 SqlMan 的最新版本。
 
 接下来，我们将编写如下 Java 代码：

@@ -1,9 +1,9 @@
 package com.ajaxjs.sqlman;
 
+import com.ajaxjs.sqlman.crud.page.PageResult;
 import com.ajaxjs.sqlman.model.CreateResult;
 import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman.testcase.Address;
-import com.ajaxjs.sqlman.crud.page.PageResult;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

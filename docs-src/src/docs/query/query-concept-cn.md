@@ -7,7 +7,9 @@ tags:
   - last one
 layout: layouts/docs-cn.njk
 ---
+
 # 查询概念
+
 ## 开始前的概念
 
 从数据库获取结果最直接的方式就是 SQL 查询。要使用 SqlMan Handle 执行查询，我们至少需要：
@@ -19,11 +21,13 @@ layout: layouts/docs-cn.njk
 让我们逐一来看这些要点。
 
 ## 创建查询
+
 我们假设查询语句已经准备好执行，它是一个纯 SQL 语句。当然，数据库连接也已经建立。然后我们创建一个新的 `Sql` 实例，将 `conn` 传递给构造函数，并将 SQL 语句传递给 `input()` 方法。
 
 ```java
 Map<String, Object> result = new Sql(conn).input("SELECT * FROM shop_address").query(); // fetch the first one
 ```
+
 需要注意的是，`input()`方法接受 SQL 语句及其参数，但查询并不会立即执行，直到调用`query()`方法时才会执行。
 
 目前我们还没有向查询传递任何参数。我们将在下一节讨论如何传递参数。

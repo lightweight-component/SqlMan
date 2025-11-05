@@ -9,9 +9,11 @@ layout: layouts/docs.njk
 ---
 
 # Updating, Creating, and Deleting Database Data
+
 This tutorial will guide you through the process of updating, creating, and deleting data in a database using SqlMan. We'll use a sample test code to demonstrate how to perform these operations.
 
 ## Creating Records
+
 Now that we’ve seen queries, values, and parameters, we can go back to statements and apply the same knowledge.
 
 The `testCreate` method demonstrates how to insert new records into the `shop_address` table:
@@ -38,10 +40,13 @@ public void testCreate() {
     System.out.println(address);
 }
 ```
+
 In the method `input()`, still, both positional and named parameters are supported, and mixing them is allowed.
 
 ### Extracting Auto-Increment Column Values
-When we have an insert statement with auto-generated columns (typically auto-increment or sequences), we may want to obtain the generated values. To do this, we can use the `create()` method with the `isReturnGeneratedKeys` parameter set to `true`. Then, we can use the `result.getNewlyId()` method to retrieve the generated values.
+
+When we have an insert statement with auto-generated columns (typically auto-increment or sequences), we may want to obtain the generated values. To do this, we can use the `create()` method with
+the `isReturnGeneratedKeys` parameter set to `true`. Then, we can use the `result.getNewlyId()` method to retrieve the generated values.
 
 ## Updating Records
 
@@ -69,6 +74,7 @@ public void testUpdate() {
     System.out.println(result.getEffectedRows());
 }
 ```
+
 As we have already seen, it returns the number of affected rows.
 
 ## Deleting Records

@@ -36,6 +36,7 @@ public class Action {
 
     public Action(Connection conn) {
         this.conn = conn;
+        databaseVendor = JdbcConnection.initDatabaseVendor(conn);
     }
 
     public Action(Map<String, Object> entity, String tableName) {
@@ -81,7 +82,7 @@ public class Action {
     }
 
     public Action(Connection conn, String sql) {
-        this.conn = conn;
+        this(conn);
         this.sql = sql;
     }
 

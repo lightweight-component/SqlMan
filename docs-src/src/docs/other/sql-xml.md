@@ -7,7 +7,9 @@ tags:
   - last one
 layout: layouts/docs.njk
 ---
+
 # SQL in XML
+
 ## Why SQL in XML?
 
 Like the famous framework MyBatis, SQL statements can be stored in XML files. There are several reasons for this approach. Here are some advantages of storing SQL in XML:
@@ -18,8 +20,8 @@ Like the famous framework MyBatis, SQL statements can be stored in XML files. Th
 
 SqlMan follows a similar approach to MyBatis in handling SQL statements.
 
-
 ## How to use SQL in XML?
+
 Before we begin, we should have the SQL fragments defined in an XML file, named `sql.xml`, stored in the classpath `/sql`.
 
 ```xml
@@ -62,6 +64,7 @@ assertEquals(1, result);
 result = new Sql(conn).inputXml("foo-4", mapOf("tableName", "shop_address", "abc", 2), 1).queryOne(int.class);
 System.out.println(result); // TODO, should be return 0
 ```
+
 This method executes an SQL statement defined in an XML fragment by its identifier (`sqlId`) with key-value pairs and variable parameters.
 
 ```java
@@ -79,6 +82,7 @@ public DAO inputXml(String sqlId, Map<String, Object> keyParams, Object... param
 ```
 
 ## Tag Support
+
 For dynamic SQL generation, SqlMan supports the following tags:`IF`.
 
 ```xml
@@ -92,7 +96,8 @@ For dynamic SQL generation, SqlMan supports the following tags:`IF`.
 </sql>
 ```
 
-The value in `test` attribute is a expression, like `i > 10`. It can be a simple boolean expression or a more complex expression that returns a boolean value. Any expression that matches the pattern of Spring Expression is illegal.
+The value in `test` attribute is a expression, like `i > 10`. It can be a simple boolean expression or a more complex expression that returns a boolean value. Any expression that matches the pattern of Spring Expression
+is illegal.
 
 More tags like `if...else`, `foreach` are on the way.
 

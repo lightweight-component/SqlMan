@@ -6,7 +6,9 @@ date: 2022-01-05
 tags: Query
 layout: layouts/docs.njk
 ---
+
 # Query Tutorial
+
 ## Binding Parameters
 
 Often, queries have a fixed portion and a parameterized portion. This has several advantages, including:
@@ -23,6 +25,7 @@ We insert positional parameters as question marks in a query or statement:
 Map<String, Object> result = new Sql(conn).input("SELECT * FROM shop_address WHERE id = ?", 1).query();
 assertNotNull(result);
 ```
+
 Just what we did in Classic JDBC query like parepred statement.
 
 Named parameters, instead, start with `${` and are followed by a name, end with `}`:
@@ -35,11 +38,13 @@ assertNotNull(result);
 result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE id = ?", mapOf("tableName", "shop_address", "abc", 2), 1).query();
 assertNotNull(result);
 ```
+
 It allows to bind multiple named parameters together using a `Map` object.
 
 Mixing `Map` object and the array of parameters is allowed, but `Map` should be the first parameter, and the rest are array of parameters.
 
 ## Return a Java Bean
+
 Sometimes, we need to return a Java Bean instead of a `Map`. SqlMan provides a simple way to do this, just passing the Java Bean class as the query method as the parameter:
 
 ```java

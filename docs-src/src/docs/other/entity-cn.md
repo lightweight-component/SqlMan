@@ -9,6 +9,7 @@ layout: layouts/docs-cn.njk
 ---
 
 # 与实体交互
+
 到目前为止，我们一直在讨论使用 SQL 语句的 SqlMan。可能看起来我们离不开 SQL，但事实并非如此。SqlMan 提供了一种使用实体与数据库交互的方式，无需编写任何 SQL 代码。
 
 这里的实体指的是 Java Bean（POJO）或 `Map` 对象。
@@ -58,6 +59,7 @@ assertNotNull(addresses);
 另外，这个例子展示了结果是 Java Bean 对象而不是 Map 对象。
 
 ### 使用 Java Bean 查询
+
 使用 Java Bean 也是可以的：
 
 ```java
@@ -65,6 +67,7 @@ Address bean = new Entity(conn).setTableName("shop_address").info(1L).query(Addr
 ```
 
 ### 分页查询
+
 分页功能的使用方式与上面相同：
 
 ```java
@@ -73,6 +76,7 @@ assertFalse(article.isEmpty());
 ```
 
 # 插入实体
+
 这段代码演示了如何使用 SqlMan 的实体功能向数据库插入新记录。首先，创建一个新的 Address 对象并设置其属性：
 
 ```java
@@ -136,6 +140,7 @@ assertTrue(result.isOk());
 这段代码会根据 Address 对象的属性自动生成并执行 UPDATE SQL 语句，更新 ID = 1 的记录。
 
 ## 列名映射
+
 如果数据库中的列名与 Java Bean 中的属性名不同怎么办？SqlMan 提供了一种将列名映射到属性名的方法，只需使用 Java 注解 `@Column(name ="xxxx")` 来指定：
 
 ```java
@@ -158,4 +163,5 @@ public class Address {
 ```
 
 ## 非持久化字段
+
 默认情况下，属性和字段都是持久化的。如果你不希望某个字段被更新，可以通过添加 `@Transient` 注解将该属性或字段标记为非持久化。
