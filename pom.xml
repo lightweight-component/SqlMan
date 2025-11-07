@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>sqlman</artifactId>
-    <version>1.6</version>
+    <version>1.7</version>
     <name>SqlMan</name>
     <packaging>jar</packaging>
     <description>A easy, small, straightforward Java CRUD Helper.</description>
