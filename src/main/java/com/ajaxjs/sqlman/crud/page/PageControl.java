@@ -35,6 +35,9 @@ public class PageControl {
 
     String countSql;
 
+    /**
+     * Generate the count SQL
+     */
     public void getCount() {
         Select selectStatement = getSelectStatement();
         SelectBody selectBody = selectStatement.getSelectBody();
@@ -47,6 +50,11 @@ public class PageControl {
         countSql = selectStatement.toString();
     }
 
+    /**
+     * Generate the count SQL
+     *
+     * @param selectBody Object in JSQLParser
+     */
     private void getCount(SelectBody selectBody) {
         PlainSelect plainSelect = (PlainSelect) selectBody;
 
@@ -86,6 +94,8 @@ public class PageControl {
     /**
      * 我们还考虑了 SQL 查询语句中使用了 SetOperationList 的情况，这时需要对每个 SELECT 子查询都进行分页，同时修改 FROM
      * 部分的表名，以避免语法错误。
+     *
+     * @param selectBody Object in JSQLParser
      */
     private void setOperationList(SelectBody selectBody) {
         SetOperationList setOperationList = (SetOperationList) selectBody;

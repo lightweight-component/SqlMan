@@ -2,6 +2,10 @@ package com.ajaxjs.sqlman.model;
 
 import java.util.Date;
 
+/**
+ * When a user really wants to insert a null value into a database, we can use this interface to replace the value.
+ * Because we can't use 'null' simply.
+ */
 public interface NullValue {
     /**
      * 表示数据库里面的 null 值（ for Date 类型）

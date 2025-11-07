@@ -10,13 +10,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Let logger being shown in the box frame.
+ */
 @Slf4j
 public class PrettyLogger extends BoxLogger {
-    // 日志方框宽度
+    /**
+     * 日志方框宽度
+     */
     private static final int BOX_WIDTH = 137;
 
     private static final String REGEXP = "[\n\r\t]";
 
+    /**
+     * Max width of a word.
+     */
     private static final int WORDS_SIZE_LIMIT = 800;
 
     /**

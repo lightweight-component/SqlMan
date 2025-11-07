@@ -231,9 +231,10 @@ public abstract class BaseAction {
                                 obj = Methods.executeMethod(bean, "getExtractData");
                             }
 
-                            Map<String, Object> map = (Map<String, Object>) obj;
-                            assert map != null;
-                            map.put(key, _value);
+                            if (obj instanceof Map) {
+                                Map<String, Object> map = (Map<String, Object>) obj;
+                                map.put(key, _value);
+                            }
                         }
                     } catch (SecurityException ignored) {
 //                        log.warn("ERROR>>", e2);

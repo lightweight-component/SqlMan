@@ -41,6 +41,11 @@ public class SnowflakeId {
     private long sequence = 0L;
     private long lastTimestamp = -1L;
 
+    /**
+     * 构造函数
+     *
+     * @param workerId 机器ID
+     */
     public SnowflakeId(long workerId) {
         if (workerId > maxWorkerId || workerId < 0)
             throw new IllegalArgumentException(String.format("worker Id can't be greater than %d or less than 0", maxWorkerId));
@@ -96,15 +101,11 @@ public class SnowflakeId {
     private final static SnowflakeId INSTANCE = new SnowflakeId(1L);
 
     /**
-     * 生成 id
+     * 生成 id, use this method
      *
      * @return 雪花 id
      */
     public static synchronized long get() {
         return INSTANCE.nextId();
-    }
-
-    public static void main(String[] args) {
-        System.out.println(get());
     }
 }

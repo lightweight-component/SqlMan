@@ -2,15 +2,18 @@ package com.ajaxjs.sqlman.model;
 
 import lombok.Data;
 
+/**
+ * The abstract class of a result.
+ */
 @Data
 public abstract class Result {
     /**
-     * 是否成功
+     * if the result is ok.
      */
     private boolean isOk;
 
     /**
-     * 信息
+     * The message of the result.
      */
     private String message;
 }

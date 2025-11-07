@@ -286,7 +286,7 @@ public class SmallMyBatis {
     /**
      * 解析并评估模板中的条件标签。
      *
-     * @param template 包含 <if> 和 <else> 标签的模板字符串。
+     * @param template 包含 &lt;if&gt; 和 &lt;else&gt; 标签的模板字符串。
      * @param context  用于评估表达式的上下文。
      * @return 解析后的最终字符串。
      */
@@ -296,15 +296,16 @@ public class SmallMyBatis {
 
         while (pos < template.length()) {
             int ifStart = template.indexOf("<if test=", pos);
-            if (ifStart == -1) break;
+            if (ifStart == -1)
+                break;
 
-            // 将 <if> 标签之前的内容直接添加到结果中
-            result.append(template, pos, ifStart);
+            result.append(template, pos, ifStart); // 将 <if> 标签之前的内容直接添加到结果中
 
-            // 查找 </if> 或 <else> 结束标签的位置
-            int elsePos = template.indexOf("<else>", ifStart);
+            int elsePos = template.indexOf("<else>", ifStart);  // 查找 </if> 或 <else> 结束标签的位置
             int endIfPos = template.indexOf("</if>", ifStart);
-            if (endIfPos == -1) throw new IllegalArgumentException("Missing closing </if>");
+
+            if (endIfPos == -1)
+                throw new IllegalArgumentException("Missing closing </if>");
 
             // 提取并评估条件表达式
             int exprEnd = template.indexOf('>', ifStart);
@@ -313,31 +314,26 @@ public class SmallMyBatis {
             String exprText = template.substring(ifStart + "<if test=\"".length(), exprEnd).trim();
             Expression expr = parser.parseExpression(exprText);
             boolean condition = expr.getValue(context, Boolean.class);
+            String content;  // 根据条件选择内容片段
 
-            // 根据条件选择内容片段
-            String content;
             if (condition) {
                 int bodyStart = exprEnd + 1;
                 content = template.substring(bodyStart, elsePos != -1 ? elsePos : endIfPos);
             } else {
-                if (elsePos == -1) {
+                if (elsePos == -1)
                     content = "";
-                } else {
+                else
                     content = template.substring(elsePos + "<else>".length(), endIfPos);
-                }
             }
 
-            // 添加选定的内容到结果中
-            result.append(content.trim());
+            result.append(content.trim());// 添加选定的内容到结果中
 
             // 更新位置指针
             pos = endIfPos + "</if>".length();
         }
 
-        // 添加剩余部分（如果有的话）
-        if (pos < template.length()) {
+        if (pos < template.length()) // 添加剩余部分（如果有的话）
             result.append(template.substring(pos));
-        }
 
         return result.toString();
     }
