@@ -21,6 +21,15 @@ public class AutoQuery {
         String sql = String.format(SELECT_SQL, tableModel.getTableName());
         sql = sql.replace(DUMMY_STR, DUMMY_STR + " AND " + tableModel.getIdField() + " = ?");
 
+        if (autoQueryBusiness.isFilterDeleted()) {
+            if (getTableModel().isHasIsDeleted())
+                sql = sql.replace(DUMMY_STR, DUMMY_STR + " AND " + getTableModel().getDelField() + " != 1");
+            else
+                sql = sql.replace(DUMMY_STR, DUMMY_STR + " AND " + tableModel.getStateField() + " != 1");
+        }
+
+        sql = filterDeleted(sql);
+
         if (autoQueryBusiness.isCurrentUserOnly())
             sql = limitToCurrentUser(sql);// 限制查询结果只包含当前用户的数据
 
@@ -42,8 +51,7 @@ public class AutoQuery {
         } else
             sql = String.format(SELECT_SQL, tableModel.getTableName());
 
-        if (getTableModel().isHasIsDeleted())
-            sql = sql.replace(DUMMY_STR, DUMMY_STR + " AND " + getTableModel().getDelField() + " != 1");
+        sql = filterDeleted(sql);
 
         if (autoQueryBusiness.isCurrentUserOnly())
             sql = limitToCurrentUser(sql);
@@ -53,6 +61,17 @@ public class AutoQuery {
 
         if (where != null)
             sql = sql.replace(DUMMY_STR, DUMMY_STR + where);
+
+        return sql;
+    }
+
+    private String filterDeleted(String sql) {
+        if (autoQueryBusiness.isFilterDeleted()) {
+            if (getTableModel().isHasIsDeleted())
+                sql = sql.replace(DUMMY_STR, DUMMY_STR + " AND " + getTableModel().getDelField() + " != 1");
+            else
+                sql = sql.replace(DUMMY_STR, DUMMY_STR + " AND " + tableModel.getStateField() + " != 1");
+        }
 
         return sql;
     }

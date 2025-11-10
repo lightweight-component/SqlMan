@@ -19,6 +19,13 @@ public interface AutoQueryBusiness {
     boolean isCurrentUserOnly();
 
     /**
+     * Whether to filter deleted data.
+     *
+     * @return Whether to filter deleted data.
+     */
+    boolean isFilterDeleted();
+
+    /**
      * How to get current user id
      *
      * @return The id of current user, available types are int/long/string.
