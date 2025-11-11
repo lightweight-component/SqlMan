@@ -3,6 +3,7 @@ package com.ajaxjs.sqlman.crud;
 import com.ajaxjs.sqlman.Action;
 import com.ajaxjs.sqlman.meta.DbMetaInfoCreate;
 import com.ajaxjs.sqlman.model.UpdateResult;
+import com.ajaxjs.sqlman.model.tablemodel.IdField;
 import com.ajaxjs.sqlman.sqlgenerator.Entity2WriteSql;
 import com.ajaxjs.sqlman.util.PrettyLogger;
 import com.ajaxjs.sqlman.util.PrintRealSql;
@@ -162,14 +163,38 @@ public class Update extends BaseAction {
         return update();
     }
 
+    /**
+     * Physical delete on an object.
+     * The name of the field is "id" by default.
+     * The value of id field comes from the entity.
+     *
+     * @return The result object, contains effected rows.
+     */
     public UpdateResult delete() {
-        return delete("id", null);
+        return delete(IdField.ID_FIELD, null);
     }
 
+    /**
+     * Physical delete on an object. The name of the field is "id" by default.
+     * This is a physical deletion.
+     * If you want to delete a logical deletion, please use the update method.
+     *
+     * @param idValue The value of id field
+     * @return The result object, contains effected rows.
+     */
     public UpdateResult delete(Object idValue) {
-        return delete("id", idValue);
+        return delete(IdField.ID_FIELD, idValue);
     }
 
+    /**
+     * Physical delete on an object.
+     * This is a physical deletion.
+     * If you want to delete a logical deletion, please use the update method.
+     *
+     * @param idField The name of the field
+     * @param idValue The value of id field
+     * @return The result object, contains effected rows.
+     */
     public UpdateResult delete(String idField, Object idValue) {
         Entity2WriteSql generator = initEntity2WriteSql();
         generator.getDeleteSql(idField, idValue);
@@ -182,16 +207,18 @@ public class Update extends BaseAction {
 
     /**
      * Physical delete by id field and id value.
+     * This is a physical deletion.
+     * If you want to delete a logical deletion, please use the update method.
      *
      * @param tableName Which table?
      * @param idField   The name of the field
-     * @param id        The value of id field
+     * @param idValue   The value of id field
      * @return The result object, contains effected rows.
      */
-    public UpdateResult delete(String tableName, String idField, Serializable id) {
+    public UpdateResult delete(String tableName, String idField, Serializable idValue) {
         String sql = "DELETE FROM " + tableName + " WHERE " + idField + " = ?";
         action.setSql(sql);
-        action.setParams(id);
+        action.setParams(idValue);
 
         return update();
     }

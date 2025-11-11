@@ -2,19 +2,28 @@ package com.ajaxjs.sqlman.sqlgenerator;
 
 import java.io.Serializable;
 
+/**
+ * Auto query business logic automatically.
+ */
 public interface AutoQueryBusiness {
     /**
-     * When querying the list, whether to automatically add sorting by dat
+     * When querying the list, whether to automatically add sorting by date.
+     *
+     * @return Whether to automatically add sorting by date.
      */
     boolean isListOrderByDate();
 
     /**
-     * Whether to add tenant data isolation
+     * Whether to add tenant data isolation.
+     *
+     * @return Whether to add tenant data isolation.
      */
     boolean isTenantIsolation();
 
     /**
      * Restrict the query results to include only data belonging to the current user.
+     *
+     * @return Whether to restrict the query results to include only data belonging to the current user.
      */
     boolean isCurrentUserOnly();
 

@@ -6,10 +6,12 @@ import java.io.Serializable;
 
 @Data
 public class IdField {
+    public static final String ID_FIELD = "id";
+
     /**
      * id 的字段名称
      */
-    private String idField = "id";
+    private String idField = ID_FIELD;
 
     /**
      * 是否自增 id

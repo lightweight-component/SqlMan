@@ -1,6 +1,7 @@
 package com.ajaxjs.sqlman.sqlgenerator;
 
 import com.ajaxjs.sqlman.model.tablemodel.TableModel;
+import com.ajaxjs.util.ObjectHelper;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -20,18 +21,9 @@ public class AutoQuery {
     public String info() {
         String sql = String.format(SELECT_SQL, tableModel.getTableName());
         sql = sql.replace(DUMMY_STR, DUMMY_STR + " AND " + tableModel.getIdField() + " = ?");
-
-        if (autoQueryBusiness.isFilterDeleted()) {
-            if (getTableModel().isHasIsDeleted())
-                sql = sql.replace(DUMMY_STR, DUMMY_STR + " AND " + getTableModel().getDelField() + " != 1");
-            else
-                sql = sql.replace(DUMMY_STR, DUMMY_STR + " AND " + tableModel.getStateField() + " != 1");
-        }
-
         sql = filterDeleted(sql);
-
-        if (autoQueryBusiness.isCurrentUserOnly())
-            sql = limitToCurrentUser(sql);// 限制查询结果只包含当前用户的数据
+        sql = filterDeleted(sql);
+        sql = limitToCurrentUser(sql);// 限制查询结果只包含当前用户的数据
 
         return sql;
     }
@@ -52,17 +44,33 @@ public class AutoQuery {
             sql = String.format(SELECT_SQL, tableModel.getTableName());
 
         sql = filterDeleted(sql);
-
-        if (autoQueryBusiness.isCurrentUserOnly())
-            sql = limitToCurrentUser(sql);
-
-        if (autoQueryBusiness.isTenantIsolation())
-            sql = addTenantIdQuery(sql);
+        sql = limitToCurrentUser(sql);
+        sql = addTenantIdQuery(sql);
 
         if (where != null)
             sql = sql.replace(DUMMY_STR, DUMMY_STR + where);
 
         return sql;
+    }
+
+    public String deletePhysicalById() {
+        return deletePhysical(tableModel.getIdField() + " = ?");
+    }
+
+    public String deletePhysical(String where) {
+        if (ObjectHelper.isEmptyText(where))
+            throw new UnsupportedOperationException("Please add the arguments of where cause, otherwise all rows will be deleted!");
+
+        return "DELETE FROM " + tableModel.getTableName() + " WHERE " + DUMMY_STR + " AND " + where;
+    }
+
+    public String deleteLogicalById() {
+        return deleteLogical(tableModel.getIdField() + " = ?");
+    }
+    public String deleteLogical(String where) {
+        String field = getTableModel().isHasIsDeleted() ? getTableModel().getDelField() : tableModel.getStateField();
+
+        return "UPDATE " + tableModel.getTableName() + " SET " + field + " = 1 WHERE " + DUMMY_STR + " AND " + where;
     }
 
     private String filterDeleted(String sql) {
@@ -104,13 +112,15 @@ public class AutoQuery {
      * @return SQL
      */
     public String addTenantIdQuery(String sql) {
-        Serializable tenantId = autoQueryBusiness.getTenantId();
+        if (autoQueryBusiness.isTenantIsolation()) {
+            Serializable tenantId = autoQueryBusiness.getTenantId();
 
-        if (tenantId != null) {
-            if (sql.contains(DUMMY_STR))
-                sql = sql.replace(DUMMY_STR, DUMMY_STR + " AND tenant_id = " + tenantId);
-            else
-                sql += " AND　tenant_id = " + tenantId;
+            if (tenantId != null) {
+                if (sql.contains(DUMMY_STR))
+                    sql = sql.replace(DUMMY_STR, DUMMY_STR + " AND tenant_id = " + tenantId);
+                else
+                    sql += " AND　tenant_id = " + tenantId;
+            }
         }
 
         return sql;
