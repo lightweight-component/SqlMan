@@ -68,8 +68,13 @@ public abstract class BaseAction {
                 ps.setBytes(i + 1, (byte[]) ele);
             else if (ele instanceof InputStream)  // for large file
                 ps.setBinaryStream(i + 1, (InputStream) ele);
-            else
+            else {
+//                if (NullValue.NULL_DATE.equals(ele) || NullValue.NULL_INT.equals(ele)
+//                        || NullValue.NULL_LONG.equals(ele) || NullValue.NULL_STRING.equals(ele))
+//                    ele = null;
+
                 ps.setObject(i + 1, ele);
+            }
         }
     }
 
@@ -184,20 +189,17 @@ public abstract class BaseAction {
                             String jsonStr = _value.toString();
 
                             if (jsonStr.startsWith("{"))
-//                        value = ConvertComplexValue.getConvertValue().convert(jsonStr, propertyType);
-
-//                                value = JsonUtil.INSTANCE.fromJson(jsonStr, propertyType);
+//                              value = ConvertComplexValue.getConvertValue().convert(jsonStr, propertyType);
+//                              value = JsonUtil.INSTANCE.fromJson(jsonStr, propertyType);
                                 value = JsonUtil.fromJson(jsonStr, propertyType);
                             else if (jsonStr.startsWith("[")) {
 //                            Class<?> listType =  propertyType; // it might be a List
-
                                 Class<?> _beanClz = Types.getGenericFirstReturnType(property.getReadMethod());
 
-                                if (_beanClz == Integer.class || _beanClz == Long.class || _beanClz == String.class) {
+                                if (_beanClz == Integer.class || _beanClz == Long.class || _beanClz == String.class)
                                     value = JsonUtil.json2list(jsonStr, _beanClz);
-                                } else
-//                                value="foo";
-                                    value = JsonUtil.json2list(jsonStr, _beanClz);
+                                else
+                                    value = _beanClz == null ? JsonUtil.json2mapList(jsonStr) : JsonUtil.json2list(jsonStr, _beanClz);
                             } else {
                                 value = null;
                                 log.warn("非法 JSON 字符串： {}，字段：{}", jsonStr, key);

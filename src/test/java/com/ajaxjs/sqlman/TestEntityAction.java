@@ -32,7 +32,7 @@ class TestEntityAction extends BaseTest {
         action.setParams(generator.getParams());
 
         Create create = new Create(action);
-        CreateResult<Integer> result = create.create(true, Integer.class);
+        CreateResult<Integer> result = create.execute(true, Integer.class);
 
         assertTrue(result.isOk());
     }

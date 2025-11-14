@@ -43,7 +43,7 @@ public class Create extends BaseAction {
      * @return The result object.
      */
     @SuppressWarnings("unchecked")
-    public <T extends Serializable> CreateResult<T> create(boolean isAutoIns, Class<T> idType) {
+    private  <T extends Serializable> CreateResult<T> create(boolean isAutoIns, Class<T> idType) {
         startTime = System.currentTimeMillis();
         String resultText = null;
         String sql = action.getSql();

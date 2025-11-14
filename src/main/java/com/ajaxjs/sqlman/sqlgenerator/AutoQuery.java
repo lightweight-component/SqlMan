@@ -67,10 +67,13 @@ public class AutoQuery {
     public String deleteLogicalById() {
         return deleteLogical(tableModel.getIdField() + " = ?");
     }
+
     public String deleteLogical(String where) {
         String field = getTableModel().isHasIsDeleted() ? getTableModel().getDelField() : tableModel.getStateField();
+        String sql = "UPDATE " + tableModel.getTableName() + " SET " + field + " = 1 WHERE " + DUMMY_STR + " AND " + where;
+        sql = limitToCurrentUser(sql);
 
-        return "UPDATE " + tableModel.getTableName() + " SET " + field + " = 1 WHERE " + DUMMY_STR + " AND " + where;
+        return sql;
     }
 
     private String filterDeleted(String sql) {
