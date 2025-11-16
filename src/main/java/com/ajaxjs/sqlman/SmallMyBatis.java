@@ -246,10 +246,8 @@ public class SmallMyBatis {
 
         matcher.appendTail(sb);
 
-
         return sb.toString();
     }
-
 
     /**
      * 处理 SQL 语句
