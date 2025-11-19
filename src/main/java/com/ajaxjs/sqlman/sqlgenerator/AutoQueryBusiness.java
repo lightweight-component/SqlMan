@@ -47,4 +47,13 @@ public interface AutoQueryBusiness {
      * @return The id of tenant, available types are int/long/string.
      */
     Serializable getTenantId();
+
+    /**
+     * Override this function if you want to join tables.
+     *
+     * @return How to join tables.
+     */
+    default TableJoin getTableJoin() {
+        return null;
+    }
 }

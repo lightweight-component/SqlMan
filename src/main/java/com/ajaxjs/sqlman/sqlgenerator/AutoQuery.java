@@ -13,6 +13,7 @@ public class AutoQuery {
     public final static String DUMMY_STR = "1=1";
 
     private final static String SELECT_SQL = "SELECT * FROM %s WHERE " + DUMMY_STR;
+    private final static String SELECT_LIST_SQL = "SELECT %s.* FROM %s WHERE " + DUMMY_STR;
 
     final TableModel tableModel;
 
@@ -34,14 +35,15 @@ public class AutoQuery {
 
     public String list(String where) {
         String sql;
+        String tableName = tableModel.getTableName();
 
         if (autoQueryBusiness.isListOrderByDate()) {
-            String createDateField = getTableModel().getCreateDateField();
-            String tableName = tableModel.getTableName();
 
-            sql = String.format(SELECT_SQL + " ORDER BY " + createDateField + " DESC", tableName);
+            String createDateField = tableName + "." + getTableModel().getCreateDateField();
+
+            sql = String.format(SELECT_LIST_SQL + " ORDER BY " + createDateField + " DESC", tableName, tableName);
         } else
-            sql = String.format(SELECT_SQL, tableModel.getTableName());
+            sql = String.format(SELECT_LIST_SQL, tableName, tableName);
 
         sql = filterDeleted(sql);
         sql = limitToCurrentUser(sql);
@@ -49,6 +51,12 @@ public class AutoQuery {
 
         if (where != null)
             sql = sql.replace(DUMMY_STR, DUMMY_STR + where);
+
+        TableJoin tableJoin = autoQueryBusiness.getTableJoin();
+
+        if (tableJoin != null) {
+            sql = TableJoinModifier.addLeftJoinWithAutoAlias(sql, tableJoin);
+        }
 
         return sql;
     }
@@ -78,10 +86,12 @@ public class AutoQuery {
 
     private String filterDeleted(String sql) {
         if (autoQueryBusiness.isFilterDeleted()) {
+            String tableName = tableModel.getTableName() + ".";
+
             if (getTableModel().isHasIsDeleted())
-                sql = sql.replace(DUMMY_STR, DUMMY_STR + " AND " + getTableModel().getDelField() + " != 1");
+                sql = sql.replace(DUMMY_STR, DUMMY_STR + " AND " + tableName + getTableModel().getDelField() + " != 1");
             else
-                sql = sql.replace(DUMMY_STR, DUMMY_STR + " AND " + tableModel.getStateField() + " != 1");
+                sql = sql.replace(DUMMY_STR, DUMMY_STR + " AND " + tableName + tableModel.getStateField() + " != 1");
         }
 
         return sql;
