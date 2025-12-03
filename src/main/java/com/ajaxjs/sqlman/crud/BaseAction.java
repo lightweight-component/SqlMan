@@ -173,8 +173,8 @@ public abstract class BaseAction {
                     Object value;
                     Class<?> propertyType = property.getPropertyType();
 
-//                    if (key.startsWith("table_model"))
-//                        log.debug(key + "::" + metaData.getColumnTypeName(i));
+                    if (key.startsWith("birthday"))
+                        log.debug(key + "::" + metaData.getColumnTypeName(i));
 
                     // 枚举类型的支持
 //					if (propertyType.isEnum()) // Enum.class.isAssignableFrom(propertyType) 这个方法也可以
