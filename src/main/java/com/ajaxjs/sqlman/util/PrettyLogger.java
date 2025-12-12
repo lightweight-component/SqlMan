@@ -15,11 +15,6 @@ import java.util.List;
  */
 @Slf4j
 public class PrettyLogger extends BoxLogger {
-    /**
-     * 日志方框宽度
-     */
-    private static final int BOX_WIDTH = 137;
-
     private static final String REGEXP = "[\n\r\t]";
 
     /**
