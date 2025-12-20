@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.ajaxjs</groupId>
         <artifactId>ajaxjs-parent</artifactId>
-        <version>1.33</version>
+        <version>1.34</version>
         <relativePath/>
     </parent>
 
@@ -44,6 +44,7 @@
         <dependency>
             <groupId>com.github.jsqlparser</groupId>
             <artifactId>jsqlparser</artifactId>
+            <version>4.4</version>
         </dependency>
 
         <!-- 编译为 jar 包时依赖的 -->
