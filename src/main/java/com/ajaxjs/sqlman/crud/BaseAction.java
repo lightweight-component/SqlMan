@@ -114,10 +114,8 @@ public abstract class BaseAction {
     private static final String BLOB_TYPE_MYSQL = "BLOB";
 
     static String rs2Base64Str(ResultSet rs, int index) throws SQLException {
-        // 获取 BLOB 数据
-        Blob blob = rs.getBlob(index);
-        // 将 BLOB 转为字节数组
-        byte[] blobBytes = blob.getBytes(1, (int) blob.length());
+        Blob blob = rs.getBlob(index);// 获取 BLOB 数据
+        byte[] blobBytes = blob.getBytes(1, (int) blob.length()); // 将 BLOB 转为字节数组
 
         return new Base64Utils(blobBytes).encodeAsString();
     }
@@ -160,10 +158,10 @@ public abstract class BaseAction {
 
                 Object _value = rs.getObject(i); // Real value in DB
 
-//                if (key.startsWith("table_model") && _value != null) {
-//                    log.debug(key + ":v:" + _value);
-//                    log.debug(key + "::" + metaData.getColumnTypeName(i));
-//                }
+                if (key.startsWith("avatar") && _value != null) {
+                    log.debug(key + ":v:" + _value);
+                    log.debug(key + "::" + metaData.getColumnTypeName(i));
+                }
                 if (key.contains("_")) // 将以下划线分隔的数据库字段转换为驼峰风格的字符串
                     key = Utils.changeColumnToFieldName(key);
 
@@ -205,9 +203,13 @@ public abstract class BaseAction {
                                 log.warn("非法 JSON 字符串： {}，字段：{}", jsonStr, key);
                             }
                         }
-                    } else if (_value != null && BLOB_TYPE_MYSQL.equals(columnTypeName))
-                        value = rs2Base64Str(rs, i);
-                    else
+                    } else if (_value != null && BLOB_TYPE_MYSQL.equals(columnTypeName)) {
+                        if (byte.class == propertyType.getComponentType()) {
+                            log.info("byte type");
+                            value = _value;
+                        } else
+                            value = rs2Base64Str(rs, i);
+                    } else
                         try {
                             value = ConvertBasicValue.basicConvert(_value, propertyType);
                         } catch (NumberFormatException e) {

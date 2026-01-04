@@ -255,7 +255,7 @@ public class Entity2WriteSql {
         else if (NullValue.NULL_DATE.equals(value) || NullValue.NULL_INT.equals(value)
                 || NullValue.NULL_LONG.equals(value) || NullValue.NULL_STRING.equals(value)) // 如何设数据库 null 值
             return null;
-        else if (value instanceof List)
+        else if (value instanceof List || value instanceof Map)
             return JsonUtil.toJson(value);// 假設數據庫是 text，於是一律轉換 json
         else
             return value;
