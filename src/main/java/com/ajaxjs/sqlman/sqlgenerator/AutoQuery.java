@@ -19,6 +19,10 @@ public class AutoQuery {
 
     final AutoQueryBusiness autoQueryBusiness;
 
+//    public TableModel getTableModel() {
+//        return tableModel;
+//    }
+
     public String info() {
         String sql = String.format(SELECT_SQL, tableModel.getTableName());
         sql = sql.replace(DUMMY_STR, DUMMY_STR + " AND " + tableModel.getIdField() + " = ?");
@@ -129,10 +133,15 @@ public class AutoQuery {
             Serializable tenantId = autoQueryBusiness.getTenantId();
 
             if (tenantId != null) {
+                String fieldName = "tenant_id";
+
+//                if (sql.contains("t_join_table")) // for join case that can't be 'Column 'tenant_id' in where clause is ambiguous'
+                    fieldName = tableModel.getTableName() + "." + fieldName;
+
                 if (sql.contains(DUMMY_STR))
-                    sql = sql.replace(DUMMY_STR, DUMMY_STR + " AND tenant_id = " + tenantId);
+                    sql = sql.replace(DUMMY_STR, DUMMY_STR + " AND " + fieldName + " = " + tenantId);
                 else
-                    sql += " AND　tenant_id = " + tenantId;
+                    sql += " AND　" + fieldName + " = " + tenantId;
             }
         }
 
