@@ -18,7 +18,7 @@ layout: layouts/docs-cn.njk
 <dependency>
     <groupId>com.ajaxjs</groupId>
     <artifactId>sqlman</artifactId>
-    <version>1.8</version>
+    <version>1.9</version>
 </dependency>
 ```
 
