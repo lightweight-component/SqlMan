@@ -47,29 +47,29 @@ public class TableJoinModifier {
         Statement statement = CCJSqlParserUtil.parse(originalSql);
 
         // 2. 确保它是一个 SELECT 语句
-        if (!(statement instanceof Select)) {
+        if (!(statement instanceof Select))
             throw new IllegalArgumentException("Provided SQL is not a SELECT statement.");
-        }
 
         Select selectStatement = (Select) statement;
         SelectBody selectBody = selectStatement.getSelectBody();
 
         // 3. 确保它是 PlainSelect
-        if (!(selectBody instanceof PlainSelect)) {
+        if (!(selectBody instanceof PlainSelect))
             throw new IllegalArgumentException("This example only supports modifying PlainSelect statements.");
-        }
 
         PlainSelect plainSelect = (PlainSelect) selectBody;
 
         // 4. --- 自动推断别名 ---
         // 4.1 获取主表及其别名
         FromItem fromItem = plainSelect.getFromItem();
-        String mainTableAlias = null;
+        String mainTableAlias;
+
         if (fromItem instanceof Table) {
-            Alias alias = ((Table) fromItem).getAlias();
-            if (alias != null) {
+            Alias alias = fromItem.getAlias();
+
+            if (alias != null)
                 mainTableAlias = alias.getName();
-            } else {
+             else {
                 // 如果 FROM 的主表没有别名，我们尝试一个简单的策略：
                 // 使用表名小写作为别名（注意：这可能与后续JOIN的别名冲突！）
                 // 更健壮的方法是分析 SELECT 和 WHERE 子句，但这比较复杂。
@@ -84,22 +84,16 @@ public class TableJoinModifier {
             Alias alias = fromItem.getAlias();
             if (alias != null) {
                 mainTableAlias = alias.getName();
-            } else {
+            } else
                 throw new IllegalStateException("FROM item is complex and lacks an alias. Cannot determine main table alias reliably.");
-            }
         }
-
 
         // 4.2 收集所有现有别名，用于为新 JOIN 表生成不冲突的别名
         Set<String> existingAliases = collectAllAliases(plainSelect);
-
         // 4.3 为主表连接列构造带别名的列名
         String fullMainTableJoinColumn = mainTableAlias + "." + mainTableJoinColumn;
-
-
         // 4.4 为被连接表生成别名 (例如 t1, t2, ...)
-        String joinedTableAlias = generateUniqueAlias("t", existingAliases);
-
+        String joinedTableAlias = generateUniqueAlias("t_join_table", existingAliases);
         // 4.5 为被连接表连接列构造带别名的列名
         String fullJoinedTableJoinColumn = joinedTableAlias + "." + joinedTableJoinColumn;
 
@@ -143,6 +137,7 @@ public class TableJoinModifier {
                 // item.setAlias(new Alias(fieldName, false)); // 可选：设置别名
                 selectItems.add(item);
             }
+
             plainSelect.setSelectItems(selectItems);
         }
 
@@ -161,17 +156,15 @@ public class TableJoinModifier {
 
         // 收集 FROM 子句的别名
         FromItem fromItem = plainSelect.getFromItem();
-        if (fromItem != null && fromItem.getAlias() != null) {
-            aliases.add(fromItem.getAlias().getName().toLowerCase()); // 统一转小写比较
-        }
+        if (fromItem != null && fromItem.getAlias() != null)
+            aliases.add(fromItem.getAlias().getName().toLowerCase()); // 统一转小写
 
         // 收集 JOIN 子句的别名
         List<Join> joins = plainSelect.getJoins();
         if (joins != null) {
             for (Join j : joins) {
-                if (j.getRightItem() != null && j.getRightItem().getAlias() != null) {
+                if (j.getRightItem() != null && j.getRightItem().getAlias() != null)
                     aliases.add(j.getRightItem().getAlias().getName().toLowerCase());
-                }
             }
         }
 
