@@ -43,7 +43,7 @@ public class Create extends BaseAction {
      * @return The result object.
      */
     @SuppressWarnings("unchecked")
-    private  <T extends Serializable> CreateResult<T> create(boolean isAutoIns, Class<T> idType) {
+    private <T extends Serializable> CreateResult<T> create(boolean isAutoIns, Class<T> idType) {
         startTime = System.currentTimeMillis();
         String resultText = null;
         String sql = action.getSql();
@@ -55,8 +55,8 @@ public class Create extends BaseAction {
             setParam2Ps(ps);
             int effectRows = ps.executeUpdate();
 
+            CreateResult<T> result = new CreateResult<>();
             if (effectRows > 0) {// 插入成功
-                CreateResult<T> result = new CreateResult<>();
                 result.setOk(true);
 
                 if (isAutoIns) {
@@ -96,8 +96,10 @@ public class Create extends BaseAction {
                 }
 
                 resultText = result.toString();
-                return result;
-            }
+            } else
+                result.setOk(false);
+
+            return result;
         } catch (SQLException e) {
             log.warn("SQL insert error.", e);
             throw new RuntimeException("SQL insert error.", e);
@@ -109,8 +111,6 @@ public class Create extends BaseAction {
             CompletableFuture.runAsync(() -> PrettyLogger.printLog("Create", traceId, bizAction,
                     action.getSql(), action.getParams(), PrintRealSql.printRealSql(action.getSql(), action.getParams()), this, _resultText, true));
         }
-
-        return null;
     }
 
     public static final Long INSERT_OK_LONG = -1L;
