@@ -18,7 +18,7 @@ To get started, we just have to include the one SqlMan module in our dependencie
 <dependency>
     <groupId>com.ajaxjs</groupId>
     <artifactId>sqlman</artifactId>
-    <version>1.9</version>
+    <version>2.0</version>
 </dependency>
 ```
 
