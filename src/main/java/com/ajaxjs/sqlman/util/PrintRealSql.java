@@ -1,6 +1,9 @@
 package com.ajaxjs.sqlman.util;
 
+import com.ajaxjs.sqlman.crud.BaseAction;
 import com.ajaxjs.util.ObjectHelper;
+import com.ajaxjs.util.log.TextBox;
+import com.ajaxjs.util.log.Trace;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
@@ -127,4 +130,45 @@ public class PrintRealSql {
 
         return count;
     }
+
+    /**
+     * 打印数据库操作日志
+     *
+     * @param type          类型
+     * @param traceId       链路 id
+     * @param bizAction     链路业务名称
+     * @param sql           SQL 语句
+     * @param params        参数（字符串，或者拼接好的参数描述）
+     * @param realSql       实际执行SQL（带参数）
+     * @param action        用于计算耗时（如 33ms）
+     * @param result        执行结果（Object）
+     * @param wrapLongLines 是否允许完整显示超长字符串，自动换行
+     */
+    public static void printLog(String type, String traceId, String bizAction, String sql, Object params, String realSql, BaseAction action, Object result, boolean wrapLongLines) {
+        String title = " Debugging " + type + " ";
+        realSql = realSql.replaceAll(REGEXP, " ");
+
+        String duration;
+
+        if (action != null)
+            duration = String.valueOf(System.currentTimeMillis() - action.startTime);
+        else
+            duration = TextBox.NONE;
+
+        TextBox textBox = new TextBox();
+        textBox.boxStart(title)
+                .line("TraceId:  ", traceId)
+                .line("BizAction:", bizAction)
+                .line("SQL:      ", sql.replaceAll(REGEXP, " "))
+                .line("Params:   ", params)
+                .line("Real:     ", realSql)
+                .line("Duration: ", duration + "ms")
+                .line("Result:   ", result);
+
+        String _log = textBox.boxEnd();
+        Trace.saveLogToMDC(_log);
+        log.info(_log);
+    }
+
+    private static final String REGEXP = "[\n\r\t]";
 }

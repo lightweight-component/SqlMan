@@ -4,9 +4,8 @@ import com.ajaxjs.sqlman.Action;
 import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
 import com.ajaxjs.sqlman.crud.page.PageQuery;
 import com.ajaxjs.sqlman.crud.page.PageResult;
-import com.ajaxjs.sqlman.util.PrettyLogger;
 import com.ajaxjs.sqlman.util.PrintRealSql;
-import com.ajaxjs.util.BoxLogger;
+import com.ajaxjs.util.log.Trace;
 import com.ajaxjs.util.ConvertBasicValue;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -67,10 +66,10 @@ public class Query extends BaseAction {
             throw new RuntimeException("SQL Error when doing read action.", e);
         } finally {
             String _resultText = resultText;
-            String traceId = MDC.get(BoxLogger.TRACE_KEY);
-            String bizAction = MDC.get(BoxLogger.BIZ_ACTION);
+            String traceId = MDC.get(Trace.TRACE_KEY);
+            String bizAction = MDC.get(Trace.BIZ_ACTION);
 
-            CompletableFuture.runAsync(() -> PrettyLogger.printLog("Query", traceId, bizAction,
+            CompletableFuture.runAsync(() -> PrintRealSql.printLog("Query", traceId, bizAction,
                     action.getSql(), action.getParams(), PrintRealSql.printRealSql(action.getSql(), action.getParams()),
                     this, _resultText, true));
         }

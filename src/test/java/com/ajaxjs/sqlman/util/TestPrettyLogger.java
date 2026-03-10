@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import static com.ajaxjs.sqlman.util.PrettyLogger.printLog;
+import static com.ajaxjs.sqlman.util.PrintRealSql.printLog;
 
 class TestPrettyLogger {
     @Test

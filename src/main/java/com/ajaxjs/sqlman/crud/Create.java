@@ -4,9 +4,8 @@ import com.ajaxjs.sqlman.Action;
 import com.ajaxjs.sqlman.meta.DbMetaInfoCreate;
 import com.ajaxjs.sqlman.model.CreateResult;
 import com.ajaxjs.sqlman.sqlgenerator.Entity2WriteSql;
-import com.ajaxjs.sqlman.util.PrettyLogger;
 import com.ajaxjs.sqlman.util.PrintRealSql;
-import com.ajaxjs.util.BoxLogger;
+import com.ajaxjs.util.log.Trace;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 
@@ -105,10 +104,10 @@ public class Create extends BaseAction {
             throw new RuntimeException("SQL insert error.", e);
         } finally {
             String _resultText = resultText;
-            String traceId = MDC.get(BoxLogger.TRACE_KEY);
-            String bizAction = MDC.get(BoxLogger.BIZ_ACTION);
+            String traceId = MDC.get(Trace.TRACE_KEY);
+            String bizAction = MDC.get(Trace.BIZ_ACTION);
 
-            CompletableFuture.runAsync(() -> PrettyLogger.printLog("Create", traceId, bizAction,
+            CompletableFuture.runAsync(() -> PrintRealSql.printLog("Create", traceId, bizAction,
                     action.getSql(), action.getParams(), PrintRealSql.printRealSql(action.getSql(), action.getParams()), this, _resultText, true));
         }
     }
