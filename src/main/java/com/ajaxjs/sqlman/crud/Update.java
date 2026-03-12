@@ -79,7 +79,7 @@ public class Update extends BaseAction {
      * Execute the update with ID specified row.
      * There is already ID in the entity, so we can take it out.
      *
-     * @param idField Actually, the field is already ID in the entity, just tell me.
+     * @param idField Actually, the field is already ID in the entity, tell me.
      * @return The result object, contains effected rows.
      */
     public UpdateResult withId(String idField) {
