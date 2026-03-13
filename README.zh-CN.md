@@ -32,6 +32,6 @@ SqlMan 是一个轻量级的 JDBC 封装工具。它**不是**一个 ORM 框架�
 <dependency>
     <groupId>com.ajaxjs</groupId>
     <artifactId>sqlman</artifactId>
-    <version>2.0</version>
+    <version>1.9</version>
 </dependency>
 ```
