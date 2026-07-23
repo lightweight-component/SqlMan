@@ -14,7 +14,6 @@ import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Update operation and Delete operation.
@@ -58,9 +57,9 @@ public class Update extends BaseAction {
             String traceId = MDC.get(Trace.TRACE_KEY);
             String bizAction = MDC.get(Trace.BIZ_ACTION);
 
-            CompletableFuture.runAsync(() -> PrintRealSql.printLog("Update", traceId, bizAction,
+            PrintRealSql.printLog("Update", traceId, bizAction,
                     action.getSql(), action.getParams(),
-                    PrintRealSql.printRealSql(action.getSql(), action.getParams()), this, _resultText, true));
+                    PrintRealSql.printRealSql(action.getSql(), action.getParams()), this, _resultText, true);
         }
     }
 
@@ -156,7 +155,7 @@ public class Update extends BaseAction {
      * @return The result object, contains effected rows.
      */
     public UpdateResult execute() {
-        if (action.getEntityBean() != null | action.getEntityMap() != null)
+        if (action.getEntityBean() != null || action.getEntityMap() != null)
             throw new UnsupportedOperationException("This method only for plain SQL, not entity.");
 
         return update();

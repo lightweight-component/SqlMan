@@ -1,3 +1,9 @@
+<h1 align="center">SqlMan</h1>
+<h3 align="center">CRUD Tools for Java</h3>
+<hr />
+
+<div style="text-align: center;">
+
 [![Maven Central](https://img.shields.io/maven-central/v/com.ajaxjs/sqlman?label=Latest%20Release)](https://central.sonatype.com/artifact/com.ajaxjs/sqlman)
 ![Java Version](https://img.shields.io/badge/Java-8-blue)
 [![Javadoc](https://img.shields.io/badge/javadoc-1.9-brightgreen.svg?)](https://javadoc.io/doc/com.ajaxjs/sqlman)
@@ -7,7 +13,9 @@
 [![Email](https://img.shields.io/badge/Contact--me-Email-orange.svg)](mailto:frank@ajaxjs.com)
 [![中文](https://img.shields.io/badge/lang-中文-red)](./README.zh-CN.md)
 
-# SqlMan
+</div>
+
+<hr />
 
 SqlMan is a lightweight wrapper over JDBC. It is NOT an ORM but follows an SQL-first approach. It allows you to use pure SQL with IF/forEach and pass Map parameters for queries or executions. The results you receive are either 'isOk' indicators and 'Map' or Java Bean object(s). SqlMan has minimal dependencies, compact and elegant code, and a unified API that is simple and easy to use.
 

@@ -6,7 +6,23 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class TestPrintRealSql {
+    @Test
+    void ignoresQuestionMarksInLiteralsAndComments() {
+        String sql = "SELECT '?', \"?\", `?` FROM test "
+                + "WHERE text = 'It''s ?' AND escaped = 'a\\?b' AND id = ? "
+                + "-- line comment ?\n"
+                + "AND state = ? /* block comment ? */ # MySQL comment ?";
+
+        assertEquals("SELECT '?', \"?\", `?` FROM test "
+                        + "WHERE text = 'It''s ?' AND escaped = 'a\\?b' AND id = 7 "
+                        + "-- line comment ?\n"
+                        + "AND state = 'OK' /* block comment ? */ # MySQL comment ?",
+                PrintRealSql.printRealSql(sql, new Object[]{7, "OK"}));
+    }
+
     @Test
     void test() {
         // 示例 1：正常情况（含单引号）

@@ -1,3 +1,9 @@
+<h1 align="center">SqlMan</h1>
+
+<hr />
+
+<div style="text-align: center;">
+
 [![Maven Central](https://img.shields.io/maven-central/v/com.ajaxjs/sqlman?label=Latest%20Release)](https://central.sonatype.com/artifact/com.ajaxjs/sqlman)
 ![Java Version](https://img.shields.io/badge/Java-8-blue)
 [![Javadoc](https://img.shields.io/badge/javadoc-1.9-brightgreen.svg?)](https://javadoc.io/doc/com.ajaxjs/sqlman)
@@ -7,7 +13,10 @@
 [![Email](https://img.shields.io/badge/Contact--me-Email-orange.svg)](mailto:frank@ajaxjs.com)
 [![QQ群](https://framework.ajaxjs.com/static/qq.svg)](https://shang.qq.com/wpa/qunwpa?idkey=3877893a4ed3a5f0be01e809e7ac120e346102bd550deb6692239bb42de38e22)
 
-# SqlMan
+</div>
+
+
+<hr />
 
 SqlMan 是一个轻量级的 JDBC 封装工具。它**不是**一个 ORM 框架，而是采用 SQL 优先的策略。它允许你使用纯 SQL，并支持 IF/forEach 等逻辑控制，同时可以通过 Map 参数传递查询或执行语句。返回的结果可以是“Map”或 Java Bean 对象。SqlMan 依赖极少，代码紧凑精巧，统一的 API 简单易用。
 

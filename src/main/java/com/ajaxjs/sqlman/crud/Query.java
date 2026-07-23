@@ -5,19 +5,18 @@ import com.ajaxjs.sqlman.annotation.ResultSetProcessor;
 import com.ajaxjs.sqlman.crud.page.PageQuery;
 import com.ajaxjs.sqlman.crud.page.PageResult;
 import com.ajaxjs.sqlman.util.PrintRealSql;
-import com.ajaxjs.util.log.Trace;
 import com.ajaxjs.util.ConvertBasicValue;
+import com.ajaxjs.util.log.Trace;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 
-import javax.servlet.http.HttpServletRequest;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Do query on the database.
@@ -69,9 +68,12 @@ public class Query extends BaseAction {
             String traceId = MDC.get(Trace.TRACE_KEY);
             String bizAction = MDC.get(Trace.BIZ_ACTION);
 
-            CompletableFuture.runAsync(() -> PrintRealSql.printLog("Query", traceId, bizAction,
+            PrintRealSql.printLog("Query", traceId, bizAction,
                     action.getSql(), action.getParams(), PrintRealSql.printRealSql(action.getSql(), action.getParams()),
-                    this, _resultText, true));
+                    this, _resultText, true);
+//            CompletableFuture.runAsync(() -> PrintRealSql.printLog("Query", traceId, bizAction,
+//                    action.getSql(), action.getParams(), PrintRealSql.printRealSql(action.getSql(), action.getParams()),
+//                    this, _resultText, true));
         }
     }
 

@@ -171,7 +171,7 @@ public abstract class BaseAction {
                     Object value;
                     Class<?> propertyType = property.getPropertyType();
 
-                    if (key.startsWith("birthday"))
+                    if (key.startsWith("bind"))
                         log.debug(key + "::" + metaData.getColumnTypeName(i));
 
                     // 枚举类型的支持

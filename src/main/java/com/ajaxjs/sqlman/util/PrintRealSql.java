@@ -2,12 +2,17 @@ package com.ajaxjs.sqlman.util;
 
 import com.ajaxjs.sqlman.crud.BaseAction;
 import com.ajaxjs.util.ObjectHelper;
+import com.ajaxjs.util.date.DateTools;
+import com.ajaxjs.util.date.Formatter;
 import com.ajaxjs.util.log.TextBox;
 import com.ajaxjs.util.log.Trace;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.regex.Matcher;
+import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -28,16 +33,7 @@ public class PrintRealSql {
      * @return true 表示个数匹配（或无参数）
      */
     private static boolean match(String sql, Object[] params) {
-        if (params == null || params.length == 0)
-            return true; // 无参数，视为匹配
-
-        Matcher matcher = PARAM_PATTERN.matcher(sql);
-        int placeholderCount = 0;
-
-        while (matcher.find())
-            placeholderCount++;
-
-        return placeholderCount == params.length;
+        return countPlaceholders(sql) == (params == null ? 0 : params.length);
     }
 
     /**
@@ -59,7 +55,7 @@ public class PrintRealSql {
 
         if (value instanceof Date) {
             Date date = (Date) value;
-            return "''";
+            return "'" + new Formatter(date).format() + "'";
         }
 
         if (value instanceof Boolean) {
@@ -92,24 +88,18 @@ public class PrintRealSql {
             if (!match(sql, safeParams))
                 log.warn("SQL 占位符 '?' 个数与参数个数不匹配。SQL: [{}], 参数个数: {}, 占位符个数: {}", sql, safeParams.length, countPlaceholders(sql));
 
-            // 使用 Matcher 进行安全替换
-            Matcher matcher = PARAM_PATTERN.matcher(sql);
-            StringBuffer sb = new StringBuffer();
+            List<Integer> placeholders = findPlaceholders(sql);
+            StringBuilder sb = new StringBuilder(sql.length() + safeParams.length * 8);
+            int previous = 0;
 
-            int paramIndex = 0;
-            while (matcher.find()) {
-                String replacement = (paramIndex < safeParams.length)
-                        ? formatValue(safeParams[paramIndex])
-                        : "?"; // 参数不足，保留 ?
-
-                // 使用 Matcher.quoteReplacement 防止 $ 和 \ 引发问题
-                matcher.appendReplacement(sb, Matcher.quoteReplacement(replacement));
-                paramIndex++;
+            for (int i = 0; i < placeholders.size(); i++) {
+                int position = placeholders.get(i);
+                sb.append(sql, previous, position);
+                sb.append(i < safeParams.length ? formatValue(safeParams[i]) : "?");
+                previous = position + 1;
             }
 
-            matcher.appendTail(sb);
-
-            return (sb.toString());
+            return sb.append(sql, previous, sql.length()).toString();
 //            return format(sb.toString());
         } catch (Exception e) {
             log.warn("生成 SQL 预览字符串时发生异常。SQL: [{}], 参数: {}", sql, java.util.Arrays.toString(params), e);
@@ -122,13 +112,106 @@ public class PrintRealSql {
      * 辅助方法：计算 SQL 中 '?' 占位符的个数
      */
     private static int countPlaceholders(String sql) {
-        Matcher matcher = PARAM_PATTERN.matcher(sql);
-        int count = 0;
+        return findPlaceholders(sql).size();
+    }
 
-        while (matcher.find())
-            count++;
+    /**
+     * 查找真正的 JDBC 参数占位符，忽略字符串、标识符以及 SQL 注释中的问号。
+     */
+    private static List<Integer> findPlaceholders(String sql) {
+        List<Integer> positions = new ArrayList<>();
+        boolean singleQuote = false, doubleQuote = false, backtick = false;
+        boolean lineComment = false, blockComment = false;
 
-        return count;
+        for (int i = 0; i < sql.length(); i++) {
+            char current = sql.charAt(i);
+            char next = i + 1 < sql.length() ? sql.charAt(i + 1) : '\0';
+
+            if (lineComment) {
+                if (current == '\n' || current == '\r')
+                    lineComment = false;
+                continue;
+            }
+
+            if (blockComment) {
+                if (current == '*' && next == '/') {
+                    blockComment = false;
+                    i++;
+                }
+                continue;
+            }
+
+            if (singleQuote) {
+                if (current == '\'' && next == '\'')
+                    i++; // SQL 标准的单引号转义：''
+                else if (current == '\\' && next != '\0')
+                    i++; // 兼容 MySQL 的反斜杠转义
+                else if (current == '\'')
+                    singleQuote = false;
+                continue;
+            }
+
+            if (doubleQuote) {
+                if (current == '"' && next == '"')
+                    i++;
+                else if (current == '"')
+                    doubleQuote = false;
+                continue;
+            }
+
+            if (backtick) {
+                if (current == '`' && next == '`')
+                    i++;
+                else if (current == '`')
+                    backtick = false;
+                continue;
+            }
+
+            if ((current == '-' && next == '-') || current == '#') {
+                lineComment = true;
+                if (current == '-')
+                    i++;
+            } else if (current == '/' && next == '*') {
+                blockComment = true;
+                i++;
+            } else if (current == '\'')
+                singleQuote = true;
+            else if (current == '"')
+                doubleQuote = true;
+            else if (current == '`')
+                backtick = true;
+            else if (current == '?')
+                positions.add(i);
+        }
+
+        return positions;
+    }
+
+    private static final int MAX_REPEAT = 3;
+
+    private static String lastBizAction;
+
+    private static int repeatCount;
+
+    /**
+     * 日志限流（Log Throttling）
+     * <p>
+     * 对于同一个 bizAction，如果连续出现超过 N 次（例如 3 次），则后续相同 bizAction 的日志不再打印；直到出现其他 bizAction，计数重新开始。
+     *
+     * @param bizAction
+     * @return
+     */
+    public static synchronized boolean shouldPrint(String bizAction) {
+        if (Objects.equals(lastBizAction, bizAction)) {
+            repeatCount++;
+
+            return repeatCount <= MAX_REPEAT;
+        }
+
+        lastBizAction = bizAction;
+        repeatCount = 1;
+
+        return true;
     }
 
     /**
@@ -145,6 +228,9 @@ public class PrintRealSql {
      * @param wrapLongLines 是否允许完整显示超长字符串，自动换行
      */
     public static void printLog(String type, String traceId, String bizAction, String sql, Object params, String realSql, BaseAction action, Object result, boolean wrapLongLines) {
+        if (MDC.get(Trace.ENABLE_LOG_THROTTLING) != null && ObjectHelper.hasText(bizAction) && !shouldPrint(bizAction))
+            return;
+
         String title = " Debugging " + type + " ";
         realSql = realSql.replaceAll(REGEXP, " ");
 
@@ -157,6 +243,7 @@ public class PrintRealSql {
 
         TextBox textBox = new TextBox();
         textBox.boxStart(title)
+                .line("Time:     ", DateTools.now())
                 .line("TraceId:  ", traceId)
                 .line("BizAction:", bizAction)
                 .line("SQL:      ", sql.replaceAll(REGEXP, " "))

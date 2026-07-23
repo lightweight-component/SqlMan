@@ -47,17 +47,23 @@ public class JdbcConnection {
         try {
             String databaseProductName = conn.getMetaData().getDatabaseProductName().toLowerCase();
 
-            if (databaseProductName.contains("mysql"))
+            if (databaseProductName.contains("mariadb"))
+                return DatabaseVendor.MARIADB;
+            else if (databaseProductName.contains("mysql"))
                 return DatabaseVendor.MYSQL;
             else if (databaseProductName.contains("oracle"))
                 return DatabaseVendor.ORACLE;
             else if (databaseProductName.contains("postgre"))
                 return DatabaseVendor.POSTGRESQL;
+            else if (databaseProductName.contains("sqlite"))
+                return DatabaseVendor.SQL_LITE;
             else if (databaseProductName.contains("h2"))
                 return DatabaseVendor.H2;
+            else if (databaseProductName.contains("hsql"))
+                return DatabaseVendor.HSQLDB;
             else if (databaseProductName.contains("derby"))
                 return DatabaseVendor.DERBY;
-            else if (databaseProductName.contains("sqlserver"))
+            else if (databaseProductName.contains("sqlserver") || databaseProductName.contains("sql server"))
                 return DatabaseVendor.SQL_SERVER;
             else if (databaseProductName.contains("db2"))
                 return DatabaseVendor.DB2;
