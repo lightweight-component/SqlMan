@@ -204,43 +204,72 @@ public class Entity2WriteSql {
      * @param everyBeanField An iterator for a Java Bean
      */
     public static void everyBeanField(Object entity, BiConsumer<String, Object> everyBeanField) {
+        everyBeanField(entity, false, everyBeanField);
+    }
+
+    /**
+     * Do the iteration of a Java Bean.
+     *
+     * @param entity         Entity
+     * @param includeNull    Whether null-valued properties should be included
+     * @param everyBeanField An iterator for a Java Bean
+     */
+    public static void everyBeanField(Object entity, boolean includeNull, BiConsumer<String, Object> everyBeanField) {
         Class<?> clz = entity.getClass();
+        BeanInfo beanInfo;
 
         try {
-            BeanInfo beanInfo = Introspector.getBeanInfo(entity.getClass());
-
-            for (PropertyDescriptor property : beanInfo.getPropertyDescriptors()) {
-                String filedName = property.getName();
-
-                if (CommonConstant.CLASS.equals(filedName))
-                    continue;
-
-                Field field = Fields.findField(clz, filedName); // field info. on the entity
-
-                if (field != null) {
-                    if (field.isAnnotationPresent(Transient.class))// ignore transient fields
-                        continue;
-
-                    Column column = field.getAnnotation(Column.class); // mapping another field name
-
-                    if (column != null && ObjectHelper.hasText(column.name())) // Real field name in DB
-                        filedName = column.name();
-                }
-
-                Method method = property.getReadMethod();
-
-                if (method.isAnnotationPresent(Transient.class)) // ignore transient fields
-                    continue;
-
-                Object value = method.invoke(entity);
-
-                if (value != null) // only has value to do so
-                    everyBeanField.accept(Utils.changeFieldToColumnName(filedName), value);
-            }
-        } catch (IntrospectionException | InvocationTargetException | IllegalAccessException e) {
-
-            log.warn("Error occurred when iterating a Java bean.", e);
+            beanInfo = Introspector.getBeanInfo(clz);
+        } catch (IntrospectionException e) {
+            throw new IllegalStateException("Cannot inspect Java bean " + clz.getName() + ".", e);
         }
+
+        for (PropertyDescriptor property : beanInfo.getPropertyDescriptors()) {
+            String propertyName = property.getName();
+
+            if (CommonConstant.CLASS.equals(propertyName))
+                continue;
+
+            Field field = Fields.findField(clz, propertyName); // field info. on the entity
+            String fieldName = propertyName;
+
+            if (field != null) {
+                if (field.isAnnotationPresent(Transient.class))// ignore transient fields
+                    continue;
+
+                Column column = field.getAnnotation(Column.class); // mapping another field name
+
+                if (column != null && ObjectHelper.hasText(column.name())) // Real field name in DB
+                    fieldName = column.name();
+            }
+
+            Method method = property.getReadMethod();
+            if (method == null) {
+                log.debug("Skip unreadable property {}.{} because it has no getter.", clz.getName(), propertyName);
+                continue;
+            }
+
+            if (method.isAnnotationPresent(Transient.class)) // ignore transient fields
+                continue;
+
+            Object value;
+            try {
+                value = method.invoke(entity);
+            } catch (IllegalAccessException e) {
+                throw beanPropertyReadException(clz, propertyName, e);
+            } catch (InvocationTargetException e) {
+                Throwable cause = e.getTargetException() == null ? e : e.getTargetException();
+                throw beanPropertyReadException(clz, propertyName, cause);
+            }
+
+            if (includeNull || value != null)
+                everyBeanField.accept(Utils.changeFieldToColumnName(fieldName), value);
+        }
+    }
+
+    private static IllegalStateException beanPropertyReadException(Class<?> beanClass, String propertyName, Throwable cause) {
+        return new IllegalStateException("Cannot read Java bean property "
+                + beanClass.getName() + "." + propertyName + " via its getter.", cause);
     }
 
     /**

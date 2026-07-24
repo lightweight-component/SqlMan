@@ -1,5 +1,6 @@
 package com.ajaxjs.sqlman.util;
 
+import com.ajaxjs.util.log.TextBox;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -15,7 +16,7 @@ class TestPrettyLogger {
         long durationMs = 33;
         Object result = "{COUNT(*)=1}";
 
-        printLog("Query", null, "Biz", sql, null, realSql, null, result, true);
+        printLog("Query", null, "Biz", sql, null, realSql, durationMs + "ms", result);
 
         // 测试超长内容
         String longSql = "SELECT * FROM a_very_long_table_name_with_many_columns" +
@@ -24,6 +25,6 @@ class TestPrettyLogger {
                 "                  'id', id, 'pid', pid, 'name', name, 'namespace', namespa(SELECT JSON_ARRAYAGG(JSON_OBJECT(\n" +
                 "                  'id', id, 'pid', pid, 'name', name, 'namespace', namespa";
         Object[] longParams = new Object[]{"param1", "param2", "param3", "param4"};
-        printLog("Query", null, "Biz", longSql, Arrays.toString(longParams), longSql, null, result, true);
+        printLog("Query", null, "Biz", longSql, Arrays.toString(longParams), longSql, TextBox.NONE, result);
     }
 }

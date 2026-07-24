@@ -4,6 +4,7 @@ import com.ajaxjs.sqlman.Action;
 import com.ajaxjs.sqlman.crud.Query;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -40,13 +41,10 @@ public class PageQuery {
             // 如果 beanCls 为 null，则将查询结果作为 Map 列表返回 否则将查询结果转换为指定实体类的列表
             List<T> list = beanClz == null ? (List<T>) query.list() : query.list(beanClz);
 
-            if (list != null) {
-                result.setTotalCount(total);
-                result.setList(list);
-                setParams(result, total, start);// might be not meaningful,
-                // you can delete this line if higher performance is needed
-            } else
-                throw new UnsupportedOperationException("Impossible to right here.");
+            result.setTotalCount(total);
+            result.setList(list == null ? Collections.emptyList() : list);
+            setParams(result, total, start);// might be not meaningful,
+            // you can delete this line if higher performance is needed
         }
 
         return result;

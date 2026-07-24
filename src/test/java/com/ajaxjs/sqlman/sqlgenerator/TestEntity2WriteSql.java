@@ -11,6 +11,9 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TestEntity2WriteSql {
     private final static String TABLE_NAME = "test_table";
@@ -110,5 +113,52 @@ class TestEntity2WriteSql {
     void testGetTableNameByBean() {
         TestBean bean = new TestBean();
         assertEquals(TABLE_NAME, Entity2WriteSql.getTableNameByBean(bean));
+    }
+
+    @Test
+    void skipsWriteOnlyProperties() {
+        WriteOnlyBean bean = new WriteOnlyBean();
+        bean.setSecret("ignored");
+
+        Entity2WriteSql generator = new Entity2WriteSql(bean);
+        generator.setTableName(TABLE_NAME);
+        generator.getInsertSql();
+
+        assertEquals("INSERT INTO test_table (`name` ) VALUES (?)", generator.getSql());
+        assertArrayEquals(new Object[]{"readable"}, generator.getParams());
+    }
+
+    @Test
+    void propagatesGetterFailureWithPropertyContext() {
+        Entity2WriteSql generator = new Entity2WriteSql(new FailingGetterBean());
+        generator.setTableName(TABLE_NAME);
+
+        IllegalStateException error = assertThrows(IllegalStateException.class, generator::getInsertSql);
+
+        assertTrue(error.getMessage().contains(FailingGetterBean.class.getName()));
+        assertTrue(error.getMessage().contains("broken"));
+        assertInstanceOf(IllegalArgumentException.class, error.getCause());
+    }
+
+    public static class WriteOnlyBean {
+        private String secret;
+
+        public String getName() {
+            return "readable";
+        }
+
+        public void setSecret(String secret) {
+            this.secret = secret;
+        }
+    }
+
+    public static class FailingGetterBean {
+        public String getBroken() {
+            throw new IllegalArgumentException("broken getter");
+        }
+
+        public String getName() {
+            return "must not be inserted";
+        }
     }
 }

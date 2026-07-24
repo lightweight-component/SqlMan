@@ -18,21 +18,29 @@ package com.ajaxjs.sqlman.crud;
 
 import com.ajaxjs.sqlman.Action;
 import com.ajaxjs.sqlman.JdbcConnection;
+import com.ajaxjs.sqlman.model.NullValue;
 import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman.model.tablemodel.TableModel;
 import com.ajaxjs.sqlman.sqlgenerator.Entity2WriteSql;
+import com.ajaxjs.util.JsonUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 批量更新
@@ -43,11 +51,19 @@ import java.util.Map;
 public class BatchUpdate extends TableModel {
     /**
      * 批量插入数据
+     * <p>
+     * 此兼容接口接收的是完整 SQL 值片段，无法使用参数绑定。新代码应优先使用
+     * {@link #createBatchMap(Object, String)} 或 {@link #createBatch(Object)}。
      *
      * @param fields 数据库表的字段列表，多个字段用逗号分隔，例如："id,name,age"
      * @param values 批量插入的数据列表，每个元素代表一条记录，格式为"('value1', 'value2', 'value3', ... , 'valueN')"
      */
+    @Deprecated
     public void createBatch(String fields, List<String> values) {
+        requireNotEmpty(values, "values 不能为空");
+        for (String value : values)
+            requireText(value, "values 不能包含空值");
+
         log.info("批量插入 {} 条数据", values.size());
         createBatch(fields, String.join(",", values));
     }
@@ -59,34 +75,36 @@ public class BatchUpdate extends TableModel {
      * @param fields 数据库表的字段列表，多个字段用逗号分隔，例如："id,name,age"
      * @param values 批量插入的数据，格式为"('value1', 'value2', 'value3', ... , 'valueN')"，每个元素代表一条记录
      */
+    @Deprecated
     public void createBatch(String fields, String values) {
+        requireText(getTableName(), "tableName 不能为空");
+        requireText(fields, "fields 不能为空");
+        requireText(values, "values 不能为空");
+
         long start = System.currentTimeMillis();
-        String sql = "INSERT INTO " + getTableName() + " (" + fields + ") VALUE " + values;
-        log.info(sql);
-
-        int[] result = null;
         Connection conn = JdbcConnection.getConnection();
+        String sql;
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            conn.setAutoCommit(false);// 取消自动提交
+        try {
+            List<String> fieldList = new ArrayList<>();
+            for (String field : fields.split(",", -1))
+                fieldList.add(field.trim());
 
-            ps.addBatch();
-            result = ps.executeBatch();
-            ps.clearBatch();
-
-            conn.commit();// 所有语句都执行完毕后才手动提交sql语句
-        } catch (Throwable e) {
-            try {
-                conn.rollback();// 回滚事务
-            } catch (SQLException ex) {
-                log.warn("WARN>>>", ex);
-            }
-
-            log.warn("WARN>>>", e);
+            sql = "INSERT INTO " + quoteIdentifier(conn, getTableName()) + " ("
+                    + quoteIdentifiers(conn, fieldList) + ") VALUES " + values;
+        } catch (SQLException e) {
+            throw new RuntimeException("生成批量插入 SQL 失败", e);
         }
 
-        log.info("result>>{}", Arrays.toString(result));
-        log.info("批量插入完毕 {}ms", System.currentTimeMillis() - start);
+        int effectedRows;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            effectedRows = ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("批量插入失败", e);
+        }
+
+        log.info("批量插入完成，影响 {} 行，耗时 {}ms", effectedRows, System.currentTimeMillis() - start);
     }
 
     /**
@@ -97,36 +115,22 @@ public class BatchUpdate extends TableModel {
      */
     @SuppressWarnings("unchecked")
     public void createBatchMap(Object entities, String tableName) {
-        StringBuilder sb = new StringBuilder();
-        Map<String, Object>[] arr;
+        requireText(tableName, "tableName 不能为空");
+        List<Map<String, Object>> rows = new ArrayList<>();
 
         if (entities instanceof List) {
-            List<Map<String, Object>> list = (List<Map<String, Object>>) entities;
-            arr = new Map[list.size()];
+            for (Object entity : (List<?>) entities) {
+                if (!(entity instanceof Map))
+                    throw new IllegalArgumentException("entities 只能包含 Map");
 
-            for (int i = 0; i < list.size(); i++)
-                arr[i] = list.get(i);
-
-        } else if (entities instanceof Map[])  // Arrays
-            arr = (Map<String, Object>[]) entities;
+                rows.add((Map<String, Object>) entity);
+            }
+        } else if (entities instanceof Map[])
+            rows.addAll(Arrays.asList((Map<String, Object>[]) entities));
         else
-            throw new IllegalArgumentException("不支持参数");
+            throw new IllegalArgumentException("entities 必须是 Map 列表或 Map 数组");
 
-        Map<String, Object> firstEntity = arr[0];
-        sb.append("INSERT INTO ").append(tableName).append(" (");
-        firstEntity.forEach((field, value) -> sb.append(" `").append(field).append("`,"));
-        sb.deleteCharAt(sb.length() - 1);// 删除最后一个
-        sb.append(") VALUES");
-
-        for (Map<String, Object> entity : arr) {
-            sb.append(" (");
-            entity.forEach((field, value) -> sb.append(toSqlValue(value)).append(", "));
-            sb.deleteCharAt(sb.length() - 1);// 删除最后一个
-            sb.deleteCharAt(sb.length() - 1);// 删除最后一个
-            sb.append("),");
-        }
-
-        insertBatch(sb);
+        insertRows(tableName, rows, true);
     }
 
     /**
@@ -135,60 +139,216 @@ public class BatchUpdate extends TableModel {
      * @param entities Bean 列表或 Bean 数组
      */
     public void createBatch(Object entities) {
-        StringBuilder sb = new StringBuilder();
-        Object[] arr;
+        requireText(getTableName(), "tableName 不能为空");
+        List<?> entitiesList;
 
-        if (entities instanceof List) {
-            List<?> list = (List<?>) entities;
-            arr = list.toArray();
-        } else if (entities instanceof Object[])  // Arrays
-            arr = (Object[]) entities;
+        if (entities instanceof List)
+            entitiesList = (List<?>) entities;
+        else if (entities instanceof Object[])
+            entitiesList = Arrays.asList((Object[]) entities);
         else
-            throw new IllegalArgumentException("不支持参数");
+            throw new IllegalArgumentException("entities 必须是 Bean 列表或 Bean 数组");
 
-        Object firstEntity = arr[0];
-        sb.append("INSERT INTO ").append(getTableName()).append(" (");
-        Entity2WriteSql.everyBeanField(firstEntity, (field, value) -> sb.append(" `").append(field).append("`,"));
-        sb.deleteCharAt(sb.length() - 1);// 删除最后一个
-        sb.append(") VALUES");
+        requireNotEmpty(entitiesList, "entities 不能为空");
+        List<Map<String, Object>> rows = new ArrayList<>(entitiesList.size());
 
-        for (Object entity : arr) {
-            sb.append(" (");
-            Entity2WriteSql.everyBeanField(entity, (field, value) -> sb.append(toSqlValue(value)).append(", "));
-            sb.deleteCharAt(sb.length() - 1);// 删除最后一个
-            sb.deleteCharAt(sb.length() - 1);// 删除最后一个
-            sb.append("),");
+        for (Object entity : entitiesList) {
+            if (entity == null)
+                throw new IllegalArgumentException("entities 不能包含 null");
+
+            Map<String, Object> row = new LinkedHashMap<>();
+            Entity2WriteSql.everyBeanField(entity, true, row::put);
+            rows.add(row);
         }
 
-        insertBatch(sb);
+        // 延续旧行为：以第一条 Bean 的非 null 字段决定 INSERT 列；后续相同字段可为 null。
+        Set<String> selectedFields = new LinkedHashSet<>();
+        rows.get(0).forEach((field, value) -> {
+            if (value != null)
+                selectedFields.add(field);
+        });
+
+        if (selectedFields.isEmpty())
+            throw new IllegalArgumentException("第一条 Bean 没有可插入的非 null 字段");
+
+        for (int i = 0; i < rows.size(); i++) {
+            Map<String, Object> row = rows.get(i);
+
+            for (Map.Entry<String, Object> entry : row.entrySet()) {
+                if (entry.getValue() != null && !selectedFields.contains(entry.getKey()))
+                    throw new IllegalArgumentException("第 " + (i + 1) + " 条 Bean 的非 null 字段与第一条不一致: " + entry.getKey());
+            }
+
+            row.keySet().retainAll(selectedFields);
+        }
+
+        insertRows(getTableName(), rows, false);
     }
 
     /**
-     * 执行批量插入操作
-     * <p>
-     * 该方法根据传入的 StringBuilder 对象构建 SQL 语句，并执行批量插入操作
-     * 它首先移除 StringBuilder 中最后一个字符，通常是移除SQL语句中的多余逗号或类似字符
-     * 然后，它将 StringBuilder 的内容转换为字符串并执行SQL批量插入操作
-     *
-     * @param sb StringBuilder 对象，用于构建 SQL 批量插入语句
+     * 校验每一行的字段并执行参数化批量插入。
      */
-    private void insertBatch(StringBuilder sb) {
-        sb.deleteCharAt(sb.length() - 1);// 删除最后一个
+    private void insertRows(String tableName, List<Map<String, Object>> rows, boolean requireSameFields) {
+        requireNotEmpty(rows, "entities 不能为空");
 
-        String sql = sb.toString();
-        log.info("批量插入：：{}", sql);
-        int[] result;
+        Map<String, Object> first = rows.get(0);
+        if (first == null || first.isEmpty())
+            throw new IllegalArgumentException("第一条记录没有可插入字段");
 
-        Connection conn = JdbcConnection.getConnection(); // TODO close this connection? above also
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.addBatch();
-            result = ps.executeBatch();
-            ps.clearBatch();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        List<String> fields = new ArrayList<>(first.keySet());
+        Set<String> expectedFields = new LinkedHashSet<>(fields);
+
+        for (int i = 0; i < rows.size(); i++) {
+            Map<String, Object> row = rows.get(i);
+            if (row == null)
+                throw new IllegalArgumentException("第 " + (i + 1) + " 条记录为 null");
+
+            if (requireSameFields && !expectedFields.equals(row.keySet()))
+                throw new IllegalArgumentException("第 " + (i + 1) + " 条记录的字段与第一条不一致");
         }
 
-        log.info("批量插入完成。{}", Arrays.toString(result));
+        Connection conn = JdbcConnection.getConnection();
+        String sql;
+
+        try {
+            sql = buildInsertSql(conn, tableName, fields);
+        } catch (SQLException e) {
+            throw new RuntimeException("生成批量插入 SQL 失败", e);
+        }
+
+        int[] result = executeBatch(conn, sql, rows, fields);
+        log.info("批量插入完成，共 {} 条。{}", rows.size(), Arrays.toString(result));
+    }
+
+    private static String buildInsertSql(Connection conn, String tableName, List<String> fields) throws SQLException {
+        StringBuilder sql = new StringBuilder("INSERT INTO ");
+        sql.append(quoteIdentifier(conn, tableName)).append(" (")
+                .append(quoteIdentifiers(conn, fields)).append(") VALUES (");
+        for (int i = 0; i < fields.size(); i++) {
+            if (i > 0)
+                sql.append(", ");
+            sql.append("?");
+        }
+
+        return sql.append(")").toString();
+    }
+
+    private static String quoteIdentifiers(Connection conn, List<String> identifiers) throws SQLException {
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < identifiers.size(); i++) {
+            if (i > 0)
+                result.append(", ");
+            result.append(quoteIdentifier(conn, identifiers.get(i)));
+        }
+
+        return result.toString();
+    }
+
+    private static String quoteIdentifier(Connection conn, String identifier) throws SQLException {
+        requireText(identifier, "数据库标识符不能为空");
+        java.sql.DatabaseMetaData metadata = conn.getMetaData();
+        String quote = metadata.getIdentifierQuoteString();
+        if (quote == null || quote.trim().isEmpty())
+            quote = "";
+        else
+            quote = quote.trim();
+
+        String[] parts = identifier.split("\\.", -1);
+        StringBuilder result = new StringBuilder();
+
+        for (String part : parts) {
+            requireText(part, "数据库标识符不能为空");
+            if (result.length() > 0)
+                result.append('.');
+
+            if (metadata.storesUpperCaseIdentifiers())
+                part = part.toUpperCase(Locale.ROOT);
+            else if (metadata.storesLowerCaseIdentifiers())
+                part = part.toLowerCase(Locale.ROOT);
+
+            result.append(quote)
+                    .append(quote.isEmpty() ? part : part.replace(quote, quote + quote))
+                    .append(quote);
+        }
+
+        return result.toString();
+    }
+
+    private static int[] executeBatch(Connection conn, String sql, List<Map<String, Object>> rows, List<String> fields) {
+        final boolean localTransaction;
+
+        try {
+            localTransaction = conn.getAutoCommit();
+        } catch (SQLException e) {
+            throw new RuntimeException("无法读取数据库连接的事务状态", e);
+        }
+
+        SQLException failure = null;
+        int[] result = null;
+
+        try {
+            if (localTransaction)
+                conn.setAutoCommit(false);
+
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                for (Map<String, Object> row : rows) {
+                    for (int i = 0; i < fields.size(); i++)
+                        setParameter(ps, i + 1, row.get(fields.get(i)));
+
+                    ps.addBatch();
+                }
+
+                result = ps.executeBatch();
+            }
+
+            if (localTransaction)
+                conn.commit();
+        } catch (SQLException e) {
+            failure = e;
+
+            if (localTransaction) {
+                try {
+                    conn.rollback();
+                } catch (SQLException rollbackError) {
+                    e.addSuppressed(rollbackError);
+                }
+            }
+
+        } finally {
+            if (localTransaction) {
+                try {
+                    conn.setAutoCommit(true);
+                } catch (SQLException e) {
+                    if (failure == null)
+                        failure = e;
+                    else
+                        failure.addSuppressed(e);
+                }
+            }
+        }
+
+        if (failure != null)
+            throw new RuntimeException("批量插入失败", failure);
+
+        return result;
+    }
+
+    private static void setParameter(PreparedStatement ps, int index, Object value) throws SQLException {
+        if (NullValue.NULL_DATE.equals(value) || NullValue.NULL_INT.equals(value)
+                || NullValue.NULL_LONG.equals(value) || NullValue.NULL_STRING.equals(value))
+            value = null;
+        else if (value instanceof Map || value instanceof List)
+            value = JsonUtil.toJson(value);
+        else if (value instanceof Enum)
+            value = value.toString();
+
+        if (value instanceof byte[])
+            ps.setBytes(index, (byte[]) value);
+        else if (value instanceof InputStream)
+            ps.setBinaryStream(index, (InputStream) value);
+        else
+            ps.setObject(index, value);
     }
 
     /**
@@ -198,8 +358,25 @@ public class BatchUpdate extends TableModel {
      * @return 是否成功
      */
     public UpdateResult deleteBatch(List<? extends Serializable> ids) {
+        requireNotEmpty(ids, "ids 不能为空");
+        if (ids.contains(null))
+            throw new IllegalArgumentException("ids 不能包含 null");
+        requireText(getTableName(), "tableName 不能为空");
+        requireText(getIdField(), "idField 不能为空");
+
+        Connection conn = JdbcConnection.getConnection();
+        String tableName;
+        String idField;
+
+        try {
+            tableName = quoteIdentifier(conn, getTableName());
+            idField = quoteIdentifier(conn, getIdField());
+        } catch (SQLException e) {
+            throw new RuntimeException("生成批量删除 SQL 失败", e);
+        }
+
         StringBuilder sb = new StringBuilder();
-        sb.append("DELETE FROM ").append(getTableName()).append(" WHERE ").append(getIdField()).append(" IN (");
+        sb.append("DELETE FROM ").append(tableName).append(" WHERE ").append(idField).append(" IN (");
 
         List<String> valueHolders = new ArrayList<>();
         List<Object> params = new ArrayList<>();
@@ -212,22 +389,16 @@ public class BatchUpdate extends TableModel {
         sb.append(String.join(",", valueHolders));
         sb.append(")");
 
-        return new Action(sb.toString()).update(params.toArray()).execute();
+        return new Action(conn, sb.toString()).update(params.toArray()).execute();
     }
 
-    /**
-     * 转换为符合 SQL 的类型
-     */
-    static Object toSqlValue(Object value) {
-        if (value instanceof String)
-            return "'" + value + "'";
-//        else if (value instanceof Boolean)
-//            return ((Boolean) value) ? 1 : 0;
-//        else if (value instanceof Date)
-//            return "'" + DateHelper.formatDateTime((Date) value) + "'";
-//        else if (value instanceof LocalDateTime)
-//            return "'" + DateHelper.formatDateTime((LocalDateTime) value) + "'";
+    private static void requireText(String value, String message) {
+        if (value == null || value.trim().isEmpty())
+            throw new IllegalArgumentException(message);
+    }
 
-        return value.toString();
+    private static void requireNotEmpty(Collection<?> values, String message) {
+        if (values == null || values.isEmpty())
+            throw new IllegalArgumentException(message);
     }
 }

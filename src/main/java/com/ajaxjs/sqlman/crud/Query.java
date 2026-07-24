@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +51,7 @@ public class Query extends BaseAction {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     T _result = processor.process(rs);
-                    resultText = _result.toString();
+                    resultText = resultToLogText(_result);
 
                     return _result;
                 } else {
@@ -64,17 +65,35 @@ public class Query extends BaseAction {
             log.warn("SQL Error when doing read action.", e);
             throw new RuntimeException("SQL Error when doing read action.", e);
         } finally {
-            String _resultText = resultText;
-            String traceId = MDC.get(Trace.TRACE_KEY);
-            String bizAction = MDC.get(Trace.BIZ_ACTION);
+            try { // avoid this exception to effect main job
+                String duration = (System.currentTimeMillis() - startTime) + "ms";
+                String _resultText = resultText;
+                String traceId = MDC.get(Trace.TRACE_KEY);
+                String bizAction = MDC.get(Trace.BIZ_ACTION);
 
-            PrintRealSql.printLog("Query", traceId, bizAction,
-                    action.getSql(), action.getParams(), PrintRealSql.printRealSql(action.getSql(), action.getParams()),
-                    this, _resultText, true);
-//            CompletableFuture.runAsync(() -> PrintRealSql.printLog("Query", traceId, bizAction,
-//                    action.getSql(), action.getParams(), PrintRealSql.printRealSql(action.getSql(), action.getParams()),
-//                    this, _resultText, true));
+                PrintRealSql.printLog("Query", traceId, bizAction, action.getSql(), action.getParams(), PrintRealSql.printRealSql(action.getSql(), action.getParams()), duration, _resultText);
+            } catch (Exception e) {
+                log.warn("There's error when logging.", e);
+            }
         }
+    }
+
+    private static String resultToLogText(Object result) {
+        if (result == null)
+            return "null";
+
+        if (result instanceof Collection<?>) {
+            Collection<?> collection = (Collection<?>) result;
+
+            return collection.size() > 100 ? "Collection(size=" + collection.size() + ")" : String.valueOf(result);
+        }
+
+        if (result instanceof Map<?, ?>) {
+            Map<?, ?> map = (Map<?, ?>) result;
+            return map.size() > 100 ? "Map(size=" + map.size() + ")" : String.valueOf(result);
+        }
+
+        return String.valueOf(result);
     }
 
     public <T> T oneValue(Class<T> clz) {

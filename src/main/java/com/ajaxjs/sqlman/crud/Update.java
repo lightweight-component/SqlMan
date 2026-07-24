@@ -53,13 +53,18 @@ public class Update extends BaseAction {
             log.warn("SQL update error.", e);
             throw new RuntimeException("SQL update error.", e);
         } finally {
-            String _resultText = resultText;
-            String traceId = MDC.get(Trace.TRACE_KEY);
-            String bizAction = MDC.get(Trace.BIZ_ACTION);
+            try { // avoid this exception to effect main job
+                String duration = (System.currentTimeMillis() - startTime) + "ms";
+                String _resultText = resultText;
+                String traceId = MDC.get(Trace.TRACE_KEY);
+                String bizAction = MDC.get(Trace.BIZ_ACTION);
 
-            PrintRealSql.printLog("Update", traceId, bizAction,
-                    action.getSql(), action.getParams(),
-                    PrintRealSql.printRealSql(action.getSql(), action.getParams()), this, _resultText, true);
+                PrintRealSql.printLog("Update", traceId, bizAction,
+                        action.getSql(), action.getParams(),
+                        PrintRealSql.printRealSql(action.getSql(), action.getParams()), duration, _resultText);
+            } catch (Exception e) {
+                log.warn("There's error when logging.", e);
+            }
         }
     }
 

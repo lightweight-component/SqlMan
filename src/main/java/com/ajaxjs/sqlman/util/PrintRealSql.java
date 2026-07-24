@@ -13,18 +13,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 /**
  * Printing the final SQL with real values
  */
 @Slf4j
 public class PrintRealSql {
-    /**
-     * 编译正则表达式模式，匹配 SQL 中的 '?' 占位符
-     */
-    private static final Pattern PARAM_PATTERN = Pattern.compile("\\?");
-
     /**
      * 检查 SQL 中的 '?' 占位符个数与参数个数是否匹配
      *
@@ -225,21 +219,13 @@ public class PrintRealSql {
      * @param realSql       实际执行SQL（带参数）
      * @param action        用于计算耗时（如 33ms）
      * @param result        执行结果（Object）
-     * @param wrapLongLines 是否允许完整显示超长字符串，自动换行
      */
-    public static void printLog(String type, String traceId, String bizAction, String sql, Object params, String realSql, BaseAction action, Object result, boolean wrapLongLines) {
+    public static void printLog(String type, String traceId, String bizAction, String sql, Object params, String realSql, String duration, Object result) {
         if (MDC.get(Trace.ENABLE_LOG_THROTTLING) != null && ObjectHelper.hasText(bizAction) && !shouldPrint(bizAction))
             return;
 
         String title = " Debugging " + type + " ";
         realSql = realSql.replaceAll(REGEXP, " ");
-
-        String duration;
-
-        if (action != null)
-            duration = String.valueOf(System.currentTimeMillis() - action.startTime);
-        else
-            duration = TextBox.NONE;
 
         TextBox textBox = new TextBox();
         textBox.boxStart(title)
@@ -249,7 +235,7 @@ public class PrintRealSql {
                 .line("SQL:      ", sql.replaceAll(REGEXP, " "))
                 .line("Params:   ", params)
                 .line("Real:     ", realSql)
-                .line("Duration: ", duration + "ms")
+                .line("Duration: ", duration)
                 .line("Result:   ", result);
 
         String _log = textBox.boxEnd();

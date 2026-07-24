@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -62,18 +63,8 @@ public class Create extends BaseAction {
                         if (rs.next()) {
                             Object newlyId = rs.getObject(1);
 
-                            if (newlyId instanceof BigInteger)
-                                newlyId = ((BigInteger) newlyId).longValue();
-
                             if (idType != null)
-                                result.setNewlyId((T) newlyId);
-
-//                            if (idType.equals(Long.class))
-//                                return (Long) newlyId;
-//                            else if (idType.equals(Integer.class))
-//                                return (Integer) newlyId;
-//                            else if (idType.equals(String.class))
-//                                return (String) newlyId;
+                                result.setNewlyId(convertGeneratedKey(newlyId, idType));
                         }
                     }
                 } else {
@@ -102,16 +93,84 @@ public class Create extends BaseAction {
             log.warn("SQL insert error.", e);
             throw new RuntimeException("SQL insert error.", e);
         } finally {
-            String _resultText = resultText;
-            String traceId = MDC.get(Trace.TRACE_KEY);
-            String bizAction = MDC.get(Trace.BIZ_ACTION);
+            try { // avoid this exception to effect main job
+                String duration = (System.currentTimeMillis() - startTime) + "ms";
+                String _resultText = resultText;
+                String traceId = MDC.get(Trace.TRACE_KEY);
+                String bizAction = MDC.get(Trace.BIZ_ACTION);
 
-            PrintRealSql.printLog("Create", traceId, bizAction,
-                    action.getSql(), action.getParams(), PrintRealSql.printRealSql(action.getSql(), action.getParams()), this, _resultText, true);
-
-//            CompletableFuture.runAsync(() -> PrintRealSql.printLog("Create", traceId, bizAction,
-//                    action.getSql(), action.getParams(), PrintRealSql.printRealSql(action.getSql(), action.getParams()), this, _resultText, true));
+                PrintRealSql.printLog("Create", traceId, bizAction,
+                        action.getSql(), action.getParams(), PrintRealSql.printRealSql(action.getSql(), action.getParams()), duration, _resultText);
+            } catch (Exception e) {
+                log.warn("There's error when logging.", e);
+            }
         }
+    }
+
+    /**
+     * Convert a JDBC generated key to the type requested by the caller.
+     * Exact numeric conversions are used so that overflow or fractional values
+     * cannot be silently truncated.
+     */
+    static <T extends Serializable> T convertGeneratedKey(Object value, Class<T> targetType) {
+        if (value == null)
+            return null;
+        if (targetType == null)
+            throw new IllegalArgumentException("Generated key target type cannot be null.");
+        if (targetType.isInstance(value))
+            return targetType.cast(value);
+        if (targetType == String.class)
+            return targetType.cast(String.valueOf(value));
+        if (targetType == Serializable.class) {
+            if (value instanceof Serializable)
+                return targetType.cast(value);
+
+            throw conversionError(value, targetType, null);
+        }
+
+        try {
+            BigDecimal number = toBigDecimal(value);
+            Object converted;
+
+            if (targetType == Integer.class)
+                converted = number.intValueExact();
+            else if (targetType == Long.class)
+                converted = number.longValueExact();
+            else if (targetType == Short.class)
+                converted = number.shortValueExact();
+            else if (targetType == Byte.class)
+                converted = number.byteValueExact();
+            else if (targetType == BigInteger.class)
+                converted = number.toBigIntegerExact();
+            else if (targetType == BigDecimal.class)
+                converted = number;
+            else
+                throw conversionError(value, targetType, null);
+
+            return targetType.cast(converted);
+        } catch (ArithmeticException | NumberFormatException e) {
+            throw conversionError(value, targetType, e);
+        }
+    }
+
+    private static BigDecimal toBigDecimal(Object value) {
+        if (value instanceof BigDecimal)
+            return (BigDecimal) value;
+        if (value instanceof BigInteger)
+            return new BigDecimal((BigInteger) value);
+        if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long)
+            return BigDecimal.valueOf(((Number) value).longValue());
+        if (value instanceof Number || value instanceof CharSequence)
+            return new BigDecimal(value.toString());
+
+        throw conversionError(value, BigDecimal.class, null);
+    }
+
+    private static IllegalArgumentException conversionError(Object value, Class<?> targetType, Exception cause) {
+        String message = "Cannot convert generated key [" + value + "] of type "
+                + value.getClass().getName() + " to " + targetType.getName() + " without data loss.";
+
+        return cause == null ? new IllegalArgumentException(message) : new IllegalArgumentException(message, cause);
     }
 
     public static final Long INSERT_OK_LONG = -1L;
