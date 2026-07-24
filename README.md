@@ -1,6 +1,5 @@
 <h1 align="center">SqlMan</h1>
 <h3 align="center">CRUD Tools for Java</h3>
-<hr />
 
 <div style="text-align: center;">
 
