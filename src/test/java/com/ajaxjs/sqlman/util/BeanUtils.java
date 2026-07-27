@@ -2,8 +2,8 @@ package com.ajaxjs.sqlman.util;
 
 import com.ajaxjs.sqlman.annotation.Transient;
 import com.ajaxjs.util.CommonConstant;
-import com.ajaxjs.util.reflect.Clazz;
 import com.ajaxjs.util.reflect.Methods;
+import com.ajaxjs.util.reflect.NewInstance;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -65,22 +65,29 @@ public class BeanUtils {
         String setMethodName = "set" + StringUtils.capitalize(name);
         Objects.requireNonNull(bean, bean + "执行：" + setMethodName + " 未发现类");
 //		Objects.requireNonNull(value, bean + "执行：" + setMethodName + " 未发现参数 value");
+
         Class<?> clazz = bean.getClass();
-        // 要把参数父类的也包括进来
-        Method method = Methods.getMethodByUpCastingSearch(clazz, setMethodName, value);
-
-        // 如果没找到，那就试试接口的……
-        if (method == null)
-            method = Methods.getDeclaredMethodByInterface(clazz, setMethodName, value);
-
-        // 如果没找到，那忽略参数类型，只要匹配方法名称即可。这会发生在：由于被注入的对象有可能经过了 AOP 的动态代理，所以不能通过上述逻辑找到正确的方法
-        if (method == null)
-            method = Methods.getSuperClassDeclaredMethod(clazz, setMethodName);
+        Method method = new Methods(clazz).findCompatibleMethod(setMethodName, value);
+//        Methods methods = new Methods();
+//        // 要把参数父类的也包括进来
+//        Method method = new Methods(clazz).getMethodByArgumentUpCastingSearch(setMethodName, value);
+//
+//        // 如果没找到，那就试试接口的……
+//        if (method == null)
+//            method = new Methods(clazz).getMethodByArgumentInterface(setMethodName, value);
+//
+//        // 如果没找到，那忽略参数类型，只要匹配方法名称即可。这会发生在：由于被注入的对象有可能经过了 AOP 的动态代理，所以不能通过上述逻辑找到正确的方法
+//        if (method == null)
+//            method = new Methods(clazz).getSuperClassDeclaredMethod(setMethodName);
 
         // 最终还是找不到
         Objects.requireNonNull(method, "找不到目标方法[" + clazz.getSimpleName() + "." + setMethodName + "(" + value.getClass().getSimpleName() + ")]");
 
-        Methods.executeMethod(bean, method, value);
+        try {
+            Methods.execute(bean, method, new Object[]{value});
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @FunctionalInterface
@@ -182,7 +189,7 @@ public class BeanUtils {
     public static Map<String, Integer> getConstantsInt(Class<?> clz) {
         Map<String, Integer> map = new HashMap<>();// 创建一个空的 HashMap 对象，用于存储常量名称和值的映射关系
         Field[] fields = clz.getDeclaredFields();
-        Object instance = Clazz.newInstance(clz);
+        Object instance = new NewInstance<>(clz).newInstance();
 
         for (Field field : fields) {
             String descriptor = Modifier.toString(field.getModifiers());// 获得其属性的修饰

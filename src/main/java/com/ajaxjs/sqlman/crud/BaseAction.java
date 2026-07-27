@@ -8,8 +8,8 @@ import com.ajaxjs.util.Base64Utils;
 import com.ajaxjs.util.ConvertBasicValue;
 import com.ajaxjs.util.JsonUtil;
 import com.ajaxjs.util.ObjectHelper;
-import com.ajaxjs.util.reflect.Clazz;
 import com.ajaxjs.util.reflect.Methods;
+import com.ajaxjs.util.reflect.NewInstance;
 import com.ajaxjs.util.reflect.Types;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -143,7 +143,7 @@ public abstract class BaseAction {
 //                }
             }
 
-            T bean = Clazz.newInstance(beanClz);
+            T bean = new NewInstance<>(beanClz).newInstance();
 
 //            if (beanClz.toString().contains("xxx")) {
 //                System.out.println();
@@ -220,19 +220,23 @@ public abstract class BaseAction {
                         }
 //					}
 
-                    Methods.executeMethod(bean, method, value);
+                    try {
+                        Methods.execute(bean, method, new Object[]{value});
+                    } catch (Throwable e) {
+                        log.error("Error when setting value to bean field: {}", key, e);
+                    }
                 } catch (IntrospectionException e) {
                     // 数据库返回这个字段，但是 bean 没有对应的方法
 //						LOGGER.info("数据库返回这个字段 {0}，但是 bean {1} 没有对应的方法", key, beanClz);
                     try {
                         if (_value != null) {
-                            Object obj = Methods.executeMethod(bean, "getExtractData");
+                            Object obj = Methods.execute(bean, "getExtractData");
 
 //								LOGGER.info(":::::::::key::"+ key +":::v:::" + _value);
                             if (obj == null) {
                                 Map<String, Object> extractData = new HashMap<>();
-                                Methods.executeMethod(bean, "setExtractData", extractData);
-                                obj = Methods.executeMethod(bean, "getExtractData");
+                                Methods.execute(bean, "setExtractData", new Object[]{extractData});
+                                obj = Methods.execute(bean, "getExtractData");
                             }
 
                             if (obj instanceof Map) {
@@ -242,6 +246,9 @@ public abstract class BaseAction {
                         }
                     } catch (SecurityException ignored) {
 //                        log.warn("ERROR>>", e2);
+                    } catch (Throwable ex) {
+                        log.error("Error when setting value to bean field: {}", key, e);
+                        throw new RuntimeException(ex);
                     }
                 } catch (IllegalArgumentException e) {
                     throw new IllegalArgumentException("记录集合转换为 bean 异常。", e);

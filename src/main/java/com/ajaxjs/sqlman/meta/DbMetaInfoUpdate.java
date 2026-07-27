@@ -49,7 +49,12 @@ public class DbMetaInfoUpdate extends DbMetaInfoBase {
         } else {
             String getId = Utils.changeColumnToFieldName("get_" + idField);
 
-            return Methods.executeMethod(entity, getId);
+            try {
+                return Methods.execute(entity, getId);
+            } catch (Throwable e) {
+                e.printStackTrace();
+                return null;
+            }
         }
     }
 }
