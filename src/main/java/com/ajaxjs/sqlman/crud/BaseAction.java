@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.HashMap;
@@ -79,8 +78,7 @@ public abstract class BaseAction {
     }
 
     public static Map<String, Object> getResultMap(ResultSet rs) throws SQLException {
-        // LinkedHashMap 是 HashMap 的一个子类，保存了记录的插入顺序
-        Map<String, Object> map = new LinkedHashMap<>();
+        Map<String, Object> map = new LinkedHashMap<>();// LinkedHashMap 是 HashMap 的一个子类，保存了记录的插入顺序
         ResultSetMetaData metaData = rs.getMetaData();
 
         for (int i = 1; i <= metaData.getColumnCount(); i++) {// 遍历结果集
@@ -113,6 +111,8 @@ public abstract class BaseAction {
 
     private static final String BLOB_TYPE_MYSQL = "BLOB";
 
+    private static final String NULL_STR = "null";
+
     static String rs2Base64Str(ResultSet rs, int index) throws SQLException {
         Blob blob = rs.getBlob(index);// 获取 BLOB 数据
         byte[] blobBytes = blob.getBytes(1, (int) blob.length()); // 将 BLOB 转为字节数组
@@ -136,43 +136,21 @@ public abstract class BaseAction {
                 Object v = rs.getObject(1);
 
                 return (T) v;
-//                for (int i = 1; i <= columnLength; i++) {// 遍历结果集
-//                    Object v = rs.getObject(i);
-//
-//                    return (T) v;
-//                }
             }
 
             T bean = new NewInstance<>(beanClz).newInstance();
 
-//            if (beanClz.toString().contains("xxx")) {
-//                System.out.println();
-//            }
-
             for (int i = 1; i <= metaData.getColumnCount(); i++) {// 遍历结果集
-                String key = metaData.getColumnLabel(i);
+                String key = parseKey(metaData.getColumnLabel(i));
+                Object value, _value = rs.getObject(i); // Real value in DB
                 String columnTypeName = metaData.getColumnTypeName(i);
-
-                if (action.getDatabaseVendor() == DatabaseVendor.H2)  // H2 的数据库字段名称是大写的，需要转换为小写
-                    key = key.toLowerCase();
-
-                Object _value = rs.getObject(i); // Real value in DB
-
-                if (key.startsWith("avatar") && _value != null) {
-                    log.debug(key + ":v:" + _value);
-                    log.debug(key + "::" + metaData.getColumnTypeName(i));
-                }
-                if (key.contains("_")) // 将以下划线分隔的数据库字段转换为驼峰风格的字符串
-                    key = Utils.changeColumnToFieldName(key);
 
                 try {
                     PropertyDescriptor property = new PropertyDescriptor(key, beanClz);
-                    Method method = property.getWriteMethod();
-                    Object value;
-                    Class<?> propertyType = property.getPropertyType();
+                    Class<?> propertyType = property.getPropertyType(); // the except type
 
-                    if (key.startsWith("bind"))
-                        log.debug(key + "::" + metaData.getColumnTypeName(i));
+//                    if (key.startsWith("avatar") && _value != null)
+//                        log.debug("key: {}, value:{}, type: {}", key, _value, metaData.getColumnTypeName(i));
 
                     // 枚举类型的支持
 //					if (propertyType.isEnum()) // Enum.class.isAssignableFrom(propertyType) 这个方法也可以
@@ -181,7 +159,7 @@ public abstract class BaseAction {
 
                     if (_value != null && JSON_TYPE_MYSQL8.equals(columnTypeName)) {
                         /* JSON 类型会返回字符串 null 而不是 null */
-                        if ("null".equals(_value))
+                        if (NULL_STR.equals(_value))
                             value = null;
                         else {
                             String jsonStr = _value.toString();
@@ -203,36 +181,30 @@ public abstract class BaseAction {
                                 log.warn("非法 JSON 字符串： {}，字段：{}", jsonStr, key);
                             }
                         }
-                    } else if (_value != null && BLOB_TYPE_MYSQL.equals(columnTypeName)) {
-                        if (byte.class == propertyType.getComponentType()) {
-                            log.info("byte type");
-                            value = _value;
-                        } else
-                            value = rs2Base64Str(rs, i);
-                    } else
+                    } else if (_value != null && BLOB_TYPE_MYSQL.equals(columnTypeName))
+                        value = byte.class == propertyType.getComponentType() ? _value : rs2Base64Str(rs, i);
+                    else
                         try {
                             value = ConvertBasicValue.basicConvert(_value, propertyType);
                         } catch (NumberFormatException e) {
 //                        String input = value.getClass().toString();
 //                        String expect = property.getPropertyType().toString();
-//                        LOGGER.warning(e, "保存数据到 bean 的 {0} 字段时，转换失败，输入值：{1}，输入类型 ：{2}， 期待类型：{3}", key, "", "", expect);
+//                            log.warn("保存数据到 bean 的 {} 字段时，转换失败，输入值：{}，输入类型 ：{}，期待类型：{}", key, "", "", expect, e);
                             continue; // 转换失败，继续下一个字段
                         }
 //					}
 
                     try {
-                        Methods.execute(bean, method, new Object[]{value});
+                        Methods.execute(bean, property.getWriteMethod(), new Object[]{value});
                     } catch (Throwable e) {
                         log.error("Error when setting value to bean field: {}", key, e);
                     }
                 } catch (IntrospectionException e) {
-                    // 数据库返回这个字段，但是 bean 没有对应的方法
-//						LOGGER.info("数据库返回这个字段 {0}，但是 bean {1} 没有对应的方法", key, beanClz);
                     try {
                         if (_value != null) {
                             Object obj = Methods.execute(bean, "getExtractData");
+                            log.debug("key: {}, value:{}", key, _value);
 
-//								LOGGER.info(":::::::::key::"+ key +":::v:::" + _value);
                             if (obj == null) {
                                 Map<String, Object> extractData = new HashMap<>();
                                 Methods.execute(bean, "setExtractData", new Object[]{extractData});
@@ -245,17 +217,32 @@ public abstract class BaseAction {
                             }
                         }
                     } catch (SecurityException ignored) {
-//                        log.warn("ERROR>>", e2);
                     } catch (Throwable ex) {
-                        log.error("Error when setting value to bean field: {}", key, e);
-                        throw new RuntimeException(ex);
+                        if (ex instanceof IllegalArgumentException && "Method must not be null.".equals(ex.getMessage())) {
+                            /*
+                             * 数据库返回这个字段，但是 bean 没有对应的方法
+                             * There is a data in Database, but not in Java bean. That means Java doesn't want to have this data,
+                             */
+                            // ignore
+                        } else {
+                            log.error("Error when setting value to bean field: {}", key, e);
+                            throw new RuntimeException(ex);
+                        }
                     }
-                } catch (IllegalArgumentException e) {
-                    throw new IllegalArgumentException("记录集合转换为 bean 异常。", e);
                 }
             }
 
             return bean;
         };
+    }
+
+    private String parseKey(String key) {
+        if (action.getDatabaseVendor() == DatabaseVendor.H2)  // H2 的数据库字段名称是大写的，需要转换为小写
+            key = key.toLowerCase();
+
+        if (key.contains("_")) // 将以下划线分隔的数据库字段转换为驼峰风格的字符串
+            key = Utils.changeColumnToFieldName(key);
+
+        return key;
     }
 }
