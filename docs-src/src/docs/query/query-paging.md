@@ -1,71 +1,73 @@
 ---
-title: Paging Query
-subTitle: 2024-12-05 by Frank Cheung
-description: This tutorial will guide you through the process of paging database data in SqlMan using a sample test code.
-date: 2022-01-05
-tags: paging query
+title: Pagination
+subTitle: Offset and page-number APIs
+description: Paginate SqlMan queries by offset/limit or page number/page size and map page rows to JavaBeans.
+date: 2026-07-29
+tags:
+  - SqlMan
+  - pagination
+  - query
 layout: layouts/docs.njk
 ---
 
-# Paging Query
+# Pagination
 
-Paging through large datasets is a common requirement in applications to enhance performance and provide a better user experience. This tutorial will guide you through the process of paging database data in SqlMan using
-a sample test code.
+Pagination executes a count query followed by a query for the requested page. Start with SQL that does not already contain database-specific pagination syntax.
 
-## Paging with Default Settings
+## Offset and limit
 
-The first paging example demonstrates how to retrieve paginated results with default settings: fecth the data between the first row to 9th row. We use the `page` method without any parameters:
-
-```java
-PageResult<Map<String, Object>> result = new Sql(conn).input("SELECT * FROM article").page();
-```
-
-## Paging with Custom Page Size and Number
-
-The second example shows how to retrieve paginated results by specifying the record start and limit, like MySQL paging query:
+`start` is a zero-based row offset and `limit` is the page size:
 
 ```java
-PageResult<Map<String, Object>> result = new Sql(conn).input("SELECT * FROM article").page(3, 5);
+PageResult<Map<String, Object>> page =
+        new Action(conn, "SELECT * FROM article ORDER BY id DESC")
+                .query()
+                .pageByStartLimit(0, 20);
 ```
 
-### Paging with Custom Class Mapping
+## Page number and page size
 
-The third example demonstrates how to map the results to a custom class (`Address`) and retrieve paginated results:
+Page numbers start at 1:
 
 ```java
-PageResult<Address> result = new Sql(conn).input("SELECT * FROM shop_address").page(Address.class, 1, 2);
+PageResult<Map<String, Object>> page =
+        new Action(conn, "SELECT * FROM article ORDER BY id DESC")
+                .query()
+                .pageByPageNo(3, 20);
 ```
 
-## Checking for Empty Results
-
-The fourth example shows how to handle scenarios where the paginated result is empty:
+## JavaBean rows
 
 ```java
-PageResult<Map<String, Object>> result = new Sql(conn).input("SELECT * FROM shop_address").page(Address.class, 100, 2);
-assertEquals(0, result.size());
+PageResult<Address> page =
+        new Action(conn, "SELECT * FROM shop_address ORDER BY id")
+                .query()
+                .pageByPageNo(1, 20, Address.class);
 ```
 
-# Binding Parameters
+`PageResult` contains `list`, `totalCount`, `totalPage`, `currentPage`, `start`, `pageSize`, and `zero`. A request beyond the last page returns an empty list.
 
-Binding Parameters is also supported in paging query. The same way to do that.
+## Bind query parameters
+
+Bind parameters when creating the `Query`, before invoking the pagination method:
 
 ```java
-PageResult<Map<String, Object>> result = new Sql(conn).input("SELECT * FROM shop_address where stat = ?", 1).page();
+PageResult<Map<String, Object>> page =
+        new Action(conn, "SELECT * FROM shop_address WHERE stat = ? ORDER BY id")
+                .query(1)
+                .pageByStartLimit(0, 20);
 ```
 
-# Paging with Custom Database Vendor
+## Read pagination from an HTTP request
 
-The final example demonstrates how to set a custom database vendor (e.g., SQL Server) and retrieve paginated results:
+The servlet overloads recognize:
+
+- Offset mode: `start` or `offset`; page size: `pageSize`, `rows`, or `limit`.
+- Page-number mode: `pageNo` or `page`; page size: `pageSize`, `rows`, or `limit`.
 
 ```java
-Sql sqlServer = new Sql(conn);
-sqlServer.setDatabaseVendor(JdbcConstants.DatabaseVendor.SQL_SERVER);
-PageResult<Map<String, Object>> result = sqlServer.input("SELECT * FROM article").page();
+PageResult<Map<String, Object>> page =
+        new Action(conn, sql).query(params).pageByPageNo(request);
 ```
 
-In this case, you cannot use method chaining anymore.
-
-# JSQL Parser
-
-We use the [JSQL Parser library](https://github.com/JSQLParser/JSqlParser) to implement paging functionality. It makes it easier to parse SQL statements and extract information from them. It also provides a convenient
-way to generate SQL statements dynamically.
+The default page size for request-based pagination is 12.

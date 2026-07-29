@@ -1,10 +1,12 @@
 ---
-title: Contact Us
+title: 联系我们
 subTitle: 2024-12-05 by Frank Cheung
-description: TODO
+description: SqlMan 项目的联系方式、技术支持渠道和作者信息。
 date: 2022-01-05
 tags:
-  - last one
+  - SqlMan
+  - 联系方式
+  - 技术支持
 layout: layouts/docs-cn.njk
 ---
 

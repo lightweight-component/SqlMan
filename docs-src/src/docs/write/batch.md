@@ -1,117 +1,79 @@
 ---
-title: Query Concept
-subTitle: 2024-12-05 by Frank Cheung
-description: TODO
-date: 2022-01-05
+title: Batch Operations
+subTitle: Parameterized inserts and deletes
+description: Perform parameterized batch inserts and batch deletes from Maps or JavaBeans with transaction handling.
+date: 2026-07-29
 tags:
-  - last one
+  - SqlMan
+  - batch operations
+  - JDBC
 layout: layouts/docs.njk
 ---
 
-# Batch Update
+# Batch Operations
 
-The BatchUpdate class in SqlMan provides efficient methods for performing batch operations on database records, particularly useful when you need to insert or update multiple records simultaneously.
-
-## Basic Batch Insert Operations
-
-### Method 1: Simple Batch Insert
-
-For basic batch inserts with raw field values:
+`BatchUpdate` uses the connection registered in `JdbcConnection` for the current thread:
 
 ```java
-BatchUpdate batchUpdate = new BatchUpdate();
-batchUpdate.setTableName("users");
-
-// Prepare your data
-String fields = "name, email, age";
-List<String> values = Arrays.asList(
-    "('John', 'john@email.com', 25)",
-    "('Jane', 'jane@email.com', 30)"
-);
-
-// Execute batch insert
-batchUpdate.createBatch(fields, values);
+JdbcConnection.setConnection(conn);
+try {
+    BatchUpdate batch = new BatchUpdate();
+    // execute batch operations
+} finally {
+    JdbcConnection.closeDb();
+}
 ```
 
-### Method 2: Batch Insert with Maps
+If the connection is in auto-commit mode, a parameterized batch insert opens a local transaction, commits on success, rolls back on failure, and restores auto-commit. If the caller has already disabled auto-commit, transaction completion remains the caller's responsibility.
 
-For inserting multiple records using Map objects:
+## Insert Maps
+
+All rows must contain exactly the same keys as the first row. A `LinkedHashMap` makes the column order explicit:
 
 ```java
 List<Map<String, Object>> users = new ArrayList<>();
 
-Map<String, Object> user1 = new HashMap<>();
-user1.put("name", "John");
-user1.put("email", "john@email.com");
-users.add(user1);
+Map<String, Object> first = new LinkedHashMap<>();
+first.put("name", "John");
+first.put("email", "john@example.com");
+users.add(first);
 
-Map<String, Object> user2 = new HashMap<>();
-user2.put("name", "Jane");
-user2.put("email", "jane@email.com");
-users.add(user2);
+Map<String, Object> second = new LinkedHashMap<>();
+second.put("name", "Jane");
+second.put("email", "jane@example.com");
+users.add(second);
 
-batchUpdate.createBatchMap(users, "users");
+new BatchUpdate().createBatchMap(users, "users");
 ```
 
-### Method 3: Batch Insert with Java Beans
+Values are bound with `PreparedStatement`. `byte[]` and `InputStream` are supported; enums are stored as strings, and `Map` or `List` values are serialized as JSON.
 
-For inserting multiple records using Java objects:
+## Insert JavaBeans
+
+Set the table name on the batch object:
 
 ```java
-List<User> users = new ArrayList<>();
-User user1 = new User();
-user1.setName("John");
-user1.setEmail("john@email.com");
-users.add(user1);
-
-User user2 = new User();
-user2.setName("Jane");
-user2.setEmail("jane@email.com");
-users.add(user2);
-
-batchUpdate.setTableName("users");
-batchUpdate.createBatch(users);
+BatchUpdate batch = new BatchUpdate();
+batch.setTableName("users");
+batch.createBatch(Arrays.asList(user1, user2));
 ```
 
-## Batch Delete Operations
+The non-null properties of the first bean select the INSERT columns. Later beans may contain `null` for those columns, but may not introduce an additional non-null property.
 
-To delete multiple records by their IDs:
+`@Column` changes a property-to-column mapping and `@Transient` excludes a property.
+
+## Delete by IDs
 
 ```java
-BatchUpdate batchUpdate = new BatchUpdate();
-batchUpdate.setTableName("users");
-batchUpdate.setIdField("id");
+BatchUpdate batch = new BatchUpdate();
+batch.setTableName("users");
+batch.setIdField("id");
 
-List<Integer> idsToDelete = Arrays.asList(1, 2, 3, 4);
-UpdateResult result = batchUpdate.deleteBatch(idsToDelete);
-
-if (result.isOk()) {
-    System.out.println("Batch delete successful");
-}
+UpdateResult result = batch.deleteBatch(Arrays.asList(1, 2, 3));
 ```
 
-## Best Practices
+IDs are bound as parameters. Empty lists and lists containing `null` are rejected.
 
-1. **Transaction Management**
-    - The class handles transactions automatically
-    - Auto-commit is disabled during batch operations
-    - Rollback is performed automatically on failure
+## Legacy raw-values API
 
-2. **Data Type Handling**
-   The class automatically handles various data types:
-    - Strings are properly quoted
-    - Booleans are converted to 1/0
-    - Dates are formatted appropriately
-    - LocalDateTime is supported
-
-3. **Performance Tips**
-    - Use batch operations instead of individual inserts for better performance
-    - Keep batch sizes reasonable (typically 100-1000 records)
-    - Monitor memory usage when dealing with large datasets
-
-4. **Error Handling**
-    - Operations are logged
-    - Transactions are rolled back on failure
-    - Execution results are available for verification
-
-This BatchUpdate class significantly improves performance when dealing with multiple database operations by reducing the number of database round-trips.
+`createBatch(String fields, List<String> values)` and its string overload are deprecated. They accept complete SQL value fragments and cannot bind values safely. Keep them only for trusted legacy input; new code should use the Map or JavaBean APIs.

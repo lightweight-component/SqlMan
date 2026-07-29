@@ -1,93 +1,69 @@
 ---
-title: Query Concept
-subTitle: 2024-12-05 by Frank Cheung
-description: TODO
-date: 2022-01-05
+title: Create, Update, and Delete
+subTitle: Parameterized data modification
+description: Execute parameterized INSERT, UPDATE, and DELETE statements and retrieve generated keys with SqlMan.
+date: 2026-07-29
 tags:
-  - last one
+  - SqlMan
+  - data modification
+  - CRUD
 layout: layouts/docs.njk
 ---
 
-# Updating, Creating, and Deleting Database Data
+# Create, Update, and Delete
 
-This tutorial will guide you through the process of updating, creating, and deleting data in a database using SqlMan. We'll use a sample test code to demonstrate how to perform these operations.
+## Insert a row
 
-## Creating Records
-
-Now that we’ve seen queries, values, and parameters, we can go back to statements and apply the same knowledge.
-
-The `testCreate` method demonstrates how to insert new records into the `shop_address` table:
+Use `create(params).execute(...)` for an `INSERT` statement:
 
 ```java
-@Test
-public void testCreate() {
-    // Insert a new record into the shop_address table
-    String sql = "INSERT INTO shop_address (name, address, phone, receiver) " +
-            "VALUES ('Home', 'Tree Road', '3412', 'Jack')";
-    CreateResult<Integer> result;
-    result = new Sql(conn).input(sql).create(true, Integer.class);
-    assertTrue(result.isOk());
+String sql = "INSERT INTO shop_address (name, address, phone) VALUES (?, ?, ?)";
 
-    // Insert a new record with parameters
-    sql = "INSERT INTO shop_address (name, address, phone, receiver) " +
-                "VALUES (${name}, ?, '3412', ?)";
-        
-    // mixing parameters with Map and Array
-    result = new Sql(conn).input(sql, mapOf("name", "'office'"),"Kid Place", "Tom").create(true, Integer.class);
-    assertTrue(result.isOk());
-
-    Address address = new Sql(conn).input("SELECT * FROM shop_address WHERE id = ?", result.getNewlyId()).query(Address.class);
-    System.out.println(address);
-}
+CreateResult<Serializable> result =
+        new Action(conn, sql)
+                .create("Office", "Tree Road", "3412")
+                .execute(false);
 ```
 
-In the method `input()`, still, both positional and named parameters are supported, and mixing them is allowed.
+`isOk()` reports whether a row was inserted.
 
-### Extracting Auto-Increment Column Values
+## Retrieve a generated key
 
-When we have an insert statement with auto-generated columns (typically auto-increment or sequences), we may want to obtain the generated values. To do this, we can use the `create()` method with
-the `isReturnGeneratedKeys` parameter set to `true`. Then, we can use the `result.getNewlyId()` method to retrieve the generated values.
-
-## Updating Records
-
-The `testUpdate` method shows how to update existing records in the `shop_address` table:
+Pass `true` when the database generates the key, and specify the requested Java type:
 
 ```java
-@Test
-public void testUpdate() {
-    // Update a record in the shop_address table
-    String sql = "UPDATE shop_address SET name= '公司' WHERE id = ?";
-    UpdateResult result;
-    result = new Sql(conn).input(sql, 8).update();
-    assertTrue(result.isOk());
+CreateResult<Long> result =
+        new Action(conn,
+                "INSERT INTO shop_address (name, address) VALUES (?, ?)")
+                .create("Home", "Lake Road")
+                .execute(true, Long.class);
 
-    // Update a record with dynamic table name
-    String sql2 = "UPDATE ${tableName} SET name= '公司' WHERE id = ?";
-    result = new Sql(conn).input(sql2, mapOf("tableName", "shop_address"), 9).update();
-    assertTrue(result.isOk());
-    System.out.println(result.getEffectedRows());
-
-    // Delete a record using update method
-    String sql3 = "DELETE FROM ${tableName} WHERE id = 10"; // Delete is also update
-    result = new Sql(conn).input(sql3, mapOf("tableName", "shop_address")).update();
-    assertTrue(result.isOk());
-    System.out.println(result.getEffectedRows());
-}
+Long id = result.getNewlyId();
 ```
 
-As we have already seen, it returns the number of affected rows.
+SqlMan converts the JDBC-generated value to the requested numeric type and rejects overflow or fractional conversion.
 
-## Deleting Records
-
-The `testDelete` method demonstrates how to delete records from the `shop_address` table:
+## Update rows
 
 ```java
-@Test
-public void testDelete() {
-    // Delete a record from the shop_address table
-    UpdateResult result = new Sql(conn).delete("shop_address", "id", 1);
-    assertTrue(result.isOk());
-}
+UpdateResult result =
+        new Action(conn,
+                "UPDATE shop_address SET name = ? WHERE id = ?")
+                .update("Head Office", 8)
+                .execute();
+
+int affected = result.getEffectedRows();
 ```
 
-Note: This is a physical delete, not a logical delete.
+An execution without a JDBC exception is considered successful even when `affected` is zero.
+
+## Delete by ID
+
+```java
+UpdateResult result =
+        new Action(conn).delete("shop_address", "id", 8);
+```
+
+This is a physical delete. For logical deletion, execute an `UPDATE` that changes the relevant status column.
+
+Table names, column names, and raw clauses are not bind parameters. Keep identifiers and SQL fragments controlled by application code; never copy untrusted request text into them.

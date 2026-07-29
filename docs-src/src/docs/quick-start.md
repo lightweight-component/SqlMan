@@ -1,77 +1,58 @@
 ---
 title: Quick Start
-subTitle: 2024-12-05 by Frank Cheung
-description: TODO
-date: 2022-01-05
+subTitle: SqlMan 2.0
+description: Install SqlMan 2.0, connect to a database, and run the first parameterized JDBC query.
+date: 2026-07-29
 tags:
-  - last one
+  - SqlMan
+  - quick start
+  - JDBC
 layout: layouts/docs.njk
 ---
 
 # Quick Start
 
-## 🔧 Install SqlMan
+## Install SqlMan
 
-To get started, we just have to include the one SqlMan module in our dependencies:
+SqlMan requires Java 8 or later. Add the library and the JDBC driver for your database:
 
 ```xml
 <dependency>
     <groupId>com.ajaxjs</groupId>
     <artifactId>sqlman</artifactId>
-    <version>1.9</version>
+    <version>2.0</version>
 </dependency>
 ```
 
-Over the course of this article, we’ll show examples using the HSQL database:
+## Run a query
 
-```xml
-<dependency>
-    <groupId>org.hsqldb</groupId>
-    <artifactId>hsqldb</artifactId>
-    <version>2.2.220</version>
-</dependency>
-```
-
-We can find the latest version of SqlMan on [Maven Central](https://central.sonatype.com/artifact/com.ajaxjs/sqlman).
-
-<!-- > About Java Version
->
-> Currently, SqlMan only supports **Java 11** and above. However, we are aware that there is a significant user base still using JDK 8. Should the need arise, we are committed to maintaining compatibility with Java 8 by making a few modifications to the code. -->
-
-Next we going to write Java code as follows:
+`Action` is the entry point for queries and data modifications. Supply a JDBC `Connection`, SQL text, and then the positional parameters:
 
 ```java
-public static void main(String[] args) throws SQLException {
-    JdbcDataSource dataSource = new JdbcDataSource();
-    dataSource.setURL("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1");
-    dataSource.setUser("sa");
-    dataSource.setPassword("password");
+try (Connection conn = dataSource.getConnection()) {
+    String sql = "SELECT id, name FROM shop_address WHERE stat = ?";
 
-    Connection conn = dataSource.getConnection();
+    List<Map<String, Object>> rows =
+            new Action(conn, sql).query(1).list();
 
-    try (Statement stmt = conn.createStatement()) {
-        stmt.execute("CREATE TABLE shop_address (\n" +
-                "    id INT AUTO_INCREMENT PRIMARY KEY,\n" +
-                "    name VARCHAR(255) NOT NULL,\n" +
-                "    address VARCHAR(255) NOT NULL,\n" +
-                "    phone VARCHAR(20),\n" +
-                "    receiver VARCHAR(255),\n" +
-                "    stat INT,\n" +
-                "    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n" +
-                "    update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP\n" +
-                ");");
-
-        stmt.execute("INSERT INTO shop_address (name, address, phone, receiver, stat)\n" +
-                "VALUES\n" +
-                "('Shop A', '123 Main St', '123-456-7890', 'John Doe', 0),\n" +
-                "('Shop B', '456 Elm St', '234-567-8901', 'Jane Smith',0),\n" +
-                "('Shop C', '789 Oak St', '345-678-9012', 'Alice Johnson', 0),\n" +
-                "('Shop D', '101 Maple St', '456-789-0123', 'Bob Brown', 1),\n" +
-                "('Shop E', '202 Birch St', '567-890-1234', 'Charlie Davis', 1);");
-    }
-
-    List<Map<String, Object>> result = new Sql(conn).input("SELECT * FROM shop_address").queryList();
-    System.out.println(result);
-    conn.close();
+    System.out.println(rows);
 }
 ```
+
+Parameters passed to `query(...)`, `create(...)`, or `update(...)` are bound to `?` placeholders through `PreparedStatement`.
+
+To use the constructors that do not take a `Connection`, register one for the current thread:
+
+```java
+JdbcConnection.setConnection(conn);
+try {
+    Map<String, Object> row =
+            new Action("SELECT * FROM shop_address WHERE id = ?")
+                    .query(1)
+                    .one();
+} finally {
+    JdbcConnection.closeDb();
+}
+```
+
+Prefer an explicit `Connection` when the application or connection pool already manages its lifecycle.

@@ -1,54 +1,68 @@
 ---
 title: 查询教程
-subTitle: 2024-12-05 by Frank Cheung
-description: 在 SqlMan 中 如何使用参数化查询
-date: 2022-01-05
-tags: query
+subTitle: 参数绑定与结果映射
+description: 使用位置参数、命名 SQL 模板、Map 和 JavaBean 查询数据库。
+date: 2026-07-29
+tags:
+  - SqlMan
+  - 查询教程
+  - 预编译参数
 layout: layouts/docs-cn.njk
 ---
 
 # 查询教程
 
-## 绑定参数
+## 绑定位置参数
 
-查询语句通常包含固定部分和参数化部分。这样做有几个优点：
-
-- 安全性：通过避免字符串拼接，可以防止 SQL 注入
-- 便利性：我们不需要记住复杂数据类型（如时间戳）的确切语法
-- 性能：查询的静态部分只需解析一次并可以被缓存
-
-SqlMan 同时支持位置参数和命名参数。
-
-我们在查询或语句中使用问号来插入位置参数：
+数据值使用 `?`，并按照占位符顺序传入参数：
 
 ```java
-Map<String, Object> result = new Sql(conn).input("SELECT * FROM shop_address WHERE id = ?", 1).query();
+Map<String, Object> row =
+        new Action(conn, "SELECT * FROM shop_address WHERE id = ? AND stat = ?")
+                .query(1, 0)
+                .one();
 ```
 
-这与我们在经典 JDBC 查询中使用预处理语句的方式相同。参数可以多个。
+这些值由 `PreparedStatement` 绑定，不要给 `?` 添加引号。
 
-命名参数则是以 ${ 开头，后面跟着参数名，以 } 结尾：
+## SQL 模板参数
+
+如果第一个参数是 `Map`，`Action` 会先交给 `SmallMyBatis` 处理，再绑定剩余的位置参数：
 
 ```java
-Map<String, Object> result；
-result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE id = #{stat}", mapOf("tableName", "shop_address", "stat", 1)).query();
-assertNotNull(result);
+Map<String, Object> template = new HashMap<>();
+template.put("tableName", "shop_address");
 
-result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE id = ?", mapOf("tableName", "shop_address", "abc", 2), 1).query();
-assertNotNull(result);
+Map<String, Object> row =
+        new Action(conn, "SELECT * FROM ${tableName} WHERE id = ?")
+                .query(template, 1)
+                .one();
 ```
 
-这允许我们使用 `Map`对象一次绑定多个命名参数。
+当前实现中的 `${...}` 和 `#{...}` 都属于文本替换，并不是 JDBC 参数绑定。`${...}` 只能用于可信的表名、列名或 SQL 片段；数据值应优先使用 `?`。
 
-允许混合使用`Map`对象和参数数组，但 Map 必须作为第一个参数，其余的则作为参数数组。
+## Map 的列名
 
-## 返回 Java Bean
-
-有时候，我们需要返回一个 Java Bean 而不是`Map`。SqlMan 提供了一个简单的方法来实现这一点，只需要将 Java Bean 类作为查询方法的参数传入：
+Map 使用 JDBC 返回的列标签。表达式应设置别名，以获得稳定的键名：
 
 ```java
-Address result = new Sql(conn).input("SELECT * FROM shop_address").query(Address.class); 
-List<Address> results = new Sql(conn).input("SELECT * FROM shop_address").queryList(Address.class);
+Map<String, Object> totals =
+        new Action(conn, "SELECT COUNT(*) AS total FROM shop_address")
+                .query()
+                .one();
+
+Object total = totals.get("total");
 ```
 
-最后，我们可以将查询结果行映射到一个 bean 或其他自定义类。
+## 映射 JavaBean
+
+目标类型需要无参构造方法和可写属性：
+
+```java
+Address address =
+        new Action(conn, "SELECT id, name, create_date FROM shop_address WHERE id = ?")
+                .query(1)
+                .one(Address.class);
+```
+
+SqlMan 会把 `create_date` 这样的下划线列名转换为 `createDate` 属性名。

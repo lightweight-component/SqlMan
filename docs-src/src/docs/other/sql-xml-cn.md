@@ -1,14 +1,16 @@
 ---
-title: Query Concept
-subTitle: 2024-12-05 by Frank Cheung
-description: TODO
-date: 2022-01-05
+title: XML SQL
+subTitle: SmallMyBatis SQL 模板
+description: 在 XML 中保存 SQL，按 ID 加载语句，并使用 SmallMyBatis 处理轻量动态 SQL。
+date: 2026-07-29
 tags:
-  - last one
+  - SqlMan
+  - XML SQL
+  - 动态 SQL
 layout: layouts/docs-cn.njk
 ---
 
-# XML 中的 SQL
+# XML SQL
 
 ## 为什么要在 XML 中使用 SQL？
 
@@ -20,92 +22,67 @@ layout: layouts/docs-cn.njk
 
 SqlMan 在处理 SQL 语句方面采用了类似 MyBatis 的方法。
 
-## 如何在 XML 中使用 SQL？
+`SmallMyBatis` 可以把 SQL 保存在 classpath 下的 XML 资源中。它是轻量 SQL 模板工具，并不是完整的 MyBatis Mapper 或 ORM。
 
-在开始之前，我们需要在 classpath `/sql` 目录下定义一个名为 `sql.xml` 的 XML 文件，其中包含 SQL 片段。
+## 定义 SQL
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-    <sql id="foo">SELECT COUNT(*) AS total FROM shop_address</sql>
-    <sql id="foo-2">SELECT COUNT(*) AS total FROM shop_address WHERE id = ?</sql>
-    <sql id="foo-3">SELECT id FROM ${tableName} WHERE id = #{stat}</sql>
-    <sql id="foo-4">SELECT * FROM ${tableName} WHERE id = ?</sql>
-    <sql id="foo-5">
-        <if test="type=='address'">
-            SELECT COUNT(*) AS total FROM shop_address
-        </if>
-        <if test="type=='article'">
-            SELECT COUNT(*) AS total FROM ${tableName}
+    <sql id="address-count">
+        SELECT COUNT(*) AS total FROM shop_address
+    </sql>
+
+    <sql id="address-by-id">
+        SELECT * FROM shop_address WHERE id = ?
+    </sql>
+
+    <sql id="address-by-status">
+        SELECT * FROM ${tableName}
+        <if test="stat != null">
+            WHERE stat = #{stat}
         </if>
     </sql>
-    <sql id="foo-6">SELECT id FROM ${tableName} WHERE ${T(com.ajaxjs.sqlman.sql.TestXml).w()}</sql>
 </root>
-
 ```
 
-此方法通过标识符（`sqlId`）执行 XML 片段中定义的 SQL 语句，并返回包含结果的 DAO 对象。
+同一个 `SmallMyBatis` 实例中的 SQL ID 共用一张映射表。加载重复 ID 时，后加载的 SQL 会覆盖原内容并记录警告。
+
+## 加载和执行
 
 ```java
-int result=new Sql(conn).inputXml("foo").queryOne(int.class); // 获取第一个结果
-        System.out.println(result);
-        assertTrue(result>0);
+SmallMyBatis mapper = new SmallMyBatis();
+mapper.loadXML("sql/mysql.xml");
+
+String sql = mapper.getSqlById("address-by-id");
+Address address = new Action(conn, sql).query(12L).one(Address.class);
 ```
 
-现在我们已经了解了值和参数，可以将相同的知识应用到 XML 文件中的语句。
+`loadXML(...)` 可以一次加载多个资源。`loadBySqlLocations(...)` 支持 Spring 资源匹配模式：
 
 ```java
-int result;
-        result=new Sql(conn).inputXml("foo-2",1).queryOne(int.class);
-        assertEquals(1,result);
-
-        result=new Sql(conn).inputXml("foo-3",mapOf("tableName","shop_address","stat",1)).queryOne(int.class);
-        assertEquals(1,result);
-
-        result=new Sql(conn).inputXml("foo-4",mapOf("tableName","shop_address","abc",2),1).queryOne(int.class);
-        System.out.println(result); // TODO, 应该返回 0
+mapper.loadBySqlLocations("classpath*:sql/**/*.xml");
 ```
 
-此方法通过标识符（sqlId）执行 XML 片段中定义的 SQL 语句，并使用键值对和可变参数。
+## 动态条件
+
+`handleSql(params, sqlId)` 使用 Spring 表达式执行 `<if test="...">`，然后处理占位符：
 
 ```java
-/**
- * 执行 XML 片段中定义的 SQL 语句并返回 DAO 对象。
- *
- * @param sqlId     用于定位特定 SQL 语句的 SQL 标识符。
- * @param keyParams 用于替换 SQL 语句中变量的键值对参数。
- * @param params    用于替换 SQL 语句中占位符的可变参数。
- * @return 包含从数据库检索的数据的 DAO 对象。
- */
-public DAO inputXml(String sqlId, Map<String, Object> keyParams, Object... params) {
-    // 执行 SQL 并返回 DAO 对象的实现
-}
+Map<String, Object> params = new HashMap<>();
+params.put("tableName", "shop_address");
+params.put("stat", 1);
+
+String sql = mapper.handleSql(params, "address-by-status");
+List<Map<String, Object>> rows = new Action(conn, sql).query().list();
 ```
 
-## 标签支持
+XML 中的比较符可以写成 `&lt;` 和 `&gt;`，生成 SQL 时会恢复为原符号。
 
-对于动态 SQL 生成，SqlMan 支持以下标签：`IF`。
+## 占位符安全
 
-```xml
-<sql id="foo-5">
-    <if test="type=='address'">
-        SELECT COUNT(*) AS total FROM shop_address
-    </if>
-    <if test="type=='article'">
-        SELECT COUNT(*) AS total FROM ${tableName}
-    </if>
-</sql>
-```
+- `${name}` 不加引号地插入文本，只能用于可信的标识符或 SQL 片段。
+- `#{name}` 当前会把格式化后的值直接插入 SQL；虽然写法类似 MyBatis，但不会生成 JDBC `?` 参数。
+- 数据值仍推荐使用 JDBC `?`。
 
-`test`属性中的值是一个表达式，如`i > 10`。它可以是简单的布尔表达式，也可以是返回布尔值的更复杂表达式。任何符合 Spring Expression 模式的表达式都是有效的。
-
-更多标签如`if...else`、`foreach`正在开发中。
-
-## 调用 Java 方法
-
-某些任务无法仅通过 SQL 完成。在这种情况下，最好调用 Java 方法来完成任务。SqlMan 支持使用语法`${T(com.ajaxjs.sqlman.sql.TestXml).w()}`在 SQL 中调用 Java 方法。
-
-```xml
-
-<sql id="foo-6">SELECT id FROM ${tableName} WHERE ${T(com.ajaxjs.sqlman.sql.TestXml).w()}</sql>
-```
+不要把请求参数或其他不可信输入传给 `${...}` 或 `#{...}`。`handleSql(...)` 当前没有启用 `<forEach>` 解析，文档和业务代码不应依赖该标签。

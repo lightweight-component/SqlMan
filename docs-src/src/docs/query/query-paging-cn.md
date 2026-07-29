@@ -1,69 +1,73 @@
 ---
 title: 分页查询
-subTitle: 2024-12-05 by Frank Cheung
-description: 本教程将通过示例代码指导您如何在 SqlMan 中实现数据库数据的分页。
-date: 2022-01-05
-tags: 分页
+subTitle: Offset 与页码模式
+description: 使用 start/limit 或 pageNo/pageSize 分页，并把分页记录映射成 JavaBean。
+date: 2026-07-29
+tags:
+  - SqlMan
+  - 分页
+  - 查询
 layout: layouts/docs-cn.njk
 ---
 
 # 分页查询
 
-在应用程序中，对大型数据集进行分页是一个常见需求，这可以提高性能并提供更好的用户体验。本教程将通过示例代码指导您如何在 SqlMan 中实现数据库数据的分页。
+分页会先执行统计查询，再执行当前页查询。传入的原始 SQL 不应预先包含数据库专用的分页语句。
 
-## 使用默认设置的分页
+## Start 和 Limit
 
-第一个分页示例演示如何使用默认设置获取分页结果：获取第 1 行到第 9 行之间的数据。我们不带任何参数使用 `page` 方法：
+`start` 是从 0 开始的记录偏移量，`limit` 是每页记录数：
 
 ```java
-PageResult<Map<String, Object>> result = new Sql(conn).input("SELECT * FROM article").page();
+PageResult<Map<String, Object>> page =
+        new Action(conn, "SELECT * FROM article ORDER BY id DESC")
+                .query()
+                .pageByStartLimit(0, 20);
 ```
 
-## 使用自定义页面大小和页码的分页
+## 页码和每页大小
 
-第二个示例展示如何通过指定记录起始位置和 limit大小来获取分页结果，如同 MySQL 的 LIMIT 3,5 分页方式：
-
-```java
-PageResult<Map<String, Object>> result = new Sql(conn).input("SELECT * FROM article").page(3, 5);
- ```
-
-## 使用自定义类映射的分页
-
-第三个示例演示如何将结果映射到自定义类（Address）并获取分页结果：
+页码从 1 开始：
 
 ```java
-PageResult<Address> result = new Sql(conn).input("SELECT * FROM shop_address").page(Address.class, 1, 2);
+PageResult<Map<String, Object>> page =
+        new Action(conn, "SELECT * FROM article ORDER BY id DESC")
+                .query()
+                .pageByPageNo(3, 20);
 ```
 
-## 检查空结果
-
-第四个示例展示如何处理分页结果为空的情况：
+## 映射 JavaBean
 
 ```java
-PageResult<Map<String, Object>> result = new Sql(conn).input("SELECT * FROM shop_address").page(Address.class, 100, 2);
-assertEquals(0, result.size());
+PageResult<Address> page =
+        new Action(conn, "SELECT * FROM shop_address ORDER BY id")
+                .query()
+                .pageByPageNo(1, 20, Address.class);
 ```
 
-## 参数绑定
+`PageResult` 包含 `list`、`totalCount`、`totalPage`、`currentPage`、`start`、`pageSize` 和 `zero`。请求超过最后一页时，`list` 是空列表。
 
-分页查询同样支持参数绑定。使用方式与普通查询相同：
+## 绑定查询参数
+
+先在创建 `Query` 时传入参数，再调用分页方法：
 
 ```java
-PageResult<Map<String, Object>> result = new Sql(conn).input("SELECT * FROM shop_address where stat = ?", 1).page();
+PageResult<Map<String, Object>> page =
+        new Action(conn, "SELECT * FROM shop_address WHERE stat = ? ORDER BY id")
+                .query(1)
+                .pageByStartLimit(0, 20);
 ```
 
-## 使用自定义数据库供应商的分页
+## 从 HTTP 请求读取分页参数
 
-最后一个示例演示如何设置自定义数据库供应商（例如 SQL Server）并获取分页结果：
+Servlet 重载支持以下参数名：
+
+- Offset 模式：`start` 或 `offset`；每页大小：`pageSize`、`rows` 或 `limit`。
+- 页码模式：`pageNo` 或 `page`；每页大小：`pageSize`、`rows` 或 `limit`。
 
 ```java
-Sql sqlServer = new Sql(conn);
-sqlServer.setDatabaseVendor(JdbcConstants.DatabaseVendor.SQL_SERVER);
-PageResult<Map<String, Object>> result = sqlServer.input("SELECT * FROM article").page();
+PageResult<Map<String, Object>> page =
+        new Action(conn, sql).query(params).pageByPageNo(request);
 ```
 
-在这种情况下，您将不能使用方法链式调用。
-
-## JSQLParser
-
-我们使用 JSQLParser 库 来实现分页功能。它使解析 SQL 语句和提取信息变得更容易，同时还提供了一种动态生成 SQL 语句的便捷方式。
+基于请求的分页默认每页 12 条记录。

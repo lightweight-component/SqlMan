@@ -1,56 +1,68 @@
 ---
-title: Query Concept
-subTitle: 2024-12-05 by Frank Cheung
-description:  How to page query in SqlMan
-date: 2022-01-05
-tags: Query
+title: Query Tutorial
+subTitle: Parameters and result mapping
+description: Query a database with positional parameters, named SQL templates, Maps, and JavaBeans.
+date: 2026-07-29
+tags:
+  - SqlMan
+  - query tutorial
+  - prepared statement
 layout: layouts/docs.njk
 ---
 
 # Query Tutorial
 
-## Binding Parameters
+## Bind positional parameters
 
-Often, queries have a fixed portion and a parameterized portion. This has several advantages, including:
-
-- security: by avoiding string concatenation, we prevent SQL injection
-- ease: we don’t have to remember the exact syntax of complex data types such as timestamps
-- performance: the static portion of the query can be parsed once and cached
-
-SqlMan supports both positional and named parameters.
-
-We insert positional parameters as question marks in a query or statement:
+Use `?` for data values and pass parameters in the same order:
 
 ```java
-Map<String, Object> result = new Sql(conn).input("SELECT * FROM shop_address WHERE id = ?", 1).query();
-assertNotNull(result);
+Map<String, Object> row =
+        new Action(conn, "SELECT * FROM shop_address WHERE id = ? AND stat = ?")
+                .query(1, 0)
+                .one();
 ```
 
-Just what we did in Classic JDBC query like parepred statement.
+The values are bound by `PreparedStatement`; do not quote the `?` placeholders.
 
-Named parameters, instead, start with `${` and are followed by a name, end with `}`:
+## SQL template parameters
+
+If the first argument is a `Map`, `Action` sends it to `SmallMyBatis` before binding the remaining positional parameters:
 
 ```java
-Map<String, Object> result；
-result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE id = #{stat}", mapOf("tableName", "shop_address", "stat", 1)).query();
-assertNotNull(result);
+Map<String, Object> template = new HashMap<>();
+template.put("tableName", "shop_address");
 
-result = new Sql(conn).input("SELECT * FROM ${tableName} WHERE id = ?", mapOf("tableName", "shop_address", "abc", 2), 1).query();
-assertNotNull(result);
+Map<String, Object> row =
+        new Action(conn, "SELECT * FROM ${tableName} WHERE id = ?")
+                .query(template, 1)
+                .one();
 ```
 
-It allows to bind multiple named parameters together using a `Map` object.
+`${...}` and `#{...}` are text substitutions in the current implementation, not JDBC bind parameters. Only use `${...}` for trusted identifiers or trusted SQL fragments. Prefer `?` for all data values.
 
-Mixing `Map` object and the array of parameters is allowed, but `Map` should be the first parameter, and the rest are array of parameters.
+## Map column names
 
-## Return a Java Bean
-
-Sometimes, we need to return a Java Bean instead of a `Map`. SqlMan provides a simple way to do this, just passing the Java Bean class as the query method as the parameter:
+Map results use JDBC column labels. Give expressions an alias when you need a stable key:
 
 ```java
-Address result = new Sql(conn).input("SELECT * FROM shop_address").query(Address.class); 
-List<Address> results = new Sql(conn).input("SELECT * FROM shop_address").queryList(Address.class);
+Map<String, Object> totals =
+        new Action(conn, "SELECT COUNT(*) AS total FROM shop_address")
+                .query()
+                .one();
+
+Object total = totals.get("total");
 ```
 
-Finally, we can map rows to a bean or some other custom class. 
+## Map to a JavaBean
 
+The target class needs a no-argument constructor and writable properties:
+
+```java
+Address address =
+        new Action(conn, "SELECT id, name, create_date FROM shop_address WHERE id = ?")
+                .query(1)
+                .one(Address.class);
+```
+
+SqlMan converts underscore column names such as `create_date` to Java property names such as `createDate`.

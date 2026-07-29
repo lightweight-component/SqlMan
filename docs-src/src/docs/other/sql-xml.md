@@ -1,110 +1,78 @@
 ---
-title: Query Concept
-subTitle: 2024-12-05 by Frank Cheung
-description: TODO
-date: 2022-01-05
+title: XML SQL
+subTitle: SmallMyBatis statement templates
+description: Store SQL in XML, load statements by ID, and apply lightweight dynamic SQL with SmallMyBatis.
+date: 2026-07-29
 tags:
-  - last one
+  - SqlMan
+  - XML SQL
+  - dynamic SQL
 layout: layouts/docs.njk
 ---
 
-# SQL in XML
+# XML SQL
 
-## Why SQL in XML?
+`SmallMyBatis` stores SQL statements in classpath XML resources. It is a lightweight template helper, not a complete MyBatis mapper or ORM.
 
-Like the famous framework MyBatis, SQL statements can be stored in XML files. There are several reasons for this approach. Here are some advantages of storing SQL in XML:
-
-1. **Separation of Concerns**: Keeping SQL statements in XML files helps separate the SQL logic from the Java code. This makes the codebase cleaner and easier to manage.
-1. **Readability**: Long SQL statements can be more readable when stored in XML. The structure of the XML file can help make the SQL queries more organized and easier to understand.
-1. **Maintainability**: When SQL statements are stored in XML, it is easier to update and maintain them without changing the Java code. This is particularly useful for large projects with many SQL queries.
-
-SqlMan follows a similar approach to MyBatis in handling SQL statements.
-
-## How to use SQL in XML?
-
-Before we begin, we should have the SQL fragments defined in an XML file, named `sql.xml`, stored in the classpath `/sql`.
+## Define statements
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-    <sql id="foo">SELECT COUNT(*) AS total FROM shop_address</sql>
-    <sql id="foo-2">SELECT COUNT(*) AS total FROM shop_address WHERE id = ?</sql>
-    <sql id="foo-3">SELECT id FROM ${tableName} WHERE id = #{stat}</sql>
-    <sql id="foo-4">SELECT * FROM ${tableName} WHERE id = ?</sql>
-    <sql id="foo-5">
-        <if test="type=='address'">
-            SELECT COUNT(*) AS total FROM shop_address
-        </if>
-        <if test="type=='article'">
-            SELECT COUNT(*) AS total FROM ${tableName}
+    <sql id="address-count">
+        SELECT COUNT(*) AS total FROM shop_address
+    </sql>
+
+    <sql id="address-by-id">
+        SELECT * FROM shop_address WHERE id = ?
+    </sql>
+
+    <sql id="address-by-status">
+        SELECT * FROM ${tableName}
+        <if test="stat != null">
+            WHERE stat = #{stat}
         </if>
     </sql>
-    <sql id="foo-6">SELECT id FROM ${tableName} WHERE ${T(com.ajaxjs.sqlman.sql.TestXml).w()}</sql>
 </root>
 ```
 
-This method executes an SQL statement defined in an XML fragment by its identifier (`sqlId`) and returns a DAO object containing the result.
+Statement IDs share one map inside a `SmallMyBatis` instance. Loading a duplicate ID replaces the previous SQL and writes a warning.
+
+## Load and execute
 
 ```java
-int result = new Sql(conn).inputXml("foo").queryOne(int.class); // fetch the first one
-System.out.println(result);
-assertTrue(result > 0);
+SmallMyBatis mapper = new SmallMyBatis();
+mapper.loadXML("sql/mysql.xml");
+
+String sql = mapper.getSqlById("address-by-id");
+Address address = new Action(conn, sql).query(12L).one(Address.class);
 ```
 
-Now that we’ve seen before, values, and parameters, we can go back to statements in XML file and apply the same knowledge.
+Multiple resources can be loaded at once. `loadBySqlLocations(...)` also accepts a Spring resource pattern:
 
 ```java
-int result;
-result = new Sql(conn).inputXml("foo-2", 1).queryOne(int.class);
-assertEquals(1, result);
-
-result = new Sql(conn).inputXml("foo-3", mapOf("tableName", "shop_address", "stat", 1)).queryOne(int.class);
-assertEquals(1, result);
-
-result = new Sql(conn).inputXml("foo-4", mapOf("tableName", "shop_address", "abc", 2), 1).queryOne(int.class);
-System.out.println(result); // TODO, should be return 0
+mapper.loadBySqlLocations("classpath*:sql/**/*.xml");
 ```
 
-This method executes an SQL statement defined in an XML fragment by its identifier (`sqlId`) with key-value pairs and variable parameters.
+## Dynamic conditions
+
+`handleSql(params, sqlId)` evaluates `<if test="...">` blocks with Spring Expression Language and then performs placeholders substitution:
 
 ```java
-/**
- * Executes an SQL statement defined in an XML fragment and returns a DAO object.
- *
- * @param sqlId     SQL identifier used to locate the specific SQL statement.
- * @param keyParams Key-value pair parameters used to replace variables in the SQL statement.
- * @param params    Variable parameters used to replace placeholders in the SQL statement.
- * @return A DAO object containing the data retrieved from the database.
- */
-public DAO inputXml(String sqlId, Map<String, Object> keyParams, Object... params) {
-    // Implementation to execute the SQL and return DAO object
-}
+Map<String, Object> params = new HashMap<>();
+params.put("tableName", "shop_address");
+params.put("stat", 1);
+
+String sql = mapper.handleSql(params, "address-by-status");
+List<Map<String, Object>> rows = new Action(conn, sql).query().list();
 ```
 
-## Tag Support
+XML comparison operators can be written as `&lt;` and `&gt;`; the generated SQL converts them back.
 
-For dynamic SQL generation, SqlMan supports the following tags:`IF`.
+## Placeholder safety
 
-```xml
-<sql id="foo-5">
-    <if test="type=='address'">
-        SELECT COUNT(*) AS total FROM shop_address
-    </if>
-    <if test="type=='article'">
-        SELECT COUNT(*) AS total FROM ${tableName}
-    </if>
-</sql>
-```
+- `${name}` inserts text without quoting. Use it only for trusted identifiers or SQL fragments.
+- `#{name}` currently inserts a formatted value directly into SQL. Despite its MyBatis-like spelling, it does not create a JDBC `?` parameter.
+- JDBC `?` remains the recommended form for data values.
 
-The value in `test` attribute is a expression, like `i > 10`. It can be a simple boolean expression or a more complex expression that returns a boolean value. Any expression that matches the pattern of Spring Expression
-is illegal.
-
-More tags like `if...else`, `foreach` are on the way.
-
-## Calling Java Methods
-
-Some tasks cloud not be accomplished by SQL alone. In such cases, it's better to call Java methods to do the job. SqlMan supports calling Java methods in SQL using the syntax `${T(com.ajaxjs.sqlman.sql.TestXml).w()}`.
-
-```xml
-<sql id="foo-6">SELECT id FROM ${tableName} WHERE ${T(com.ajaxjs.sqlman.sql.TestXml).w()}</sql>
-```
+Do not pass request parameters or other untrusted input to `${...}` or `#{...}`. The `<forEach>` parser is not active in `handleSql(...)` and should not be relied upon.

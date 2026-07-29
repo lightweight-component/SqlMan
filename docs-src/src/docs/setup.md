@@ -1,39 +1,63 @@
 ---
 title: Setup SqlMan
-subTitle: 2024-12-05 by Frank Cheung
-description: TODO
-date: 2022-01-05
+subTitle: Connections and database support
+description: Runtime requirements, supported databases, and connection management options for SqlMan.
+date: 2026-07-29
 tags:
-  - last one
+  - SqlMan
+  - configuration
+  - database connection
 layout: layouts/docs.njk
 ---
 
-# 🔧 Setup SqlMan
+# Setup SqlMan
 
 ## Requirements
 
-### Java
+SqlMan runs on Java 8 or later. Its database access is based on standard JDBC.
 
-SqlMan runs on Java 8+.
+Database vendor detection currently recognizes MySQL, MariaDB, PostgreSQL, Oracle, SQL Server, SQLite, H2, HSQLDB, Derby, and DB2. Pagination syntax varies by vendor; test generated SQL against the database and driver used by your application.
 
-### Supported Databases
+## Use an existing connection
 
-- MySQL
-- PostgreSQL
-- H2 Database
-- Apache Derby
-
-# Connecting to your database
-
-Normally, you just tell Sqlman either a `DataSource` or a `Connection` to work. These're standard JDBC object that contain the connection information of database like URL, username, password, etc.
+Applications using a connection pool should obtain and close the connection according to the pool's rules:
 
 ```java
-Connection conn = JdbcConnection.getConnection("jdbc:mysql://localhost:3306/test", "root", "psw");
-Map<String, Object> result = new Sql(conn).input("SELECT * FROM shop_address").query(); // fetch the first one
+try (Connection conn = dataSource.getConnection()) {
+    Map<String, Object> row =
+            new Action(conn, "SELECT * FROM shop_address WHERE id = ?")
+                    .query(1)
+                    .one();
+}
 ```
 
-The code above is hardcoded, which is ONLY for demo/test purposes. In real world, you should use a connection pool to manage your connections.
+`new Action(dataSource)` also obtains a connection, but the caller remains responsible for closing that connection.
 
-## Config in Spring
+## Open a direct JDBC connection
 
-TODO
+Direct connections are convenient for tests and command-line tools:
+
+```java
+try (Connection conn = JdbcConnection.getConnection(
+        "jdbc:mysql://localhost:3306/test", "root", "password")) {
+    // use conn
+}
+```
+
+For long-running applications, use a connection pool instead.
+
+## Thread-local connection
+
+Entity batch APIs and `Action` constructors without a connection use the connection registered for the current thread:
+
+```java
+Connection conn = dataSource.getConnection();
+JdbcConnection.setConnection(conn);
+try {
+    // new Action(sql), new Action(entity), BatchUpdate, ...
+} finally {
+    JdbcConnection.closeDb();
+}
+```
+
+Do not share one JDBC connection concurrently between threads.
