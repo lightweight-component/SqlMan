@@ -1,7 +1,7 @@
 <h1 align="center">SqlMan</h1>
 <h3 align="center">CRUD Tools for Java</h3>
 
-<div align="center" style="text-align: center;">
+<div>
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.ajaxjs/sqlman?label=Latest%20Release)](https://central.sonatype.com/artifact/com.ajaxjs/sqlman)
 ![Java Version](https://img.shields.io/badge/Java-8-blue)
