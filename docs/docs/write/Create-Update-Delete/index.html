@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title>SqlMan/Query Concept</title>
-    <meta name="description" content="TODO"/>
-    <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, last one"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css"/>
-    <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
-    <link rel="icon" type="image/png" href="/asset/favicon.png"/>
-    <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
-    <script>
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>SqlMan/Create, Update, and Delete</title>
+        <meta name="description" content="Execute parameterized INSERT, UPDATE, and DELETE statements and retrieve generated keys with SqlMan."/>
+        <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, SqlMan,data modification,CRUD"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css" />
+        <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
+        <link rel="icon" type="image/png" href="/asset/favicon.png"/>
+        <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
+        <script>
             // 获取用户的默认语言
             var userLang = navigator.language || navigator.userLanguage;
 
@@ -27,149 +27,122 @@
               var s = document.getElementsByTagName("script")[0];
               s.parentNode.insertBefore(hm, s);
             })();
+        </script>
+    </head>
+    <body>
+        <nav>
+            <div>
+                <div class="links">
+                    <a href="/">🏠 Home</a>
+                    |
+                                                        ⚙️ Source:
+                    <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
+                    
+                    | <a  href="/docs/cn">Chinese Version</a>
+                </div>
+                <h1>
+                    <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
+                </h1>
+                <h3>Lightweight Data Access Tools -- User Manual
+                </h3>
+            </div>
+        </nav>
+        <div>
+            <menu>
+                
+                <ul>
+                    <li class="selected">
+                        <a href="/docs">Home</a>
+                    </li>
+                    <li>
+                        <a href="/docs/quick-start">Quick Start</a>
+                    </li>
+                    <li>
+                        <a href="/docs/setup">Setup</a>
+                    </li>
+                </ul>
+                <h3>Querying the Database</h3>
+                <ul>
+                    <li>
+                        <a href="/docs/query/query-concept">Query Concept</a>
+                    </li>
+                    <li>
+                        <a href="/docs/query/query-tutorial">Query Tutorial</a>
+                    </li>
+                    <li>
+                        <a href="/docs/query/query-paging">Paging Query</a>
+                    </li>
+                </ul>
+                <h3>Writing the data</h3>
+                <ul>
+                    <li>
+                        <a href="/docs/write/Create-Update-Delete">Create/Update/Delete</a></li>
+                    <li>
+                        <a href="/docs/write/batch">Batch Update</a>
+                    </li>
+                </ul>
+                <h3>Other Usage</h3>
+                <ul>
+                    <li>
+                        <a href="/docs/other/sql-xml">SQL in XML</a></li>
+                    <li>
+                        <a href="/docs/other/entity">No SQL but Entity</a>
+                    </li>
+                </ul>
+                <h3>Misc</h3>
+                <ul>
+                    <li><a href="/docs/common/versions">Release History</a></li>
+                    <li><a href="/docs/common/contact">Contact</a></li>
+                </ul>
+            </menu>
+            <article class="aj-text">
+                <h1>Create, Update, and Delete</h1>
+<h2>Insert a row</h2>
+<p>Use <code>create(params).execute(...)</code> for an <code>INSERT</code> statement:</p>
+<pre><code class="language-java">String sql = &quot;INSERT INTO shop_address (name, address, phone) VALUES (?, ?, ?)&quot;;
 
-    </script>
-</head>
-<body>
-<nav>
-    <div>
-        <div class="links">
-            <a href="/">🏠 Home</a>
-            |
-            ⚙️ Source:
-            <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
+CreateResult&lt;Serializable&gt; result =
+        new Action(conn, sql)
+                .create(&quot;Office&quot;, &quot;Tree Road&quot;, &quot;3412&quot;)
+                .execute(false);
+</code></pre>
+<p><code>isOk()</code> reports whether a row was inserted.</p>
+<h2>Retrieve a generated key</h2>
+<p>Pass <code>true</code> when the database generates the key, and specify the requested Java type:</p>
+<pre><code class="language-java">CreateResult&lt;Long&gt; result =
+        new Action(conn,
+                &quot;INSERT INTO shop_address (name, address) VALUES (?, ?)&quot;)
+                .create(&quot;Home&quot;, &quot;Lake Road&quot;)
+                .execute(true, Long.class);
 
-            | <a href="/docs/cn">Chinese Version</a>
+Long id = result.getNewlyId();
+</code></pre>
+<p>SqlMan converts the JDBC-generated value to the requested numeric type and rejects overflow or fractional conversion.</p>
+<h2>Update rows</h2>
+<pre><code class="language-java">UpdateResult result =
+        new Action(conn,
+                &quot;UPDATE shop_address SET name = ? WHERE id = ?&quot;)
+                .update(&quot;Head Office&quot;, 8)
+                .execute();
+
+int affected = result.getEffectedRows();
+</code></pre>
+<p>An execution without a JDBC exception is considered successful even when <code>affected</code> is zero.</p>
+<h2>Delete by ID</h2>
+<pre><code class="language-java">UpdateResult result =
+        new Action(conn).delete(&quot;shop_address&quot;, &quot;id&quot;, 8);
+</code></pre>
+<p>This is a physical delete. For logical deletion, execute an <code>UPDATE</code> that changes the relevant status column.</p>
+<p>Table names, column names, and raw clauses are not bind parameters. Keep identifiers and SQL fragments controlled by application code; never copy untrusted request text into them.</p>
+
+            </article>
         </div>
-        <h1>
-            <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
-        </h1>
-        <h3>Lightweight Data Access Tools -- User Manual
-        </h3>
-    </div>
-</nav>
-<div>
-    <menu>
-
-        <ul>
-            <li class="selected">
-                <a href="/docs">Home</a>
-            </li>
-            <li>
-                <a href="/docs/quick-start">Quick Start</a>
-            </li>
-            <li>
-                <a href="/docs/setup">Setup</a>
-            </li>
-        </ul>
-        <h3>Querying the Database</h3>
-        <ul>
-            <li>
-                <a href="/docs/query/query-concept">Query Concept</a>
-            </li>
-            <li>
-                <a href="/docs/query/query-tutorial">Query Tutorial</a>
-            </li>
-            <li>
-                <a href="/docs/query/query-paging">Paging Query</a>
-            </li>
-        </ul>
-        <h3>Writing the data</h3>
-        <ul>
-            <li>
-                <a href="/docs/write/Create-Update-Delete">Create/Update/Delete</a></li>
-            <li>
-                <a href="/docs/write/batch">Batch Update</a>
-            </li>
-        </ul>
-        <h3>Other Usage</h3>
-        <ul>
-            <li>
-                <a href="/docs/other/sql-xml">SQL in XML</a></li>
-            <li>
-                <a href="/docs/other/entity">No SQL but Entity</a>
-            </li>
-        </ul>
-        <h3>Misc</h3>
-        <ul>
-            <li><a href="/docs/common/versions">Release History</a></li>
-            <li><a href="/docs/common/contact">Contact</a></li>
-        </ul>
-    </menu>
-    <article class="aj-text">
-        <h1>Updating, Creating, and Deleting Database Data</h1>
-        <p>This tutorial will guide you through the process of updating, creating, and deleting data in a database using SqlMan. We'll use a sample test code to demonstrate how to perform these operations.</p>
-        <h2>Creating Records</h2>
-        <p>Now that we’ve seen queries, values, and parameters, we can go back to statements and apply the same knowledge.</p>
-        <p>The <code>testCreate</code> method demonstrates how to insert new records into the <code>shop_address</code> table:</p>
-        <pre><code class="language-java">@Test
-public void testCreate() {
-    // Insert a new record into the shop_address table
-    String sql = &quot;INSERT INTO shop_address (name, address, phone, receiver) &quot; +
-            &quot;VALUES ('Home', 'Tree Road', '3412', 'Jack')&quot;;
-    CreateResult&lt;Integer&gt; result;
-    result = new Sql(conn).input(sql).create(true, Integer.class);
-    assertTrue(result.isOk());
-
-    // Insert a new record with parameters
-    sql = &quot;INSERT INTO shop_address (name, address, phone, receiver) &quot; +
-                &quot;VALUES (${name}, ?, '3412', ?)&quot;;
-        
-    // mixing parameters with Map and Array
-    result = new Sql(conn).input(sql, mapOf(&quot;name&quot;, &quot;'office'&quot;),&quot;Kid Place&quot;, &quot;Tom&quot;).create(true, Integer.class);
-    assertTrue(result.isOk());
-
-    Address address = new Sql(conn).input(&quot;SELECT * FROM shop_address WHERE id = ?&quot;, result.getNewlyId()).query(Address.class);
-    System.out.println(address);
-}
-</code></pre>
-        <p>In the method <code>input()</code>, still, both positional and named parameters are supported, and mixing them is allowed.</p>
-        <h3>Extracting Auto-Increment Column Values</h3>
-        <p>When we have an insert statement with auto-generated columns (typically auto-increment or sequences), we may want to obtain the generated values. To do this, we can use the <code>create()</code> method with
-            the <code>isReturnGeneratedKeys</code> parameter set to <code>true</code>. Then, we can use the <code>result.getNewlyId()</code> method to retrieve the generated values.</p>
-        <h2>Updating Records</h2>
-        <p>The <code>testUpdate</code> method shows how to update existing records in the <code>shop_address</code> table:</p>
-        <pre><code class="language-java">@Test
-public void testUpdate() {
-    // Update a record in the shop_address table
-    String sql = &quot;UPDATE shop_address SET name= '公司' WHERE id = ?&quot;;
-    UpdateResult result;
-    result = new Sql(conn).input(sql, 8).update();
-    assertTrue(result.isOk());
-
-    // Update a record with dynamic table name
-    String sql2 = &quot;UPDATE ${tableName} SET name= '公司' WHERE id = ?&quot;;
-    result = new Sql(conn).input(sql2, mapOf(&quot;tableName&quot;, &quot;shop_address&quot;), 9).update();
-    assertTrue(result.isOk());
-    System.out.println(result.getEffectedRows());
-
-    // Delete a record using update method
-    String sql3 = &quot;DELETE FROM ${tableName} WHERE id = 10&quot;; // Delete is also update
-    result = new Sql(conn).input(sql3, mapOf(&quot;tableName&quot;, &quot;shop_address&quot;)).update();
-    assertTrue(result.isOk());
-    System.out.println(result.getEffectedRows());
-}
-</code></pre>
-        <p>As we have already seen, it returns the number of affected rows.</p>
-        <h2>Deleting Records</h2>
-        <p>The <code>testDelete</code> method demonstrates how to delete records from the <code>shop_address</code> table:</p>
-        <pre><code class="language-java">@Test
-public void testDelete() {
-    // Delete a record from the shop_address table
-    UpdateResult result = new Sql(conn).delete(&quot;shop_address&quot;, &quot;id&quot;, 1);
-    assertTrue(result.isOk());
-}
-</code></pre>
-        <p>Note: This is a physical delete, not a logical delete.</p>
-
-    </article>
-</div>
-<footer>
+        <footer>
     SqlMan, a part of <a href="https://framework.ajaxjs.com" target="_blank">AJ-Framework</a> open source. Mail:
     frank@ajaxjs.com, visit <a href="https://blog.csdn.net/zhangxin09" target="_blank">my blog(In Chinese)</a>.
-    <br/>
-    <br/>
-    Copyright © 2025 Frank Cheung. All rights reserved.
+    <br />
+    <br />
+     Copyright © 2025 Frank Cheung. All rights reserved.
     <script>
         var _hmt = _hmt || [];
         (function() {
@@ -178,8 +151,7 @@ public void testDelete() {
           var s = document.getElementsByTagName("script")[0];
           s.parentNode.insertBefore(hm, s);
         })();
-
     </script>
 </footer>
-</body>
+    </body>
 </html>

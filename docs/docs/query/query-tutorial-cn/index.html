@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title>SqlMan/查询教程</title>
-    <meta name="description" content="在 SqlMan 中 如何使用参数化查询"/>
-    <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, query"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta
-            name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css"/>
-    <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
-    <link rel="icon" type="image/png" href="/asset/favicon.png"/>
-    <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
-    <script>
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>SqlMan/查询教程</title>
+        <meta name="description" content="使用位置参数、命名 SQL 模板、Map 和 JavaBean 查询数据库。"/>
+        <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, SqlMan,查询教程,预编译参数"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/> 
+        <meta
+        name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css" />
+        <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
+        <link rel="icon" type="image/png" href="/asset/favicon.png"/>
+        <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
+         <script>
              var _hmt = _hmt || [];
              (function() {
                var hm = document.createElement("script");
@@ -21,117 +21,124 @@
                var s = document.getElementsByTagName("script")[0];
                s.parentNode.insertBefore(hm, s);
              })();
+         </script>
+    </head>
+    <body>
+        <nav>
+            <div>
+                <div class="links">
+                    <a href="/">🏠 首页</a>
+                    |
+                                                                            ⚙️ 源码：
+                    <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
+                    
+                    |
+                    <a href="/docs">English Version</a>
+                </div>
+                <h1>
+                    <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
+                </h1>
+                <h3>轻量级 JDBC 助手——用户手册</h3>
+            </div>
+        </nav>
+        <div>
+            <menu>
+                
+                <ul>
+                    <li class="selected">
+                        <a href="/docs/cn">首页</a>
+                    </li>
+                    <li>
+                        <a href="/docs/quick-start-cn">快速开始</a>
+                    </li>
+                    <li>
+                        <a href="/docs/setup-cn">安装与配置</a>
+                    </li>
+                </ul>
+                <h3>数据库查询</h3>
+                <ul>
+                    <li>
+                        <a href="/docs/query/query-concept-cn">基础概念</a>
+                    </li>
+                    <li>
+                        <a href="/docs/query/query-tutorial-cn">查询教程</a>
+                    </li>
+                    <li>
+                        <a href="/docs/query/query-paging-cn">分页查询</a>
+                    </li>
+                </ul>
+                <h3>写入数据</h3>
+                <ul>
+                    <li>
+                        <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a>
+                    </li>
+                    <li>
+                        <a href="/docs/write/batch-cn">批量更新</a>
+                    </li>
+                </ul>
+                <h3>其他用法</h3>
+                <ul>
+                    <li>
+                        <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a>
+                    </li>
+                    <li>
+                        <a href="/docs/other/entity-cn">“类” ORM</a>
+                    </li>
+                </ul>
+                <h3>Misc</h3>
+                <ul>
+                    <li><a href="/docs/common/versions-cn">更新历史</a></li>
+                    <li><a href="/docs/common/contact-cn">联系</a></li>
+                </ul>
+            </menu>
+            <article class="aj-text chinese">
+                <h1>查询教程</h1>
+<h2>绑定位置参数</h2>
+<p>数据值使用 <code>?</code>，并按照占位符顺序传入参数：</p>
+<pre><code class="language-java">Map&lt;String, Object&gt; row =
+        new Action(conn, &quot;SELECT * FROM shop_address WHERE id = ? AND stat = ?&quot;)
+                .query(1, 0)
+                .one();
+</code></pre>
+<p>这些值由 <code>PreparedStatement</code> 绑定，不要给 <code>?</code> 添加引号。</p>
+<h2>SQL 模板参数</h2>
+<p>如果第一个参数是 <code>Map</code>，<code>Action</code> 会先交给 <code>SmallMyBatis</code> 处理，再绑定剩余的位置参数：</p>
+<pre><code class="language-java">Map&lt;String, Object&gt; template = new HashMap&lt;&gt;();
+template.put(&quot;tableName&quot;, &quot;shop_address&quot;);
 
-    </script>
-</head>
-<body>
-<nav>
-    <div>
-        <div class="links">
-            <a href="/">🏠 首页</a>
-            |
-            ⚙️ 源码：
-            <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
+Map&lt;String, Object&gt; row =
+        new Action(conn, &quot;SELECT * FROM ${tableName} WHERE id = ?&quot;)
+                .query(template, 1)
+                .one();
+</code></pre>
+<p>当前实现中的 <code>${...}</code> 和 <code>#{...}</code> 都属于文本替换，并不是 JDBC 参数绑定。<code>${...}</code> 只能用于可信的表名、列名或 SQL 片段；数据值应优先使用 <code>?</code>。</p>
+<h2>Map 的列名</h2>
+<p>Map 使用 JDBC 返回的列标签。表达式应设置别名，以获得稳定的键名：</p>
+<pre><code class="language-java">Map&lt;String, Object&gt; totals =
+        new Action(conn, &quot;SELECT COUNT(*) AS total FROM shop_address&quot;)
+                .query()
+                .one();
 
-            |
-            <a href="/docs">English Version</a>
+Object total = totals.get(&quot;total&quot;);
+</code></pre>
+<h2>映射 JavaBean</h2>
+<p>目标类型需要无参构造方法和可写属性：</p>
+<pre><code class="language-java">Address address =
+        new Action(conn, &quot;SELECT id, name, create_date FROM shop_address WHERE id = ?&quot;)
+                .query(1)
+                .one(Address.class);
+</code></pre>
+<p>SqlMan 会把 <code>create_date</code> 这样的下划线列名转换为 <code>createDate</code> 属性名。</p>
+
+            </article>
+
         </div>
-        <h1>
-            <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
-        </h1>
-        <h3>轻量级 JDBC 助手——用户手册</h3>
-    </div>
-</nav>
-<div>
-    <menu>
-
-        <ul>
-            <li class="selected">
-                <a href="/docs/cn">首页</a>
-            </li>
-            <li>
-                <a href="/docs/quick-start-cn">快速开始</a>
-            </li>
-            <li>
-                <a href="/docs/setup-cn">安装与配置</a>
-            </li>
-        </ul>
-        <h3>数据库查询</h3>
-        <ul>
-            <li>
-                <a href="/docs/query/query-concept-cn">基础概念</a>
-            </li>
-            <li>
-                <a href="/docs/query/query-tutorial-cn">查询教程</a>
-            </li>
-            <li>
-                <a href="/docs/query/query-paging-cn">分页查询</a>
-            </li>
-        </ul>
-        <h3>写入数据</h3>
-        <ul>
-            <li>
-                <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a>
-            </li>
-            <li>
-                <a href="/docs/write/batch-cn">批量更新</a>
-            </li>
-        </ul>
-        <h3>其他用法</h3>
-        <ul>
-            <li>
-                <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a>
-            </li>
-            <li>
-                <a href="/docs/other/entity-cn">“类” ORM</a>
-            </li>
-        </ul>
-        <h3>Misc</h3>
-        <ul>
-            <li><a href="/docs/common/versions-cn">更新历史</a></li>
-            <li><a href="/docs/common/contact-cn">联系</a></li>
-        </ul>
-    </menu>
-    <article class="aj-text chinese">
-        <h1>查询教程</h1>
-        <h2>绑定参数</h2>
-        <p>查询语句通常包含固定部分和参数化部分。这样做有几个优点：</p>
-        <ul>
-            <li>安全性：通过避免字符串拼接，可以防止 SQL 注入</li>
-            <li>便利性：我们不需要记住复杂数据类型（如时间戳）的确切语法</li>
-            <li>性能：查询的静态部分只需解析一次并可以被缓存</li>
-        </ul>
-        <p>SqlMan 同时支持位置参数和命名参数。</p>
-        <p>我们在查询或语句中使用问号来插入位置参数：</p>
-        <pre><code class="language-java">Map&lt;String, Object&gt; result = new Sql(conn).input(&quot;SELECT * FROM shop_address WHERE id = ?&quot;, 1).query();
-</code></pre>
-        <p>这与我们在经典 JDBC 查询中使用预处理语句的方式相同。参数可以多个。</p>
-        <p>命名参数则是以 ${ 开头，后面跟着参数名，以 } 结尾：</p>
-        <pre><code class="language-java">Map&lt;String, Object&gt; result；
-result = new Sql(conn).input(&quot;SELECT * FROM ${tableName} WHERE id = #{stat}&quot;, mapOf(&quot;tableName&quot;, &quot;shop_address&quot;, &quot;stat&quot;, 1)).query();
-assertNotNull(result);
-
-result = new Sql(conn).input(&quot;SELECT * FROM ${tableName} WHERE id = ?&quot;, mapOf(&quot;tableName&quot;, &quot;shop_address&quot;, &quot;abc&quot;, 2), 1).query();
-assertNotNull(result);
-</code></pre>
-        <p>这允许我们使用 <code>Map</code>对象一次绑定多个命名参数。</p>
-        <p>允许混合使用<code>Map</code>对象和参数数组，但 Map 必须作为第一个参数，其余的则作为参数数组。</p>
-        <h2>返回 Java Bean</h2>
-        <p>有时候，我们需要返回一个 Java Bean 而不是<code>Map</code>。SqlMan 提供了一个简单的方法来实现这一点，只需要将 Java Bean 类作为查询方法的参数传入：</p>
-        <pre><code class="language-java">Address result = new Sql(conn).input(&quot;SELECT * FROM shop_address&quot;).query(Address.class);
-List&lt;Address&gt; results = new Sql(conn).input(&quot;SELECT * FROM shop_address&quot;).queryList(Address.class);
-</code></pre>
-        <p>最后，我们可以将查询结果行映射到一个 bean 或其他自定义类。</p>
-
-    </article>
-
-</div>
-<footer>
+        <footer>
     SqlMan, a part of <a href="https://framework.ajaxjs.com" target="_blank">AJ-Framework</a> open source. Mail:
     frank@ajaxjs.com, visit <a href="https://blog.csdn.net/zhangxin09" target="_blank">my blog(In Chinese)</a>.
-    <br/>
-    <br/>
-    Copyright © 2025 Frank Cheung. All rights reserved.
+    <br />
+    <br />
+     Copyright © 2025 Frank Cheung. All rights reserved.
     <script>
         var _hmt = _hmt || [];
         (function() {
@@ -140,8 +147,7 @@ List&lt;Address&gt; results = new Sql(conn).input(&quot;SELECT * FROM shop_addre
           var s = document.getElementsByTagName("script")[0];
           s.parentNode.insertBefore(hm, s);
         })();
-
     </script>
 </footer>
-</body>
+    </body>
 </html>

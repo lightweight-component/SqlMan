@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title>SqlMan/数据库数据的更新、创建和删除</title>
-    <meta name="description" content="TODO"/>
-    <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, last one"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta
-            name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css"/>
-    <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
-    <link rel="icon" type="image/png" href="/asset/favicon.png"/>
-    <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
-    <script>
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>SqlMan/数据的创建、更新和删除</title>
+        <meta name="description" content="使用 SqlMan 执行参数化 INSERT、UPDATE、DELETE，并获取数据库生成的主键。"/>
+        <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, SqlMan,数据写入,CRUD"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/> 
+        <meta
+        name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css" />
+        <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
+        <link rel="icon" type="image/png" href="/asset/favicon.png"/>
+        <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
+         <script>
              var _hmt = _hmt || [];
              (function() {
                var hm = document.createElement("script");
@@ -21,148 +21,125 @@
                var s = document.getElementsByTagName("script")[0];
                s.parentNode.insertBefore(hm, s);
              })();
+         </script>
+    </head>
+    <body>
+        <nav>
+            <div>
+                <div class="links">
+                    <a href="/">🏠 首页</a>
+                    |
+                                                                            ⚙️ 源码：
+                    <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
+                    
+                    |
+                    <a href="/docs">English Version</a>
+                </div>
+                <h1>
+                    <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
+                </h1>
+                <h3>轻量级 JDBC 助手——用户手册</h3>
+            </div>
+        </nav>
+        <div>
+            <menu>
+                
+                <ul>
+                    <li class="selected">
+                        <a href="/docs/cn">首页</a>
+                    </li>
+                    <li>
+                        <a href="/docs/quick-start-cn">快速开始</a>
+                    </li>
+                    <li>
+                        <a href="/docs/setup-cn">安装与配置</a>
+                    </li>
+                </ul>
+                <h3>数据库查询</h3>
+                <ul>
+                    <li>
+                        <a href="/docs/query/query-concept-cn">基础概念</a>
+                    </li>
+                    <li>
+                        <a href="/docs/query/query-tutorial-cn">查询教程</a>
+                    </li>
+                    <li>
+                        <a href="/docs/query/query-paging-cn">分页查询</a>
+                    </li>
+                </ul>
+                <h3>写入数据</h3>
+                <ul>
+                    <li>
+                        <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a>
+                    </li>
+                    <li>
+                        <a href="/docs/write/batch-cn">批量更新</a>
+                    </li>
+                </ul>
+                <h3>其他用法</h3>
+                <ul>
+                    <li>
+                        <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a>
+                    </li>
+                    <li>
+                        <a href="/docs/other/entity-cn">“类” ORM</a>
+                    </li>
+                </ul>
+                <h3>Misc</h3>
+                <ul>
+                    <li><a href="/docs/common/versions-cn">更新历史</a></li>
+                    <li><a href="/docs/common/contact-cn">联系</a></li>
+                </ul>
+            </menu>
+            <article class="aj-text chinese">
+                <h1>数据的创建、更新和删除</h1>
+<h2>插入记录</h2>
+<p>执行 <code>INSERT</code> 时使用 <code>create(params).execute(...)</code>：</p>
+<pre><code class="language-java">String sql = &quot;INSERT INTO shop_address (name, address, phone) VALUES (?, ?, ?)&quot;;
 
-    </script>
-</head>
-<body>
-<nav>
-    <div>
-        <div class="links">
-            <a href="/">🏠 首页</a>
-            |
-            ⚙️ 源码：
-            <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
+CreateResult&lt;Serializable&gt; result =
+        new Action(conn, sql)
+                .create(&quot;公司&quot;, &quot;Tree Road&quot;, &quot;3412&quot;)
+                .execute(false);
+</code></pre>
+<p><code>isOk()</code> 表示是否插入成功。</p>
+<h2>获取数据库生成的主键</h2>
+<p>数据库生成主键时传入 <code>true</code>，同时指定期望的 Java 类型：</p>
+<pre><code class="language-java">CreateResult&lt;Long&gt; result =
+        new Action(conn,
+                &quot;INSERT INTO shop_address (name, address) VALUES (?, ?)&quot;)
+                .create(&quot;家&quot;, &quot;Lake Road&quot;)
+                .execute(true, Long.class);
 
-            |
-            <a href="/docs">English Version</a>
+Long id = result.getNewlyId();
+</code></pre>
+<p>SqlMan 会把 JDBC 返回的主键转换为指定数值类型，并拒绝溢出或丢失小数的转换。</p>
+<h2>更新记录</h2>
+<pre><code class="language-java">UpdateResult result =
+        new Action(conn,
+                &quot;UPDATE shop_address SET name = ? WHERE id = ?&quot;)
+                .update(&quot;总公司&quot;, 8)
+                .execute();
+
+int affected = result.getEffectedRows();
+</code></pre>
+<p>只要 JDBC 执行过程没有异常，即使影响行数为 0，也会被视为执行成功。</p>
+<h2>按 ID 删除</h2>
+<pre><code class="language-java">UpdateResult result =
+        new Action(conn).delete(&quot;shop_address&quot;, &quot;id&quot;, 8);
+</code></pre>
+<p>这是物理删除。逻辑删除应执行 <code>UPDATE</code>，修改相应的状态字段。</p>
+<p>表名、列名和原始条件不能作为 JDBC 参数绑定。标识符和 SQL 片段必须由应用代码控制，不要直接拼接不可信的请求内容。</p>
+
+            </article>
+
         </div>
-        <h1>
-            <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
-        </h1>
-        <h3>轻量级 JDBC 助手——用户手册</h3>
-    </div>
-</nav>
-<div>
-    <menu>
-
-        <ul>
-            <li class="selected">
-                <a href="/docs/cn">首页</a>
-            </li>
-            <li>
-                <a href="/docs/quick-start-cn">快速开始</a>
-            </li>
-            <li>
-                <a href="/docs/setup-cn">安装与配置</a>
-            </li>
-        </ul>
-        <h3>数据库查询</h3>
-        <ul>
-            <li>
-                <a href="/docs/query/query-concept-cn">基础概念</a>
-            </li>
-            <li>
-                <a href="/docs/query/query-tutorial-cn">查询教程</a>
-            </li>
-            <li>
-                <a href="/docs/query/query-paging-cn">分页查询</a>
-            </li>
-        </ul>
-        <h3>写入数据</h3>
-        <ul>
-            <li>
-                <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a>
-            </li>
-            <li>
-                <a href="/docs/write/batch-cn">批量更新</a>
-            </li>
-        </ul>
-        <h3>其他用法</h3>
-        <ul>
-            <li>
-                <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a>
-            </li>
-            <li>
-                <a href="/docs/other/entity-cn">“类” ORM</a>
-            </li>
-        </ul>
-        <h3>Misc</h3>
-        <ul>
-            <li><a href="/docs/common/versions-cn">更新历史</a></li>
-            <li><a href="/docs/common/contact-cn">联系</a></li>
-        </ul>
-    </menu>
-    <article class="aj-text chinese">
-        <h1>数据库数据的更新、创建和删除</h1>
-        <p>本教程将指导您如何使用 SqlMan 在数据库中更新、创建和删除数据。我们将使用示例测试代码来演示如何执行这些操作。</p>
-        <h2>创建记录</h2>
-        <p><code>testCreate</code>方法演示了如何向<code>shop_address</code>表中插入新记录：</p>
-        <pre><code class="language-java">@Test
-public void testCreate() {
-    // Insert a new record into the shop_address table
-    String sql = &quot;INSERT INTO shop_address (name, address, phone, receiver) &quot; +
-            &quot;VALUES ('Home', 'Tree Road', '3412', 'Jack')&quot;;
-    CreateResult&lt;Integer&gt; result;
-    result = new Sql(conn).input(sql).create(true, Integer.class);
-    assertTrue(result.isOk());
-
-    // Insert a new record with parameters
-    sql = &quot;INSERT INTO shop_address (name, address, phone, receiver) &quot; +
-                &quot;VALUES (${name}, ?, '3412', ?)&quot;;
-        
-    // mixing parameters with Map and Array
-    result = new Sql(conn).input(sql, mapOf(&quot;name&quot;, &quot;'office'&quot;),&quot;Kid Place&quot;, &quot;Tom&quot;).create(true, Integer.class);
-    assertTrue(result.isOk());
-
-    Address address = new Sql(conn).input(&quot;SELECT * FROM shop_address WHERE id = ?&quot;, result.getNewlyId()).query(Address.class);
-    System.out.println(address);
-}
-</code></pre>
-        <p>在<code>input()</code>方法中，同时支持位置参数和命名参数，并且允许混合使用它们。</p>
-        <h3>提取自增列值</h3>
-        <p>当我们有一个包含自动生成列（通常是自增或序列）的插入语句时，我们可能想要获取生成的值。为此，我们可以使用<code>create()</code>方法，并将 isReturnGeneratedKeys 参数设置为<code>true</code>。然后，我们可以使用<code>result.getNewlyId()</code>方法来获取生成的值。
-        </p>
-        <h2>更新记录</h2>
-        <p>testUpdate 方法展示了如何更新 shop_address 表中的现有记录：</p>
-        <pre><code class="language-java">@Test
-public void testUpdate() {
-    // Update a record in the shop_address table
-    String sql = &quot;UPDATE shop_address SET name= '公司' WHERE id = ?&quot;;
-    UpdateResult result;
-    result = new Sql(conn).input(sql, 8).update();
-    assertTrue(result.isOk());
-
-    // Update a record with dynamic table name
-    String sql2 = &quot;UPDATE ${tableName} SET name= '公司' WHERE id = ?&quot;;
-    result = new Sql(conn).input(sql2, mapOf(&quot;tableName&quot;, &quot;shop_address&quot;), 9).update();
-    assertTrue(result.isOk());
-
-    // Delete a record using update method
-    String sql3 = &quot;DELETE FROM ${tableName} WHERE id = 10&quot;; // Delete is also update
-    result = new Sql(conn).input(sql3, mapOf(&quot;tableName&quot;, &quot;shop_address&quot;)).update();
-    assertTrue(result.isOk());
-}
-</code></pre>
-        <h2>删除记录</h2>
-        <p>testDelete 方法演示了如何从 shop_address 表中删除记录：</p>
-        <pre><code class="language-java">@Test
-public void testDelete() {
-    // Delete a record from the shop_address table
-    UpdateResult result = new Sql(conn).delete(&quot;shop_address&quot;, &quot;id&quot;, 1);
-    assertTrue(result.isOk());
-}
-</code></pre>
-        <p>注意：这是物理删除，而不是逻辑删除。</p>
-
-    </article>
-
-</div>
-<footer>
+        <footer>
     SqlMan, a part of <a href="https://framework.ajaxjs.com" target="_blank">AJ-Framework</a> open source. Mail:
     frank@ajaxjs.com, visit <a href="https://blog.csdn.net/zhangxin09" target="_blank">my blog(In Chinese)</a>.
-    <br/>
-    <br/>
-    Copyright © 2025 Frank Cheung. All rights reserved.
+    <br />
+    <br />
+     Copyright © 2025 Frank Cheung. All rights reserved.
     <script>
         var _hmt = _hmt || [];
         (function() {
@@ -171,8 +148,7 @@ public void testDelete() {
           var s = document.getElementsByTagName("script")[0];
           s.parentNode.insertBefore(hm, s);
         })();
-
     </script>
 </footer>
-</body>
+    </body>
 </html>

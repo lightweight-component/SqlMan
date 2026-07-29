@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title>SqlMan/Query Concept</title>
-    <meta name="description" content="TODO"/>
-    <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, last one"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta
-            name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css"/>
-    <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
-    <link rel="icon" type="image/png" href="/asset/favicon.png"/>
-    <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
-    <script>
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>SqlMan/批量操作</title>
+        <meta name="description" content="使用 Map 或 JavaBean 执行参数化批量插入、批量删除及事务处理。"/>
+        <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, SqlMan,批量操作,JDBC"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/> 
+        <meta
+        name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css" />
+        <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
+        <link rel="icon" type="image/png" href="/asset/favicon.png"/>
+        <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
+         <script>
              var _hmt = _hmt || [];
              (function() {
                var hm = document.createElement("script");
@@ -21,189 +21,133 @@
                var s = document.getElementsByTagName("script")[0];
                s.parentNode.insertBefore(hm, s);
              })();
-
-    </script>
-</head>
-<body>
-<nav>
-    <div>
-        <div class="links">
-            <a href="/">🏠 首页</a>
-            |
-            ⚙️ 源码：
-            <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
-
-            |
-            <a href="/docs">English Version</a>
-        </div>
-        <h1>
-            <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
-        </h1>
-        <h3>轻量级 JDBC 助手——用户手册</h3>
-    </div>
-</nav>
-<div>
-    <menu>
-
-        <ul>
-            <li class="selected">
-                <a href="/docs/cn">首页</a>
-            </li>
-            <li>
-                <a href="/docs/quick-start-cn">快速开始</a>
-            </li>
-            <li>
-                <a href="/docs/setup-cn">安装与配置</a>
-            </li>
-        </ul>
-        <h3>数据库查询</h3>
-        <ul>
-            <li>
-                <a href="/docs/query/query-concept-cn">基础概念</a>
-            </li>
-            <li>
-                <a href="/docs/query/query-tutorial-cn">查询教程</a>
-            </li>
-            <li>
-                <a href="/docs/query/query-paging-cn">分页查询</a>
-            </li>
-        </ul>
-        <h3>写入数据</h3>
-        <ul>
-            <li>
-                <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a>
-            </li>
-            <li>
-                <a href="/docs/write/batch-cn">批量更新</a>
-            </li>
-        </ul>
-        <h3>其他用法</h3>
-        <ul>
-            <li>
-                <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a>
-            </li>
-            <li>
-                <a href="/docs/other/entity-cn">“类” ORM</a>
-            </li>
-        </ul>
-        <h3>Misc</h3>
-        <ul>
-            <li><a href="/docs/common/versions-cn">更新历史</a></li>
-            <li><a href="/docs/common/contact-cn">联系</a></li>
-        </ul>
-    </menu>
-    <article class="aj-text chinese">
-        <h1>批量更新</h1>
-        <p>SqlMan 中的 BatchUpdate 类提供了高效的批量数据库操作方法，特别适用于需要同时插入或更新多条记录的场景。</p>
-        <h2>基本批量插入操作</h2>
-        <h3>方法一：简单批量插入</h3>
-        <p>对于基本的批量插入操作，使用原始字段值：</p>
-        <pre><code class="language-java">BatchUpdate batchUpdate = new BatchUpdate();
-batchUpdate.setTableName(&quot;users&quot;);
-
-// 准备数据
-String fields = &quot;name, email, age&quot;;
-List&lt;String&gt; values = Arrays.asList(
-    &quot;('John', 'john@email.com', 25)&quot;,
-    &quot;('Jane', 'jane@email.com', 30)&quot;
-);
-
-// 执行批量插入
-batchUpdate.createBatch(fields, values);
-</code></pre>
-        <h3>方法二：使用 Map 对象批量插入</h3>
-        <p>使用 Map 对象插入多条记录：</p>
-        <pre><code class="language-java">List&lt;Map&lt;String, Object&gt;&gt; users = new ArrayList&lt;&gt;();
-
-Map&lt;String, Object&gt; user1 = new HashMap&lt;&gt;();
-user1.put(&quot;name&quot;, &quot;John&quot;);
-user1.put(&quot;email&quot;, &quot;john@email.com&quot;);
-users.add(user1);
-
-Map&lt;String, Object&gt; user2 = new HashMap&lt;&gt;();
-user2.put(&quot;name&quot;, &quot;Jane&quot;);
-user2.put(&quot;email&quot;, &quot;jane@email.com&quot;);
-users.add(user2);
-
-batchUpdate.createBatchMap(users, &quot;users&quot;);
-</code></pre>
-        <h3>方法三：使用 Java Bean 批量插入</h3>
-        <p>使用 Java 对象插入多条记录：</p>
-        <pre><code class="language-java">List&lt;User&gt; users = new ArrayList&lt;&gt;();
-User user1 = new User();
-user1.setName(&quot;John&quot;);
-user1.setEmail(&quot;john@email.com&quot;);
-users.add(user1);
-
-User user2 = new User();
-user2.setName(&quot;Jane&quot;);
-user2.setEmail(&quot;jane@email.com&quot;);
-users.add(user2);
-
-batchUpdate.setTableName(&quot;users&quot;);
-batchUpdate.createBatch(users);
-</code></pre>
-        <h2>批量删除操作</h2>
-        <p>通过 ID 删除多条记录：</p>
-        <pre><code class="language-java">BatchUpdate batchUpdate = new BatchUpdate();
-batchUpdate.setTableName(&quot;users&quot;);
-batchUpdate.setIdField(&quot;id&quot;);
-
-List&lt;Integer&gt; idsToDelete = Arrays.asList(1, 2, 3, 4);
-UpdateResult result = batchUpdate.deleteBatch(idsToDelete);
-
-if (result.isOk()) {
-    System.out.println(&quot;批量删除成功&quot;);
+         </script>
+    </head>
+    <body>
+        <nav>
+            <div>
+                <div class="links">
+                    <a href="/">🏠 首页</a>
+                    |
+                                                                            ⚙️ 源码：
+                    <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
+                    
+                    |
+                    <a href="/docs">English Version</a>
+                </div>
+                <h1>
+                    <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
+                </h1>
+                <h3>轻量级 JDBC 助手——用户手册</h3>
+            </div>
+        </nav>
+        <div>
+            <menu>
+                
+                <ul>
+                    <li class="selected">
+                        <a href="/docs/cn">首页</a>
+                    </li>
+                    <li>
+                        <a href="/docs/quick-start-cn">快速开始</a>
+                    </li>
+                    <li>
+                        <a href="/docs/setup-cn">安装与配置</a>
+                    </li>
+                </ul>
+                <h3>数据库查询</h3>
+                <ul>
+                    <li>
+                        <a href="/docs/query/query-concept-cn">基础概念</a>
+                    </li>
+                    <li>
+                        <a href="/docs/query/query-tutorial-cn">查询教程</a>
+                    </li>
+                    <li>
+                        <a href="/docs/query/query-paging-cn">分页查询</a>
+                    </li>
+                </ul>
+                <h3>写入数据</h3>
+                <ul>
+                    <li>
+                        <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a>
+                    </li>
+                    <li>
+                        <a href="/docs/write/batch-cn">批量更新</a>
+                    </li>
+                </ul>
+                <h3>其他用法</h3>
+                <ul>
+                    <li>
+                        <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a>
+                    </li>
+                    <li>
+                        <a href="/docs/other/entity-cn">“类” ORM</a>
+                    </li>
+                </ul>
+                <h3>Misc</h3>
+                <ul>
+                    <li><a href="/docs/common/versions-cn">更新历史</a></li>
+                    <li><a href="/docs/common/contact-cn">联系</a></li>
+                </ul>
+            </menu>
+            <article class="aj-text chinese">
+                <h1>批量操作</h1>
+<p><code>BatchUpdate</code> 使用 <code>JdbcConnection</code> 为当前线程保存的连接：</p>
+<pre><code class="language-java">JdbcConnection.setConnection(conn);
+try {
+    BatchUpdate batch = new BatchUpdate();
+    // 执行批量操作
+} finally {
+    JdbcConnection.closeDb();
 }
 </code></pre>
-        <h2>最佳实践</h2>
-        <ol>
-            <li>
-                <p><strong>事务管理</strong></p>
-                <ul>
-                    <li>类自动处理事务</li>
-                    <li>批量操作期间自动禁用自动提交</li>
-                    <li>失败时自动回滚</li>
-                </ul>
-            </li>
-            <li>
-                <p><strong>数据类型处理</strong>
-                    该类自动处理各种数据类型：</p>
-                <ul>
-                    <li>字符串会被正确引用</li>
-                    <li>布尔值转换为 1/0</li>
-                    <li>日期格式化处理</li>
-                    <li>支持 LocalDateTime</li>
-                </ul>
-            </li>
-            <li>
-                <p><strong>性能提示</strong></p>
-                <ul>
-                    <li>使用批量操作替代单条插入以提高性能</li>
-                    <li>保持合理的批量大小（通常为 100-1000 条记录）</li>
-                    <li>处理大数据集时监控内存使用</li>
-                </ul>
-            </li>
-            <li>
-                <p><strong>错误处理</strong></p>
-                <ul>
-                    <li>操作过程有日志记录</li>
-                    <li>失败时事务回滚</li>
-                    <li>可验证执行结果</li>
-                </ul>
-            </li>
-        </ol>
-        <p>这个 BatchUpdate 类通过减少数据库往返次数，显著提高了处理多条数据库操作时的性能。</p>
+<p>如果连接处于自动提交模式，参数化批量插入会开启局部事务：成功时提交，失败时回滚，最后恢复自动提交。如果调用方已经关闭自动提交，则事务的提交和回滚仍由调用方负责。</p>
+<h2>批量插入 Map</h2>
+<p>所有记录必须和第一条记录包含完全相同的键。使用 <code>LinkedHashMap</code> 可以明确控制列顺序：</p>
+<pre><code class="language-java">List&lt;Map&lt;String, Object&gt;&gt; users = new ArrayList&lt;&gt;();
 
-    </article>
+Map&lt;String, Object&gt; first = new LinkedHashMap&lt;&gt;();
+first.put(&quot;name&quot;, &quot;张三&quot;);
+first.put(&quot;email&quot;, &quot;zhangsan@example.com&quot;);
+users.add(first);
 
-</div>
-<footer>
+Map&lt;String, Object&gt; second = new LinkedHashMap&lt;&gt;();
+second.put(&quot;name&quot;, &quot;李四&quot;);
+second.put(&quot;email&quot;, &quot;lisi@example.com&quot;);
+users.add(second);
+
+new BatchUpdate().createBatchMap(users, &quot;users&quot;);
+</code></pre>
+<p>值通过 <code>PreparedStatement</code> 绑定。支持 <code>byte[]</code> 和 <code>InputStream</code>；枚举保存为字符串，<code>Map</code> 或 <code>List</code> 会序列化为 JSON。</p>
+<h2>批量插入 JavaBean</h2>
+<p>需要在批处理对象上设置表名：</p>
+<pre><code class="language-java">BatchUpdate batch = new BatchUpdate();
+batch.setTableName(&quot;users&quot;);
+batch.createBatch(Arrays.asList(user1, user2));
+</code></pre>
+<p>第一条 Bean 的非 null 属性决定 INSERT 列。后续 Bean 的这些属性可以为 <code>null</code>，但不能出现第一条 Bean 没有选择的其他非 null 属性。</p>
+<p><code>@Column</code> 用于修改属性到列的映射，<code>@Transient</code> 用于排除属性。</p>
+<h2>按 ID 批量删除</h2>
+<pre><code class="language-java">BatchUpdate batch = new BatchUpdate();
+batch.setTableName(&quot;users&quot;);
+batch.setIdField(&quot;id&quot;);
+
+UpdateResult result = batch.deleteBatch(Arrays.asList(1, 2, 3));
+</code></pre>
+<p>ID 使用参数绑定。空 ID 列表以及包含 <code>null</code> 的列表会被拒绝。</p>
+<h2>旧的原始值接口</h2>
+<p><code>createBatch(String fields, List&lt;String&gt; values)</code> 及其字符串重载已弃用。它们接收完整 SQL 值片段，无法安全绑定参数，只应兼容可信的旧代码；新代码应使用 Map 或 JavaBean 接口。</p>
+
+            </article>
+
+        </div>
+        <footer>
     SqlMan, a part of <a href="https://framework.ajaxjs.com" target="_blank">AJ-Framework</a> open source. Mail:
     frank@ajaxjs.com, visit <a href="https://blog.csdn.net/zhangxin09" target="_blank">my blog(In Chinese)</a>.
-    <br/>
-    <br/>
-    Copyright © 2025 Frank Cheung. All rights reserved.
+    <br />
+    <br />
+     Copyright © 2025 Frank Cheung. All rights reserved.
     <script>
         var _hmt = _hmt || [];
         (function() {
@@ -212,8 +156,7 @@ if (result.isOk()) {
           var s = document.getElementsByTagName("script")[0];
           s.parentNode.insertBefore(hm, s);
         })();
-
     </script>
 </footer>
-</body>
+    </body>
 </html>

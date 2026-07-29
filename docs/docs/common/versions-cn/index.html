@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title>SqlMan/Versions</title>
-    <meta name="description" content="TODO"/>
-    <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, last one"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta
-            name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css"/>
-    <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
-    <link rel="icon" type="image/png" href="/asset/favicon.png"/>
-    <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
-    <script>
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <title>SqlMan/版本发布说明</title>
+        <meta name="description" content="SqlMan 各发布版本的时间和主要变更记录。"/>
+        <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, SqlMan,版本,更新日志"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/> 
+        <meta
+        name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css" />
+        <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
+        <link rel="icon" type="image/png" href="/asset/favicon.png"/>
+        <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
+         <script>
              var _hmt = _hmt || [];
              (function() {
                var hm = document.createElement("script");
@@ -21,107 +21,107 @@
                var s = document.getElementsByTagName("script")[0];
                s.parentNode.insertBefore(hm, s);
              })();
+         </script>
+    </head>
+    <body>
+        <nav>
+            <div>
+                <div class="links">
+                    <a href="/">🏠 首页</a>
+                    |
+                                                                            ⚙️ 源码：
+                    <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
+                    
+                    |
+                    <a href="/docs">English Version</a>
+                </div>
+                <h1>
+                    <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
+                </h1>
+                <h3>轻量级 JDBC 助手——用户手册</h3>
+            </div>
+        </nav>
+        <div>
+            <menu>
+                
+                <ul>
+                    <li class="selected">
+                        <a href="/docs/cn">首页</a>
+                    </li>
+                    <li>
+                        <a href="/docs/quick-start-cn">快速开始</a>
+                    </li>
+                    <li>
+                        <a href="/docs/setup-cn">安装与配置</a>
+                    </li>
+                </ul>
+                <h3>数据库查询</h3>
+                <ul>
+                    <li>
+                        <a href="/docs/query/query-concept-cn">基础概念</a>
+                    </li>
+                    <li>
+                        <a href="/docs/query/query-tutorial-cn">查询教程</a>
+                    </li>
+                    <li>
+                        <a href="/docs/query/query-paging-cn">分页查询</a>
+                    </li>
+                </ul>
+                <h3>写入数据</h3>
+                <ul>
+                    <li>
+                        <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a>
+                    </li>
+                    <li>
+                        <a href="/docs/write/batch-cn">批量更新</a>
+                    </li>
+                </ul>
+                <h3>其他用法</h3>
+                <ul>
+                    <li>
+                        <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a>
+                    </li>
+                    <li>
+                        <a href="/docs/other/entity-cn">“类” ORM</a>
+                    </li>
+                </ul>
+                <h3>Misc</h3>
+                <ul>
+                    <li><a href="/docs/common/versions-cn">更新历史</a></li>
+                    <li><a href="/docs/common/contact-cn">联系</a></li>
+                </ul>
+            </menu>
+            <article class="aj-text chinese">
+                <p><h1>版本发布说明</h1>
+<h3>v2.0 <span class="release-date">当前版本</span></h3></p>
+<p><ul>
+<li>以 <code>Action</code> 作为查询和数据写入的统一入口。</li>
+<li>增加参数化 Map/JavaBean 批量插入，并完善事务状态恢复。</li>
+<li>改进数据库类型识别、自增主键转换、SQL 日志和分页边界处理。</li>
+</ul>
+<h3>v1.1.8 <span class="release-date">2024-01-11</span></h3></p>
+<p><ul>
+<li>拆分了各个模块；修正了若干的 bug</li>
+</ul>
+<h3>v1.1.7 <span class="release-date">2023-12-11</span></h3></p>
+<p><ul>
+<li>大幅度重构后的版本</li>
+<li>修正大量 bug，引入诸多新功能</li>
+</ul>
+<h3>v1.0 <span class="release-date">2019-06-24</span></h3></p>
+<p><ul>
+<li>首次版本发布</li>
+</ul></p>
 
-    </script>
-</head>
-<body>
-<nav>
-    <div>
-        <div class="links">
-            <a href="/">🏠 首页</a>
-            |
-            ⚙️ 源码：
-            <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
+            </article>
 
-            |
-            <a href="/docs">English Version</a>
         </div>
-        <h1>
-            <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
-        </h1>
-        <h3>轻量级 JDBC 助手——用户手册</h3>
-    </div>
-</nav>
-<div>
-    <menu>
-
-        <ul>
-            <li class="selected">
-                <a href="/docs/cn">首页</a>
-            </li>
-            <li>
-                <a href="/docs/quick-start-cn">快速开始</a>
-            </li>
-            <li>
-                <a href="/docs/setup-cn">安装与配置</a>
-            </li>
-        </ul>
-        <h3>数据库查询</h3>
-        <ul>
-            <li>
-                <a href="/docs/query/query-concept-cn">基础概念</a>
-            </li>
-            <li>
-                <a href="/docs/query/query-tutorial-cn">查询教程</a>
-            </li>
-            <li>
-                <a href="/docs/query/query-paging-cn">分页查询</a>
-            </li>
-        </ul>
-        <h3>写入数据</h3>
-        <ul>
-            <li>
-                <a href="/docs/write/Create-Update-Delete-cn">创建/修改/删除</a>
-            </li>
-            <li>
-                <a href="/docs/write/batch-cn">批量更新</a>
-            </li>
-        </ul>
-        <h3>其他用法</h3>
-        <ul>
-            <li>
-                <a href="/docs/other/sql-xml-cn">SQL 写在 XML 中</a>
-            </li>
-            <li>
-                <a href="/docs/other/entity-cn">“类” ORM</a>
-            </li>
-        </ul>
-        <h3>Misc</h3>
-        <ul>
-            <li><a href="/docs/common/versions-cn">更新历史</a></li>
-            <li><a href="/docs/common/contact-cn">联系</a></li>
-        </ul>
-    </menu>
-    <article class="aj-text chinese">
-        <p>
-        <h1>版本发布说明</h1>
-        <h3>v1.1.8 <span class="release-date">2024-01-11</span></h3></p>
-        <p>
-        <ul>
-            <li>拆分了各个模块；修正了若干的 bug</li>
-        </ul>
-        <h3>v1.1.7 <span class="release-date">2023-12-11</span></h3></p>
-        <p>
-        <ul>
-            <li>大幅度重构后的版本</li>
-            <li>修正大量 bug，引入诸多新功能</li>
-        </ul>
-        <h3>v1.0 <span class="release-date">2019-06-24</span></h3></p>
-        <p>
-        <ul>
-            <li>首次版本发布</li>
-        </ul>
-        </p>
-
-    </article>
-
-</div>
-<footer>
+        <footer>
     SqlMan, a part of <a href="https://framework.ajaxjs.com" target="_blank">AJ-Framework</a> open source. Mail:
     frank@ajaxjs.com, visit <a href="https://blog.csdn.net/zhangxin09" target="_blank">my blog(In Chinese)</a>.
-    <br/>
-    <br/>
-    Copyright © 2025 Frank Cheung. All rights reserved.
+    <br />
+    <br />
+     Copyright © 2025 Frank Cheung. All rights reserved.
     <script>
         var _hmt = _hmt || [];
         (function() {
@@ -130,8 +130,7 @@
           var s = document.getElementsByTagName("script")[0];
           s.parentNode.insertBefore(hm, s);
         })();
-
     </script>
 </footer>
-</body>
+    </body>
 </html>
