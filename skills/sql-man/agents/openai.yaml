@@ -1,0 +1,4 @@
+interface:
+  display_name: "SqlMan"
+  short_description: "Maintain and review the SqlMan Java JDBC library"
+  default_prompt: "Use $sql-man to review or update this SqlMan project safely."
