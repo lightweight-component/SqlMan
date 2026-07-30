@@ -20,7 +20,7 @@ SqlMan requires Java 8 or later. Add the library and the JDBC driver for your da
 <dependency>
     <groupId>com.ajaxjs</groupId>
     <artifactId>sqlman</artifactId>
-    <version>2.0</version>
+    <version>2.1</version>
 </dependency>
 ```
 

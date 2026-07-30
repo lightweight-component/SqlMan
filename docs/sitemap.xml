@@ -37,36 +37,6 @@
         </url>
     
         <url>
-            <loc>https://sqlman.ajaxjs.com/blog/</loc>
-            <lastmod>2025-11-06T07:45:20.806Z</lastmod>
-        </url>
-    
-        <url>
-            <loc>https://sqlman.ajaxjs.com/docs/landing/</loc>
-            <lastmod>2025-11-06T07:45:20.809Z</lastmod>
-        </url>
-    
-        <url>
-            <loc>https://sqlman.ajaxjs.com/</loc>
-            <lastmod>2025-11-06T07:45:20.815Z</lastmod>
-        </url>
-    
-        <url>
-            <loc>https://sqlman.ajaxjs.com/style/blog.css</loc>
-            <lastmod>2025-11-06T07:45:20.817Z</lastmod>
-        </url>
-    
-        <url>
-            <loc>https://sqlman.ajaxjs.com/style/common.css</loc>
-            <lastmod>2025-11-06T07:45:20.828Z</lastmod>
-        </url>
-    
-        <url>
-            <loc>https://sqlman.ajaxjs.com/style/index.css</loc>
-            <lastmod>2025-11-06T07:45:20.829Z</lastmod>
-        </url>
-    
-        <url>
             <loc>https://sqlman.ajaxjs.com/docs/cn/</loc>
             <lastmod>2026-07-29T00:00:00.000Z</lastmod>
         </url>
@@ -164,6 +134,36 @@
         <url>
             <loc>https://sqlman.ajaxjs.com/docs/write/batch/</loc>
             <lastmod>2026-07-29T00:00:00.000Z</lastmod>
+        </url>
+    
+        <url>
+            <loc>https://sqlman.ajaxjs.com/blog/</loc>
+            <lastmod>2026-07-30T14:59:09.736Z</lastmod>
+        </url>
+    
+        <url>
+            <loc>https://sqlman.ajaxjs.com/docs/landing/</loc>
+            <lastmod>2026-07-30T14:59:09.739Z</lastmod>
+        </url>
+    
+        <url>
+            <loc>https://sqlman.ajaxjs.com/</loc>
+            <lastmod>2026-07-30T14:59:09.746Z</lastmod>
+        </url>
+    
+        <url>
+            <loc>https://sqlman.ajaxjs.com/style/blog.css</loc>
+            <lastmod>2026-07-30T14:59:09.748Z</lastmod>
+        </url>
+    
+        <url>
+            <loc>https://sqlman.ajaxjs.com/style/common.css</loc>
+            <lastmod>2026-07-30T14:59:09.748Z</lastmod>
+        </url>
+    
+        <url>
+            <loc>https://sqlman.ajaxjs.com/style/index.css</loc>
+            <lastmod>2026-07-30T14:59:09.749Z</lastmod>
         </url>
     
 </urlset>

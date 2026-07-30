@@ -20,7 +20,7 @@ SqlMan 需要 Java 8 或更高版本。添加 SqlMan 和目标数据库对应的
 <dependency>
     <groupId>com.ajaxjs</groupId>
     <artifactId>sqlman</artifactId>
-    <version>2.0</version>
+    <version>2.1</version>
 </dependency>
 ```
 
