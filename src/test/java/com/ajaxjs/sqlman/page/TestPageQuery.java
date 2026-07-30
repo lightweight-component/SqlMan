@@ -37,6 +37,20 @@ class TestPageQuery {
         }
     }
 
+    @Test
+    void returnsEmptyListWhenQueryHasNoRows() throws Exception {
+        try (Connection conn = createDatabase()) {
+            PageResult<Map<String, Object>> result = new Action(conn,
+                    "SELECT id, name FROM page_items WHERE id < 0 ORDER BY id")
+                    .query().pageByStartLimit(0, 10);
+
+            assertEquals(0, result.getTotalCount());
+            assertTrue(result.isZero());
+            assertNotNull(result.getList());
+            assertTrue(result.getList().isEmpty());
+        }
+    }
+
     private static Connection createDatabase() throws Exception {
         JdbcDataSource dataSource = new JdbcDataSource();
         dataSource.setURL("jdbc:h2:mem:page_out_of_range;DB_CLOSE_DELAY=-1");

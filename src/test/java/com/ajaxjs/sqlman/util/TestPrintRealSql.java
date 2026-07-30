@@ -7,6 +7,8 @@ import java.time.ZoneId;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TestPrintRealSql {
     @Test
@@ -24,24 +26,22 @@ class TestPrintRealSql {
     }
 
     @Test
-    void test() {
-        // 示例 1：正常情况（含单引号）
+    void formatsStringsDatesAndMissingParameters() {
         String sql1 = "SELECT * FROM users WHERE name = ? AND age > ?";
         Object[] params1 = {"O'Reilly", 25};
-        System.out.println(PrintRealSql.printRealSql(sql1, params1));
-        // 输出: SELECT * FROM users WHERE name = 'O''Reilly' AND age > 25
+        assertEquals("SELECT * FROM users WHERE name = 'O''Reilly' AND age > 25",
+                PrintRealSql.printRealSql(sql1, params1));
 
-        // 示例 2：包含日期
         String sql2 = "INSERT INTO logs (msg, time) VALUES (?, ?)";
-        Object[] params2 = {"Error occurred", new Date()};
-        System.out.println(PrintRealSql.printRealSql(sql2, params2));
-        // 输出: INSERT INTO logs (msg, time) VALUES ('Error occurred', '2025-08-29 10:30:45')
+        Object[] params2 = {"Error occurred", new Date(0)};
+        String renderedDateSql = PrintRealSql.printRealSql(sql2, params2);
+        assertTrue(renderedDateSql.startsWith("INSERT INTO logs (msg, time) VALUES ('Error occurred', '"));
+        assertTrue(renderedDateSql.endsWith("')"));
 
-        // 示例 3：参数不足
         String sql3 = "DELETE FROM temp WHERE id = ? AND status = ?";
         Object[] params3 = {123};
-        System.out.println(PrintRealSql.printRealSql(sql3, params3));
-        // 输出: DELETE FROM temp WHERE id = 123 AND status = ?
+        assertEquals("DELETE FROM temp WHERE id = 123 AND status = ?",
+                PrintRealSql.printRealSql(sql3, params3));
     }
 
     @Test
@@ -106,7 +106,8 @@ class TestPrintRealSql {
                 50                                                                        // ?
         };
 
-        System.out.println(PrintRealSql.printRealSql(sql, params));
+        String rendered = PrintRealSql.printRealSql(sql, params);
+        assertFalse(rendered.contains("?"));
+        assertTrue(rendered.endsWith("LIMIT 50;"));
     }
 }
-

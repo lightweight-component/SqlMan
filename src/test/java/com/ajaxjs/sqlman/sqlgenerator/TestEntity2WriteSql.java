@@ -7,6 +7,7 @@ import lombok.Data;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -138,6 +139,24 @@ class TestEntity2WriteSql {
         assertTrue(error.getMessage().contains(FailingGetterBean.class.getName()));
         assertTrue(error.getMessage().contains("broken"));
         assertInstanceOf(IllegalArgumentException.class, error.getCause());
+    }
+
+    @Test
+    void rejectsInsertWithoutWritableValues() {
+        Entity2WriteSql generator = new Entity2WriteSql(new LinkedHashMap<>());
+        generator.setTableName(TABLE_NAME);
+
+        assertThrows(IllegalArgumentException.class, generator::getInsertSql);
+    }
+
+    @Test
+    void rejectsUpdateWithoutValuesOtherThanId() {
+        Map<String, Object> values = new LinkedHashMap<>();
+        values.put("id", 1L);
+        Entity2WriteSql generator = new Entity2WriteSql(values);
+        generator.setTableName(TABLE_NAME);
+
+        assertThrows(IllegalArgumentException.class, () -> generator.getUpdateSqlWithId("id"));
     }
 
     public static class WriteOnlyBean {

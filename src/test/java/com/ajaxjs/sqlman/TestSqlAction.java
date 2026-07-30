@@ -26,7 +26,7 @@ class TestSqlAction extends BaseTest {
         assertEquals(1, result);
 
         result = new Action(conn, "SELECT * FROM ${tableName} WHERE id = ?").query(mapOf("tableName", "shop_address", "abc", 2), 1).oneValue(int.class);
-        System.out.println(result); // TODO, should be return 0
+        assertEquals(1, result);
     }
 
     @Test
@@ -113,7 +113,8 @@ class TestSqlAction extends BaseTest {
         assertNotNull(result2);
 
         result2 = new Action(conn, "SELECT * FROM shop_address").query().pageByStartLimit(100, 2, Address.class);
-        assertEquals(0, result2.getTotalCount());
+        assertEquals(5, result2.getTotalCount());
+        assertTrue(result2.getList().isEmpty());
     }
 
     @Test
@@ -132,7 +133,6 @@ class TestSqlAction extends BaseTest {
         assertTrue(result.isOk());
 
         Address address = new Action(conn, "SELECT * FROM shop_address WHERE id = ?").query(result.getNewlyId()).one(Address.class);
-        System.out.println(address);
         assertNotNull(address);
     }
 
@@ -151,7 +151,7 @@ class TestSqlAction extends BaseTest {
         String sql3 = "DELETE FROM ${tableName} WHERE id = 3"; // Delete 也是 update
         result = new Action(conn, sql3).setParams(mapOf("tableName", "shop_address")).update().execute();
         assertTrue(result.isOk());
-        System.out.println(result.getEffectedRows());
+        assertEquals(1, result.getEffectedRows());
     }
 
     @Test
