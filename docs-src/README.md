@@ -7,7 +7,7 @@ tags:
   - Eleventy
 ---
 
-Powered by [Eleventy](https://www.11ty.dev/)
+Powered by [Eleventy](https://www.11ty.dev/) + 
 
 This is a Node.js project. Run `npm install` to install dependencies and `npm run dev` to start the development server.
 
