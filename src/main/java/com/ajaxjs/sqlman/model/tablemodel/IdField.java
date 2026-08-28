@@ -4,8 +4,14 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * Describes an entity identifier column and its generation strategy.
+ */
 @Data
 public class IdField {
+    /**
+     * Default identifier column name.
+     */
     public static final String ID_FIELD = "id";
 
     /**

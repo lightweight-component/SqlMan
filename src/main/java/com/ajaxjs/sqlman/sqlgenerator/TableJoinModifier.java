@@ -15,8 +15,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Adds LEFT JOIN clauses and collision-free aliases to SELECT statements.
+ */
 @Slf4j
 public class TableJoinModifier {
+    /**
+     * Adds a configured LEFT JOIN to a SELECT statement.
+     *
+     * @param originalSql the original SELECT SQL.
+     * @param tableJoin   the join configuration.
+     * @return the resulting SQL, or the original SQL when parsing fails.
+     */
     public static String addLeftJoinWithAutoAlias(String originalSql, TableJoin tableJoin) {
         try {
             return addLeftJoinWithAutoAlias(originalSql, tableJoin.getJoinTableName(), tableJoin.getMainTableJoinColumn(),
@@ -69,7 +79,7 @@ public class TableJoinModifier {
 
             if (alias != null)
                 mainTableAlias = alias.getName();
-             else {
+            else {
                 // 如果 FROM 的主表没有别名，我们尝试一个简单的策略：
                 // 使用表名小写作为别名（注意：这可能与后续JOIN的别名冲突！）
                 // 更健壮的方法是分析 SELECT 和 WHERE 子句，但这比较复杂。

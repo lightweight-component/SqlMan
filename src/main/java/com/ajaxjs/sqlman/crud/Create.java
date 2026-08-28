@@ -173,8 +173,19 @@ public class Create extends BaseAction {
         return cause == null ? new IllegalArgumentException(message) : new IllegalArgumentException(message, cause);
     }
 
+    /**
+     * Indicates a successful insertion with a long identifier.
+     */
     public static final Long INSERT_OK_LONG = -1L;
+
+    /**
+     * Indicates a successful insertion with an integer identifier.
+     */
     public static final Integer INSERT_OK_INT = -1;
+
+    /**
+     * Indicates a successful insertion with a string identifier.
+     */
     public static final String INSERT_OK_STR = "INSERT_OK";
 
     /**
@@ -211,6 +222,12 @@ public class Create extends BaseAction {
         return create(isAutoIns, idType);
     }
 
+    /**
+     * Executes creation using the generic serializable key type.
+     *
+     * @param isAutoIns whether the primary key is auto-generated.
+     * @return the creation result.
+     */
     public CreateResult<Serializable> execute(boolean isAutoIns) {
         return execute(isAutoIns, Serializable.class);
     }

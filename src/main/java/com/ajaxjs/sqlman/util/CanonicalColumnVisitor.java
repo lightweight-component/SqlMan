@@ -204,6 +204,10 @@ public class CanonicalColumnVisitor extends TablesNamesFinder {
 
     /**
      * 解析 SQL 语句字符串并返回对应的 Statement 对象
+     *
+     * @param sql 待解析的 SQL 语句。
+     * @return 解析得到的 Statement 对象。
+     * @throws JSQLParserException SQL 语句无法解析时抛出。
      */
     public static Statement parseStatement(String sql) throws JSQLParserException {
         // 解析SQL语句的实现
@@ -213,6 +217,10 @@ public class CanonicalColumnVisitor extends TablesNamesFinder {
 
     /**
      * 规范化SQL字符串
+     *
+     * @param tableName 用于补全字段前缀的表名。
+     * @param sql       待规范化的 SQL 语句。
+     * @return 规范化后的 SQL；解析失败时返回原 SQL。
      */
     public static String normalizeSql(String tableName, String sql) {
         try {
@@ -223,6 +231,12 @@ public class CanonicalColumnVisitor extends TablesNamesFinder {
         }
     }
 
+    /**
+     * Demonstrates SQL normalization.
+     *
+     * @param args command-line arguments.
+     * @throws JSQLParserException if an example SQL statement cannot be parsed.
+     */
     public static void main(String[] args) throws JSQLParserException {
         String longSql = "  SELECT " +
                 "        user_id, " +

@@ -2,9 +2,7 @@ package com.ajaxjs.sqlman.util.sqlinjectionanalyzer;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class TestSqlInject {
     @Test

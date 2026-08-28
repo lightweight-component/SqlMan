@@ -4,6 +4,11 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * Holds one page of query results and its pagination metadata.
+ *
+ * @param <T> the row type.
+ */
 @Data
 public class PageResult<T> {
     /**

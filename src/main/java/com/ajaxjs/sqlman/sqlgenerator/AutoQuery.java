@@ -7,9 +7,15 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.Serializable;
 
+/**
+ * Generates standard SQL statements from a table model and query policy.
+ */
 @Data
 @RequiredArgsConstructor
 public class AutoQuery {
+    /**
+     * Placeholder predicate used while SQL filters are assembled.
+     */
     public final static String DUMMY_STR = "1=1";
 
     private final static String SELECT_SQL = "SELECT * FROM %s WHERE " + DUMMY_STR;
@@ -23,6 +29,11 @@ public class AutoQuery {
 //        return tableModel;
 //    }
 
+    /**
+     * Builds a query for a single row identified by its primary key.
+     *
+     * @return the generated SQL.
+     */
     public String info() {
         String sql = String.format(SELECT_SQL, tableModel.getTableName());
         sql = sql.replace(DUMMY_STR, DUMMY_STR + " AND " + tableModel.getIdField() + " = ?");
@@ -33,10 +44,21 @@ public class AutoQuery {
         return sql;
     }
 
+    /**
+     * Builds a query for all visible rows.
+     *
+     * @return the generated SQL.
+     */
     public String list() {
         return list(null);
     }
 
+    /**
+     * Builds a query for visible rows with an optional predicate.
+     *
+     * @param where the additional WHERE predicate, or {@code null}.
+     * @return the generated SQL.
+     */
     public String list(String where) {
         String sql;
         String tableName = tableModel.getTableName();
@@ -65,10 +87,22 @@ public class AutoQuery {
         return sql;
     }
 
+    /**
+     * Builds a physical-delete statement for a primary key.
+     *
+     * @return the generated SQL.
+     */
     public String deletePhysicalById() {
         return deletePhysical(tableModel.getIdField() + " = ?");
     }
 
+    /**
+     * Builds a physical-delete statement.
+     *
+     * @param where the required WHERE predicate.
+     * @return the generated SQL.
+     * @throws UnsupportedOperationException if the predicate is empty.
+     */
     public String deletePhysical(String where) {
         if (ObjectHelper.isEmptyText(where))
             throw new UnsupportedOperationException("Please add the arguments of where cause, otherwise all rows will be deleted!");
@@ -76,10 +110,21 @@ public class AutoQuery {
         return "DELETE FROM " + tableModel.getTableName() + " WHERE " + DUMMY_STR + " AND " + where;
     }
 
+    /**
+     * Builds a logical-delete statement for a primary key.
+     *
+     * @return the generated SQL.
+     */
     public String deleteLogicalById() {
         return deleteLogical(tableModel.getIdField() + " = ?");
     }
 
+    /**
+     * Builds a logical-delete statement.
+     *
+     * @param where the WHERE predicate.
+     * @return the generated SQL.
+     */
     public String deleteLogical(String where) {
         String field = getTableModel().isHasIsDeleted() ? getTableModel().getDelField() : tableModel.getStateField();
         String sql = "UPDATE " + tableModel.getTableName() + " SET " + field + " = 1 WHERE " + DUMMY_STR + " AND " + where;
@@ -136,7 +181,7 @@ public class AutoQuery {
                 String fieldName = "tenant_id";
 
 //                if (sql.contains("t_join_table")) // for join case that can't be 'Column 'tenant_id' in where clause is ambiguous'
-                    fieldName = tableModel.getTableName() + "." + fieldName;
+                fieldName = tableModel.getTableName() + "." + fieldName;
 
                 if (sql.contains(DUMMY_STR))
                     sql = sql.replace(DUMMY_STR, DUMMY_STR + " AND " + fieldName + " = " + tenantId);

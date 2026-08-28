@@ -33,6 +33,9 @@ public class SqlInjectionAnalyzer extends TablesNamesFinder {
 //    };
     private final ConstAnalyzer constAnalyzer = new ConstAnalyzer();
 
+    /**
+     * Creates and initializes a SQL injection analyser.
+     */
     public SqlInjectionAnalyzer() {
         super();
         init(true);

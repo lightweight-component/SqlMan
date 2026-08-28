@@ -43,6 +43,12 @@ public class JdbcConnection {
         CONNECTION.set(conn);
     }
 
+    /**
+     * Detects the database vendor of a connection.
+     *
+     * @param conn the database connection.
+     * @return the detected vendor.
+     */
     protected static DatabaseVendor initDatabaseVendor(Connection conn) {
         try {
             String databaseProductName = conn.getMetaData().getDatabaseProductName().toLowerCase();

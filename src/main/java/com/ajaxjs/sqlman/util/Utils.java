@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+/**
+ * General-purpose utilities used by SqlMan.
+ */
 @Slf4j
 public class Utils {
     /**
@@ -69,6 +72,12 @@ public class Utils {
         return str;
     }
 
+    /**
+     * Converts all map keys from Java field names to database column names.
+     *
+     * @param map the original field-value map.
+     * @return a map using column names as keys.
+     */
     public static Map<String, Object> changeFieldToColumnName(Map<String, Object> map) {
         Map<String, Object> n = new HashMap<>();
 

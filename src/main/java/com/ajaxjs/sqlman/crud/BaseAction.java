@@ -77,6 +77,13 @@ public abstract class BaseAction {
         }
     }
 
+    /**
+     * Converts the current result-set row to a column-value map.
+     *
+     * @param rs the result set positioned on a row.
+     * @return the mapped row.
+     * @throws SQLException if column data cannot be read.
+     */
     public static Map<String, Object> getResultMap(ResultSet rs) throws SQLException {
         Map<String, Object> map = new LinkedHashMap<>();// LinkedHashMap 是 HashMap 的一个子类，保存了记录的插入顺序
         ResultSetMetaData metaData = rs.getMetaData();

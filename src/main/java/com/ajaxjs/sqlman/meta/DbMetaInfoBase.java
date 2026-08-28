@@ -4,6 +4,9 @@ import com.ajaxjs.sqlman.annotation.Table;
 
 import java.util.Map;
 
+/**
+ * Base metadata shared by map-backed and bean-backed database entities.
+ */
 public abstract class DbMetaInfoBase {
     String tableName;
 
@@ -32,6 +35,12 @@ public abstract class DbMetaInfoBase {
         this.tableName = tableName;
     }
 
+    /**
+     * Resolves the table name from the entity's {@link Table} annotation.
+     *
+     * @return the annotated table name, or {@code null} when absent.
+     * @throws UnsupportedOperationException if this metadata wraps a map.
+     */
     public String getTableNameByAnnotation() {
         if (entity instanceof Map)
             throw new UnsupportedOperationException("Map can't contain a annotation with db meta info.");

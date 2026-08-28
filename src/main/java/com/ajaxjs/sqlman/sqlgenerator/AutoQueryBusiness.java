@@ -71,6 +71,8 @@ public interface AutoQueryBusiness {
      * 7=creator_id+creator+user_id
      * 15=creator_id+creator+user_id+user_name
      * </pre>
+     *
+     * @return the bit mask that selects user fields to save, or {@code null}.
      */
     default Integer getSaveUserOnCreate() {
         return null;

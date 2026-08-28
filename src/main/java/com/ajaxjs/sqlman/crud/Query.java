@@ -96,6 +96,13 @@ public class Query extends BaseAction {
         return String.valueOf(result);
     }
 
+    /**
+     * Queries the first column of the first row.
+     *
+     * @param clz the requested value type.
+     * @param <T> the requested value type.
+     * @return the converted value, or {@code null} when no row exists.
+     */
     public <T> T oneValue(Class<T> clz) {
         Map<String, Object> map = one();
 
@@ -110,18 +117,42 @@ public class Query extends BaseAction {
         return null;
     }
 
+    /**
+     * Queries one row as a column-value map.
+     *
+     * @return the row map, or {@code null} when no row exists.
+     */
     public Map<String, Object> one() {
         return query(BaseAction::getResultMap);
     }
 
+    /**
+     * Queries one row and maps it to a bean.
+     *
+     * @param beanClz the bean type.
+     * @param <T>     the bean type.
+     * @return the mapped bean, or {@code null} when no row exists.
+     */
     public <T> T one(Class<T> beanClz) {
         return query(getResultBean(beanClz));
     }
 
+    /**
+     * Queries all rows as column-value maps.
+     *
+     * @return the row maps.
+     */
     public List<Map<String, Object>> list() {
         return query(rs -> forEachRs(rs, BaseAction::getResultMap));
     }
 
+    /**
+     * Queries all rows and maps them to beans.
+     *
+     * @param beanClz the bean type.
+     * @param <T>     the bean type.
+     * @return the mapped beans.
+     */
     public <T> List<T> list(Class<T> beanClz) {
         return query(rs -> forEachRs(rs, getResultBean(beanClz)));
     }
@@ -149,8 +180,10 @@ public class Query extends BaseAction {
     /**
      * Do the pagination by start/limit.
      *
-     * @param start The start position
-     * @param limit The limit of records, equals to page size
+     * @param start   The start position
+     * @param limit   The limit of records, equals to page size
+     * @param beanClz The result bean type.
+     * @param <T>     The result bean type.
      * @return The page result in Java Bean format.
      */
     public <T> PageResult<T> pageByStartLimit(Integer start, Integer limit, Class<T> beanClz) {
@@ -173,6 +206,7 @@ public class Query extends BaseAction {
      *
      * @param req     The request object.
      * @param beanClz The type of result object, null for Map.
+     * @param <T>     The result bean type.
      * @return The page result.
      */
     public <T> PageResult<T> pageByStartLimit(HttpServletRequest req, Class<T> beanClz) {
@@ -197,6 +231,8 @@ public class Query extends BaseAction {
      *
      * @param pageNo   The number of pages.
      * @param pageSize The size of every page.
+     * @param beanClz  The result bean type.
+     * @param <T>      The result bean type.
      * @return The page result in Java Bean format.
      */
     public <T> PageResult<T> pageByPageNo(Integer pageNo, Integer pageSize, Class<T> beanClz) {
@@ -219,6 +255,7 @@ public class Query extends BaseAction {
      *
      * @param req     The request object.
      * @param beanClz The type of result object, null for Map.
+     * @param <T>     The result bean type.
      * @return The page result.
      */
     public <T> PageResult<T> pageByPageNo(HttpServletRequest req, Class<T> beanClz) {

@@ -1,6 +1,5 @@
 package com.ajaxjs.sqlman.util;
 
-import com.ajaxjs.sqlman.crud.BaseAction;
 import com.ajaxjs.util.ObjectHelper;
 import com.ajaxjs.util.date.DateTools;
 import com.ajaxjs.util.date.Formatter;
@@ -192,8 +191,8 @@ public class PrintRealSql {
      * <p>
      * 对于同一个 bizAction，如果连续出现超过 N 次（例如 3 次），则后续相同 bizAction 的日志不再打印；直到出现其他 bizAction，计数重新开始。
      *
-     * @param bizAction
-     * @return
+     * @param bizAction the business action used as the throttling key.
+     * @return {@code true} when the current log entry may be printed.
      */
     public static synchronized boolean shouldPrint(String bizAction) {
         if (Objects.equals(lastBizAction, bizAction)) {
@@ -211,14 +210,14 @@ public class PrintRealSql {
     /**
      * 打印数据库操作日志
      *
-     * @param type          类型
-     * @param traceId       链路 id
-     * @param bizAction     链路业务名称
-     * @param sql           SQL 语句
-     * @param params        参数（字符串，或者拼接好的参数描述）
-     * @param realSql       实际执行SQL（带参数）
-     * @param action        用于计算耗时（如 33ms）
-     * @param result        执行结果（Object）
+     * @param type      类型
+     * @param traceId   链路 id
+     * @param bizAction 链路业务名称
+     * @param sql       SQL 语句
+     * @param params    参数（字符串，或者拼接好的参数描述）
+     * @param realSql   实际执行SQL（带参数）
+     * @param duration  用于计算耗时（如 33ms）
+     * @param result    执行结果（Object）
      */
     public static void printLog(String type, String traceId, String bizAction, String sql, Object params, String realSql, String duration, Object result) {
         if (MDC.get(Trace.ENABLE_LOG_THROTTLING) != null && ObjectHelper.hasText(bizAction) && !shouldPrint(bizAction))

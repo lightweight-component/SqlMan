@@ -34,21 +34,45 @@ public class Action {
         this(JdbcConnection.getConnection(dataSource));
     }
 
+    /**
+     * Creates an action using the supplied connection.
+     *
+     * @param conn the database connection.
+     */
     public Action(Connection conn) {
         this.conn = conn;
         databaseVendor = JdbcConnection.initDatabaseVendor(conn);
     }
 
+    /**
+     * Creates an action for a map-backed entity.
+     *
+     * @param entity    the entity values.
+     * @param tableName the database table name.
+     */
     public Action(Map<String, Object> entity, String tableName) {
         this(JdbcConnection.getConnection(), entity, tableName);
     }
 
+    /**
+     * Creates an action for a map-backed entity using a connection.
+     *
+     * @param conn      the database connection.
+     * @param entity    the entity values.
+     * @param tableName the database table name.
+     */
     public Action(Connection conn, Map<String, Object> entity, String tableName) {
         this(conn);
         entityMap = entity;
         this.tableName = tableName;
     }
 
+    /**
+     * Creates an action for a bean entity.
+     *
+     * @param entity    the entity bean.
+     * @param tableName the database table name.
+     */
     public Action(Object entity, String tableName) {
         this(JdbcConnection.getConnection(), entity, tableName);
 
@@ -56,16 +80,34 @@ public class Action {
             throw new UnsupportedOperationException("Can't pass string here. Try to used another one.");
     }
 
+    /**
+     * Creates an action for a bean entity using a connection.
+     *
+     * @param conn      the database connection.
+     * @param entity    the entity bean.
+     * @param tableName the database table name.
+     */
     public Action(Connection conn, Object entity, String tableName) {
         this(conn);
         entityBean = entity;
         this.tableName = tableName;
     }
 
+    /**
+     * Creates an action from an entity bean.
+     *
+     * @param entity the entity bean.
+     */
     public Action(Object entity) {
         this(JdbcConnection.getConnection(), entity);
     }
 
+    /**
+     * Creates an action from an entity bean using a connection.
+     *
+     * @param conn   the database connection.
+     * @param entity the entity bean.
+     */
     public Action(Connection conn, Object entity) {
         this(conn);
         entityBean = entity;
@@ -81,6 +123,12 @@ public class Action {
         this(JdbcConnection.getConnection(), sql);
     }
 
+    /**
+     * Creates an action for SQL using a connection.
+     *
+     * @param conn the database connection.
+     * @param sql  the SQL statement.
+     */
     public Action(Connection conn, String sql) {
         this(conn);
         this.sql = sql;
@@ -96,6 +144,12 @@ public class Action {
      */
     Object[] params;
 
+    /**
+     * Sets the parameters to bind to this action's SQL.
+     *
+     * @param params the parameter values.
+     * @return this action.
+     */
     @SuppressWarnings("unchecked")
     public Action setParams(Object... params) {
         if (!ObjectHelper.isEmpty(params)) {

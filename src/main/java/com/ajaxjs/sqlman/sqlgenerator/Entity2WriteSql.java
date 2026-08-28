@@ -47,10 +47,20 @@ public class Entity2WriteSql {
      */
     String tableName;
 
+    /**
+     * Creates an SQL generator for map-backed entity values.
+     *
+     * @param entityMap the entity values.
+     */
     public Entity2WriteSql(Map<String, Object> entityMap) {
         this.entityMap = entityMap;
     }
 
+    /**
+     * Creates an SQL generator for a Java bean.
+     *
+     * @param entityBean the entity bean.
+     */
     public Entity2WriteSql(Object entityBean) {
         this.entityBean = entityBean;
         this.tableName = getTableNameByBean(entityBean);
@@ -66,6 +76,9 @@ public class Entity2WriteSql {
      */
     Object[] params;
 
+    /**
+     * Generates an INSERT statement and its parameter values.
+     */
     public void getInsertSql() {
         StringBuilder sb = new StringBuilder();
         List<Object> values = new ArrayList<>();
@@ -94,6 +107,9 @@ public class Entity2WriteSql {
 
     /**
      * Generate SQL for update.
+     *
+     * @param isUpdateAllRow whether an all-rows update is intentionally allowed.
+     * @param idField        the identifier field to exclude from the SET clause.
      */
     public void getUpdateSql(boolean isUpdateAllRow, String idField) {
         if (isUpdateAllRow)
@@ -169,6 +185,11 @@ public class Entity2WriteSql {
         getUpdateSqlWithId(idField, idValue);
     }
 
+    /**
+     * Generates an UPDATE statement with a WHERE predicate.
+     *
+     * @param where the required WHERE predicate.
+     */
     public void getUpdateSql(String where) {
         if (ObjectHelper.isEmptyText(where)) {
             log.warn("You're going to update ALL rows on the table {}, which is SO dangerous! " +
@@ -180,6 +201,12 @@ public class Entity2WriteSql {
         sql += " WHERE " + where;
     }
 
+    /**
+     * Generates a DELETE statement for an identifier value.
+     *
+     * @param idField the identifier field name.
+     * @param idValue the identifier value, or {@code null} to read it from the entity.
+     */
     public void getDeleteSql(String idField, Object idValue) {
         if (idValue == null) {
             if (entityMap != null)
@@ -290,6 +317,12 @@ public class Entity2WriteSql {
             return value;
     }
 
+    /**
+     * Resolves an entity table name from its {@link Table} annotation.
+     *
+     * @param javaBean the entity bean.
+     * @return the annotated table name, or {@code null} when absent.
+     */
     public static String getTableNameByBean(Object javaBean) {
         Table annotation = javaBean.getClass().getAnnotation(Table.class);
 

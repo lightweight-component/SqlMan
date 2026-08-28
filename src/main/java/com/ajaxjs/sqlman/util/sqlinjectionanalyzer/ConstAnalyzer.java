@@ -310,6 +310,11 @@ public class ConstAnalyzer implements ExpressionVisitor, ItemsListVisitor {
         visitBinaryExpression(expr);
     }
 
+    /**
+     * Visits both operands of a binary expression.
+     *
+     * @param expr the binary expression to visit.
+     */
     protected void visitBinaryExpression(BinaryExpression expr) {
         expr.getLeftExpression().accept(this);
         expr.getRightExpression().accept(this);
@@ -484,11 +489,22 @@ public class ConstAnalyzer implements ExpressionVisitor, ItemsListVisitor {
         visitBinaryExpression(geometryDistance);
     }
 
+    /**
+     * Visits the row constructor while determining whether it is constant.
+     *
+     * @param rowConstructor the row constructor to visit.
+     */
     @Override
     public void visit(RowConstructor rowConstructor) {
         constFlag.set(false);
     }
 
+    /**
+     * Determines whether an expression contains only constant values.
+     *
+     * @param expression the expression to analyse.
+     * @return {@code true} when the expression is constant.
+     */
     public boolean isConstExpression(Expression expression) {
         if (null != expression) {
             constFlag.set(true);

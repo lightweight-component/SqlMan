@@ -94,10 +94,19 @@ public class PageQuery {
         return Math.max(start, 0);
     }
 
+    /**
+     * Accepted request parameter names for the result offset.
+     */
     public static final String[] START = new String[]{"start", "offset"};
 
+    /**
+     * Accepted request parameter names for the page number.
+     */
     public static final String[] PAGE_NO = new String[]{"pageNo", "page"};
 
+    /**
+     * Accepted request parameter names for the page size.
+     */
     public static final String[] PAGE_SIZE = new String[]{"pageSize", "rows", "limit"};
 
     /**
@@ -108,8 +117,9 @@ public class PageQuery {
     /**
      * 根据 HttpServletRequest 和字符串数组返回一个整数。
      *
-     * @param req   请求对象
-     * @param maybe 字符串数组，包含可能的参数名
+     * @param req          请求对象
+     * @param maybe        字符串数组，包含可能的参数名
+     * @param defaultValue 未提供参数时使用的默认值
      * @return 返回一个整数，如果参数存在且为整数，则返回对应的整数值；否则返回 null
      */
     public static Integer getParameter(HttpServletRequest req, String[] maybe, int defaultValue) {
