@@ -98,6 +98,9 @@ public class Entity2WriteSql {
                 values.add(beanValue2SqlValue(value));
             });
 
+        if (values.isEmpty())
+            throw new IllegalArgumentException("Cannot generate INSERT for table " + tableName + ": no writable values.");
+
         sb.deleteCharAt(sb.length() - 2);// 删除最后一个 ,
         sb.append(") VALUES (").append(String.join(", ", valuesHolder)).append(")");
 
@@ -136,6 +139,9 @@ public class Entity2WriteSql {
                 sb.append(" `").append(field).append("` = ?,");
                 values.add(beanValue2SqlValue(value));
             });
+
+        if (values.isEmpty())
+            throw new IllegalArgumentException("Cannot generate UPDATE for table " + tableName + ": no writable values.");
 
         sb.deleteCharAt(sb.length() - 1);// 删除最后一个 ,
 

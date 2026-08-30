@@ -152,6 +152,8 @@ public class Action {
      */
     @SuppressWarnings("unchecked")
     public Action setParams(Object... params) {
+        this.params = null;
+
         if (!ObjectHelper.isEmpty(params)) {
             if (params[0] instanceof Map) {
 //                sql = SmallMyBatis.getValuedSQL(sql, (Map<String, Object>) params[0]);
@@ -186,7 +188,8 @@ public class Action {
      * @return The query action.
      */
     public Query query(Object... params) {
-        setParams(params);
+        if (!ObjectHelper.isEmpty(params))
+            setParams(params);
 
         return new Query(this);
     }
@@ -198,7 +201,8 @@ public class Action {
      * @return The creation action.
      */
     public Create create(Object... params) {
-        setParams(params);
+        if (!ObjectHelper.isEmpty(params))
+            setParams(params);
 
         return new Create(this);
     }
@@ -210,7 +214,8 @@ public class Action {
      * @return The update action.
      */
     public Update update(Object... params) {
-        setParams(params);
+        if (!ObjectHelper.isEmpty(params))
+            setParams(params);
 
         return new Update(this);
     }

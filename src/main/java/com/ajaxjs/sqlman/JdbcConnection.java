@@ -188,7 +188,12 @@ public class JdbcConnection {
      * </pre>
      */
     public static void closeDb() {
-        closeDb(getConnection());
-        CONNECTION.remove();
+        Connection conn = getConnection();
+
+        try {
+            closeDb(conn);
+        } finally {
+            CONNECTION.remove();
+        }
     }
 }

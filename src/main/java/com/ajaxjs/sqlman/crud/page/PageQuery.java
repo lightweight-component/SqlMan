@@ -32,6 +32,7 @@ public class PageQuery {
         PageResult<T> result = new PageResult<>();
         result.setStart(start);
         result.setPageSize(limit);
+        result.setList(Collections.emptyList());
 
         if (total == null || total <= 0) {
             result.setTotalCount(0);
