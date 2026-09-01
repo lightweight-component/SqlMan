@@ -12,6 +12,11 @@ import java.util.List;
  */
 public class PageQuery {
     /**
+     * Maximum page size accepted by the built-in request helpers.
+     */
+    public static final int MAX_PAGE_SIZE = 500;
+
+    /**
      * Do the pagination.
      *
      * @param query   Query object
@@ -23,32 +28,37 @@ public class PageQuery {
      */
     @SuppressWarnings({"unchecked"})
     public static <T> PageResult<T> page(Query query, Class<T> beanClz, Integer start, Integer limit) {
+        validateStartLimit(start, limit);
         Action action = query.getAction();
-        PageControl pageControl = new PageControl(action.getDatabaseVendor(), action.getSql(), start, limit);
-        pageControl.getCount();
-        action.setSql(pageControl.getCountSql());
-        Integer total = query.oneValue(Integer.class);
+        String originalSql = action.getSql();
 
-        PageResult<T> result = new PageResult<>();
-        result.setStart(start);
-        result.setPageSize(limit);
-        result.setList(Collections.emptyList());
+        try {
+            PageControl pageControl = new PageControl(action.getDatabaseVendor(), originalSql, start, limit);
+            pageControl.getCount();
+            action.setSql(pageControl.getCountSql());
+            Integer total = query.oneValue(Integer.class);
 
-        if (total == null || total <= 0) {
-            result.setTotalCount(0);
-            result.setZero(true);
-        } else {
-            action.setSql(pageControl.getPagedSql());
-            // 如果 beanCls 为 null，则将查询结果作为 Map 列表返回 否则将查询结果转换为指定实体类的列表
-            List<T> list = beanClz == null ? (List<T>) query.list() : query.list(beanClz);
+            PageResult<T> result = new PageResult<>();
+            result.setStart(start);
+            result.setPageSize(limit);
+            result.setList(Collections.emptyList());
 
-            result.setTotalCount(total);
-            result.setList(list == null ? Collections.emptyList() : list);
-            setParams(result, total, start);// might be not meaningful,
-            // you can delete this line if higher performance is needed
+            if (total == null || total <= 0) {
+                result.setTotalCount(0);
+                result.setZero(true);
+            } else {
+                action.setSql(pageControl.getPagedSql());
+                List<T> list = beanClz == null ? (List<T>) query.list() : query.list(beanClz);
+
+                result.setTotalCount(total);
+                result.setList(list == null ? Collections.emptyList() : list);
+                setParams(result, total, start);
+            }
+
+            return result;
+        } finally {
+            action.setSql(originalSql);
         }
-
-        return result;
     }
 
     /**
@@ -90,9 +100,15 @@ public class PageQuery {
      * @return 起始位置
      */
     public static int pageNo2start(int pageNo, int limit) {
-        int start = (pageNo - 1) * limit;
+        if (pageNo < 1)
+            throw new IllegalArgumentException("pageNo must be at least 1");
+        validateLimit(limit);
+        long start = ((long) pageNo - 1L) * limit;
 
-        return Math.max(start, 0);
+        if (start > Integer.MAX_VALUE)
+            throw new IllegalArgumentException("page offset exceeds supported range");
+
+        return (int) start;
     }
 
     /**
@@ -153,5 +169,16 @@ public class PageQuery {
             else
                 throw new UnsupportedOperationException("can't detect what type is this pagination");
         }
+    }
+
+    private static void validateStartLimit(Integer start, Integer limit) {
+        if (start == null || start < 0)
+            throw new IllegalArgumentException("start must not be negative");
+        validateLimit(limit);
+    }
+
+    private static void validateLimit(Integer limit) {
+        if (limit == null || limit < 1 || limit > MAX_PAGE_SIZE)
+            throw new IllegalArgumentException("page size must be between 1 and " + MAX_PAGE_SIZE);
     }
 }

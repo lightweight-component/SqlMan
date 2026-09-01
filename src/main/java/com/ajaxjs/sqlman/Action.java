@@ -155,10 +155,11 @@ public class Action {
         this.params = null;
 
         if (!ObjectHelper.isEmpty(params)) {
-            if (params[0] instanceof Map) {
-//                sql = SmallMyBatis.getValuedSQL(sql, (Map<String, Object>) params[0]);
-                sql = SmallMyBatis.handleSql(sql, (Map<String, Object>) params[0]);// high-cost processing
-                params = Arrays.copyOfRange(params, 1, params.length);
+            if (params[0] instanceof Map && SmallMyBatis.hasTemplate(sql)) {
+                SmallMyBatis.PreparedSql preparedSql = SmallMyBatis.prepareSql(sql, (Map<String, Object>) params[0],
+                        Arrays.copyOfRange(params, 1, params.length));
+                sql = preparedSql.getSql();
+                params = preparedSql.getParams();
             }
 
             this.params = params;

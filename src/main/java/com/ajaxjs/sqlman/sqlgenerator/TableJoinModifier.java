@@ -61,13 +61,11 @@ public class TableJoinModifier {
             throw new IllegalArgumentException("Provided SQL is not a SELECT statement.");
 
         Select selectStatement = (Select) statement;
-        SelectBody selectBody = selectStatement.getSelectBody();
+        PlainSelect plainSelect = selectStatement instanceof PlainSelect ? (PlainSelect) selectStatement : null;
 
         // 3. 确保它是 PlainSelect
-        if (!(selectBody instanceof PlainSelect))
+        if (plainSelect == null)
             throw new IllegalArgumentException("This example only supports modifying PlainSelect statements.");
-
-        PlainSelect plainSelect = (PlainSelect) selectBody;
 
         // 4. --- 自动推断别名 ---
         // 4.1 获取主表及其别名
@@ -135,14 +133,14 @@ public class TableJoinModifier {
 
         // --- 添加 SELECT 字段 ---
         if (fieldsToSelectFromJoinedTable != null && !fieldsToSelectFromJoinedTable.isEmpty()) {
-            List<SelectItem> selectItems = plainSelect.getSelectItems();
+            List<SelectItem<?>> selectItems = plainSelect.getSelectItems();
             // 确保 SELECT 列表不是 SELECT * (如果是，需要展开，这里简化处理)
             // 假设已经是具体列名列表
 
             for (String fieldName : fieldsToSelectFromJoinedTable) {
-                // 为每个字段创建 SelectExpressionItem
+                // 为每个字段创建 SelectItem
                 Column column = new Column(joinedTableAlias + "." + fieldName);
-                SelectExpressionItem item = new SelectExpressionItem(column);
+                SelectItem<?> item = new SelectItem<>(column);
                 // 可以为字段设置别名，例如 t1.field_name -> field_name 或保持原样
                 // item.setAlias(new Alias(fieldName, false)); // 可选：设置别名
                 selectItems.add(item);

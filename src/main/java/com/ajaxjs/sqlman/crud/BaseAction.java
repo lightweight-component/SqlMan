@@ -194,17 +194,13 @@ public abstract class BaseAction {
                         try {
                             value = ConvertBasicValue.basicConvert(_value, propertyType);
                         } catch (NumberFormatException e) {
-//                        String input = value.getClass().toString();
-//                        String expect = property.getPropertyType().toString();
-//                            log.warn("保存数据到 bean 的 {} 字段时，转换失败，输入值：{}，输入类型 ：{}，期待类型：{}", key, "", "", expect, e);
-                            continue; // 转换失败，继续下一个字段
+                            throw mappingException(key, _value, propertyType, e);
                         }
-//					}
 
                     try {
                         Methods.execute(bean, property.getWriteMethod(), new Object[]{value});
                     } catch (Throwable e) {
-                        log.error("Error when setting value to bean field: {}", key, e);
+                        throw mappingException(key, _value, propertyType, e);
                     }
                 } catch (IntrospectionException e) {
                     try {
@@ -251,5 +247,11 @@ public abstract class BaseAction {
             key = Utils.changeColumnToFieldName(key);
 
         return key;
+    }
+
+    private static IllegalStateException mappingException(String column, Object value, Class<?> propertyType, Throwable cause) {
+        String sourceType = value == null ? "null" : value.getClass().getName();
+        return new IllegalStateException("Cannot map column " + column + " from " + sourceType
+                + " to " + propertyType.getName() + ".", cause);
     }
 }

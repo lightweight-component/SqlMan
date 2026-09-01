@@ -10,14 +10,14 @@ import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.AllColumns;
 import net.sf.jsqlparser.statement.select.AllTableColumns;
 import net.sf.jsqlparser.statement.select.OrderByElement;
-import net.sf.jsqlparser.statement.select.SubSelect;
+import net.sf.jsqlparser.statement.select.ParenthesedSelect;
 
 /**
  * 判断表达是否为常量的分析器
  *
  * @author guyadong
  */
-public class ConstAnalyzer implements ExpressionVisitor, ItemsListVisitor {
+public class ConstAnalyzer extends ExpressionVisitorAdapter {
     private static final ThreadLocal<Boolean> constFlag = new ThreadLocal<Boolean>() {
         @Override
         protected Boolean initialValue() {
@@ -188,7 +188,7 @@ public class ConstAnalyzer implements ExpressionVisitor, ItemsListVisitor {
     }
 
     @Override
-    public void visit(SubSelect subSelect) {
+    public void visit(ParenthesedSelect parenthesedSelect) {
         constFlag.set(false);
     }
 
@@ -243,11 +243,6 @@ public class ConstAnalyzer implements ExpressionVisitor, ItemsListVisitor {
     }
 
     @Override
-    public void visit(TryCastExpression expr) {
-        constFlag.set(false);
-    }
-
-    @Override
     public void visit(Modulo expr) {
         visitBinaryExpression(expr);
     }
@@ -278,21 +273,9 @@ public class ConstAnalyzer implements ExpressionVisitor, ItemsListVisitor {
     }
 
     @Override
-    public void visit(ExpressionList expressionList) {
+    public void visit(ExpressionList<?> expressionList) {
         for (Expression expr : expressionList.getExpressions())
             expr.accept(this);
-    }
-
-    @Override
-    public void visit(NamedExpressionList namedExpressionList) {
-        for (Expression expr : namedExpressionList.getExpressions())
-            expr.accept(this);
-    }
-
-    @Override
-    public void visit(MultiExpressionList multiExprList) {
-        for (ExpressionList list : multiExprList.getExpressionLists())
-            visit(list);
     }
 
     @Override
@@ -331,11 +314,6 @@ public class ConstAnalyzer implements ExpressionVisitor, ItemsListVisitor {
     }
 
     @Override
-    public void visit(RegExpMySQLOperator expr) {
-        visitBinaryExpression(expr);
-    }
-
-    @Override
     public void visit(UserVariable var) {
         constFlag.set(false);
     }
@@ -354,12 +332,6 @@ public class ConstAnalyzer implements ExpressionVisitor, ItemsListVisitor {
     @Override
     public void visit(MySQLGroupConcat groupConcat) {
         constFlag.set(false);
-    }
-
-    @Override
-    public void visit(ValueListExpression valueListExpression) {
-        for (Expression expr : valueListExpression.getExpressionList().getExpressions())
-            expr.accept(this);
     }
 
     @Override

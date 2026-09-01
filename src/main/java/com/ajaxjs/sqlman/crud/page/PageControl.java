@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Function;
-import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.select.*;
@@ -40,12 +39,10 @@ public class PageControl {
      */
     public void getCount() {
         Select selectStatement = getSelectStatement();
-        SelectBody selectBody = selectStatement.getSelectBody();
+        PlainSelect plainSelect = selectStatement instanceof PlainSelect ? (PlainSelect) selectStatement : null;
 
-        if (selectBody instanceof PlainSelect)
-            getCount(selectBody);
-//        else if (selectBody instanceof SetOperationList) /* It might be unuseful */
-//            setOperationList(selectBody);
+        if (plainSelect != null)
+            getCount(plainSelect);
 
         countSql = selectStatement.toString();
     }
@@ -53,10 +50,9 @@ public class PageControl {
     /**
      * Generate the count SQL
      *
-     * @param selectBody Object in JSQLParser
+     * @param plainSelect Object in JSQLParser
      */
-    private void getCount(SelectBody selectBody) {
-        PlainSelect plainSelect = (PlainSelect) selectBody;
+    private void getCount(PlainSelect plainSelect) {
 
         // 设置分页语句
 //            Limit limitObj = new Limit();
@@ -84,41 +80,11 @@ public class PageControl {
 
         Function countFunc = new Function();// 创建一个 count 函数的表达式
         countFunc.setName("COUNT");
-        countFunc.setParameters(new ExpressionList(new AllColumns()));
+        countFunc.setParameters(new ExpressionList<>(new AllColumns()));
 
-        List<SelectItem> selectItems = plainSelect.getSelectItems();// 替换所有的 Select Item
+        List<SelectItem<?>> selectItems = plainSelect.getSelectItems();// 替换所有的 Select Item
         selectItems.clear();
-        selectItems.add(new SelectExpressionItem(countFunc));
-    }
-
-    /**
-     * 我们还考虑了 SQL 查询语句中使用了 SetOperationList 的情况，这时需要对每个 SELECT 子查询都进行分页，同时修改 FROM
-     * 部分的表名，以避免语法错误。
-     *
-     * @param selectBody Object in JSQLParser
-     */
-    private void setOperationList(SelectBody selectBody) {
-        SetOperationList setOperationList = (SetOperationList) selectBody;
-        List<SelectBody> selectBodies = setOperationList.getSelects();
-
-        /*
-         * 我们还考虑了 SQL 查询语句中使用了 SetOperationList 的情况，这时需要对每个 SELECT 子查询都进行分页，同时修改 FROM
-         * 部分的表名，以避免语法错误。
-         */
-        selectBodies.forEach(selectItem -> {
-            if (selectItem instanceof PlainSelect) {
-                PlainSelect plainSelect = (PlainSelect) selectItem;
-                Limit limitObj = new Limit();
-                limitObj.setRowCount(new LongValue(limit));
-                limitObj.setOffset(new LongValue(start));
-                plainSelect.setLimit(limitObj);
-
-//                    if (plainSelect.getFromItem() != null) {
-                // modify the original table by adding an alias
-//						plainSelect.getFromItem().setAlias(new Table("original_table_alias"));
-//                    }
-            }
-        });
+        selectItems.add(new SelectItem<>(countFunc));
     }
 
     private Select getSelectStatement() {

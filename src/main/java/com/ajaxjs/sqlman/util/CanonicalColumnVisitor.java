@@ -117,7 +117,7 @@ public class CanonicalColumnVisitor extends TablesNamesFinder {
         // 处理UPDATE语句的更新列和表达式
         update.getUpdateSets().forEach(us -> {
             us.getColumns().forEach(c -> c.accept(this));
-            us.getExpressions().forEach(e -> e.accept(this));
+            us.getValues().getExpressions().forEach(e -> ((Expression) e).accept(this));
         });
     }
 

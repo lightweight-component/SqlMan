@@ -148,8 +148,6 @@ public class SmallMyBatis {
 
     private static final BooleanExpressionParser BOL_EXP_PARSER = new BooleanExpressionParser();
 
-    private static final ExpressionParser EXP_PARSER = new SpelExpressionParser();
-
     /**
      * 判断 ifBlock 是否满足条件，满足则返回 true，否则返回 false
      */
@@ -201,6 +199,179 @@ public class SmallMyBatis {
      * 匹配占位符的正则表达式
      */
     private static final Pattern PATTERN = Pattern.compile("(#\\{|\\$\\{)(.*?)(})");
+    private static final Pattern IDENTIFIER = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*(\\.[A-Za-z_][A-Za-z0-9_]*)*");
+
+    /**
+     * Compiles a dynamic SQL template into JDBC SQL and ordered bindings.
+     * Map values used through {@code #{...}} are always bound as data. Values
+     * used through {@code ${...}} are limited to simple trusted identifiers.
+     *
+     * @param sqlTemplate      the SQL template.
+     * @param params           the template values.
+     * @param positionalParams values for existing JDBC {@code ?} placeholders.
+     * @return the JDBC SQL and its ordered bindings.
+     */
+    public static PreparedSql prepareSql(String sqlTemplate, Map<String, Object> params, Object[] positionalParams) {
+        Map<String, Object> safeParams = params == null ? ObjectHelper.EMPTY_PARAMS_MAP : params;
+        String dynamicSql = generateIfBlock(sqlTemplate, safeParams);
+        Matcher matcher = PATTERN.matcher(dynamicSql);
+        StringBuffer markedSql = new StringBuffer();
+        List<Object> namedValues = new ArrayList<>();
+
+        while (matcher.find()) {
+            String name = matcher.group(2);
+
+            if ("#{".equals(matcher.group(1))) {
+                String marker = "\u0001" + namedValues.size() + "\u0002";
+                namedValues.add(safeParams.get(name));
+                matcher.appendReplacement(markedSql, Matcher.quoteReplacement(marker));
+            } else {
+                Object value = safeParams.get(name);
+                String identifier = value == null ? null : value.toString();
+
+                if (identifier == null || !IDENTIFIER.matcher(identifier).matches())
+                    throw new IllegalArgumentException("Template identifier " + name + " is not allowlisted: " + identifier);
+
+                matcher.appendReplacement(markedSql, Matcher.quoteReplacement(identifier));
+            }
+        }
+
+        matcher.appendTail(markedSql);
+        return bindMarkers(markedSql.toString(), namedValues, positionalParams == null ? new Object[0] : positionalParams);
+    }
+
+    /**
+     * Whether SQL needs template processing before it can be executed.
+     */
+    public static boolean hasTemplate(String sql) {
+        return sql != null && (PATTERN.matcher(sql).find() || sql.contains("<if"));
+    }
+
+    private static PreparedSql bindMarkers(String markedSql, List<Object> namedValues, Object[] positionalParams) {
+        StringBuilder sql = new StringBuilder(markedSql.length());
+        List<Object> bindings = new ArrayList<>();
+        boolean singleQuote = false, doubleQuote = false, backtick = false, lineComment = false, blockComment = false;
+        int positionalIndex = 0;
+
+        for (int i = 0; i < markedSql.length(); i++) {
+            char current = markedSql.charAt(i);
+            char next = i + 1 < markedSql.length() ? markedSql.charAt(i + 1) : '\0';
+
+            if (lineComment) {
+                sql.append(current);
+                if (current == '\n' || current == '\r')
+                    lineComment = false;
+                continue;
+            }
+
+            if (blockComment) {
+                sql.append(current);
+                if (current == '*' && next == '/') {
+                    sql.append(next);
+                    i++;
+                    blockComment = false;
+                }
+                continue;
+            }
+
+            if (singleQuote) {
+                sql.append(current);
+                if (current == '\'' && next == '\'') {
+                    sql.append(next);
+                    i++;
+                } else if (current == '\\' && next != '\0') {
+                    sql.append(next);
+                    i++;
+                } else if (current == '\'')
+                    singleQuote = false;
+                continue;
+            }
+
+            if (doubleQuote) {
+                sql.append(current);
+                if (current == '"' && next == '"') {
+                    sql.append(next);
+                    i++;
+                } else if (current == '"')
+                    doubleQuote = false;
+                continue;
+            }
+
+            if (backtick) {
+                sql.append(current);
+                if (current == '`' && next == '`') {
+                    sql.append(next);
+                    i++;
+                } else if (current == '`')
+                    backtick = false;
+                continue;
+            }
+
+            if (current == '\u0001') {
+                int end = markedSql.indexOf('\u0002', i + 1);
+                if (end < 0)
+                    throw new IllegalArgumentException("Invalid named SQL parameter marker");
+
+                int index = Integer.parseInt(markedSql.substring(i + 1, end));
+                sql.append('?');
+                bindings.add(namedValues.get(index));
+                i = end;
+            } else if ((current == '-' && next == '-') || current == '#') {
+                sql.append(current);
+                if (current == '-') {
+                    sql.append(next);
+                    i++;
+                }
+                lineComment = true;
+            } else if (current == '/' && next == '*') {
+                sql.append(current).append(next);
+                i++;
+                blockComment = true;
+            } else if (current == '\'') {
+                sql.append(current);
+                singleQuote = true;
+            } else if (current == '"') {
+                sql.append(current);
+                doubleQuote = true;
+            } else if (current == '`') {
+                sql.append(current);
+                backtick = true;
+            } else if (current == '?') {
+                if (positionalIndex >= positionalParams.length)
+                    throw new IllegalArgumentException("Not enough JDBC parameters for SQL template");
+
+                sql.append(current);
+                bindings.add(positionalParams[positionalIndex++]);
+            } else
+                sql.append(current);
+        }
+
+        if (positionalIndex != positionalParams.length)
+            throw new IllegalArgumentException("Too many JDBC parameters for SQL template");
+
+        return new PreparedSql(sql.toString(), bindings.toArray());
+    }
+
+    /**
+     * Compiled JDBC SQL and ordered bind values.
+     */
+    public static final class PreparedSql {
+        private final String sql;
+        private final Object[] params;
+
+        PreparedSql(String sql, Object[] params) {
+            this.sql = sql;
+            this.params = params;
+        }
+
+        public String getSql() {
+            return sql;
+        }
+
+        public Object[] getParams() {
+            return params;
+        }
+    }
 
     /**
      * 根据传入的模板和参数映射，生成带值的 SQL 语句
@@ -208,7 +379,11 @@ public class SmallMyBatis {
      * @param template SQL 语句模板
      * @param paramMap 参数映射，键为占位符，值为对应的参数值
      * @return 生成的带值的 SQL 语句
+     * @deprecated This method interpolates text and is only safe for trusted,
+     * server-owned templates. Use {@link #prepareSql(String, Map, Object[])}
+     * for JDBC execution.
      */
+    @Deprecated
     public static String getValuedSQL(String template, Map<String, Object> paramMap) {
         Matcher matcher = PATTERN.matcher(template);
         StringBuffer sb = new StringBuffer();
@@ -217,27 +392,22 @@ public class SmallMyBatis {
             String placeholder = matcher.group(2); // 获取占位符中的键名
             String strValue;
 
-            if (placeholder.startsWith("T(")) { // 调用 Java 类的方法
-                Object value = EXP_PARSER.parseExpression(placeholder).getValue();
-                strValue = value == null ? CommonConstant.EMPTY_STRING : value.toString();
+            Object value = paramMap.get(placeholder); // 获取键名对应的值
+
+            if (value == null) {
+                strValue = CommonConstant.EMPTY_STRING; // 如果值为空，替换为空字符串
             } else {
-                Object value = paramMap.get(placeholder); // 获取键名对应的值
+                strValue = value.toString().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"); // 处理转义字符和 $ 符号
 
-                if (value == null) {
-                    strValue = CommonConstant.EMPTY_STRING; // 如果值为空，替换为空字符串
-                } else {
-                    strValue = value.toString().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"); // 处理转义字符和 $ 符号
-
-                    if (matcher.group(1).equals("#{")) { // 使用 PreparedStatement 设置参数，自动转换类型
-                        if (value instanceof Number)
-                            strValue = String.valueOf(value);
-                        else if (value.equals(true))
-                            strValue = "1";
-                        else if (value.equals(false))
-                            strValue = "0";
-                        else
-                            strValue = "'" + value + "'"; // 如果是非数字类型，加上单引号
-                    }
+                if (matcher.group(1).equals("#{")) { // 使用 PreparedStatement 设置参数，自动转换类型
+                    if (value instanceof Number)
+                        strValue = String.valueOf(value);
+                    else if (value.equals(true))
+                        strValue = "1";
+                    else if (value.equals(false))
+                        strValue = "0";
+                    else
+                        strValue = "'" + value + "'"; // 如果是非数字类型，加上单引号
                 }
             }
 
@@ -266,7 +436,11 @@ public class SmallMyBatis {
      * @param sql       SQL 语句
      * @param paramsMap 参数映射关系
      * @return 处理后的 SQL 语句
+     * @deprecated This method interpolates text and is only safe for trusted,
+     * server-owned templates. Use {@link #prepareSql(String, Map, Object[])}
+     * for JDBC execution.
      */
+    @Deprecated
     public static String handleSql(String sql, Map<String, Object> paramsMap) {
         if (paramsMap == null)
             paramsMap = ObjectHelper.EMPTY_PARAMS_MAP;

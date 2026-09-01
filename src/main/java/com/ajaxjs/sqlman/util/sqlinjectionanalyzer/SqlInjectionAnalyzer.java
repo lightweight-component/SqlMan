@@ -8,6 +8,7 @@ import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
 import net.sf.jsqlparser.expression.operators.relational.ComparisonOperator;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
+import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
 import net.sf.jsqlparser.util.TablesNamesFinder;
 
@@ -87,9 +88,8 @@ public class SqlInjectionAnalyzer extends TablesNamesFinder {
     }
 
     @Override
-    public void visit(SubSelect subSelect) {
-//        if (disableSubSelect.get()) // 禁用子查询
-//            throw new SecurityException("DISABLE subSelect " + subSelect);
+    public void visit(ParenthesedSelect parenthesedSelect) {
+        throw new SecurityException("DISABLE subSelect " + parenthesedSelect);
     }
 
     @Override
@@ -136,8 +136,8 @@ public class SqlInjectionAnalyzer extends TablesNamesFinder {
         }
 
         if (plainSelect.getGroupBy() != null) {
-            for (Expression expression : plainSelect.getGroupBy().getGroupByExpressionList().getExpressions())
-                expression.accept(this);
+            for (Object expression : plainSelect.getGroupBy().getGroupByExpressionList().getExpressions())
+                ((Expression) expression).accept(this);
         }
     }
 
@@ -163,8 +163,6 @@ public class SqlInjectionAnalyzer extends TablesNamesFinder {
         return null != column && null == column.getTable() && BOL.matcher(column.getColumnName()).matches();
     }
 
-    private static final SqlInjectionAnalyzer INJECTION_CHECKER = new SqlInjectionAnalyzer();
-
     /**
      * SQL 注入攻击分析器
      * 对解析后的 SQL 对象执行注入攻击分析，有注入攻击的危险则抛出异常，
@@ -178,10 +176,15 @@ public class SqlInjectionAnalyzer extends TablesNamesFinder {
         boolean allowComplexParsing = CCJSqlParserUtil.getNestingDepth(sql) <= CCJSqlParserUtil.ALLOWED_NESTING_DEPTH;
 
         try {
-            CCJSqlParserUtil.newParser(sql).withAllowComplexParsing(allowComplexParsing).Statement().accept(INJECTION_CHECKER);
+            Statement statement = CCJSqlParserUtil.newParser(sql).withAllowComplexParsing(allowComplexParsing).Statement();
+            if (statement instanceof SetOperationList)
+                throw new SecurityException("DISABLE set operation " + statement);
+
+            // TablesNamesFinder keeps traversal state, so a checker must not be shared
+            // across requests or failed traversals.
+            statement.accept(new SqlInjectionAnalyzer());
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }

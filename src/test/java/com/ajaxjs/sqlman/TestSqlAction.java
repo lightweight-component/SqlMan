@@ -126,10 +126,10 @@ class TestSqlAction extends BaseTest {
         assertTrue(result.isOk());
 
         sql = "INSERT INTO shop_address (name, address, phone, receiver) " +
-                "VALUES (${name}, ?, '3412', ?)";
+                "VALUES (#{name}, ?, '3412', ?)";
 
         // mixing parameters with Map and Array
-        result = new Action(conn, sql).setParams(mapOf("name", "'office'"), "Kid Place", "Tom").create().execute(true, Integer.class);
+        result = new Action(conn, sql).setParams(mapOf("name", "office"), "Kid Place", "Tom").create().execute(true, Integer.class);
         assertTrue(result.isOk());
 
         Address address = new Action(conn, "SELECT * FROM shop_address WHERE id = ?").query(result.getNewlyId()).one(Address.class);
