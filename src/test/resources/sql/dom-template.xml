@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper>
+    <sql id="nested">
+        SELECT * FROM sample
+        <if test="enabled">
+            WHERE enabled = #{enabled}
+            <if test="tier > 1">
+                AND tier = #{tier}
+            <else>
+                AND tier &lt;= 1
+            </else>
+            </if>
+        <else>
+            WHERE enabled = false
+        </else>
+        </if>
+    </sql>
+
+    <sql id="ids">
+        SELECT * FROM sample WHERE id IN
+        <forEach collection="ids" item="id" index="position" open="(" separator=", " close=")">#{id}</forEach>
+    </sql>
+
+    <sql id="bad">
+        <else>SELECT 1</else>
+    </sql>
+</mapper>
