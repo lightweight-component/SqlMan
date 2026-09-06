@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<root>
+<mapper>
     <sql id="foo">SELECT COUNT(*) AS total FROM shop_address</sql>
     <sql id="foo-2">SELECT COUNT(*) AS total FROM shop_address WHERE id = ?</sql>
     <sql id="foo-3">SELECT id FROM ${tableName} WHERE id = #{stat}</sql>
@@ -13,4 +13,4 @@
         </if>
     </sql>
     <sql id="foo-6">SELECT id FROM ${tableName} WHERE ${T(com.ajaxjs.sqlman.sql.TestXml).w()}</sql>
-</root>
+</mapper>

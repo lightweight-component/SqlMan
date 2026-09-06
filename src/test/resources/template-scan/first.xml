@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper>
+    <sql id="bound">
+        SELECT * FROM ${tableName} WHERE name = #{name} AND status = ?
+    </sql>
+    <sql id="duplicate">SELECT 'first'</sql>
+    <sql id="map-values">
+        VALUES <forEach collection="values" item="value" index="key" open="" separator=", " close="">(#{key}, #{value})</forEach>
+    </sql>
+</mapper>

@@ -214,7 +214,21 @@ public class SmallMyBatis {
     public static PreparedSql prepareSql(String sqlTemplate, Map<String, Object> params, Object[] positionalParams) {
         Map<String, Object> safeParams = params == null ? ObjectHelper.EMPTY_PARAMS_MAP : params;
         String dynamicSql = generateIfBlock(sqlTemplate, safeParams);
-        Matcher matcher = PATTERN.matcher(dynamicSql);
+        return SqlTemplateParameterBinder.prepare(dynamicSql, safeParams, positionalParams);
+    }
+
+    /**
+     * Compiles a SQL template whose dynamic XML nodes have already been
+     * rendered. This method deliberately does not evaluate {@code <if>} tags.
+     *
+     * @param sqlTemplate      rendered SQL containing named placeholders.
+     * @param params           the effective template values.
+     * @param positionalParams values for existing JDBC {@code ?} placeholders.
+     * @return JDBC SQL and its ordered bindings.
+     */
+    public static PreparedSql prepareRenderedSql(String sqlTemplate, Map<String, Object> params, Object[] positionalParams) {
+        Map<String, Object> safeParams = params == null ? ObjectHelper.EMPTY_PARAMS_MAP : params;
+        Matcher matcher = PATTERN.matcher(sqlTemplate);
         StringBuffer markedSql = new StringBuffer();
         List<Object> namedValues = new ArrayList<>();
 

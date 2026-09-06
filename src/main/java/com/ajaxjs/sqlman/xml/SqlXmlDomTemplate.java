@@ -1,5 +1,6 @@
 package com.ajaxjs.sqlman.xml;
 
+import com.ajaxjs.sqlman.xml.express_parser.JSqlParserExpressionEvaluator;
 import com.ajaxjs.util.ObjectHelper;
 import com.ajaxjs.util.XmlHelper;
 import org.w3c.dom.Element;
@@ -12,83 +13,36 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Renders SQL templates stored as XML DOM nodes.
- *
- * <p>Supported dynamic elements are {@code if}, {@code else}, and
- * {@code forEach}. The renderer never mutates its cached DOM, so one template
- * instance can safely render separate requests concurrently.</p>
+ * Renders one cached SQL XML DOM statement. It does not load resources, manage
+ * statement ids, or bind JDBC placeholders.
  */
 public class SqlXmlDomTemplate {
     private static final Pattern PLACEHOLDER = Pattern.compile("(#\\{|\\$\\{)(.*?)(})");
 
-    private final Map<String, Element> statements;
     private final SqlTemplateExpressionEvaluator expressionEvaluator;
 
-    /**
-     * Loads all direct {@code <sql id="...">} elements from an XML document.
-     *
-     * @param xml XML template text.
-     */
-    public SqlXmlDomTemplate(String xml, SqlTemplateExpressionEvaluator expressionEvaluator) {
-        if (xml == null)
-            throw new IllegalArgumentException("XML template must not be null");
+    public SqlXmlDomTemplate() {
+        this(new JSqlParserExpressionEvaluator());
+    }
 
+    public SqlXmlDomTemplate(SqlTemplateExpressionEvaluator expressionEvaluator) {
         if (expressionEvaluator == null)
             throw new IllegalArgumentException("SQL template expression evaluator must not be null");
 
-        Element root = XmlHelper.getRoot(xml);
-        Map<String, Element> loaded = new LinkedHashMap<>();
-        NodeList children = root.getChildNodes();
-
-        for (int i = 0; i < children.getLength(); i++) {
-            Node child = children.item(i);
-            if (child.getNodeType() != Node.ELEMENT_NODE)
-                continue;
-
-            Element element = (Element) child;
-
-            if (!"sql".equals(element.getNodeName()))
-                throw new IllegalArgumentException("Unsupported root element: " + element.getNodeName());
-
-            String id = XmlHelper.getNodeAttribute(element, "id");
-
-            if (ObjectHelper.isEmptyText(id))
-                throw new IllegalArgumentException("SQL template is missing id");
-
-            if (loaded.put(id, element) != null)
-                throw new IllegalArgumentException("Duplicate SQL template id: " + id);
-        }
-
-        statements = Collections.unmodifiableMap(loaded);
         this.expressionEvaluator = expressionEvaluator;
     }
 
-    /**
-     * Renders a statement by id. The returned parameter map contains both the
-     * caller values and generated bindings for {@code forEach} items.
-     *
-     * @param id     statement id.
-     * @param params values used by dynamic conditions and placeholders.
-     * @return the rendered SQL template and effective parameters.
-     */
-    public RenderedSql render(String id, Map<String, Object> params) {
-        Element statement = statements.get(id);
-
-        if (statement == null)
-            throw new IllegalArgumentException("SQL template not found: " + id);
-
+    RenderedSql render(SqlXmlStatement statement, Map<String, Object> params) {
         RenderState state = new RenderState(params);
         StringBuilder sql = new StringBuilder();
-        renderChildren(statement, state.getParams(), Collections.emptyMap(), state, sql);
+
+        // Standard DOM implementations do not guarantee safe concurrent
+        // traversal. State remains request-local while DOM access is guarded.
+        synchronized (statement.renderLock) {
+            renderChildren(statement.element, state.getParams(), Collections.<String, String>emptyMap(), state, sql);
+        }
 
         return new RenderedSql(sql.toString(), state.getParams());
-    }
-
-    /**
-     * Returns the cached statement ids.
-     */
-    public Set<String> getStatementIds() {
-        return statements.keySet();
     }
 
     private void renderChildren(Node parent, Map<String, Object> context, Map<String, String> aliases, RenderState state, StringBuilder sql) {
@@ -127,7 +81,8 @@ public class SqlXmlDomTemplate {
 
     private void renderIf(Element ifElement, Map<String, Object> context, Map<String, String> aliases, RenderState state, StringBuilder sql) {
         String test = XmlHelper.getNodeAttribute(ifElement, "test");
-        if (test == null || test.trim().isEmpty())
+
+        if (ObjectHelper.isEmptyText(test))
             throw new IllegalArgumentException("<if> is missing test");
 
         boolean useThen = expressionEvaluator.evaluate(test, context);
@@ -150,9 +105,8 @@ public class SqlXmlDomTemplate {
 
             for (int i = 0; i < end; i++)
                 renderNode(children.item(i), context, aliases, state, sql);
-        } else if (elseIndex != -1) {
+        } else if (elseIndex != -1)
             renderChildren(children.item(elseIndex), context, aliases, state, sql);
-        }
     }
 
     private void renderForEach(Element forEach, Map<String, Object> context, Map<String, String> aliases, RenderState state, StringBuilder sql) {
@@ -167,41 +121,52 @@ public class SqlXmlDomTemplate {
         String open = optionalAttribute(forEach, "open", "");
         String separator = optionalAttribute(forEach, "separator", "");
         String close = optionalAttribute(forEach, "close", "");
-        Iterable<?> items = asIterable(collection, collectionName);
         boolean renderedAny = false;
-        int index = 0;
 
-        for (Object item : items) {
-            Map<String, Object> itemContext = new HashMap<>(context);
-            Map<String, String> itemAliases = new HashMap<>(aliases);
-            addForEachBinding(itemName, item, itemContext, itemAliases, state);
-            addForEachBinding(indexName, index, itemContext, itemAliases, state);
+        if (collection instanceof Map<?, ?>) {
+            for (Map.Entry<?, ?> entry : ((Map<?, ?>) collection).entrySet())
+                renderedAny = renderForEachItem(forEach, itemName, entry.getValue(), indexName, entry.getKey(), open, separator,
+                        aliases, context, state, sql, renderedAny);
+        } else {
+            int index = 0;
 
-            StringBuilder itemSql = new StringBuilder();
-            renderChildren(forEach, itemContext, itemAliases, state, itemSql);
-
-            if (!itemSql.toString().trim().isEmpty()) {
-                if (!renderedAny) {
-                    sql.append(open);
-                    renderedAny = true;
-                } else
-                    sql.append(separator);
-
-                sql.append(itemSql);
+            for (Object item : asIterable(collection, collectionName)) {
+                renderedAny = renderForEachItem(forEach, itemName, item, indexName, index, open, separator,
+                        aliases, context, state, sql, renderedAny);
+                index++;
             }
-
-            index++;
         }
 
         if (renderedAny)
             sql.append(close);
     }
 
-    private static void addForEachBinding(String name, Object value, Map<String, Object> context, Map<String, String> aliases, RenderState state) {
-        int nextBinding = state.getNextBinding();
-        String generatedName = "__sqlman_foreach_" + nextBinding++;
-        state.setNextBinding(nextBinding);
+    private boolean renderForEachItem(Element forEach, String itemName, Object item, String indexName, Object index,
+                                      String open, String separator, Map<String, String> aliases, Map<String, Object> context,
+                                      RenderState state, StringBuilder sql, boolean renderedAny) {
+        Map<String, Object> itemContext = new HashMap<>(context);
+        Map<String, String> itemAliases = new HashMap<>(aliases);
+        addForEachBinding(itemName, item, itemContext, itemAliases, state);
+        addForEachBinding(indexName, index, itemContext, itemAliases, state);
 
+        StringBuilder itemSql = new StringBuilder();
+        renderChildren(forEach, itemContext, itemAliases, state, itemSql);
+
+        if (itemSql.toString().trim().isEmpty())
+            return renderedAny;
+
+        if (!renderedAny)
+            sql.append(open);
+        else
+            sql.append(separator);
+
+        sql.append(itemSql);
+        return true;
+    }
+
+    private static void addForEachBinding(String name, Object value, Map<String, Object> context, Map<String, String> aliases, RenderState state) {
+        String generatedName = "__sqlman_foreach_" + state.getNextBinding();
+        state.setNextBinding(state.getNextBinding() + 1);
         context.put(name, value);
         aliases.put(name, generatedName);
         state.getParams().put(generatedName, value);
@@ -210,9 +175,6 @@ public class SqlXmlDomTemplate {
     private static Iterable<?> asIterable(Object value, String collectionName) {
         if (value instanceof Iterable<?>)
             return (Iterable<?>) value;
-
-        if (value instanceof Map<?, ?>)
-            return ((Map<?, ?>) value).entrySet();
 
         if (value.getClass().isArray()) {
             List<Object> values = new ArrayList<>();
@@ -244,7 +206,6 @@ public class SqlXmlDomTemplate {
         }
 
         matcher.appendTail(output);
-
         return output.toString();
     }
 
@@ -259,7 +220,6 @@ public class SqlXmlDomTemplate {
 
     private static String optionalAttribute(Element element, String name, String defaultValue) {
         String value = XmlHelper.getNodeAttribute(element, name);
-
         return value == null ? defaultValue : value;
     }
 }
