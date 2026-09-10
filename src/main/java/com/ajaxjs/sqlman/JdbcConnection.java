@@ -166,9 +166,7 @@ public class JdbcConnection {
         try {
             if (conn != null && !conn.isClosed()) {
                 conn.close();
-
-                if (DebugTools.isDebug)
-                    log.info("Database Connection Closed.");
+                log.info("Database Connection Closed.");
             }
         } catch (SQLException e) {
             log.warn("Database Connection Closes failed.", e);

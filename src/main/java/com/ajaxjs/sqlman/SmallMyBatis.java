@@ -44,14 +44,14 @@ public class SmallMyBatis {
             if (xmlBody != null) {
                 // 删除注释
                 xmlBody = pattern.matcher(xmlBody).replaceAll(CommonConstant.EMPTY_STRING);
-                XmlHelper.parseXML(xmlBody, (node, nodeList) -> {
+                XmlHelper.parseXML(xmlBody, (node) -> {
                     if ("sql".equals(node.getNodeName())) {
                         String id = XmlHelper.getNodeAttribute(node, "id");
 
                         if (ALL_SQL.containsKey(id))
                             log.warn("已有相同 sqlId [{}]", id);
 
-                        String sql = XmlHelper.getNodeText(node);
+                        String sql = XmlHelper.getInnerXml(node);
                         ALL_SQL.put(id, sql);
                     }
                 });
