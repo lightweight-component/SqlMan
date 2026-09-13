@@ -131,7 +131,7 @@ public class BeanUtils {
 
                 Object value = getter.invoke(bean); // 原始默认值，不过通常是没有指定的
 
-                if (value != null && value.equals("class"))  // 过滤 class 属性
+                if (value != null && value.equals(CommonConstant.CLASS))  // 过滤 class 属性
                     continue;
 
                 fn.item(key, value, property);
