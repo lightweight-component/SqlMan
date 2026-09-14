@@ -3,7 +3,7 @@ package com.ajaxjs.sqlman;
 import com.ajaxjs.util.CommonConstant;
 import com.ajaxjs.util.ObjectHelper;
 import com.ajaxjs.util.XmlHelper;
-import com.ajaxjs.util.io.Resources;
+import com.ajaxjs.util.io.ResourceHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.expression.MapAccessor;
 import org.springframework.core.io.Resource;
@@ -39,7 +39,7 @@ public class SmallMyBatis {
         Pattern pattern = Pattern.compile("<!--.*?-->", Pattern.DOTALL);  // 使用 DOT ALL 匹配多行注释
 
         for (String xmlFile : xmlFiles) {
-            String xmlBody = Resources.getResourceText(xmlFile);
+            String xmlBody = new ResourceHelper(xmlFile).toString();
 
             if (xmlBody != null) {
                 // 删除注释
