@@ -1,7 +1,6 @@
 package com.ajaxjs.sqlman;
 
 import com.ajaxjs.sqlman.model.DatabaseVendor;
-import com.ajaxjs.util.DebugTools;
 import com.ajaxjs.util.ObjectHelper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -166,9 +165,7 @@ public class JdbcConnection {
         try {
             if (conn != null && !conn.isClosed()) {
                 conn.close();
-
-                if (DebugTools.isDebug)
-                    log.info("Database Connection Closed.");
+                log.info("Database Connection Closed.");
             }
         } catch (SQLException e) {
             log.warn("Database Connection Closes failed.", e);
