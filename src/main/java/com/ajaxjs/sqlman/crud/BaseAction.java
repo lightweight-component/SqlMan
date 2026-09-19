@@ -251,7 +251,7 @@ public abstract class BaseAction {
 
     private static IllegalStateException mappingException(String column, Object value, Class<?> propertyType, Throwable cause) {
         String sourceType = value == null ? "null" : value.getClass().getName();
-        return new IllegalStateException("Cannot map column " + column + " from " + sourceType
-                + " to " + propertyType.getName() + ".", cause);
+
+        return new IllegalStateException("Cannot map column " + column + " from " + sourceType + " to " + propertyType.getName() + ".", cause);
     }
 }

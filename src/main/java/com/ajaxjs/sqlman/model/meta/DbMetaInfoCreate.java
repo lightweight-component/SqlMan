@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman.meta;
+package com.ajaxjs.sqlman.model.meta;
 
 import java.util.Map;
 

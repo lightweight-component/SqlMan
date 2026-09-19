@@ -1,4 +1,4 @@
-package com.ajaxjs.sqlman.meta;
+package com.ajaxjs.sqlman.model.meta;
 
 import com.ajaxjs.sqlman.annotation.Id;
 import com.ajaxjs.sqlman.util.Utils;
@@ -57,7 +57,6 @@ public class DbMetaInfoUpdate extends DbMetaInfoBase {
             throw new UnsupportedOperationException("Map can't contain a annotation with db meta info.");
 
         Id annotation = entity.getClass().getAnnotation(Id.class);
-
         idField = annotation == null ? null : annotation.value();
 
         return idField;
@@ -76,6 +75,7 @@ public class DbMetaInfoUpdate extends DbMetaInfoBase {
         if (entity instanceof Map) {
             @SuppressWarnings("unchecked")
             Map<String, Object> map = (Map<String, Object>) entity;
+
             return map.get(idField);
         } else {
             String getId = Utils.changeColumnToFieldName("get_" + idField);
@@ -83,7 +83,6 @@ public class DbMetaInfoUpdate extends DbMetaInfoBase {
             try {
                 return Methods.execute(entity, getId);
             } catch (Throwable e) {
-                e.printStackTrace();
                 return null;
             }
         }

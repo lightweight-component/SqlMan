@@ -3,7 +3,7 @@ package com.ajaxjs.sqlman.sqlgenerator;
 import com.ajaxjs.sqlman.annotation.Column;
 import com.ajaxjs.sqlman.annotation.Table;
 import com.ajaxjs.sqlman.annotation.Transient;
-import com.ajaxjs.sqlman.meta.DbMetaInfoUpdate;
+import com.ajaxjs.sqlman.model.meta.DbMetaInfoUpdate;
 import com.ajaxjs.sqlman.model.NullValue;
 import com.ajaxjs.sqlman.util.Utils;
 import com.ajaxjs.util.CommonConstant;
