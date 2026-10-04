@@ -90,6 +90,7 @@ public class Query extends BaseAction {
 
         if (result instanceof Map<?, ?>) {
             Map<?, ?> map = (Map<?, ?>) result;
+
             return map.size() > 100 ? "Map(size=" + map.size() + ")" : String.valueOf(result);
         }
 

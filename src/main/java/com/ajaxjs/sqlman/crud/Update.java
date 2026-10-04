@@ -1,7 +1,7 @@
 package com.ajaxjs.sqlman.crud;
 
 import com.ajaxjs.sqlman.Action;
-import com.ajaxjs.sqlman.meta.DbMetaInfoCreate;
+import com.ajaxjs.sqlman.model.meta.DbMetaInfoCreate;
 import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman.model.tablemodel.IdField;
 import com.ajaxjs.sqlman.sqlgenerator.Entity2WriteSql;

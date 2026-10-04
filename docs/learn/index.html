@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="通过可交互练习学习 SqlMan 的 JDBC 查询、写入与实体操作。">
+  <title>SqlMan · 互动入门</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23111c2d'/%3E%3Cpath d='M18 19h28M18 32h20M18 45h28' stroke='%233fe0c5' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+  <style>
+    :root{--ink:#0e1726;--muted:#607086;--paper:#f6f8fb;--card:#fff;--navy:#111c2d;--teal:#0fb99d;--mint:#3fe0c5;--orange:#ff9e52;--line:#dce4ed;--good:#14866d;--bad:#bd4357}
+    *{box-sizing:border-box} body{margin:0;background:var(--paper);font:16px/1.6 ui-sans-serif,system-ui,"Microsoft YaHei",sans-serif;color:var(--ink)}
+    button{font:inherit;cursor:pointer} .shell{max-width:1180px;margin:auto;padding:26px}
+    header{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:28px}.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.25rem}.mark{display:grid;place-items:center;width:38px;height:38px;border-radius:11px;background:var(--navy);color:var(--mint);font-family:monospace}.tag{color:var(--muted);font-size:.9rem}.back{color:var(--muted);text-decoration:none;font-size:.9rem}
+    .hero{background:var(--navy);color:white;border-radius:22px;padding:42px;position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:360px;height:360px;border-radius:50%;right:-150px;top:-180px;background:radial-gradient(circle,var(--teal),transparent 68%);opacity:.6}.eyebrow{color:var(--mint);font:700 .8rem/1.2 monospace;letter-spacing:.08em}.hero h1{font-size:clamp(2rem,5vw,3.7rem);line-height:1.08;margin:11px 0 15px;max-width:720px}.hero p{max-width:650px;color:#c8d5e7;margin:0 0 25px}.hero button{background:var(--mint);border:0;border-radius:9px;padding:12px 18px;color:var(--navy);font-weight:800}
+    .layout{display:grid;grid-template-columns:255px minmax(0,1fr);gap:26px;margin-top:28px}.rail{position:sticky;top:16px;height:max-content;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}.rail small{display:block;color:var(--muted);padding:6px 10px}.lesson-nav{width:100%;border:0;background:transparent;text-align:left;padding:10px;border-radius:9px;color:#44546a}.lesson-nav span{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;font-size:.75rem;background:#edf1f5;margin-right:8px}.lesson-nav.active{background:#e7faf6;color:#087d69;font-weight:700}.lesson-nav.done span{background:var(--teal);color:white}.progress{height:5px;background:#e5ebf1;border-radius:6px;margin:10px}.progress i{display:block;height:100%;width:0;background:var(--teal);border-radius:inherit;transition:.3s}
+    main{min-width:0}.lesson{display:none}.lesson.active{display:block;animation:in .28s ease}@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}.kicker{font:700 .8rem monospace;color:var(--teal);letter-spacing:.07em}.lesson h2{font-size:2rem;line-height:1.2;margin:.3rem 0 .7rem}.lesson>p{color:var(--muted);max-width:720px}
+    .stage{margin-top:22px;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}.stage-head{padding:11px 16px;border-bottom:1px solid var(--line);font-size:.88rem;font-weight:700;display:flex;justify-content:space-between}.code{padding:20px;background:#101b2c;color:#d9e5f6;font:14px/1.75 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow:auto}.kw{color:#81b7ff}.type{color:#71e0cc}.str{color:#ffbb78}.comment{color:#7890ad}.hl{background:rgba(63,224,197,.14);outline:1px solid rgba(63,224,197,.35);border-radius:3px}
+    .controls{padding:17px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}.primary{border:0;border-radius:8px;background:var(--teal);color:white;padding:10px 15px;font-weight:700}.secondary{border:1px solid var(--line);border-radius:8px;background:white;padding:9px 14px;color:#30435d}.result{padding:0 17px 17px;color:var(--muted)}.result.ok{color:var(--good);font-weight:700}.result.bad{color:var(--bad);font-weight:700}
+    .choices{display:grid;gap:10px;padding:18px}.choice{border:1px solid var(--line);background:white;border-radius:10px;padding:12px;text-align:left}.choice:hover{border-color:var(--teal)}.choice.correct{border-color:var(--good);background:#effbf7}.choice.wrong{border-color:var(--bad);background:#fff3f5}.tip{margin:18px 0;padding:14px 16px;border-left:4px solid var(--orange);background:#fff8ef;color:#71451e;border-radius:0 10px 10px 0}.pager{display:flex;justify-content:space-between;margin-top:25px}.pager button{border:1px solid var(--line);background:white;border-radius:9px;padding:10px 15px}.pager button:disabled{opacity:.35;cursor:not-allowed}
+    .binding{padding:20px;display:grid;gap:12px}.slot-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:ui-monospace,monospace}.slot{padding:4px 9px;border-radius:5px;background:#e9eff5}.pill{background:#dff8f3;color:#087d69;padding:4px 9px;border-radius:20px;font-weight:700}.table{margin:20px;border-collapse:collapse;width:calc(100% - 40px);font-size:.9rem}.table th,.table td{border-bottom:1px solid var(--line);padding:9px;text-align:left}.table th{color:var(--muted);font-weight:600}.final{padding:25px;text-align:center}.final .badge{display:inline-block;background:#e6faf5;color:#087d69;border-radius:999px;padding:5px 12px;font-weight:700}
+    @media(max-width:800px){.shell{padding:16px}.hero{padding:28px}.layout{grid-template-columns:1fr}.rail{position:static;display:flex;overflow:auto;padding:8px}.rail small,.progress{display:none}.lesson-nav{white-space:nowrap;min-width:max-content}.lesson-nav span{display:none}.lesson h2{font-size:1.65rem}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header><div class="brand"><div class="mark">S&gt;_</div>SqlMan <span class="tag">互动入门</span></div><a class="back" href="/docs/cn">← 返回文档</a></header>
+  <section class="hero"><div class="eyebrow">JDBC · SQLMAN · HANDS-ON</div><h1>从一条 SQL 开始，学会安全地读写数据库。</h1><p>用 5 个短练习掌握 SqlMan 最常用的调用链。每一步都先预测，再验证；不用安装数据库，也不必背 API。</p><button onclick="go(0)">开始第 1 课 →</button></section>
+  <div class="layout">
+    <aside class="rail"><small>学习进度 <b id="pct">0%</b></small><div class="progress"><i id="bar"></i></div>
+      <button class="lesson-nav active" onclick="go(0)"><span>1</span>连接与 Action</button>
+      <button class="lesson-nav" onclick="go(1)"><span>2</span>参数绑定</button>
+      <button class="lesson-nav" onclick="go(2)"><span>3</span>读取结果</button>
+      <button class="lesson-nav" onclick="go(3)"><span>4</span>写入数据</button>
+      <button class="lesson-nav" onclick="go(4)"><span>5</span>实体操作</button>
+    </aside>
+    <main>
+      <section class="lesson active">
+        <div class="kicker">01 / 05</div><h2>先把连接交给 Action</h2><p><code>Action</code> 是 SqlMan 的入口。对初学者而言，显式传入 <code>Connection</code> 最清晰：连接的获取与关闭仍由你的应用负责。</p>
+        <div class="stage"><div class="stage-head"><span>第一个查询</span><span>可运行结构</span></div><div class="code"><span class="kw">try</span> (Connection conn = dataSource.getConnection()) {
+  String sql = <span class="str">"SELECT id, name FROM shop_address WHERE stat = ?"</span>;
+  List&lt;Map&lt;String, Object&gt;&gt; rows =
+      <span class="hl"><span class="kw">new</span> <span class="type">Action</span>(conn, sql)</span>.query(1).list();
+}</div><div class="controls"><button class="primary" onclick="reveal('c1','Action 保存连接和 SQL；随后由 query(...) 创建查询操作。')">我看懂入口了</button></div><div id="c1" class="result"></div></div>
+        <div class="tip">不要把 <code>Connection</code> 藏在全局变量里。SqlMan 也支持线程连接，但在第一段代码里显式传入连接更容易理解和管理。</div>
+      </section>
+      <section class="lesson">
+        <div class="kicker">02 / 05</div><h2>让 <code>?</code> 绑定数据，而非拼接 SQL</h2><p>把值交给 <code>query(...)</code>。SqlMan 会按顺序把它们交给 JDBC 的 <code>PreparedStatement</code>。</p>
+        <div class="stage"><div class="stage-head"><span>动手绑定两个参数</span><span>点击“执行”查看映射</span></div><div class="binding"><div class="slot-row">SQL：<span class="slot">id = ?</span> AND <span class="slot">stat = ?</span></div><div><label>id <input id="idv" value="7" inputmode="numeric"></label>　<label>stat <input id="statv" value="1" inputmode="numeric"></label></div><div class="code">new Action(conn, "SELECT * FROM shop_address WHERE id = ? AND stat = ?")<br>    .query(<span id="p1">7</span>, <span id="p2">1</span>).one();</div></div><div class="controls"><button class="primary" onclick="bind()">执行绑定</button></div><div id="bindout" class="result"></div></div>
+        <div class="tip"><strong>安全规则：</strong>值用 <code>?</code>；表名、列名、排序方向等 SQL 结构无法作为 JDBC 参数绑定，必须由应用代码控制，不能直接信任请求输入。</div>
+      </section>
+      <section class="lesson">
+        <div class="kicker">03 / 05</div><h2>选择你要的结果形状</h2><p>同一条查询，可按“单个值 / 一行 Map / 一个 Bean / 多行列表”读取。选择最符合调用方需求的 API。</p>
+        <div class="stage"><div class="stage-head"><span>小测验</span><span>选择正确的结果 API</span></div><div class="choices" id="quiz">
+          <button class="choice" onclick="answer(this,false)">我要取得一行记录，字段名和字段值都保留：<code>query().list()</code></button>
+          <button class="choice" onclick="answer(this,true)">我要取得一行记录，字段名和字段值都保留：<code>query().one()</code></button>
+          <button class="choice" onclick="answer(this,false)">我要取得一个地址对象：<code>query().oneValue(Address.class)</code></button>
+        </div><div id="quizout" class="result"></div></div>
+        <table class="table"><tr><th>目标</th><th>调用</th></tr><tr><td>一个标量</td><td><code>oneValue(Long.class)</code></td></tr><tr><td>一行 Map</td><td><code>one()</code></td></tr><tr><td>一个 JavaBean</td><td><code>one(Address.class)</code></td></tr><tr><td>多行</td><td><code>list()</code> 或 <code>list(Address.class)</code></td></tr></table>
+      </section>
+      <section class="lesson">
+        <div class="kicker">04 / 05</div><h2>写入：create、update 与 delete</h2><p>在同一个 <code>Action</code> 上选择操作类型。写入结果会告诉你是否成功以及影响行数；插入时还能读取数据库生成的主键。</p>
+        <div class="stage"><div class="stage-head"><span>组装一条插入调用</span><span>按正确顺序点击</span></div><div class="controls" id="writer"><button class="secondary" data-x="new Action(conn, sql)">① Action</button><button class="secondary" data-x=".create(&quot;家&quot;, &quot;Lake Road&quot;)">② create</button><button class="secondary" data-x=".execute(true, Long.class)">③ execute</button></div><div class="code" id="writecode">// 点击上方 ① → ② → ③</div><div id="writeout" class="result"></div></div>
+        <div class="tip"><code>execute(true, Long.class)</code> 表示由数据库生成主键，并要求把返回值转换为 <code>Long</code>。更新后可通过 <code>UpdateResult#getEffectedRows()</code> 取得影响行数。</div>
+      </section>
+      <section class="lesson">
+        <div class="kicker">05 / 05</div><h2>实体模式：从 Map 或 Bean 生成写入 SQL</h2><p>当字段较多时，可以把 Map 或 JavaBean 与表名交给 <code>Action</code>。SqlMan 会生成 INSERT/UPDATE 所需 SQL 和参数；Bean 可借助 <code>@Table</code>、<code>@Id</code>、<code>@Column</code> 提供映射信息。</p>
+        <div class="stage"><div class="stage-head"><span>识别操作意图</span><span>来自项目 H2 单测的调用方式</span></div><div class="code">Map&lt;String, Object&gt; address = Map.of(
+  <span class="str">"name"</span>, <span class="str">"Alice"</span>, <span class="str">"phone"</span>, <span class="str">"110"</span>);
+
+<span class="hl">new Action(conn, address, <span class="str">"shop_address"</span>)</span>
+    .create().execute(<span class="kw">true</span>, Integer.class);</div><div class="choices"><button class="choice" onclick="entity(this,false)">这会把 Map 当作查询参数</button><button class="choice" onclick="entity(this,true)">这会根据 Map 与表名生成插入 SQL</button></div><div id="entityout" class="result"></div></div>
+        <div class="final"><span class="badge">完成基础路径</span><h2>你已经能读懂 SqlMan 的主调用链。</h2><p>下一步，去文档了解 <a href="/docs/query/query-paging-cn">分页查询</a>、<a href="/docs/write/batch-cn">批量写入</a>，或在项目测试中观察 H2 的真实行为。</p><button class="primary" onclick="go(0)">再学一遍</button></div>
+      </section>
+      <div class="pager"><button id="prev" onclick="go(current-1)">← 上一步</button><button id="next" onclick="go(current+1)">下一步 →</button></div>
+    </main>
+  </div>
+</div>
+<script>
+let current=0, done=new Set();
+const lessons=[...document.querySelectorAll('.lesson')], nav=[...document.querySelectorAll('.lesson-nav')];
+function go(n){current=Math.max(0,Math.min(4,n));lessons.forEach((x,i)=>x.classList.toggle('active',i===current));nav.forEach((x,i)=>x.classList.toggle('active',i===current));document.getElementById('prev').disabled=current===0;document.getElementById('next').disabled=current===4;window.scrollTo({top:0,behavior:'smooth'})}
+function finish(n){done.add(n);nav[n].classList.add('done');let p=Math.round(done.size/5*100);document.getElementById('pct').textContent=p+'%';document.getElementById('bar').style.width=p+'%'}
+function reveal(id,msg){let e=document.getElementById(id);e.textContent='✓ '+msg;e.className='result ok';finish(0)}
+function bind(){let a=document.getElementById('idv').value,b=document.getElementById('statv').value;document.getElementById('p1').textContent=a;document.getElementById('p2').textContent=b;let e=document.getElementById('bindout');e.textContent='✓ 第 1 个 ? ← '+a+'；第 2 个 ? ← '+b+'。值不会被手动拼进 SQL。';e.className='result ok';finish(1)}
+function answer(el,yes){document.querySelectorAll('#quiz .choice').forEach(x=>x.disabled=true);el.classList.add(yes?'correct':'wrong');let e=document.getElementById('quizout');e.textContent=yes?'✓ 正确：one() 读取当前结果集的第一行，并以 Map 返回。':'再想想：list() 是多行；oneValue() 用于单列标量。';e.className='result '+(yes?'ok':'bad');if(yes)finish(2)}
+let seq=0;document.querySelectorAll('#writer button').forEach(b=>b.onclick=()=>{let order=['①','②','③'];if(b.textContent.startsWith(order[seq])){b.classList.add('primary');document.getElementById('writecode').textContent=(seq?document.getElementById('writecode').textContent+'\n':'')+b.dataset.x;seq++;if(seq===3){let e=document.getElementById('writeout');e.textContent='✓ 调用链完整：创建 → 传参 → 执行并读取 Long 类型主键。';e.className='result ok';finish(3)}}else{let e=document.getElementById('writeout');e.textContent='提示：先有 Action，再选择 create，最后 execute。';e.className='result bad'}})
+function entity(el,yes){let e=document.getElementById('entityout');e.textContent=yes?'✓ 正确：create() 会使用实体数据生成 INSERT 所需 SQL 与参数。':'不对：这里的 Map 是实体字段，而不是查询模板参数。';e.className='result '+(yes?'ok':'bad');if(yes)finish(4)}
+go(0);
+</script>
+</body></html>

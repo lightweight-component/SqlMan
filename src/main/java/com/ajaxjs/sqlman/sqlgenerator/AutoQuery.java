@@ -19,15 +19,12 @@ public class AutoQuery {
     public final static String DUMMY_STR = "1=1";
 
     private final static String SELECT_SQL = "SELECT * FROM %s WHERE " + DUMMY_STR;
+
     private final static String SELECT_LIST_SQL = "SELECT %s.* FROM %s WHERE " + DUMMY_STR;
 
     final TableModel tableModel;
 
     final AutoQueryBusiness autoQueryBusiness;
-
-//    public TableModel getTableModel() {
-//        return tableModel;
-//    }
 
     /**
      * Builds a query for a single row identified by its primary key.
@@ -64,7 +61,6 @@ public class AutoQuery {
         String tableName = tableModel.getTableName();
 
         if (autoQueryBusiness.isListOrderByDate()) {
-
             String createDateField = tableName + "." + getTableModel().getCreateDateField();
 
             sql = String.format(SELECT_LIST_SQL + " ORDER BY " + createDateField + " DESC", tableName, tableName);
@@ -80,9 +76,8 @@ public class AutoQuery {
 
         TableJoin tableJoin = autoQueryBusiness.getTableJoin();
 
-        if (tableJoin != null) {
+        if (tableJoin != null)
             sql = TableJoinModifier.addLeftJoinWithAutoAlias(sql, tableJoin);
-        }
 
         return sql;
     }

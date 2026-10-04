@@ -196,7 +196,7 @@ public class Action {
     }
 
     /**
-     * Initialize a create action.
+     * Initialize a creation action.
      *
      * @param params The parameters to be bound to the sql
      * @return The creation action.

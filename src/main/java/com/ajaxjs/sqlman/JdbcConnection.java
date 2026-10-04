@@ -48,7 +48,7 @@ public class JdbcConnection {
      * @param conn the database connection.
      * @return the detected vendor.
      */
-    protected static DatabaseVendor initDatabaseVendor(Connection conn) {
+    public static DatabaseVendor initDatabaseVendor(Connection conn) {
         try {
             String databaseProductName = conn.getMetaData().getDatabaseProductName().toLowerCase();
 
