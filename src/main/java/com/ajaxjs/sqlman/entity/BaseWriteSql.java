@@ -41,6 +41,13 @@ public abstract class BaseWriteSql {
     @Getter
     String tableName;
 
+    /**
+     * Sets the target table after validating its identifier, including an
+     * optional schema qualification.
+     *
+     * @param tableName the target table name
+     * @throws IllegalArgumentException if the table name is not a valid SQL identifier
+     */
     public void setTableName(String tableName) {
         this.tableName = SqlIdentifier.checkTableName(tableName);
     }

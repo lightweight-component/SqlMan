@@ -85,10 +85,22 @@ public class SqlXmlDomTemplate {
         return sql != null && DYNAMIC_ELEMENT.matcher(sql).find();
     }
 
+    /**
+     * Creates a reusable template for a statement already parsed from an XML resource.
+     *
+     * @param statement           parsed SQL statement descriptor
+     * @param expressionEvaluator evaluator used by {@code <if test="...">}
+     * @return a DOM-backed SQL template
+     */
     public static SqlXmlDomTemplate fromStatement(SqlXmlStatement statement, ExpressionEvaluator expressionEvaluator) {
         return new SqlXmlDomTemplate(statement, expressionEvaluator);
     }
 
+    /**
+     * Returns the inline marker or XML resource location from which this template originated.
+     *
+     * @return template source location
+     */
     public String getSource() {
         return statement.source;
     }

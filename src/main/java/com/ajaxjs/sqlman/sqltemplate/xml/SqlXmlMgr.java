@@ -82,6 +82,7 @@ public class SqlXmlMgr {
      *
      * @param sqlId  statement id from {@code <sql id="...">}.
      * @param params caller values for dynamic conditions and placeholders.
+     * @return rendered SQL and its immutable effective parameter map
      */
     public RenderedSql renderSql(String sqlId, Map<String, Object> params) {
         SqlXmlDomTemplate statement = statements.get(sqlId);
@@ -96,7 +97,7 @@ public class SqlXmlMgr {
      * Renders one XML statement and compiles it into JDBC SQL and ordered
      * parameter values.
      *
-     * @param sqlId statement id from {@code <sql id="...">}
+     * @param sqlId  statement id from {@code <sql id="...">}
      * @param params caller values for dynamic conditions and placeholders
      * @return prepared JDBC SQL ready to be supplied to an {@code Action}
      */

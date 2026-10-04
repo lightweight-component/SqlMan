@@ -29,6 +29,16 @@ public final class ClasspathSqlXmlScanner {
     private ClasspathSqlXmlScanner() {
     }
 
+    /**
+     * Finds XML resources below one relative classpath directory.
+     *
+     * <p>The result is sorted by logical resource path so duplicate statement
+     * resolution in the caller is deterministic.</p>
+     *
+     * @param resourceDirectory a relative directory such as {@code sql} or {@code app/sql}
+     * @return discovered XML resources in stable order
+     * @throws IllegalArgumentException if the directory is invalid or cannot be scanned
+     */
     public static List<SqlXmlResource> scan(String resourceDirectory) {
         String root = normalizeRoot(resourceDirectory);
         Map<String, SqlXmlResource> resources = new LinkedHashMap<>();

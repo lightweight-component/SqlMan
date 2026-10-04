@@ -22,6 +22,10 @@ public final class ParameterBinder {
 
     /**
      * Binds one dynamic XML rendering result.
+     *
+     * @param renderedSql      rendered SQL and named parameter values
+     * @param positionalParams values for ordinary JDBC {@code ?} placeholders
+     * @return JDBC SQL with its ordered parameter values
      */
     public static PreparedSql prepare(RenderedSql renderedSql, Object... positionalParams) {
         if (renderedSql == null)
@@ -33,6 +37,11 @@ public final class ParameterBinder {
     /**
      * Binds {@code #{...}} values and substitutes validated {@code ${...}}
      * identifiers in already-rendered SQL.
+     *
+     * @param sqlTemplate      rendered SQL containing named and/or JDBC placeholders
+     * @param params           values used by named placeholders; {@code null} means no named values
+     * @param positionalParams values for ordinary JDBC {@code ?} placeholders; may be {@code null}
+     * @return JDBC SQL with its ordered parameter values
      */
     public static PreparedSql prepare(String sqlTemplate, Map<String, Object> params, Object[] positionalParams) {
         if (sqlTemplate == null)
@@ -66,6 +75,12 @@ public final class ParameterBinder {
         return bindMarkers(markedSql.toString(), namedValues, positionalParams == null ? new Object[0] : positionalParams);
     }
 
+    /**
+     * Determines whether SQL contains a named template placeholder.
+     *
+     * @param sql SQL text to inspect
+     * @return {@code true} if {@code #{...}} or {@code ${...}} occurs
+     */
     public static boolean hasPlaceholder(String sql) {
         return sql != null && PLACEHOLDER.matcher(sql).find();
     }
