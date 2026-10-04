@@ -13,7 +13,7 @@ class TestJdbcConnectionVendor {
     @Test
     void recognizesAdditionalDatabaseVendors() {
         assertVendor("MariaDB", DatabaseVendor.MARIADB);
-        assertVendor("SQLite", DatabaseVendor.SQL_LITE);
+        assertVendor("SQLite", DatabaseVendor.SQLLITE);
         assertVendor("HSQL Database Engine", DatabaseVendor.HSQLDB);
         assertVendor("Microsoft SQL Server", DatabaseVendor.SQL_SERVER);
     }
@@ -37,6 +37,6 @@ class TestJdbcConnectionVendor {
                     throw new UnsupportedOperationException(method.getName());
                 });
 
-        assertEquals(expected, JdbcConnection.initDatabaseVendor(connection));
+        assertEquals(expected, JdbcConnection.detectDatabaseVendor(connection));
     }
 }

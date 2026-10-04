@@ -41,7 +41,7 @@ public class Action {
      */
     public Action(Connection conn) {
         this.conn = conn;
-        databaseVendor = JdbcConnection.initDatabaseVendor(conn);
+        databaseVendor = JdbcConnection.detectDatabaseVendor(conn);
     }
 
     /**

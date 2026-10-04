@@ -63,7 +63,7 @@ public class PageControl {
 //            pageSql = selectStatement.toString();
         if (databaseVendor == DatabaseVendor.MYSQL || databaseVendor == DatabaseVendor.MARIADB || databaseVendor == DatabaseVendor.H2)
             pagedSql = sql + " LIMIT " + start + ", " + limit;
-        else if (databaseVendor == DatabaseVendor.POSTGRESQL || databaseVendor == DatabaseVendor.SQL_LITE || databaseVendor == DatabaseVendor.HSQLDB)
+        else if (databaseVendor == DatabaseVendor.POSTGRESQL || databaseVendor == DatabaseVendor.SQLLITE || databaseVendor == DatabaseVendor.HSQLDB)
             pagedSql = sql + " LIMIT " + limit + " OFFSET " + start;
         else if (databaseVendor == DatabaseVendor.SQL_SERVER || databaseVendor == DatabaseVendor.ORACLE || databaseVendor == DatabaseVendor.DB2 || databaseVendor == DatabaseVendor.DERBY)
             pagedSql = sql + " OFFSET " + start + " ROWS FETCH NEXT " + limit + " ROWS ONLY";

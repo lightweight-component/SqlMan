@@ -46,7 +46,6 @@ public abstract class DbMetaInfoBase {
             throw new UnsupportedOperationException("Map can't contain a annotation with db meta info.");
 
         Table annotation = entity.getClass().getAnnotation(Table.class);
-
         tableName = annotation == null ? null : annotation.value();
 
         return tableName;

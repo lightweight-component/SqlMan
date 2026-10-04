@@ -38,7 +38,7 @@ class TestBatchUpdate {
 
     @AfterEach
     void tearDown() {
-        JdbcConnection.closeDb();
+        JdbcConnection.closeConnection();
     }
 
     @Test

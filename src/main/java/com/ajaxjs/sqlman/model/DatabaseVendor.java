@@ -31,7 +31,8 @@ public enum DatabaseVendor {
     /**
      * SQLite.
      */
-    SQL_LITE,
+    SQLLITE,
+
     /**
      * H2 Database.
      */

@@ -44,6 +44,6 @@ public abstract class BaseTest {
 
     @AfterEach
     void tearDown() {
-        JdbcConnection.closeDb(conn);
+        JdbcConnection.closeConnection(conn);
     }
 }

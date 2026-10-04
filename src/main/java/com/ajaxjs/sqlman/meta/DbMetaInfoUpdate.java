@@ -57,7 +57,6 @@ public class DbMetaInfoUpdate extends DbMetaInfoBase {
             throw new UnsupportedOperationException("Map can't contain a annotation with db meta info.");
 
         Id annotation = entity.getClass().getAnnotation(Id.class);
-
         idField = annotation == null ? null : annotation.value();
 
         return idField;

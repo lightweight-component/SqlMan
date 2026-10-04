@@ -21,7 +21,7 @@ class TestJdbcConnectionLifecycle {
         Connection connection = connectionThatFailsToClose();
         JdbcConnection.setConnection(connection);
 
-        assertThrows(RuntimeException.class, JdbcConnection::closeDb);
+        assertThrows(RuntimeException.class, JdbcConnection::closeConnection);
         assertThrows(UnsupportedOperationException.class, JdbcConnection::getConnection);
     }
 
@@ -29,7 +29,7 @@ class TestJdbcConnectionLifecycle {
     void removesThreadLocalAfterNormalClose() {
         JdbcConnection.setConnection(connectionThatCloses());
 
-        JdbcConnection.closeDb();
+        JdbcConnection.closeConnection();
 
         assertThrows(UnsupportedOperationException.class, JdbcConnection::getConnection);
     }
@@ -66,7 +66,7 @@ class TestJdbcConnectionLifecycle {
         assertTrue(verify.await(3, TimeUnit.SECONDS));
 
         Connection actual = JdbcConnection.getConnection();
-        JdbcConnection.closeDb();
+        JdbcConnection.closeConnection();
         assertThrows(UnsupportedOperationException.class, JdbcConnection::getConnection);
         return actual;
     }
