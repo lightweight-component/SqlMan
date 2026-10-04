@@ -12,7 +12,8 @@ layout: layouts/docs.njk
 
 # Pagination
 
-Pagination executes a count query followed by a query for the requested page. Start with SQL that does not already contain database-specific pagination syntax.
+Pagination executes a count query followed by a query for the requested page. Start with SQL that does not already
+contain database-specific pagination syntax.
 
 ## Offset and limit
 
@@ -45,7 +46,8 @@ PageResult<Address> page =
                 .pageByPageNo(1, 20, Address.class);
 ```
 
-`PageResult` contains `list`, `totalCount`, `totalPage`, `currentPage`, `start`, `pageSize`, and `zero`. A request beyond the last page returns an empty list.
+`PageResult` contains `list`, `totalCount`, `totalPage`, `currentPage`, `start`, `pageSize`, and `zero`. A request
+beyond the last page returns an empty list.
 
 ## Bind query parameters
 

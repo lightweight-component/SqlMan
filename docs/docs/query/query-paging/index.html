@@ -97,7 +97,8 @@
             </menu>
             <article class="aj-text">
                 <h1>Pagination</h1>
-<p>Pagination executes a count query followed by a query for the requested page. Start with SQL that does not already contain database-specific pagination syntax.</p>
+<p>Pagination executes a count query followed by a query for the requested page. Start with SQL that does not already
+contain database-specific pagination syntax.</p>
 <h2>Offset and limit</h2>
 <p><code>start</code> is a zero-based row offset and <code>limit</code> is the page size:</p>
 <pre><code class="language-java">PageResult&lt;Map&lt;String, Object&gt;&gt; page =
@@ -118,7 +119,8 @@
                 .query()
                 .pageByPageNo(1, 20, Address.class);
 </code></pre>
-<p><code>PageResult</code> contains <code>list</code>, <code>totalCount</code>, <code>totalPage</code>, <code>currentPage</code>, <code>start</code>, <code>pageSize</code>, and <code>zero</code>. A request beyond the last page returns an empty list.</p>
+<p><code>PageResult</code> contains <code>list</code>, <code>totalCount</code>, <code>totalPage</code>, <code>currentPage</code>, <code>start</code>, <code>pageSize</code>, and <code>zero</code>. A request
+beyond the last page returns an empty list.</p>
 <h2>Bind query parameters</h2>
 <p>Bind parameters when creating the <code>Query</code>, before invoking the pagination method:</p>
 <pre><code class="language-java">PageResult&lt;Map&lt;String, Object&gt;&gt; page =

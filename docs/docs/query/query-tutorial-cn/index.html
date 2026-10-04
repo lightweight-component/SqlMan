@@ -105,7 +105,7 @@
 </code></pre>
 <p>这些值由 <code>PreparedStatement</code> 绑定，不要给 <code>?</code> 添加引号。</p>
 <h2>SQL 模板参数</h2>
-<p>如果第一个参数是 <code>Map</code>，<code>Action</code> 会先交给 <code>SmallMyBatis</code> 处理，再绑定剩余的位置参数：</p>
+<p>如果第一个参数是 <code>Map</code>，且 SQL 中包含动态节点或命名占位符，<code>Action</code> 会先渲染内联 SQL 模板，再绑定剩余的位置参数：</p>
 <pre><code class="language-java">Map&lt;String, Object&gt; template = new HashMap&lt;&gt;();
 template.put(&quot;tableName&quot;, &quot;shop_address&quot;);
 
@@ -114,7 +114,8 @@ Map&lt;String, Object&gt; row =
                 .query(template, 1)
                 .one();
 </code></pre>
-<p>当前实现中的 <code>${...}</code> 和 <code>#{...}</code> 都属于文本替换，并不是 JDBC 参数绑定。<code>${...}</code> 只能用于可信的表名、列名或 SQL 片段；数据值应优先使用 <code>?</code>。</p>
+<p><code>#{...}</code> 会转换为 JDBC <code>?</code>，其值按出现顺序加入绑定参数。<code>${...}</code> 仅允许 SQL 标识符，包括
+<code>schema.table</code> 这样的限定名称；任意 SQL 片段会被拒绝。数据值应优先使用 <code>#{...}</code> 或 <code>?</code>。</p>
 <h2>Map 的列名</h2>
 <p>Map 使用 JDBC 返回的列标签。表达式应设置别名，以获得稳定的键名：</p>
 <pre><code class="language-java">Map&lt;String, Object&gt; totals =

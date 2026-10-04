@@ -12,7 +12,8 @@ layout: layouts/docs.njk
 
 # Entity-based Writes
 
-Entity actions generate parameterized INSERT, UPDATE, or DELETE SQL from a JavaBean or `Map`. Queries still use explicit SQL and can map their results to a JavaBean.
+Entity actions generate parameterized INSERT, UPDATE, or DELETE SQL from a JavaBean or `Map`. Queries still use explicit
+SQL and can map their results to a JavaBean.
 
 ## Insert a Map
 
@@ -68,7 +69,8 @@ CreateResult<Long> result =
                 .execute(true, Long.class);
 ```
 
-Null-valued bean properties are omitted from a single-row INSERT. A field annotated with `@Transient`, or a getter annotated with `@Transient`, is omitted. `@Column(name = "...")` changes the database column name.
+Null-valued bean properties are omitted from a single-row INSERT. A field annotated with `@Transient`, or a getter
+annotated with `@Transient`, is omitted. `@Column(name = "...")` changes the database column name.
 
 ## Update by ID
 
@@ -104,7 +106,8 @@ UpdateResult result =
                 .execute("stat = 0");
 ```
 
-The condition is appended as raw SQL. It must be a trusted application-defined fragment; it does not bind additional values.
+The condition is appended as raw SQL. It must be a trusted application-defined fragment; it does not bind additional
+values.
 
 ## Delete an entity
 
@@ -119,4 +122,5 @@ The default ID field is `id`. This performs a physical delete.
 
 ## Value conversion
 
-Enums are stored with `toString()`. `List` and `Map` property values are serialized as JSON. `NullValue` constants can explicitly write SQL `NULL`; ordinary null bean properties are skipped.
+Enums are stored with `toString()`. `List` and `Map` property values are serialized as JSON. `NullValue` constants can
+explicitly write SQL `NULL`; ordinary null bean properties are skipped.

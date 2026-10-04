@@ -5,6 +5,8 @@
     </sql>
     <sql id="duplicate">SELECT 'first'</sql>
     <sql id="map-values">
-        VALUES <forEach collection="values" item="value" index="key" open="" separator=", " close="">(#{key}, #{value})</forEach>
+        VALUES
+        <forEach collection="values" item="value" index="key" open="" separator=", " close="">(#{key}, #{value})
+        </forEach>
     </sql>
 </mapper>

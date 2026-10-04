@@ -8,7 +8,8 @@ rg --files src/main/java src/test/java docs-src
 rg -n "symbol-or-api" src/main/java src/test/java docs-src
 ```
 
-Read the current implementation, direct callers, tests, and documentation before deciding whether behavior is intentional.
+Read the current implementation, direct callers, tests, and documentation before deciding whether behavior is
+intentional.
 
 ## Edit
 
@@ -31,7 +32,8 @@ Then run the suite:
 mvn -DskipTests=false test
 ```
 
-Inspect the Surefire summary. A successful Maven exit is insufficient if inherited configuration reports tests were skipped.
+Inspect the Surefire summary. A successful Maven exit is insufficient if inherited configuration reports tests were
+skipped.
 
 Useful test dimensions:
 
@@ -49,13 +51,14 @@ npm install
 npx @11ty/eleventy
 ```
 
-Then scan source and generated output:
+Then scan the documentation source for stale APIs:
 
 ```bash
-rg -n "new Sql\\b|new Entity\\b|queryList\\(|queryOne\\(|description: TODO|last one" . --glob "*.md"
+rg -n "SmallMyBatis|Entity2WriteSql|sqlman\\.crud|description: TODO|last one" . --glob "*.md"
 ```
 
-Verify every Markdown file contains non-empty `title`, `description`, and `tags`, and ensure English/Chinese examples use the same current API.
+Verify every Markdown file contains non-empty `title`, `description`, and `tags`, and ensure English/Chinese examples
+use the same current API.
 
 ## Hand off
 

@@ -12,7 +12,8 @@ layout: layouts/docs.njk
 
 # Welcome to the SqlMan Documentation
 
-SqlMan is a small Java library that removes repetitive JDBC work while keeping SQL visible. Version 2.0 uses `Action` as the common entry point for queries, inserts, updates, and deletes.
+SqlMan is a small Java library that removes repetitive JDBC work while keeping SQL visible. Version 2.3 uses `Action` as
+the common entry point for queries, inserts, updates, and deletes.
 
 ```java
 List<Map<String, Object>> rows =
@@ -29,7 +30,7 @@ List<Map<String, Object>> rows =
 - Entity-based INSERT, UPDATE, and DELETE generation for Maps and JavaBeans.
 - Offset-based and page-number pagination for supported database vendors.
 - Parameterized batch inserts and batch deletes.
-- Lightweight XML statement storage and dynamic `<if>` processing with `SmallMyBatis`.
+- XML statement storage with `<if>`, `<else>`, and `<forEach>` dynamic nodes.
 - SQL logging with bound-parameter rendering for diagnostics.
 
 ## Design principles
@@ -38,7 +39,8 @@ List<Map<String, Object>> rows =
 - **Small:** the API wraps JDBC operations instead of introducing a persistence session or entity manager.
 - **Transparent:** connections and transactions remain visible and under application control.
 
-SqlMan is not a full ORM, a JPA implementation, or a complete MyBatis replacement. Entity support focuses on data modification; query SQL is still written explicitly.
+SqlMan is not a full ORM, a JPA implementation, or a complete MyBatis replacement. Entity support focuses on data
+modification; query SQL is still written explicitly.
 
 ## Source code
 

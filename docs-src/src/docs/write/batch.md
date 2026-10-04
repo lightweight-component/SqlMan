@@ -24,7 +24,9 @@ try {
 }
 ```
 
-If the connection is in auto-commit mode, a parameterized batch insert opens a local transaction, commits on success, rolls back on failure, and restores auto-commit. If the caller has already disabled auto-commit, transaction completion remains the caller's responsibility.
+If the connection is in auto-commit mode, a parameterized batch insert opens a local transaction, commits on success,
+rolls back on failure, and restores auto-commit. If the caller has already disabled auto-commit, transaction completion
+remains the caller's responsibility.
 
 ## Insert Maps
 
@@ -46,7 +48,8 @@ users.add(second);
 new BatchUpdate().createBatchMap(users, "users");
 ```
 
-Values are bound with `PreparedStatement`. `byte[]` and `InputStream` are supported; enums are stored as strings, and `Map` or `List` values are serialized as JSON.
+Values are bound with `PreparedStatement`. `byte[]` and `InputStream` are supported; enums are stored as strings,
+and `Map` or `List` values are serialized as JSON.
 
 ## Insert JavaBeans
 
@@ -58,7 +61,8 @@ batch.setTableName("users");
 batch.createBatch(Arrays.asList(user1, user2));
 ```
 
-The non-null properties of the first bean select the INSERT columns. Later beans may contain `null` for those columns, but may not introduce an additional non-null property.
+The non-null properties of the first bean select the INSERT columns. Later beans may contain `null` for those columns,
+but may not introduce an additional non-null property.
 
 `@Column` changes a property-to-column mapping and `@Transient` excludes a property.
 
@@ -76,4 +80,6 @@ IDs are bound as parameters. Empty lists and lists containing `null` are rejecte
 
 ## Legacy raw-values API
 
-`createBatch(String fields, List<String> values)` and its string overload are deprecated. They accept complete SQL value fragments and cannot bind values safely. Keep them only for trusted legacy input; new code should use the Map or JavaBean APIs.
+`createBatch(String fields, List<String> values)` and its string overload are deprecated. They accept complete SQL value
+fragments and cannot bind values safely. Keep them only for trusted legacy input; new code should use the Map or
+JavaBean APIs.

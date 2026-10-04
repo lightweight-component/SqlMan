@@ -2,7 +2,7 @@
 
 Verify signatures in source before use. This is a navigation aid, not a frozen contract.
 
-## Raw SQL
+## Raw SQL and prepared templates
 
 ```java
 new Action(conn, sql).query(params).one();
@@ -13,9 +13,12 @@ new Action(conn, sql).query(params).list(Bean.class);
 new Action(conn, insertSql).create(params).execute(true, Long.class);
 new Action(conn, updateSql).update(params).execute();
 new Action(conn).delete(tableName, idField, id);
+
+PreparedSql prepared = sqlXml.prepareSql("statement-id", namedParams);
+new Action(conn, prepared).query().list();
 ```
 
-`Action.query/create/update` accept bind parameters. If the first parameter is a Map, current code processes SQL templates first and binds remaining arguments.
+`Action.query/create/update` accept bind parameters. When the first supplied parameter is a Map, SQL with dynamic nodes or named placeholders follows the inline template/binding path; remaining values bind ordinary `?` placeholders.
 
 ## Entity writes
 
@@ -26,7 +29,20 @@ new Action(conn, bean).update().withId("id", id);
 new Action(conn, entity, tableName).update().delete();
 ```
 
-A Bean can obtain its table name from `@Table`. Map keys are treated as column names. Check empty entities, null properties, ID exclusion, and annotation support when changing generation.
+A Bean can obtain its table name from `@Table`. Map keys and resolved Bean columns are validated identifiers. Check empty entities, null properties, ID exclusion, and annotation support when changing generation.
+
+## SQL XML and inline templates
+
+```java
+SqlXmlMgr sqlXml = new SqlXmlMgr();
+sqlXml.init(); // classpath sql/
+PreparedSql prepared = sqlXml.prepareSql("address-by-status", params);
+
+RenderedSql rendered = SqlXmlDomTemplate.compile(inlineSql).render(params);
+PreparedSql inlinePrepared = ParameterBinder.prepare(rendered);
+```
+
+`#{name}` binds data; `${name}` accepts identifiers only. XML mapper files have a `<mapper>` root and direct `<sql id="...">` children.
 
 ## Pagination
 

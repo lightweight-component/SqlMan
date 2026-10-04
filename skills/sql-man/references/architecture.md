@@ -2,34 +2,38 @@
 
 ## Execution path
 
-- `com.ajaxjs.sqlman.Action`: mutable input and configuration object; creates query, create, and update actions.
-- `JdbcConnection`: direct, `DataSource`, and thread-local connection access; detects `DatabaseVendor`.
-- `crud.BaseAction`: common parameter binding and `ResultSet` conversion.
-- `crud.Query`: scalar, Map, JavaBean, list, and pagination queries.
-- `crud.Create`: INSERT execution and generated-key conversion.
-- `crud.Update`: raw SQL update plus entity update/delete entry points.
-- `crud.BatchUpdate`: Map/Bean batch INSERT and ID-list DELETE; currently obtains its connection from `JdbcConnection`.
+- `com.ajaxjs.sqlman.Action`: mutable input/configuration object and public entry point for raw SQL, entity writes, and `PreparedSql`.
+- `JdbcConnection`: direct `DriverManager`, `DataSource`, and thread-local connection access; detects `DatabaseVendor`.
+- `BaseAction`, `Query`, `Create`, `Update`, and `BatchUpdate`: JDBC execution and result conversion. `BatchUpdate` obtains its connection from `JdbcConnection`.
+- `com.ajaxjs.sqlman.model.PreparedSql`: JDBC SQL plus ordered values; pass it to `Action` for prepared XML/template statements.
 
-## SQL generation
+## Entity write SQL
 
-- `sqlgenerator.Entity2WriteSql`: creates INSERT/UPDATE/DELETE SQL and ordered parameters from a Map or JavaBean.
-- `meta.*`: reads table and ID metadata.
-- `annotation.Table`, `Column`, `Transient`, `Id`: mapping metadata; verify which annotation members are actually honored before documenting them.
-- `SmallMyBatis`: loads `<sql id="...">` nodes and applies lightweight dynamic/template processing.
-- `sqlgenerator.XmlSql`: separate placeholder implementation; check callers before changing it.
+- `entity.BaseWriteSql`: common INSERT/UPDATE/DELETE assembly and value normalization.
+- `entity.MapWriteSql` and `entity.BeanWriteSql`: traverse Map or Bean values.
+- `entity.BeanIterator`: resolves readable Bean properties and mapping annotations.
+- `entity.SqlIdentifier`: validates simple and qualified SQL identifiers.
+- `annotation.Table`, `Column`, `Transient`, and `Id`: write mapping metadata; `Column.insertable` and `Column.updatable` affect Bean writes.
+
+## SQL templates
+
+- `sqltemplate.SqlXmlDomTemplate`: immutable DOM-backed template compiled from an inline SQL fragment or XML statement.
+- `sqltemplate.xml.SqlXmlMgr`: scans and caches classpath XML mapper statements by ID. Default directory: `sql/`.
+- `sqltemplate.ParameterBinder`: transforms `#{name}` into JDBC `?`, validates `${name}` identifiers, and combines named and positional values.
+- `sqltemplate.ExpressionEvaluator`: template-condition SPI.
+- `sqltemplate.express_parser.JSqlParserExpressionEvaluator`: constrained SQL-expression evaluator supporting logical/comparison/arithmetic expressions, parentheses, null tests, `BETWEEN`, `IN`, and explicitly registered functions.
+
+XML uses `<mapper>` with direct `<sql id="...">` children. Dynamic nodes are `<if>`, an optional direct `<else>`, and `<forEach>`. `SqlXmlMgr` supports ordinary directory/JAR classpaths, not Spring resource patterns or nested/fat JARs.
 
 ## Pagination
 
-- `Query` exposes start/limit and pageNo/pageSize overloads.
-- `PageQuery` executes count and page queries and fills `PageResult`.
-- `PageControl` rewrites count and database-specific page SQL with JSQLParser.
-
-Review SQL state restoration, parameter preservation, complex COUNT queries, input validation, required ordering, and out-of-range behavior together.
+- `page.PageQuery` executes count and page queries and fills `PageResult`.
+- `page.PageControl` rewrites count and database-specific page SQL with JSqlParser.
 
 ## Results and diagnostics
 
 - `model.CreateResult`, `UpdateResult`, and `Result` hold write outcomes.
-- `BaseAction` maps JDBC values into Map/bean/scalar results.
+- `BaseAction` maps JDBC values into Map/Bean/scalar results.
 - `util.PrintRealSql` renders parameters for logging and throttles repeated business-action logs.
 
 Logging is secondary behavior: it must not change the database operation's outcome.

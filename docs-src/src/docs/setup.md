@@ -16,7 +16,9 @@ layout: layouts/docs.njk
 
 SqlMan runs on Java 8 or later. Its database access is based on standard JDBC.
 
-Database vendor detection currently recognizes MySQL, MariaDB, PostgreSQL, Oracle, SQL Server, SQLite, H2, HSQLDB, Derby, and DB2. Pagination syntax varies by vendor; test generated SQL against the database and driver used by your application.
+Database vendor detection currently recognizes MySQL, MariaDB, PostgreSQL, Oracle, SQL Server, SQLite, H2, HSQLDB,
+Derby, and DB2. Pagination syntax varies by vendor; test generated SQL against the database and driver used by your
+application.
 
 ## Use an existing connection
 

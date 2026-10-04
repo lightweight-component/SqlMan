@@ -66,4 +66,5 @@ UpdateResult result =
 
 This is a physical delete. For logical deletion, execute an `UPDATE` that changes the relevant status column.
 
-Table names, column names, and raw clauses are not bind parameters. Keep identifiers and SQL fragments controlled by application code; never copy untrusted request text into them.
+Table names, column names, and raw clauses are not bind parameters. Keep identifiers and SQL fragments controlled by
+application code; never copy untrusted request text into them.

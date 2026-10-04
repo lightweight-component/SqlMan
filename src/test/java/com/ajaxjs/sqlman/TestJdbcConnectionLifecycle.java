@@ -21,8 +21,8 @@ class TestJdbcConnectionLifecycle {
         Connection connection = connectionThatFailsToClose();
         JdbcConnection.setConnection(connection);
 
-        assertThrows(RuntimeException.class, JdbcConnection::closeConnection);
-        assertThrows(UnsupportedOperationException.class, JdbcConnection::getConnection);
+        assertDoesNotThrow(() -> JdbcConnection.closeConnection());
+        assertThrows(IllegalStateException.class, JdbcConnection::getConnection);
     }
 
     @Test
@@ -31,7 +31,7 @@ class TestJdbcConnectionLifecycle {
 
         JdbcConnection.closeConnection();
 
-        assertThrows(UnsupportedOperationException.class, JdbcConnection::getConnection);
+        assertThrows(IllegalStateException.class, JdbcConnection::getConnection);
     }
 
     @Test
@@ -60,14 +60,19 @@ class TestJdbcConnectionLifecycle {
     }
 
     private Connection bindAndRead(Connection expected, CountDownLatch bothBound, CountDownLatch verify) throws InterruptedException {
-        assertThrows(UnsupportedOperationException.class, JdbcConnection::getConnection);
+        assertThrows(IllegalStateException.class, JdbcConnection::getConnection);
         JdbcConnection.setConnection(expected);
-        bothBound.countDown();
-        assertTrue(verify.await(3, TimeUnit.SECONDS));
+        Connection actual;
 
-        Connection actual = JdbcConnection.getConnection();
-        JdbcConnection.closeConnection();
-        assertThrows(UnsupportedOperationException.class, JdbcConnection::getConnection);
+        try {
+            bothBound.countDown();
+            assertTrue(verify.await(3, TimeUnit.SECONDS));
+            actual = JdbcConnection.getConnection();
+        } finally {
+            JdbcConnection.closeConnection();
+        }
+
+        assertThrows(IllegalStateException.class, JdbcConnection::getConnection);
         return actual;
     }
 

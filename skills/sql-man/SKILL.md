@@ -1,11 +1,12 @@
 ---
 name: sql-man
-description: Maintain, review, debug, test, and document the SqlMan Java JDBC library. Use for work in the SqlMan repository involving Action, JdbcConnection, Query/Create/Update/BatchUpdate, pagination, entity-to-SQL generation, result mapping, SmallMyBatis XML SQL, SQL logging, database-vendor compatibility, Maven tests, or the bilingual Eleventy documentation under docs-src.
+description: Maintain, review, debug, test, and document the SqlMan 2.3 Java JDBC library. Use for work involving Action, JdbcConnection, Query/Create/Update/BatchUpdate, pagination, Map/Bean write SQL, result mapping, SQL XML and inline templates, JSqlParser expression evaluation, SQL logging, database-vendor compatibility, Maven tests, or the bilingual Eleventy documentation under docs-src.
 ---
 
 # SqlMan
 
-Work from the current repository state. Treat reference files as orientation, then verify behavior against source because the API is evolving.
+Work from the current repository state. Treat reference files as orientation, then verify behavior against source
+because the API is evolving.
 
 ## Start every task
 
@@ -48,9 +49,12 @@ Report findings by severity with exact file and line references. Do not repeat i
 
 ## Implement changes
 
-Prefer narrow internal helpers and overloads over breaking public APIs. Retain a deprecated delegating overload when replacing a reasonable public method.
+Prefer narrow internal helpers and overloads over breaking public APIs. Retain a deprecated delegating overload when
+replacing a reasonable public method.
 
-Use `PreparedStatement` placeholders for data. Treat table names, column names, ordering, and raw WHERE fragments as identifiers or SQL syntax; validate or constrain them rather than pretending they are bind parameters.
+Use `PreparedStatement` placeholders for data. In templates, `#{name}` is a JDBC binding and `${name}` is restricted
+to a validated identifier. Treat table names, column names, ordering, and raw WHERE fragments as identifiers or SQL
+syntax; validate or constrain them rather than pretending they are bind parameters.
 
 Keep transaction behavior explicit:
 
@@ -63,9 +67,11 @@ Close statements and result sets with try-with-resources. Close a connection onl
 
 ## Test proportionally
 
-Add focused regression tests for the failure mode, including negative and boundary cases. Prefer H2-backed tests for JDBC behavior and proxies/mocks for driver-specific metadata or generated-key types.
+Add focused regression tests for the failure mode, including negative and boundary cases. Prefer H2-backed tests for
+JDBC behavior and proxies/mocks for driver-specific metadata or generated-key types.
 
-Run focused tests first, then the relevant suite. Confirm from Maven output that tests actually ran; inherited Surefire configuration may skip them unless explicitly overridden. See [references/workflow.md](references/workflow.md).
+Run focused tests first, then the relevant suite. Confirm from Maven output that tests actually ran; inherited Surefire
+configuration may skip them unless explicitly overridden. See [references/workflow.md](references/workflow.md).
 
 ## Maintain documentation
 
@@ -79,4 +85,5 @@ description:
 tags:
 ```
 
-Document the current source API, including limitations that materially affect safe usage. Build with Eleventy after edits and scan for removed API names. Do not hand-edit generated site output.
+Document the current source API, including limitations that materially affect safe usage. Build with Eleventy after
+edits and scan for removed API names such as `SmallMyBatis` and `Entity2WriteSql`. Do not hand-edit generated site output.

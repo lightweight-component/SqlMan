@@ -1,7 +1,6 @@
 package com.ajaxjs.sqlman.page;
 
 import com.ajaxjs.sqlman.Action;
-import com.ajaxjs.sqlman.crud.page.PageResult;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.Test;
 

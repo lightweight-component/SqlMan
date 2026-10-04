@@ -3,6 +3,8 @@
     <sql id="duplicate">SELECT 'second'</sql>
     <sql id="conditional">
         SELECT 1
-        <if test="enabled = TRUE"> WHERE id = #{id}<else> WHERE id IS NULL</else></if>
+        <if test="enabled = TRUE">WHERE id = #{id}
+            <else>WHERE id IS NULL</else>
+        </if>
     </sql>
 </mapper>

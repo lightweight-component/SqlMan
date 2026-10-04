@@ -45,7 +45,8 @@ PageResult<Address> page =
                 .pageByPageNo(1, 20, Address.class);
 ```
 
-`PageResult` 包含 `list`、`totalCount`、`totalPage`、`currentPage`、`start`、`pageSize` 和 `zero`。请求超过最后一页时，`list` 是空列表。
+`PageResult` 包含 `list`、`totalCount`、`totalPage`、`currentPage`、`start`、`pageSize` 和 `zero`。请求超过最后一页时，`list`
+是空列表。
 
 ## 绑定查询参数
 

@@ -96,7 +96,8 @@
             </menu>
             <article class="aj-text chinese">
                 <h1>欢迎来到 SqlMan 文档中心</h1>
-<p>SqlMan 是一个小型 Java 数据库工具，用于消除重复的 JDBC 代码，同时保留清晰可见的 SQL。2.0 版本以 <code>Action</code> 作为查询、插入、更新和删除的统一入口。</p>
+<p>SqlMan 是一个小型 Java 数据库工具，用于消除重复的 JDBC 代码，同时保留清晰可见的 SQL。2.3 版本以 <code>Action</code>
+作为查询、插入、更新和删除的统一入口。</p>
 <pre><code class="language-java">List&lt;Map&lt;String, Object&gt;&gt; rows =
         new Action(conn, &quot;SELECT * FROM shop_address WHERE stat = ?&quot;)
                 .query(1)
@@ -110,7 +111,7 @@
 <li>根据 Map 或 JavaBean 生成实体 INSERT、UPDATE 和 DELETE。</li>
 <li>针对已支持数据库提供 Offset 和页码两种分页方式。</li>
 <li>参数化批量插入和批量删除。</li>
-<li>使用 <code>SmallMyBatis</code> 在 XML 中保存 SQL，并处理轻量的动态 <code>&lt;if&gt;</code>。</li>
+<li>在 XML 中保存 SQL，并处理 <code>&lt;if&gt;</code>、<code>&lt;else&gt;</code> 与 <code>&lt;forEach&gt;</code> 动态节点。</li>
 <li>输出包含绑定参数的 SQL 日志，方便诊断。</li>
 </ul>
 <h2>设计原则</h2>

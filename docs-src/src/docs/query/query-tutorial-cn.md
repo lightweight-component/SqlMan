@@ -27,7 +27,7 @@ Map<String, Object> row =
 
 ## SQL 模板参数
 
-如果第一个参数是 `Map`，`Action` 会先交给 `SmallMyBatis` 处理，再绑定剩余的位置参数：
+如果第一个参数是 `Map`，且 SQL 中包含动态节点或命名占位符，`Action` 会先渲染内联 SQL 模板，再绑定剩余的位置参数：
 
 ```java
 Map<String, Object> template = new HashMap<>();
@@ -39,7 +39,8 @@ Map<String, Object> row =
                 .one();
 ```
 
-当前实现中的 `${...}` 和 `#{...}` 都属于文本替换，并不是 JDBC 参数绑定。`${...}` 只能用于可信的表名、列名或 SQL 片段；数据值应优先使用 `?`。
+`#{...}` 会转换为 JDBC `?`，其值按出现顺序加入绑定参数。`${...}` 仅允许 SQL 标识符，包括
+`schema.table` 这样的限定名称；任意 SQL 片段会被拒绝。数据值应优先使用 `#{...}` 或 `?`。
 
 ## Map 的列名
 

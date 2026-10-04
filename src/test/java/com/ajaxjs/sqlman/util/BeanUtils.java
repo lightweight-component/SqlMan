@@ -5,7 +5,6 @@ import com.ajaxjs.util.CommonConstant;
 import com.ajaxjs.util.reflect.Methods;
 import com.ajaxjs.util.reflect.NewInstance;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -62,7 +61,7 @@ public class BeanUtils {
      * @param value 要设置的属性值
      */
     public static void setProperty(Object bean, String name, Object value) {
-        String setMethodName = "set" + StringUtils.capitalize(name);
+        String setMethodName = "set" + capitalize(name);
         Objects.requireNonNull(bean, bean + "执行：" + setMethodName + " 未发现类");
 //		Objects.requireNonNull(value, bean + "执行：" + setMethodName + " 未发现参数 value");
 
@@ -88,6 +87,12 @@ public class BeanUtils {
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static String capitalize(String value) {
+        return value == null || value.isEmpty()
+                ? value
+                : Character.toUpperCase(value.charAt(0)) + value.substring(1);
     }
 
     @FunctionalInterface

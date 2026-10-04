@@ -1,8 +1,9 @@
 package com.ajaxjs.sqlman;
 
-import com.ajaxjs.sqlman.crud.page.PageResult;
 import com.ajaxjs.sqlman.model.CreateResult;
 import com.ajaxjs.sqlman.model.UpdateResult;
+import com.ajaxjs.sqlman.sqltemplate.xml.SqlXmlMgr;
+import com.ajaxjs.sqlman.page.PageResult;
 import com.ajaxjs.sqlman.testcase.Address;
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +14,18 @@ import static com.ajaxjs.util.ObjectHelper.mapOf;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TestSqlAction extends BaseTest {
+    @Test
+    void executesPreparedSqlFromXmlTemplate() {
+        SqlXmlMgr templates = new SqlXmlMgr();
+        templates.init("sql");
+
+        Integer id = new Action(conn, templates.prepareSql("foo-3",
+                mapOf("tableName", "shop_address", "stat", 1)))
+                .query().oneValue(Integer.class);
+
+        assertEquals(Integer.valueOf(1), id);
+    }
+
     @Test
     void testQuery() {
         int result;
@@ -58,6 +71,10 @@ class TestSqlAction extends BaseTest {
         assertEquals(2, result.size());
 
         result = new Action(conn, "SELECT * FROM ${tableName} WHERE stat = ?").query(mapOf("tableName", "shop_address", "abc", 2), 1).list();
+        assertEquals(2, result.size());
+
+        String dynamicSql = "SELECT * FROM ${tableName}<if test=\"stat IS NOT NULL\"> WHERE stat = #{stat}</if>";
+        result = new Action(conn, dynamicSql).query(mapOf("tableName", "shop_address", "stat", 1)).list();
         assertEquals(2, result.size());
     }
 

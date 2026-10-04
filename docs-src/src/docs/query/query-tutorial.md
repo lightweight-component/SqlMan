@@ -27,7 +27,8 @@ The values are bound by `PreparedStatement`; do not quote the `?` placeholders.
 
 ## SQL template parameters
 
-If the first argument is a `Map`, `Action` sends it to `SmallMyBatis` before binding the remaining positional parameters:
+If the first argument is a `Map`, `Action` renders an inline SQL template when the SQL contains a dynamic node or a
+named placeholder, then binds any remaining positional parameters:
 
 ```java
 Map<String, Object> template = new HashMap<>();
@@ -39,7 +40,9 @@ Map<String, Object> row =
                 .one();
 ```
 
-`${...}` and `#{...}` are text substitutions in the current implementation, not JDBC bind parameters. Only use `${...}` for trusted identifiers or trusted SQL fragments. Prefer `?` for all data values.
+`#{...}` becomes a JDBC `?` and its value is added to the ordered bindings. `${...}` is restricted to SQL identifiers,
+including qualified names such as `schema.table`; arbitrary SQL fragments are rejected. Prefer `#{...}` or `?` for all
+data values.
 
 ## Map column names
 

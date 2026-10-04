@@ -58,7 +58,8 @@ batch.setTableName("users");
 batch.createBatch(Arrays.asList(user1, user2));
 ```
 
-第一条 Bean 的非 null 属性决定 INSERT 列。后续 Bean 的这些属性可以为 `null`，但不能出现第一条 Bean 没有选择的其他非 null 属性。
+第一条 Bean 的非 null 属性决定 INSERT 列。后续 Bean 的这些属性可以为 `null`，但不能出现第一条 Bean 没有选择的其他非 null
+属性。
 
 `@Column` 用于修改属性到列的映射，`@Transient` 用于排除属性。
 
@@ -76,4 +77,5 @@ ID 使用参数绑定。空 ID 列表以及包含 `null` 的列表会被拒绝�
 
 ## 旧的原始值接口
 
-`createBatch(String fields, List<String> values)` 及其字符串重载已弃用。它们接收完整 SQL 值片段，无法安全绑定参数，只应兼容可信的旧代码；新代码应使用 Map 或 JavaBean 接口。
+`createBatch(String fields, List<String> values)` 及其字符串重载已弃用。它们接收完整 SQL 值片段，无法安全绑定参数，只应兼容可信的旧代码；新代码应使用
+Map 或 JavaBean 接口。

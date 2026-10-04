@@ -97,7 +97,8 @@
             </menu>
             <article class="aj-text">
                 <h1>Entity-based Writes</h1>
-<p>Entity actions generate parameterized INSERT, UPDATE, or DELETE SQL from a JavaBean or <code>Map</code>. Queries still use explicit SQL and can map their results to a JavaBean.</p>
+<p>Entity actions generate parameterized INSERT, UPDATE, or DELETE SQL from a JavaBean or <code>Map</code>. Queries still use explicit
+SQL and can map their results to a JavaBean.</p>
 <h2>Insert a Map</h2>
 <p>Maps require an explicit table name:</p>
 <pre><code class="language-java">Map&lt;String, Object&gt; address = new LinkedHashMap&lt;&gt;();
@@ -138,7 +139,8 @@ public class Address {
                 .create()
                 .execute(true, Long.class);
 </code></pre>
-<p>Null-valued bean properties are omitted from a single-row INSERT. A field annotated with <code>@Transient</code>, or a getter annotated with <code>@Transient</code>, is omitted. <code>@Column(name = &quot;...&quot;)</code> changes the database column name.</p>
+<p>Null-valued bean properties are omitted from a single-row INSERT. A field annotated with <code>@Transient</code>, or a getter
+annotated with <code>@Transient</code>, is omitted. <code>@Column(name = &quot;...&quot;)</code> changes the database column name.</p>
 <h2>Update by ID</h2>
 <p>The ID may be read from the entity:</p>
 <pre><code class="language-java">addressBean.setId(12L);
@@ -162,7 +164,8 @@ UpdateResult result =
                 .update()
                 .execute(&quot;stat = 0&quot;);
 </code></pre>
-<p>The condition is appended as raw SQL. It must be a trusted application-defined fragment; it does not bind additional values.</p>
+<p>The condition is appended as raw SQL. It must be a trusted application-defined fragment; it does not bind additional
+values.</p>
 <h2>Delete an entity</h2>
 <pre><code class="language-java">UpdateResult result =
         new Action(conn, addressBean, &quot;shop_address&quot;)
@@ -171,7 +174,8 @@ UpdateResult result =
 </code></pre>
 <p>The default ID field is <code>id</code>. This performs a physical delete.</p>
 <h2>Value conversion</h2>
-<p>Enums are stored with <code>toString()</code>. <code>List</code> and <code>Map</code> property values are serialized as JSON. <code>NullValue</code> constants can explicitly write SQL <code>NULL</code>; ordinary null bean properties are skipped.</p>
+<p>Enums are stored with <code>toString()</code>. <code>List</code> and <code>Map</code> property values are serialized as JSON. <code>NullValue</code> constants can
+explicitly write SQL <code>NULL</code>; ordinary null bean properties are skipped.</p>
 
             </article>
         </div>

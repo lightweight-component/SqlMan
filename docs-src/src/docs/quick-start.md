@@ -26,7 +26,8 @@ SqlMan requires Java 8 or later. Add the library and the JDBC driver for your da
 
 ## Run a query
 
-`Action` is the entry point for queries and data modifications. Supply a JDBC `Connection`, SQL text, and then the positional parameters:
+`Action` is the entry point for queries and data modifications. Supply a JDBC `Connection`, SQL text, and then the
+positional parameters:
 
 ```java
 try (Connection conn = dataSource.getConnection()) {
@@ -39,7 +40,8 @@ try (Connection conn = dataSource.getConnection()) {
 }
 ```
 
-Parameters passed to `query(...)`, `create(...)`, or `update(...)` are bound to `?` placeholders through `PreparedStatement`.
+Parameters passed to `query(...)`, `create(...)`, or `update(...)` are bound to `?` placeholders
+through `PreparedStatement`.
 
 To use the constructors that do not take a `Connection`, register one for the current thread:
 

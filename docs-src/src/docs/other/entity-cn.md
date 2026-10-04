@@ -12,7 +12,8 @@ layout: layouts/docs-cn.njk
 
 # 实体写入
 
-实体操作会根据 JavaBean 或 `Map` 生成带参数的 INSERT、UPDATE 或 DELETE SQL。查询仍然使用明确的 SQL，并可以把结果映射成 JavaBean。
+实体操作会根据 JavaBean 或 `Map` 生成带参数的 INSERT、UPDATE 或 DELETE SQL。查询仍然使用明确的 SQL，并可以把结果映射成
+JavaBean。
 
 ## 插入 Map
 
@@ -119,4 +120,5 @@ UpdateResult result =
 
 ## 属性值转换
 
-枚举通过 `toString()` 保存；`List` 和 `Map` 属性会序列化为 JSON。可以使用 `NullValue` 常量显式写入 SQL `NULL`；普通的 null Bean 属性会被忽略。
+枚举通过 `toString()` 保存；`List` 和 `Map` 属性会序列化为 JSON。可以使用 `NullValue` 常量显式写入 SQL `NULL`；普通的 null
+Bean 属性会被忽略。

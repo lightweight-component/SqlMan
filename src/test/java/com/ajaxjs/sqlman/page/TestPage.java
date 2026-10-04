@@ -1,6 +1,5 @@
 package com.ajaxjs.sqlman.page;
 
-import com.ajaxjs.sqlman.crud.page.PageControl;
 import com.ajaxjs.sqlman.model.DatabaseVendor;
 import org.junit.jupiter.api.Test;
 

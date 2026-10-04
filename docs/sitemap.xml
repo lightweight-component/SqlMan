@@ -37,36 +37,6 @@
         </url>
     
         <url>
-            <loc>https://sqlman.ajaxjs.com/blog/</loc>
-            <lastmod>2025-11-06T07:45:20.806Z</lastmod>
-        </url>
-    
-        <url>
-            <loc>https://sqlman.ajaxjs.com/docs/landing/</loc>
-            <lastmod>2025-11-06T07:45:20.809Z</lastmod>
-        </url>
-    
-        <url>
-            <loc>https://sqlman.ajaxjs.com/</loc>
-            <lastmod>2025-11-06T07:45:20.815Z</lastmod>
-        </url>
-    
-        <url>
-            <loc>https://sqlman.ajaxjs.com/style/blog.css</loc>
-            <lastmod>2025-11-06T07:45:20.817Z</lastmod>
-        </url>
-    
-        <url>
-            <loc>https://sqlman.ajaxjs.com/style/common.css</loc>
-            <lastmod>2025-11-06T07:45:20.828Z</lastmod>
-        </url>
-    
-        <url>
-            <loc>https://sqlman.ajaxjs.com/style/index.css</loc>
-            <lastmod>2025-11-06T07:45:20.829Z</lastmod>
-        </url>
-    
-        <url>
             <loc>https://sqlman.ajaxjs.com/docs/cn/</loc>
             <lastmod>2026-07-29T00:00:00.000Z</lastmod>
         </url>
@@ -83,16 +53,6 @@
     
         <url>
             <loc>https://sqlman.ajaxjs.com/docs/other/entity/</loc>
-            <lastmod>2026-07-29T00:00:00.000Z</lastmod>
-        </url>
-    
-        <url>
-            <loc>https://sqlman.ajaxjs.com/docs/other/sql-xml-cn/</loc>
-            <lastmod>2026-07-29T00:00:00.000Z</lastmod>
-        </url>
-    
-        <url>
-            <loc>https://sqlman.ajaxjs.com/docs/other/sql-xml/</loc>
             <lastmod>2026-07-29T00:00:00.000Z</lastmod>
         </url>
     
@@ -167,13 +127,53 @@
         </url>
     
         <url>
+            <loc>https://sqlman.ajaxjs.com/blog/</loc>
+            <lastmod>2026-08-04T14:34:43.803Z</lastmod>
+        </url>
+    
+        <url>
+            <loc>https://sqlman.ajaxjs.com/</loc>
+            <lastmod>2026-08-04T14:34:43.806Z</lastmod>
+        </url>
+    
+        <url>
+            <loc>https://sqlman.ajaxjs.com/docs/landing/</loc>
+            <lastmod>2026-08-04T14:34:43.852Z</lastmod>
+        </url>
+    
+        <url>
+            <loc>https://sqlman.ajaxjs.com/style/blog.css</loc>
+            <lastmod>2026-08-04T14:34:43.982Z</lastmod>
+        </url>
+    
+        <url>
+            <loc>https://sqlman.ajaxjs.com/style/common.css</loc>
+            <lastmod>2026-08-04T14:34:43.984Z</lastmod>
+        </url>
+    
+        <url>
+            <loc>https://sqlman.ajaxjs.com/style/index.css</loc>
+            <lastmod>2026-08-04T14:34:43.986Z</lastmod>
+        </url>
+    
+        <url>
             <loc>https://sqlman.ajaxjs.com/style/home.css</loc>
-            <lastmod>2026-09-04T07:10:11.385Z</lastmod>
+            <lastmod>2026-09-04T14:37:55.753Z</lastmod>
         </url>
     
         <url>
             <loc>https://sqlman.ajaxjs.com/learn/</loc>
-            <lastmod>2026-09-19T10:03:56.361Z</lastmod>
+            <lastmod>2026-10-04T02:15:00.599Z</lastmod>
+        </url>
+    
+        <url>
+            <loc>https://sqlman.ajaxjs.com/docs/other/sql-xml-cn/</loc>
+            <lastmod>2026-10-05T00:00:00.000Z</lastmod>
+        </url>
+    
+        <url>
+            <loc>https://sqlman.ajaxjs.com/docs/other/sql-xml/</loc>
+            <lastmod>2026-10-05T00:00:00.000Z</lastmod>
         </url>
     
 </urlset>

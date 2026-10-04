@@ -12,7 +12,8 @@ layout: layouts/docs.njk
 
 # Query Concepts
 
-SqlMan keeps SQL visible. An `Action` contains the connection, SQL text, parameters, and database vendor. Calling `query(...)` creates a `Query`, which executes the statement and maps its result.
+SqlMan keeps SQL visible. An `Action` contains the connection, SQL text, parameters, and database vendor.
+Calling `query(...)` creates a `Query`, which executes the statement and maps its result.
 
 ```java
 Query query = new Action(
@@ -62,8 +63,10 @@ List<Address> addresses =
                 .list(Address.class);
 ```
 
-An empty multi-row query currently returns `null`; callers that require a collection can normalize it with `Collections.emptyList()`.
+An empty multi-row query currently returns `null`; callers that require a collection can normalize it
+with `Collections.emptyList()`.
 
 ## Resource handling
 
-`Query` closes its `PreparedStatement` and `ResultSet`. The caller owns the `Connection` and must close or return it to the pool.
+`Query` closes its `PreparedStatement` and `ResultSet`. The caller owns the `Connection` and must close or return it to
+the pool.

@@ -129,7 +129,8 @@ new BatchUpdate().createBatchMap(users, &quot;users&quot;);
 batch.setTableName(&quot;users&quot;);
 batch.createBatch(Arrays.asList(user1, user2));
 </code></pre>
-<p>第一条 Bean 的非 null 属性决定 INSERT 列。后续 Bean 的这些属性可以为 <code>null</code>，但不能出现第一条 Bean 没有选择的其他非 null 属性。</p>
+<p>第一条 Bean 的非 null 属性决定 INSERT 列。后续 Bean 的这些属性可以为 <code>null</code>，但不能出现第一条 Bean 没有选择的其他非 null
+属性。</p>
 <p><code>@Column</code> 用于修改属性到列的映射，<code>@Transient</code> 用于排除属性。</p>
 <h2>按 ID 批量删除</h2>
 <pre><code class="language-java">BatchUpdate batch = new BatchUpdate();
@@ -140,7 +141,8 @@ UpdateResult result = batch.deleteBatch(Arrays.asList(1, 2, 3));
 </code></pre>
 <p>ID 使用参数绑定。空 ID 列表以及包含 <code>null</code> 的列表会被拒绝。</p>
 <h2>旧的原始值接口</h2>
-<p><code>createBatch(String fields, List&lt;String&gt; values)</code> 及其字符串重载已弃用。它们接收完整 SQL 值片段，无法安全绑定参数，只应兼容可信的旧代码；新代码应使用 Map 或 JavaBean 接口。</p>
+<p><code>createBatch(String fields, List&lt;String&gt; values)</code> 及其字符串重载已弃用。它们接收完整 SQL 值片段，无法安全绑定参数，只应兼容可信的旧代码；新代码应使用
+Map 或 JavaBean 接口。</p>
 
             </article>
 

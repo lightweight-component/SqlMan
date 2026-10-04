@@ -2,7 +2,8 @@
 
 ## 背景
 
-动态 SQL 的 `<if test="...">` 需要根据参数 Map 判断是否输出一个 XML 分支。旧实现直接使用 Spring EL：表达式能力很强，但语法与 SQL 模板不一致，并且条件语言与 Spring 运行时耦合。
+动态 SQL 的 `<if test="...">` 需要根据参数 Map 判断是否输出一个 XML 分支。旧实现直接使用 Spring EL：表达式能力很强，但语法与
+SQL 模板不一致，并且条件语言与 Spring 运行时耦合。
 
 本次目标不是执行 SQL，而是为模板条件提供一个小而明确的求值器：
 
@@ -12,18 +13,20 @@
 - 不允许模板任意调用 Java 方法、访问类或执行子查询；
 - 可安全地被同一个 XML 模板并发使用。
 
-与 XML DOM 的整体方案和 `<if>/<else>/<forEach>` 渲染规则，参见[动态 SQL XML 模板：DOM 与 `SqlTemplate` 设计备忘录](动态%20SQL%20XML%20模板：DOM%20与%20`SqlTemplate`%20设计备忘录.md)。
+与 XML DOM 的整体方案和 `<if>/<else>/<forEach>` 渲染规则，参见[动态 SQL XML 模板：DOM 与 `SqlTemplate` 设计备忘录](
+动态%20SQL%20XML%20模板：DOM%20与%20`SqlTemplate`%20设计备忘录.md)。
 
 ## 备选方案
 
-| 方案 | 优点 | 缺点 | 结论 |
-| --- | --- | --- | --- |
-| 保留 Spring EL | 功能完整，已有实现 | 与 Spring 绑定；语法不是 SQL；能力范围过大 | 不作为新模板的默认实现 |
-| 手写字符串解析 | 依赖少，初期代码少 | 优先级、括号、错误定位、扩展函数都需自行实现 | 不采用 |
-| 直接使用 JavaCC | 可自定义完整语法 | 需维护词法、语法、AST 与错误处理；学习和维护成本高 | 不采用 |
-| JSqlParser + 自定义 Visitor | 已有成熟 SQL 表达式 AST；支持括号与运算符；只需实现受限求值 | JSqlParser 只解析，仍需自行定义运行语义 | 采用 |
+| 方案                       | 优点                                 | 缺点                          | 结论          |
+|--------------------------|------------------------------------|-----------------------------|-------------|
+| 保留 Spring EL             | 功能完整，已有实现                          | 与 Spring 绑定；语法不是 SQL；能力范围过大 | 不作为新模板的默认实现 |
+| 手写字符串解析                  | 依赖少，初期代码少                          | 优先级、括号、错误定位、扩展函数都需自行实现      | 不采用         |
+| 直接使用 JavaCC              | 可自定义完整语法                           | 需维护词法、语法、AST 与错误处理；学习和维护成本高 | 不采用         |
+| JSqlParser + 自定义 Visitor | 已有成熟 SQL 表达式 AST；支持括号与运算符；只需实现受限求值 | JSqlParser 只解析，仍需自行定义运行语义   | 采用          |
 
-JSqlParser 的职责仅是把文本转换为 AST；它不会读取参数 Map，也不会返回布尔结果。因此不能仅靠升级依赖替代 Spring EL，必须实现 Visitor。
+JSqlParser 的职责仅是把文本转换为 AST；它不会读取参数 Map，也不会返回布尔结果。因此不能仅靠升级依赖替代 Spring EL，必须实现
+Visitor。
 
 ## 最终方案
 
@@ -53,16 +56,17 @@ Visitor 是同包外部类，而非 `JSqlParserExpressionEvaluator` 的内部类
 
 ## 支持的语法与语义
 
-| 类别 | 支持内容 | 示例 |
-| --- | --- | --- |
-| 布尔逻辑 | `AND`、`OR`、`NOT`、括号 | `(enabled = TRUE AND tier >= 2) OR admin = TRUE` |
-| 比较 | `=`、`<>`、`>`、`>=`、`<`、`<=` | `status = 'OPEN'` |
-| 空值 | `IS NULL`、`IS NOT NULL` | `deletedAt IS NULL` |
-| 集合范围 | `IN`、`NOT IN`、`BETWEEN`、`NOT BETWEEN` | `tier BETWEEN 1 AND 3` |
-| 算术 | `+`、`-`、`*`、`/`、`DIV`、`%`、正负号 | `(tier + bonus) >= 2` |
-| 自定义函数 | 显式注册的函数 | `isBlank(name)` |
+| 类别    | 支持内容                                  | 示例                                               |
+|-------|---------------------------------------|--------------------------------------------------|
+| 布尔逻辑  | `AND`、`OR`、`NOT`、括号                   | `(enabled = TRUE AND tier >= 2) OR admin = TRUE` |
+| 比较    | `=`、`<>`、`>`、`>=`、`<`、`<=`            | `status = 'OPEN'`                                |
+| 空值    | `IS NULL`、`IS NOT NULL`               | `deletedAt IS NULL`                              |
+| 集合范围  | `IN`、`NOT IN`、`BETWEEN`、`NOT BETWEEN` | `tier BETWEEN 1 AND 3`                           |
+| 算术    | `+`、`-`、`*`、`/`、`DIV`、`%`、正负号         | `(tier + bonus) >= 2`                            |
+| 自定义函数 | 显式注册的函数                               | `isBlank(name)`                                  |
 
-表达式中的普通标识符对应参数 Map 的键。例如 `tier` 读取 `params.get("tier")`。`TRUE` 和 `FALSE` 是布尔字面量；带表前缀的标识符，例如 `user.tier`，不支持。
+表达式中的普通标识符对应参数 Map 的键。例如 `tier` 读取 `params.get("tier")`。`TRUE` 和 `FALSE`
+是布尔字面量；带表前缀的标识符，例如 `user.tier`，不支持。
 
 在 XML 属性中，比较符号需要遵守 XML 转义：
 
@@ -74,7 +78,8 @@ Visitor 是同包外部类，而非 `JSqlParserExpressionEvaluator` 的内部类
 
 ### 数值
 
-所有 `Number` 在计算或数值比较时转换为 `BigDecimal`。这不是为了扩大模板表达式能力，而是为了让小数、除法和跨数值类型比较具有确定且精确的语义；模板作者无需直接使用 `BigDecimal`。
+所有 `Number` 在计算或数值比较时转换为 `BigDecimal`
+。这不是为了扩大模板表达式能力，而是为了让小数、除法和跨数值类型比较具有确定且精确的语义；模板作者无需直接使用 `BigDecimal`。
 
 除数为零、非数值参与算术、或不可比较的两种类型都会抛出 `IllegalArgumentException`。
 
@@ -102,7 +107,8 @@ SqlTemplateExpressionEvaluator evaluator =
         new JSqlParserExpressionEvaluator(functions);
 ```
 
-函数接收已求值的参数列表和当前参数 Map，可以返回布尔值、数值或字符串，再参与外层表达式。这里使用显式 Java 函数对象，而不按模板给出的类名或方法名反射调用；这样 API 清晰，也避免模板文本获得任意 Java 调用能力。
+函数接收已求值的参数列表和当前参数 Map，可以返回布尔值、数值或字符串，再参与外层表达式。这里使用显式 Java
+函数对象，而不按模板给出的类名或方法名反射调用；这样 API 清晰，也避免模板文本获得任意 Java 调用能力。
 
 ## 明确不支持的 AST
 
@@ -118,7 +124,8 @@ Visitor 只覆写允许节点。其他 JSqlParser AST 节点不会被默认放�
 
 ## 并发与缓存
 
-`JSqlParserExpressionEvaluator` 用 `ConcurrentHashMap` 缓存解析后的 AST。AST 在求值期间只读；每一次 `evaluate()` 都新建 Visitor，Visitor 内保存的中间 `result` 不会跨线程或跨请求共享。
+`JSqlParserExpressionEvaluator` 用 `ConcurrentHashMap` 缓存解析后的 AST。AST 在求值期间只读；每一次 `evaluate()` 都新建
+Visitor，Visitor 内保存的中间 `result` 不会跨线程或跨请求共享。
 
 参数 Map 由调用方传入，求值器只读取它；循环局部变量由 XML DOM 渲染器提供独立作用域。函数实现自身如持有可变状态，则由注册方负责线程安全。
 
@@ -132,5 +139,6 @@ Visitor 只覆写允许节点。其他 JSqlParser AST 节点不会被默认放�
 - 缺失参数、未注册函数和不支持的 AST；
 - 通过 `SqlXmlDomTemplate` 的 `<if>` 集成。
 
-后续扩展新的 AST 节点前，应先明确其参数类型、空值、短路和错误语义，再增加 Visitor 分支与对应的正反向测试；不要仅因 JSqlParser 能解析某个节点就默认支持它。
+后续扩展新的 AST 节点前，应先明确其参数类型、空值、短路和错误语义，再增加 Visitor 分支与对应的正反向测试；不要仅因 JSqlParser
+能解析某个节点就默认支持它。
 

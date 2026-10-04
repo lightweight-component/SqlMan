@@ -97,7 +97,8 @@
             </menu>
             <article class="aj-text">
                 <h1>Welcome to the SqlMan Documentation</h1>
-<p>SqlMan is a small Java library that removes repetitive JDBC work while keeping SQL visible. Version 2.0 uses <code>Action</code> as the common entry point for queries, inserts, updates, and deletes.</p>
+<p>SqlMan is a small Java library that removes repetitive JDBC work while keeping SQL visible. Version 2.3 uses <code>Action</code> as
+the common entry point for queries, inserts, updates, and deletes.</p>
 <pre><code class="language-java">List&lt;Map&lt;String, Object&gt;&gt; rows =
         new Action(conn, &quot;SELECT * FROM shop_address WHERE stat = ?&quot;)
                 .query(1)
@@ -111,7 +112,7 @@
 <li>Entity-based INSERT, UPDATE, and DELETE generation for Maps and JavaBeans.</li>
 <li>Offset-based and page-number pagination for supported database vendors.</li>
 <li>Parameterized batch inserts and batch deletes.</li>
-<li>Lightweight XML statement storage and dynamic <code>&lt;if&gt;</code> processing with <code>SmallMyBatis</code>.</li>
+<li>XML statement storage with <code>&lt;if&gt;</code>, <code>&lt;else&gt;</code>, and <code>&lt;forEach&gt;</code> dynamic nodes.</li>
 <li>SQL logging with bound-parameter rendering for diagnostics.</li>
 </ul>
 <h2>Design principles</h2>
@@ -120,7 +121,8 @@
 <li><strong>Small:</strong> the API wraps JDBC operations instead of introducing a persistence session or entity manager.</li>
 <li><strong>Transparent:</strong> connections and transactions remain visible and under application control.</li>
 </ul>
-<p>SqlMan is not a full ORM, a JPA implementation, or a complete MyBatis replacement. Entity support focuses on data modification; query SQL is still written explicitly.</p>
+<p>SqlMan is not a full ORM, a JPA implementation, or a complete MyBatis replacement. Entity support focuses on data
+modification; query SQL is still written explicitly.</p>
 <h2>Source code</h2>
 <p>SqlMan is licensed under the GNU General Public License v3.0.</p>
 <ul>

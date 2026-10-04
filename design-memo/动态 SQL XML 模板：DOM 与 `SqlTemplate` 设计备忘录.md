@@ -2,7 +2,8 @@
 
 ## 背景与目标
 
-SqlMan 目前将 XML 中的 `<sql>` 内容读取为字符串，缓存为 `sqlId -> String`，随后通过字符串扫描处理 `<if>`。该方式适用于最简单的条件片段，但无法可靠地处理嵌套标签，也没有接入实际执行链路的 `<else>` 支持。
+SqlMan 目前将 XML 中的 `<sql>` 内容读取为字符串，缓存为 `sqlId -> String`，随后通过字符串扫描处理 `<if>`
+。该方式适用于最简单的条件片段，但无法可靠地处理嵌套标签，也没有接入实际执行链路的 `<else>` 支持。
 
 本次设计的目标是让 XML 中的动态 SQL 能正确支持嵌套的 `<if>`、`<else>` 和 `<forEach>`，并保持：
 
@@ -13,7 +14,8 @@ SqlMan 目前将 XML 中的 `<sql>` 内容读取为字符串，缓存为 `sqlId 
 
 ## 现状与问题
 
-`SmallMyBatis.loadXML()` 使用 `XmlHelper.parseXML()` 找到 `<sql>` 后调用 `XmlHelper.getNodeText()`，因此 XML 的层级结构在加载时被压平为字符串。
+`SmallMyBatis.loadXML()` 使用 `XmlHelper.parseXML()` 找到 `<sql>` 后调用 `XmlHelper.getNodeText()`，因此 XML
+的层级结构在加载时被压平为字符串。
 
 随后 `generateIfBlock()` 使用 `indexOf("<if")`、`indexOf("</if>")` 和 `substring()` 处理条件块。这个模型的限制是：
 
@@ -24,16 +26,17 @@ SqlMan 目前将 XML 中的 `<sql>` 内容读取为字符串，缓存为 `sqlId 
 
 ## 备选方案
 
-| 方案 | 优点 | 缺点 | 结论 |
-| --- | --- | --- | --- |
-| 继续字符串扫描 | 改动最少 | 必须自己匹配嵌套标签和分支，错误处理脆弱 | 不采用 |
-| XSLT | XML 原生支持条件和选择 | 使用 XPath/XSLT 语义，和 JDBC 参数绑定、应用参数 Map 的模型不匹配 | 不采用 |
-| 缓存 XML DOM | 可直接利用 XML 的父子关系；实现量适中；天然处理嵌套 | 保留通用 DOM 节点和整份 `Document` 的内存开销 | 第一阶段采用 |
-| 编译为自定义 `SqlTemplate` 节点树 | 不可变、占用更少、可在加载期校验和预解析表达式 | 需要额外的 DOM 到模板节点转换层 | 第二阶段演进方向 |
+| 方案                       | 优点                           | 缺点                                           | 结论       |
+|--------------------------|------------------------------|----------------------------------------------|----------|
+| 继续字符串扫描                  | 改动最少                         | 必须自己匹配嵌套标签和分支，错误处理脆弱                         | 不采用      |
+| XSLT                     | XML 原生支持条件和选择                | 使用 XPath/XSLT 语义，和 JDBC 参数绑定、应用参数 Map 的模型不匹配 | 不采用      |
+| 缓存 XML DOM               | 可直接利用 XML 的父子关系；实现量适中；天然处理嵌套 | 保留通用 DOM 节点和整份 `Document` 的内存开销              | 第一阶段采用   |
+| 编译为自定义 `SqlTemplate` 节点树 | 不可变、占用更少、可在加载期校验和预解析表达式      | 需要额外的 DOM 到模板节点转换层                           | 第二阶段演进方向 |
 
 ## 第一阶段决定：缓存只读 XML DOM
 
-加载期将 XML 字符串解析成 DOM，并按 `id` 缓存对应的 `<sql>` `Element`。运行期不修改 DOM，而是以本次参数、局部 `StringBuilder` 和局部循环状态递归渲染。
+加载期将 XML 字符串解析成 DOM，并按 `id` 缓存对应的 `<sql>` `Element`。运行期不修改
+DOM，而是以本次参数、局部 `StringBuilder` 和局部循环状态递归渲染。
 
 ```text
 XML 文件
@@ -56,7 +59,8 @@ JDBC SQL（?）+ 有序参数
 3. 条件为真，递归渲染 `<else>` 之前的直接子节点；条件为假，递归渲染直接 `<else>` 的子节点。
 4. 内层 `<if>` 只有在所属外层分支被选中后才会被判断。这是递归调用自然得到的语义，不需要显式栈。
 5. `<else>` 只能是 `<if>` 的直接子节点；独立出现、多个直接 `<else>`、缺少 `test` 都属于模板错误。
-6. `<forEach>` 遍历 `Iterable`、数组或 `Map` 条目，支持 `collection`、`item`、`index`、`open`、`separator`、`close` 属性。空集合不输出 `open/close`。
+6. `<forEach>` 遍历 `Iterable`、数组或 `Map` 条目，支持 `collection`、`item`、`index`、`open`、`separator`、`close`
+   属性。空集合不输出 `open/close`。
 
 示例：
 
@@ -80,7 +84,8 @@ JDBC SQL（?）+ 有序参数
 
 ## 条件表达式解耦
 
-DOM 模板不应决定使用 Spring EL、JSqlParser Visitor 或其他条件语言。`SqlXmlDomTemplate` 通过函数式接口 `SqlTemplateExpressionEvaluator` 注入条件求值器：
+DOM 模板不应决定使用 Spring EL、JSqlParser Visitor 或其他条件语言。`SqlXmlDomTemplate`
+通过函数式接口 `SqlTemplateExpressionEvaluator` 注入条件求值器：
 
 ```java
 SqlXmlDomTemplate template = new SqlXmlDomTemplate(xml,
@@ -97,9 +102,11 @@ SqlXmlDomTemplate template = new SqlXmlDomTemplate(xml,
 
 ## `forEach` 参数绑定待决策
 
-循环体中的 `#{item}` 必须最终变成多个彼此独立的 JDBC 参数。例如集合 `[4, 7, 9]` 需要三个绑定值，而原始参数 Map 通常只包含 `ids`。
+循环体中的 `#{item}` 必须最终变成多个彼此独立的 JDBC 参数。例如集合 `[4, 7, 9]` 需要三个绑定值，而原始参数 Map
+通常只包含 `ids`。
 
-当前原型为兼容现有 `prepareSql()`，会在渲染期生成内部唯一名称，并通过 `RenderedSql` 一并返回扩展后的参数 Map。这不是 XML 作者需要书写的语法，XML 中仍使用 `#{item}`。
+当前原型为兼容现有 `prepareSql()`，会在渲染期生成内部唯一名称，并通过 `RenderedSql` 一并返回扩展后的参数 Map。这不是 XML
+作者需要书写的语法，XML 中仍使用 `#{item}`。
 
 该行为尚未确定为最终公开 API。后续需要在以下方向中明确选择：
 
@@ -111,15 +118,15 @@ SqlXmlDomTemplate template = new SqlXmlDomTemplate(xml,
 
 ## DOM 与自定义 `SqlTemplate` 的比较
 
-| 维度 | 缓存 DOM | 自定义 `SqlTemplate` 节点树 |
-| --- | --- | --- |
-| 首期实现 | 低，直接遍历 `Node` | 中，需要编译 DOM |
-| 嵌套动态标签 | 递归天然支持 | 递归天然支持 |
-| 内存 | 保留 Element、属性、文本、父子关系和整份 Document | 只保留 Text/If/ForEach 等运行期需要的数据 |
-| 模板校验 | 运行期或加载期遍历 DOM 时完成 | 可在编译期集中完成 |
-| 并发 | DOM 必须严格只读 | 不可变节点天然适合 |
-| 表达式缓存 | 可额外缓存 | 可直接放在 IfNode 中 |
-| 配置来源 | 绑定 XML | 可由 XML、注解、数据库或代码构造 |
+| 维度     | 缓存 DOM                            | 自定义 `SqlTemplate` 节点树         |
+|--------|-----------------------------------|-------------------------------|
+| 首期实现   | 低，直接遍历 `Node`                     | 中，需要编译 DOM                    |
+| 嵌套动态标签 | 递归天然支持                            | 递归天然支持                        |
+| 内存     | 保留 Element、属性、文本、父子关系和整份 Document | 只保留 Text/If/ForEach 等运行期需要的数据 |
+| 模板校验   | 运行期或加载期遍历 DOM 时完成                 | 可在编译期集中完成                     |
+| 并发     | DOM 必须严格只读                        | 不可变节点天然适合                     |
+| 表达式缓存  | 可额外缓存                             | 可直接放在 IfNode 中                |
+| 配置来源   | 绑定 XML                            | 可由 XML、注解、数据库或代码构造            |
 
 自定义节点树的最小模型可以是：
 

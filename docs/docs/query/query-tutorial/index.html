@@ -106,7 +106,8 @@
 </code></pre>
 <p>The values are bound by <code>PreparedStatement</code>; do not quote the <code>?</code> placeholders.</p>
 <h2>SQL template parameters</h2>
-<p>If the first argument is a <code>Map</code>, <code>Action</code> sends it to <code>SmallMyBatis</code> before binding the remaining positional parameters:</p>
+<p>If the first argument is a <code>Map</code>, <code>Action</code> renders an inline SQL template when the SQL contains a dynamic node or a
+named placeholder, then binds any remaining positional parameters:</p>
 <pre><code class="language-java">Map&lt;String, Object&gt; template = new HashMap&lt;&gt;();
 template.put(&quot;tableName&quot;, &quot;shop_address&quot;);
 
@@ -115,7 +116,9 @@ Map&lt;String, Object&gt; row =
                 .query(template, 1)
                 .one();
 </code></pre>
-<p><code>${...}</code> and <code>#{...}</code> are text substitutions in the current implementation, not JDBC bind parameters. Only use <code>${...}</code> for trusted identifiers or trusted SQL fragments. Prefer <code>?</code> for all data values.</p>
+<p><code>#{...}</code> becomes a JDBC <code>?</code> and its value is added to the ordered bindings. <code>${...}</code> is restricted to SQL identifiers,
+including qualified names such as <code>schema.table</code>; arbitrary SQL fragments are rejected. Prefer <code>#{...}</code> or <code>?</code> for all
+data values.</p>
 <h2>Map column names</h2>
 <p>Map results use JDBC column labels. Give expressions an alias when you need a stable key:</p>
 <pre><code class="language-java">Map&lt;String, Object&gt; totals =

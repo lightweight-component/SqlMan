@@ -4,7 +4,7 @@
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
         <title>SqlMan/XML SQL</title>
-        <meta name="description" content="Store SQL in XML, load statements by ID, and apply lightweight dynamic SQL with SmallMyBatis."/>
+        <meta name="description" content="Load SQL statements from classpath XML and safely render dynamic conditions and bindings."/>
         <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, SqlMan,XML SQL,dynamic SQL"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css" />
@@ -97,54 +97,59 @@
             </menu>
             <article class="aj-text">
                 <h1>XML SQL</h1>
-<p><code>SmallMyBatis</code> stores SQL statements in classpath XML resources. It is a lightweight template helper, not a complete MyBatis mapper or ORM.</p>
+<p><code>SqlXmlMgr</code> stores named SQL statements from classpath XML. It is a small dynamic-SQL facility, not a MyBatis mapper or an ORM. Its default expression evaluator is based on JSqlParser; Spring EL is not involved.</p>
 <h2>Define statements</h2>
+<p>Put XML files under <code>src/main/resources/sql/</code> (subdirectories are scanned too). A file has one <code>&lt;mapper&gt;</code> root and direct <code>&lt;sql id=&quot;...&quot;&gt;</code> children:</p>
 <pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;root&gt;
-    &lt;sql id=&quot;address-count&quot;&gt;
-        SELECT COUNT(*) AS total FROM shop_address
-    &lt;/sql&gt;
-
-    &lt;sql id=&quot;address-by-id&quot;&gt;
-        SELECT * FROM shop_address WHERE id = ?
-    &lt;/sql&gt;
-
+&lt;mapper&gt;
     &lt;sql id=&quot;address-by-status&quot;&gt;
         SELECT * FROM ${tableName}
-        &lt;if test=&quot;stat != null&quot;&gt;
+        &lt;if test=&quot;stat IS NOT NULL&quot;&gt;
             WHERE stat = #{stat}
+            &lt;else&gt;
+                WHERE stat IS NULL
+            &lt;/else&gt;
         &lt;/if&gt;
     &lt;/sql&gt;
-&lt;/root&gt;
+    &lt;sql id=&quot;address-by-ids&quot;&gt;
+        SELECT * FROM shop_address WHERE id IN
+        &lt;forEach collection=&quot;ids&quot; item=&quot;id&quot; open=&quot;(&quot; separator=&quot;,&quot; close=&quot;)&quot;&gt;#{id}&lt;/forEach&gt;
+    &lt;/sql&gt;
+&lt;/mapper&gt;
 </code></pre>
-<p>Statement IDs share one map inside a <code>SmallMyBatis</code> instance. Loading a duplicate ID replaces the previous SQL and writes a warning.</p>
-<h2>Load and execute</h2>
-<pre><code class="language-java">SmallMyBatis mapper = new SmallMyBatis();
-mapper.loadXML(&quot;sql/mysql.xml&quot;);
+<p>Statement IDs are unique within one manager. Resources are sorted by logical path; if two files define the same ID, the later one deterministically replaces the former and a warning is logged.</p>
+<h2>Load, prepare, and execute</h2>
+<pre><code class="language-java">SqlXmlMgr sqlXml = new SqlXmlMgr();
+sqlXml.init();                       // scans classpath sql/
+// sqlXml.init(&quot;myapp/sql&quot;);         // scans a custom classpath directory
 
-String sql = mapper.getSqlById(&quot;address-by-id&quot;);
-Address address = new Action(conn, sql).query(12L).one(Address.class);
-</code></pre>
-<p>Multiple resources can be loaded at once. <code>loadBySqlLocations(...)</code> also accepts a Spring resource pattern:</p>
-<pre><code class="language-java">mapper.loadBySqlLocations(&quot;classpath*:sql/**/*.xml&quot;);
-</code></pre>
-<h2>Dynamic conditions</h2>
-<p><code>handleSql(params, sqlId)</code> evaluates <code>&lt;if test=&quot;...&quot;&gt;</code> blocks with Spring Expression Language and then performs placeholders substitution:</p>
-<pre><code class="language-java">Map&lt;String, Object&gt; params = new HashMap&lt;&gt;();
+Map&lt;String, Object&gt; params = new HashMap&lt;&gt;();
 params.put(&quot;tableName&quot;, &quot;shop_address&quot;);
 params.put(&quot;stat&quot;, 1);
 
-String sql = mapper.handleSql(params, &quot;address-by-status&quot;);
-List&lt;Map&lt;String, Object&gt;&gt; rows = new Action(conn, sql).query().list();
+PreparedSql prepared = sqlXml.prepareSql(&quot;address-by-status&quot;, params);
+List&lt;Map&lt;String, Object&gt;&gt; rows = new Action(conn, prepared).query().list();
 </code></pre>
-<p>XML comparison operators can be written as <code>&amp;lt;</code> and <code>&amp;gt;</code>; the generated SQL converts them back.</p>
-<h2>Placeholder safety</h2>
+<p><code>renderSql(id, params)</code> is available when the rendered SQL and effective immutable parameter map are needed before binding. <code>prepareSql(id, params)</code> is the usual entry point and returns JDBC SQL plus its ordered values.</p>
+<p>The scanner supports ordinary classpath directories and ordinary JAR files. It intentionally does not support Spring resource expressions such as <code>classpath*:</code> or nested/fat JAR layouts. Missing XML files and malformed mapper files fail during <code>init</code>, rather than creating an empty registry.</p>
+<h2>Dynamic nodes and expressions</h2>
+<p><code>&lt;if&gt;</code> may contain a direct <code>&lt;else&gt;</code> child, and either branch may contain nested dynamic nodes. <code>&lt;forEach&gt;</code> supports <code>Iterable</code>, arrays, and <code>Map</code>: for a map, <code>index</code> is the key and <code>item</code> is the value; for other collections, <code>index</code> is the zero-based position.</p>
+<p>The expression language accepts a constrained SQL-like subset: boolean operators, comparisons, arithmetic, parentheses, <code>IS [NOT] NULL</code>, <code>BETWEEN</code>, <code>IN</code>, and explicitly registered functions. Use SQL null tests such as <code>stat IS NOT NULL</code>, rather than Java/Spring-EL syntax such as <code>stat != null</code>.</p>
+<h2>Binding and safety</h2>
 <ul>
-<li><code>${name}</code> inserts text without quoting. Use it only for trusted identifiers or SQL fragments.</li>
-<li><code>#{name}</code> currently inserts a formatted value directly into SQL. Despite its MyBatis-like spelling, it does not create a JDBC <code>?</code> parameter.</li>
-<li>JDBC <code>?</code> remains the recommended form for data values.</li>
+<li><code>#{name}</code> always becomes JDBC <code>?</code>; values are collected in occurrence order.</li>
+<li><code>${name}</code> is allowed only for identifiers, including qualified names such as <code>schema.table</code>. Arbitrary fragments are rejected.</li>
+<li>Ordinary <code>?</code> parameters can be supplied as trailing positional values where the API supports them.</li>
 </ul>
-<p>Do not pass request parameters or other untrusted input to <code>${...}</code> or <code>#{...}</code>. The <code>&lt;forEach&gt;</code> parser is not active in <code>handleSql(...)</code> and should not be relied upon.</p>
+<p>Do not expose raw table/column selection to untrusted callers merely because <code>${...}</code> validates identifier syntax; authorization still belongs to the application.</p>
+<h2>Inline templates</h2>
+<p>XML storage is optional. A dynamic SQL string can be compiled as an XML fragment:</p>
+<pre><code class="language-java">RenderedSql rendered = SqlXmlDomTemplate.compile(
+        &quot;SELECT * FROM ${tableName}&lt;if test=\&quot;stat IS NOT NULL\&quot;&gt; WHERE stat = #{stat}&lt;/if&gt;&quot;)
+        .render(params);
+PreparedSql prepared = ParameterBinder.prepare(rendered);
+</code></pre>
+<p>When an <code>Action</code> receives a <code>Map</code> as its first parameter, it applies the same inline-template path automatically for SQL containing dynamic nodes or named placeholders.</p>
 
             </article>
         </div>

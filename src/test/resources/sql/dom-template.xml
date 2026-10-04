@@ -6,13 +6,13 @@
             WHERE enabled = #{enabled}
             <if test="tier > 1">
                 AND tier = #{tier}
-            <else>
-                AND tier &lt;= 1
-            </else>
+                <else>
+                    AND tier &lt;= 1
+                </else>
             </if>
-        <else>
-            WHERE enabled = false
-        </else>
+            <else>
+                WHERE enabled = false
+            </else>
         </if>
     </sql>
 

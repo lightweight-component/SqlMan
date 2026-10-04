@@ -97,7 +97,8 @@
             </menu>
             <article class="aj-text">
                 <h1>Query Concepts</h1>
-<p>SqlMan keeps SQL visible. An <code>Action</code> contains the connection, SQL text, parameters, and database vendor. Calling <code>query(...)</code> creates a <code>Query</code>, which executes the statement and maps its result.</p>
+<p>SqlMan keeps SQL visible. An <code>Action</code> contains the connection, SQL text, parameters, and database vendor.
+Calling <code>query(...)</code> creates a <code>Query</code>, which executes the statement and maps its result.</p>
 <pre><code class="language-java">Query query = new Action(
         conn,
         &quot;SELECT id, name FROM shop_address WHERE stat = ?&quot;
@@ -129,9 +130,11 @@ List&lt;Address&gt; addresses =
                 .query()
                 .list(Address.class);
 </code></pre>
-<p>An empty multi-row query currently returns <code>null</code>; callers that require a collection can normalize it with <code>Collections.emptyList()</code>.</p>
+<p>An empty multi-row query currently returns <code>null</code>; callers that require a collection can normalize it
+with <code>Collections.emptyList()</code>.</p>
 <h2>Resource handling</h2>
-<p><code>Query</code> closes its <code>PreparedStatement</code> and <code>ResultSet</code>. The caller owns the <code>Connection</code> and must close or return it to the pool.</p>
+<p><code>Query</code> closes its <code>PreparedStatement</code> and <code>ResultSet</code>. The caller owns the <code>Connection</code> and must close or return it to
+the pool.</p>
 
             </article>
         </div>

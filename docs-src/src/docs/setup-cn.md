@@ -16,7 +16,8 @@ layout: layouts/docs-cn.njk
 
 SqlMan 支持 Java 8 及以上版本，数据库访问基于标准 JDBC。
 
-当前可以识别 MySQL、MariaDB、PostgreSQL、Oracle、SQL Server、SQLite、H2、HSQLDB、Derby 和 DB2。不同数据库的分页语法不同，请使用项目实际采用的数据库和驱动验证生成的 SQL。
+当前可以识别 MySQL、MariaDB、PostgreSQL、Oracle、SQL Server、SQLite、H2、HSQLDB、Derby 和 DB2。不同数据库的分页语法不同，请使用项目实际采用的数据库和驱动验证生成的
+SQL。
 
 ## 使用已有连接
 

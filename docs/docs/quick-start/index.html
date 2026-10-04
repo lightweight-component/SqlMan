@@ -106,7 +106,8 @@
 &lt;/dependency&gt;
 </code></pre>
 <h2>Run a query</h2>
-<p><code>Action</code> is the entry point for queries and data modifications. Supply a JDBC <code>Connection</code>, SQL text, and then the positional parameters:</p>
+<p><code>Action</code> is the entry point for queries and data modifications. Supply a JDBC <code>Connection</code>, SQL text, and then the
+positional parameters:</p>
 <pre><code class="language-java">try (Connection conn = dataSource.getConnection()) {
     String sql = &quot;SELECT id, name FROM shop_address WHERE stat = ?&quot;;
 
@@ -116,7 +117,8 @@
     System.out.println(rows);
 }
 </code></pre>
-<p>Parameters passed to <code>query(...)</code>, <code>create(...)</code>, or <code>update(...)</code> are bound to <code>?</code> placeholders through <code>PreparedStatement</code>.</p>
+<p>Parameters passed to <code>query(...)</code>, <code>create(...)</code>, or <code>update(...)</code> are bound to <code>?</code> placeholders
+through <code>PreparedStatement</code>.</p>
 <p>To use the constructors that do not take a <code>Connection</code>, register one for the current thread:</p>
 <pre><code class="language-java">JdbcConnection.setConnection(conn);
 try {

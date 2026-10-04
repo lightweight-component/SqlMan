@@ -1,10 +1,10 @@
 package com.ajaxjs.sqlman;
 
-import com.ajaxjs.sqlman.crud.Create;
-import com.ajaxjs.sqlman.crud.Query;
-import com.ajaxjs.sqlman.crud.Update;
 import com.ajaxjs.sqlman.model.DatabaseVendor;
+import com.ajaxjs.sqlman.model.PreparedSql;
 import com.ajaxjs.sqlman.model.UpdateResult;
+import com.ajaxjs.sqlman.sqltemplate.ParameterBinder;
+import com.ajaxjs.sqlman.sqltemplate.SqlXmlDomTemplate;
 import com.ajaxjs.util.ObjectHelper;
 import lombok.Data;
 
@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * The gateway for database actions.
@@ -135,6 +136,33 @@ public class Action {
     }
 
     /**
+     * Creates an action from prepared JDBC SQL using the connection bound to
+     * the current thread.
+     *
+     * @param preparedSql JDBC SQL and its ordered parameter values
+     * @throws NullPointerException if {@code preparedSql} is {@code null}
+     */
+    public Action(PreparedSql preparedSql) {
+        this(JdbcConnection.getConnection(), preparedSql);
+    }
+
+    /**
+     * Creates an action from prepared JDBC SQL and an explicit connection.
+     * <p>
+     * The SQL and values are used as supplied; no additional template parsing
+     * or parameter transformation is performed.
+     * </p>
+     *
+     * @param conn        the database connection
+     * @param preparedSql JDBC SQL and its ordered parameter values
+     * @throws NullPointerException if {@code preparedSql} is {@code null}
+     */
+    public Action(Connection conn, PreparedSql preparedSql) {
+        this(conn, Objects.requireNonNull(preparedSql, "preparedSql").getSql());
+        this.params = preparedSql.getParams();
+    }
+
+    /**
      * The sql to be executed
      */
     String sql;
@@ -155,9 +183,16 @@ public class Action {
         this.params = null;
 
         if (!ObjectHelper.isEmpty(params)) {
-            if (params[0] instanceof Map && SmallMyBatis.hasTemplate(sql)) {
-                SmallMyBatis.PreparedSql preparedSql = SmallMyBatis.prepareSql(sql, (Map<String, Object>) params[0],
-                        Arrays.copyOfRange(params, 1, params.length));
+            if (params[0] instanceof Map && (SqlXmlDomTemplate.hasDynamicElement(sql) || ParameterBinder.hasPlaceholder(sql))) {
+                Map<String, Object> namedParams = (Map<String, Object>) params[0];
+                Object[] positionalParams = Arrays.copyOfRange(params, 1, params.length);
+                PreparedSql preparedSql;
+
+                if (SqlXmlDomTemplate.hasDynamicElement(sql))
+                    preparedSql = ParameterBinder.prepare(SqlXmlDomTemplate.compile(sql).render(namedParams), positionalParams);
+                else
+                    preparedSql = ParameterBinder.prepare(sql, namedParams, positionalParams);
+
                 sql = preparedSql.getSql();
                 params = preparedSql.getParams();
             }

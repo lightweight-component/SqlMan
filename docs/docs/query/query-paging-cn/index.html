@@ -117,7 +117,8 @@
                 .query()
                 .pageByPageNo(1, 20, Address.class);
 </code></pre>
-<p><code>PageResult</code> 包含 <code>list</code>、<code>totalCount</code>、<code>totalPage</code>、<code>currentPage</code>、<code>start</code>、<code>pageSize</code> 和 <code>zero</code>。请求超过最后一页时，<code>list</code> 是空列表。</p>
+<p><code>PageResult</code> 包含 <code>list</code>、<code>totalCount</code>、<code>totalPage</code>、<code>currentPage</code>、<code>start</code>、<code>pageSize</code> 和 <code>zero</code>。请求超过最后一页时，<code>list</code>
+是空列表。</p>
 <h2>绑定查询参数</h2>
 <p>先在创建 <code>Query</code> 时传入参数，再调用分页方法：</p>
 <pre><code class="language-java">PageResult&lt;Map&lt;String, Object&gt;&gt; page =

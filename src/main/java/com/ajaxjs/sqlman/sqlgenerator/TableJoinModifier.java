@@ -90,6 +90,7 @@ public class TableJoinModifier {
             // FROM 子句是子查询或其他复杂结构，别名处理会更复杂。
             // 这里简化处理：假设它有别名。
             Alias alias = fromItem.getAlias();
+
             if (alias != null) {
                 mainTableAlias = alias.getName();
             } else
@@ -164,6 +165,7 @@ public class TableJoinModifier {
 
         // 收集 FROM 子句的别名
         FromItem fromItem = plainSelect.getFromItem();
+
         if (fromItem != null && fromItem.getAlias() != null)
             aliases.add(fromItem.getAlias().getName().toLowerCase()); // 统一转小写
 
