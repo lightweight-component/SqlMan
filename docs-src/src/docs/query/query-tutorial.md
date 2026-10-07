@@ -30,6 +30,27 @@ The values are bound by `PreparedStatement`; do not quote the `?` placeholders.
 If the first argument is a `Map`, `Action` renders an inline SQL template when the SQL contains a dynamic node or a
 named placeholder, then binds any remaining positional parameters:
 
+### Named data parameters: `#{}`
+
+Use `#{name}` for ordinary values in the Map. It generates a JDBC `?` placeholder, and values are bound in SQL
+occurrence order. It is therefore safe for fields originating from a query string, form, or JSON request body:
+
+```java
+Map<String, Object> params = new HashMap<>();
+params.put("id", 1);
+params.put("name", "Alice");
+
+Map<String, Object> row =
+        new Action(conn, "SELECT * FROM shop_address WHERE id = #{id} AND name = #{name}")
+                .query(params)
+                .one();
+```
+
+The JDBC SQL for the example is equivalent to `SELECT * FROM shop_address WHERE id = ? AND name = ?`. Use `#{}` for
+values in `SELECT`, `INSERT`, `UPDATE`, and `DELETE`; do not add quotes around the placeholder yourself.
+
+### Identifier parameters: `${}`
+
 ```java
 Map<String, Object> template = new HashMap<>();
 template.put("tableName", "shop_address");
@@ -40,9 +61,11 @@ Map<String, Object> row =
                 .one();
 ```
 
-`#{...}` becomes a JDBC `?` and its value is added to the ordered bindings. `${...}` is restricted to SQL identifiers,
-including qualified names such as `schema.table`; arbitrary SQL fragments are rejected. Prefer `#{...}` or `?` for all
-data values.
+`${...}` is restricted to SQL identifiers, including qualified names such as `schema.table`; arbitrary SQL fragments
+are rejected. It is not for ordinary request values: `WHERE id = ${id}` rejects an `id=1` value, so write
+`WHERE id = #{id}` instead. Table names, column names, sort fields, and sort direction are SQL structure and cannot be
+JDBC-bound; even when an identifier passes syntax validation, the application must constrain it through server-side
+configuration, an allowlist, and authorization.
 
 ## Map column names
 

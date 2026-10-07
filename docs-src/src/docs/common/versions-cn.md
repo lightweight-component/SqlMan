@@ -10,27 +10,34 @@ tags:
 layout: layouts/docs-cn.njk
 ---
 
-    <h1>版本发布说明</h1>
-    <h3>v2.0 <span class="release-date">当前版本</span></h3>
+<h1>版本发布说明</h1>
+<h3>v2.3 <span class="release-date">当前版本</span></h3>
 
-    <ul>
-        <li>以 <code>Action</code> 作为查询和数据写入的统一入口。</li>
-        <li>增加参数化 Map/JavaBean 批量插入，并完善事务状态恢复。</li>
-        <li>改进数据库类型识别、自增主键转换、SQL 日志和分页边界处理。</li>
-    </ul>
-    <h3>v1.1.8 <span class="release-date">2024-01-11</span></h3>
+<ul>
+    <li>重构 SQL XML 部分</li>
+    <li>舍弃 Spring EL 表达式引擎，换作 JsqlParser 表达式</li>
+    <li>借助 AI 重新梳理了代码</li>
+</ul>
+<h3>v2.0</h3>
 
-    <ul>
-        <li>拆分了各个模块；修正了若干的 bug</li>
-    </ul>
-    <h3>v1.1.7 <span class="release-date">2023-12-11</span></h3>
+<ul>
+    <li>以 <code>Action</code> 作为查询和数据写入的统一入口。</li>
+    <li>增加参数化 Map/JavaBean 批量插入，并完善事务状态恢复。</li>
+    <li>改进数据库类型识别、自增主键转换、SQL 日志和分页边界处理。</li>
+</ul>
+<h3>v1.1.8 <span class="release-date">2024-01-11</span></h3>
 
-    <ul>
-        <li>大幅度重构后的版本</li>
-        <li>修正大量 bug，引入诸多新功能</li>
-    </ul>
-    <h3>v1.0 <span class="release-date">2019-06-24</span></h3>
+<ul>
+    <li>拆分了各个模块；修正了若干的 bug</li>
+</ul>
+<h3>v1.1.7 <span class="release-date">2023-12-11</span></h3>
 
-    <ul>
-        <li>首次版本发布</li>
-    </ul>
+<ul>
+    <li>大幅度重构后的版本</li>
+    <li>修正大量 bug，引入诸多新功能</li>
+</ul>
+<h3>v1.0 <span class="release-date">2019-06-24</span></h3>
+
+<ul>
+    <li>首次版本发布</li>
+</ul>

@@ -29,6 +29,25 @@ Map<String, Object> row =
 
 如果第一个参数是 `Map`，且 SQL 中包含动态节点或命名占位符，`Action` 会先渲染内联 SQL 模板，再绑定剩余的位置参数：
 
+### 命名数据参数 `#{}`
+
+`#{name}` 用于 Map 中的普通数据值。它会生成 JDBC `?` 占位符，参数值按其在 SQL 中的出现顺序绑定；因此可安全用于查询字符串、表单或 JSON 请求体中的字段：
+
+```java
+Map<String, Object> params = new HashMap<>();
+params.put("id", 1);
+params.put("name", "Alice");
+
+Map<String, Object> row =
+        new Action(conn, "SELECT * FROM shop_address WHERE id = #{id} AND name = #{name}")
+                .query(params)
+                .one();
+```
+
+上例执行的 JDBC SQL 等价于 `SELECT * FROM shop_address WHERE id = ? AND name = ?`。`#{}` 可用于 `SELECT`、`INSERT`、`UPDATE` 和 `DELETE` 中的值；不要给占位符手动加引号。
+
+### 标识符参数 `${}`
+
 ```java
 Map<String, Object> template = new HashMap<>();
 template.put("tableName", "shop_address");
@@ -39,8 +58,7 @@ Map<String, Object> row =
                 .one();
 ```
 
-`#{...}` 会转换为 JDBC `?`，其值按出现顺序加入绑定参数。`${...}` 仅允许 SQL 标识符，包括
-`schema.table` 这样的限定名称；任意 SQL 片段会被拒绝。数据值应优先使用 `#{...}` 或 `?`。
+`${...}` 仅允许 SQL 标识符，包括 `schema.table` 这样的限定名称；任意 SQL 片段会被拒绝。它不能用于普通请求值，例如 `WHERE id = ${id}` 中的 `id=1` 会被拒绝，应写为 `WHERE id = #{id}`。表名、列名、排序字段和排序方向属于 SQL 结构，不能使用 JDBC 参数绑定；即使标识符语法通过校验，也必须由服务端固定或通过白名单和授权控制。
 
 ## Map 的列名
 
