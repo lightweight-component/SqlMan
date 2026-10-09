@@ -8,18 +8,13 @@
         <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, SqlMan,query tutorial,prepared statement"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css" />
-        <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
+        <link rel="stylesheet" href="https://aj-util.ajaxjs.com/asset/main.css" />
         <link rel="icon" type="image/png" href="/asset/favicon.png"/>
-        <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.12.0/highlight.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.12.0/styles/github.min.css" />
+        <script defer src="https://aj-util.ajaxjs.com/asset/js/common.js"></script>
+        <script defer src="/asset/js/docs-controls.js"></script>
         <script>
-            // 获取用户的默认语言
-            var userLang = navigator.language || navigator.userLanguage;
-
-            // 检查是否为中文环境（包括简体和繁体）
-            if (userLang.startsWith('zh') && location.pathname.indexOf('cn') == -1) {
-                 confirm('欢迎！您可以改为访问中文内容。是否继续？') && location.assign('/docs/cn');  // 如果是中文，则弹出提示
-            }
-
             var _hmt = _hmt || [];
             (function() {
               var hm = document.createElement("script");
@@ -38,7 +33,11 @@
                                                         ⚙️ Source:
                     <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
                     
-                    | <a  href="/docs/cn">Chinese Version</a>
+                    |
+                    <button type="button" class="language-toggle" data-document-language-toggle data-document-language="en"
+                            aria-label="Switch to Chinese" title="Switch to Chinese">中</button>
+                    <button type="button" class="theme-toggle" data-theme-toggle
+                            aria-label="Toggle color theme" title="Toggle color theme"></button>
                 </div>
                 <h1>
                     <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
@@ -108,6 +107,21 @@
 <h2>SQL template parameters</h2>
 <p>If the first argument is a <code>Map</code>, <code>Action</code> renders an inline SQL template when the SQL contains a dynamic node or a
 named placeholder, then binds any remaining positional parameters:</p>
+<h3>Named data parameters: <code>#{}</code></h3>
+<p>Use <code>#{name}</code> for ordinary values in the Map. It generates a JDBC <code>?</code> placeholder, and values are bound in SQL
+occurrence order. It is therefore safe for fields originating from a query string, form, or JSON request body:</p>
+<pre><code class="language-java">Map&lt;String, Object&gt; params = new HashMap&lt;&gt;();
+params.put(&quot;id&quot;, 1);
+params.put(&quot;name&quot;, &quot;Alice&quot;);
+
+Map&lt;String, Object&gt; row =
+        new Action(conn, &quot;SELECT * FROM shop_address WHERE id = #{id} AND name = #{name}&quot;)
+                .query(params)
+                .one();
+</code></pre>
+<p>The JDBC SQL for the example is equivalent to <code>SELECT * FROM shop_address WHERE id = ? AND name = ?</code>. Use <code>#{}</code> for
+values in <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code>; do not add quotes around the placeholder yourself.</p>
+<h3>Identifier parameters: <code>${}</code></h3>
 <pre><code class="language-java">Map&lt;String, Object&gt; template = new HashMap&lt;&gt;();
 template.put(&quot;tableName&quot;, &quot;shop_address&quot;);
 
@@ -116,9 +130,11 @@ Map&lt;String, Object&gt; row =
                 .query(template, 1)
                 .one();
 </code></pre>
-<p><code>#{...}</code> becomes a JDBC <code>?</code> and its value is added to the ordered bindings. <code>${...}</code> is restricted to SQL identifiers,
-including qualified names such as <code>schema.table</code>; arbitrary SQL fragments are rejected. Prefer <code>#{...}</code> or <code>?</code> for all
-data values.</p>
+<p><code>${...}</code> is restricted to SQL identifiers, including qualified names such as <code>schema.table</code>; arbitrary SQL fragments
+are rejected. It is not for ordinary request values: <code>WHERE id = ${id}</code> rejects an <code>id=1</code> value, so write
+<code>WHERE id = #{id}</code> instead. Table names, column names, sort fields, and sort direction are SQL structure and cannot be
+JDBC-bound; even when an identifier passes syntax validation, the application must constrain it through server-side
+configuration, an allowlist, and authorization.</p>
 <h2>Map column names</h2>
 <p>Map results use JDBC column labels. Give expressions an alias when you need a stable key:</p>
 <pre><code class="language-java">Map&lt;String, Object&gt; totals =

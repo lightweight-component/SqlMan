@@ -6,13 +6,14 @@
         <title>SqlMan/{{ title }}</title>
         <meta name="description" content="{{description}}"/>
         <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, {{tags}}"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/> 
-        <meta
-        name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css" />
-        <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
+        <link rel="stylesheet" href="https://aj-util.ajaxjs.com/asset/main.css" />
         <link rel="icon" type="image/png" href="/asset/favicon.png"/>
-        <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.12.0/highlight.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.12.0/styles/github.min.css" />
+        <script defer src="https://aj-util.ajaxjs.com/asset/js/common.js"></script>
+        <script defer src="/asset/js/docs-controls.js"></script>
          <script>
              var _hmt = _hmt || [];
              (function() {
@@ -34,7 +35,10 @@
                     {# |
                                         <a href="/docs/common/contact">✉️ Contact</a> #}
                     |
-                    <a href="/docs">English Version</a>
+                    <button type="button" class="language-toggle" data-document-language-toggle data-document-language="zh"
+                            aria-label="切换至英文" title="切换至英文">EN</button>
+                    <button type="button" class="theme-toggle" data-theme-toggle
+                            aria-label="切换颜色主题" title="切换颜色主题"></button>
                 </div>
                 <h1>
                     <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan

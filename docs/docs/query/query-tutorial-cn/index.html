@@ -6,13 +6,14 @@
         <title>SqlMan/查询教程</title>
         <meta name="description" content="使用位置参数、命名 SQL 模板、Map 和 JavaBean 查询数据库。"/>
         <meta name="keywords" content="SqlMan, document, java sql, java jdbc, java orm, jdbc tools, jdbc helper, SqlMan,查询教程,预编译参数"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/> 
-        <meta
-        name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <link rel="stylesheet" href="https://framework.ajaxjs.com/static/new-ui/css/common.css" />
-        <link rel="stylesheet" href="https://iam.ajaxjs.com/asset/main.css"/>
+        <link rel="stylesheet" href="https://aj-util.ajaxjs.com/asset/main.css" />
         <link rel="icon" type="image/png" href="/asset/favicon.png"/>
-        <script src="https://framework.ajaxjs.com/static/aj-docs/common.js"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.12.0/highlight.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.12.0/styles/github.min.css" />
+        <script defer src="https://aj-util.ajaxjs.com/asset/js/common.js"></script>
+        <script defer src="/asset/js/docs-controls.js"></script>
          <script>
              var _hmt = _hmt || [];
              (function() {
@@ -33,7 +34,10 @@
                     <a target="_blank" href="https://github.com/lightweight-component/SqlMan">Github</a>/<a target="_blank" href="https://gitcode.com/lightweight-component/SqlMan">Gitcode</a>
                     
                     |
-                    <a href="/docs">English Version</a>
+                    <button type="button" class="language-toggle" data-document-language-toggle data-document-language="zh"
+                            aria-label="切换至英文" title="切换至英文">EN</button>
+                    <button type="button" class="theme-toggle" data-theme-toggle
+                            aria-label="切换颜色主题" title="切换颜色主题"></button>
                 </div>
                 <h1>
                     <img src="/asset/favicon-2x.png" style="vertical-align: middle;height: 45px;margin-bottom: 6px;"/> SqlMan
@@ -106,6 +110,19 @@
 <p>这些值由 <code>PreparedStatement</code> 绑定，不要给 <code>?</code> 添加引号。</p>
 <h2>SQL 模板参数</h2>
 <p>如果第一个参数是 <code>Map</code>，且 SQL 中包含动态节点或命名占位符，<code>Action</code> 会先渲染内联 SQL 模板，再绑定剩余的位置参数：</p>
+<h3>命名数据参数 <code>#{}</code></h3>
+<p><code>#{name}</code> 用于 Map 中的普通数据值。它会生成 JDBC <code>?</code> 占位符，参数值按其在 SQL 中的出现顺序绑定；因此可安全用于查询字符串、表单或 JSON 请求体中的字段：</p>
+<pre><code class="language-java">Map&lt;String, Object&gt; params = new HashMap&lt;&gt;();
+params.put(&quot;id&quot;, 1);
+params.put(&quot;name&quot;, &quot;Alice&quot;);
+
+Map&lt;String, Object&gt; row =
+        new Action(conn, &quot;SELECT * FROM shop_address WHERE id = #{id} AND name = #{name}&quot;)
+                .query(params)
+                .one();
+</code></pre>
+<p>上例执行的 JDBC SQL 等价于 <code>SELECT * FROM shop_address WHERE id = ? AND name = ?</code>。<code>#{}</code> 可用于 <code>SELECT</code>、<code>INSERT</code>、<code>UPDATE</code> 和 <code>DELETE</code> 中的值；不要给占位符手动加引号。</p>
+<h3>标识符参数 <code>${}</code></h3>
 <pre><code class="language-java">Map&lt;String, Object&gt; template = new HashMap&lt;&gt;();
 template.put(&quot;tableName&quot;, &quot;shop_address&quot;);
 
@@ -114,8 +131,7 @@ Map&lt;String, Object&gt; row =
                 .query(template, 1)
                 .one();
 </code></pre>
-<p><code>#{...}</code> 会转换为 JDBC <code>?</code>，其值按出现顺序加入绑定参数。<code>${...}</code> 仅允许 SQL 标识符，包括
-<code>schema.table</code> 这样的限定名称；任意 SQL 片段会被拒绝。数据值应优先使用 <code>#{...}</code> 或 <code>?</code>。</p>
+<p><code>${...}</code> 仅允许 SQL 标识符，包括 <code>schema.table</code> 这样的限定名称；任意 SQL 片段会被拒绝。它不能用于普通请求值，例如 <code>WHERE id = ${id}</code> 中的 <code>id=1</code> 会被拒绝，应写为 <code>WHERE id = #{id}</code>。表名、列名、排序字段和排序方向属于 SQL 结构，不能使用 JDBC 参数绑定；即使标识符语法通过校验，也必须由服务端固定或通过白名单和授权控制。</p>
 <h2>Map 的列名</h2>
 <p>Map 使用 JDBC 返回的列标签。表达式应设置别名，以获得稳定的键名：</p>
 <pre><code class="language-java">Map&lt;String, Object&gt; totals =
