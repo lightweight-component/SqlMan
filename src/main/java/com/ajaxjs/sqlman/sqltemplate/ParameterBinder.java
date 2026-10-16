@@ -36,7 +36,8 @@ public final class ParameterBinder {
 
     /**
      * Binds {@code #{...}} values and substitutes validated {@code ${...}}
-     * identifiers in already-rendered SQL.
+     * identifiers in already-rendered SQL. Placeholders inside string literals,
+     * quoted identifiers and SQL comments are preserved verbatim.
      *
      * @param sqlTemplate      rendered SQL containing named and/or JDBC placeholders
      * @param params           values used by named placeholders; {@code null} means no named values
@@ -48,31 +49,7 @@ public final class ParameterBinder {
             throw new IllegalArgumentException("SQL template must not be null");
 
         Map<String, Object> safeParams = params == null ? Collections.emptyMap() : params;
-        Matcher matcher = PLACEHOLDER.matcher(sqlTemplate);
-        StringBuffer markedSql = new StringBuffer();
-        List<Object> namedValues = new ArrayList<>();
-
-        while (matcher.find()) {
-            String name = matcher.group(2);
-
-            if ("#{".equals(matcher.group(1))) {
-                String marker = "\u0001" + namedValues.size() + "\u0002";
-                namedValues.add(safeParams.get(name));
-                matcher.appendReplacement(markedSql, Matcher.quoteReplacement(marker));
-            } else {
-                Object value = safeParams.get(name);
-                String identifier = value == null ? null : value.toString();
-
-                if (identifier == null || !IDENTIFIER.matcher(identifier).matches())
-                    throw new IllegalArgumentException("Template identifier " + name + " is not allowlisted: " + identifier);
-
-                matcher.appendReplacement(markedSql, Matcher.quoteReplacement(identifier));
-            }
-        }
-
-        matcher.appendTail(markedSql);
-
-        return bindMarkers(markedSql.toString(), namedValues, positionalParams == null ? new Object[0] : positionalParams);
+        return bindParameters(sqlTemplate, safeParams, positionalParams == null ? new Object[0] : positionalParams);
     }
 
     /**
@@ -85,15 +62,16 @@ public final class ParameterBinder {
         return sql != null && PLACEHOLDER.matcher(sql).find();
     }
 
-    private static PreparedSql bindMarkers(String markedSql, List<Object> namedValues, Object[] positionalParams) {
-        StringBuilder sql = new StringBuilder(markedSql.length());
+    private static PreparedSql bindParameters(String template, Map<String, Object> params, Object[] positionalParams) {
+        StringBuilder sql = new StringBuilder(template.length());
         List<Object> bindings = new ArrayList<>();
         boolean singleQuote = false, doubleQuote = false, backtick = false, lineComment = false, blockComment = false;
         int positionalIndex = 0;
+        Matcher placeholder = PLACEHOLDER.matcher(template);
 
-        for (int i = 0; i < markedSql.length(); i++) {
-            char current = markedSql.charAt(i);
-            char next = i + 1 < markedSql.length() ? markedSql.charAt(i + 1) : '\0';
+        for (int i = 0; i < template.length(); i++) {
+            char current = template.charAt(i);
+            char next = i + 1 < template.length() ? template.charAt(i + 1) : '\0';
 
             if (lineComment) {
                 sql.append(current);
@@ -155,16 +133,24 @@ public final class ParameterBinder {
                 continue;
             }
 
-            if (current == '\u0001') {
-                int end = markedSql.indexOf('\u0002', i + 1);
+            // Recognize placeholders only in executable SQL, before '#' can start a comment.
+            if ((current == '#' || current == '$') && next == '{' && placeholder.region(i, template.length()).lookingAt()) {
+                String name = placeholder.group(2);
 
-                if (end < 0)
-                    throw new IllegalArgumentException("Invalid named SQL parameter marker");
+                if (current == '#') {
+                    sql.append('?');
+                    bindings.add(params.get(name));
+                } else {
+                    Object value = params.get(name);
+                    String identifier = value == null ? null : value.toString();
 
-                int index = Integer.parseInt(markedSql.substring(i + 1, end));
-                sql.append('?');
-                bindings.add(namedValues.get(index));
-                i = end;
+                    if (identifier == null || !IDENTIFIER.matcher(identifier).matches())
+                        throw new IllegalArgumentException("Template identifier " + name + " is not allowlisted: " + identifier);
+
+                    sql.append(identifier);
+                }
+
+                i = placeholder.end() - 1;
             } else if ((current == '-' && next == '-') || current == '#') {
                 sql.append(current);
 
