@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -18,12 +19,19 @@ import java.util.regex.Pattern;
 @Slf4j
 public class Utils {
     /**
-     * 将以下划线分隔的数据库字段转换为驼峰风格的字符串
+     * 将以下划线分隔的数据库字段转换为驼峰风格的字符串。
+     * 全大写下划线名称会先转换为小写；不包含下划线的名称保持不变。
      *
      * @param columnName 下划线分隔的字符串
      * @return 驼峰风格的字符串
      */
     public static String changeColumnToFieldName(String columnName) {
+        if (!columnName.contains("_"))
+            return columnName;
+
+        if (columnName.equals(columnName.toUpperCase(Locale.ROOT)))
+            columnName = columnName.toLowerCase(Locale.ROOT);
+
         StringBuilder result = new StringBuilder();
         String[] words = columnName.split("_");
 
