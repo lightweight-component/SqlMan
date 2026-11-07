@@ -124,3 +124,5 @@ The default ID field is `id`. This performs a physical delete.
 
 Enums are stored with `toString()`. `List` and `Map` property values are serialized as JSON. `NullValue` constants can
 explicitly write SQL `NULL`; ordinary null bean properties are skipped.
+
+For LocalDateTime properties, assign NullValue.NULL_LOCAL_DATE_TIME to write SQL NULL through Bean/Map CRUD. Its reserved value is LocalDateTime.MIN, compared by value. Ordinary Java null properties are skipped. Raw SQL parameters require actual null.

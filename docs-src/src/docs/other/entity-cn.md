@@ -122,3 +122,5 @@ UpdateResult result =
 
 枚举通过 `toString()` 保存；`List` 和 `Map` 属性会序列化为 JSON。可以使用 `NullValue` 常量显式写入 SQL `NULL`；普通的 null
 Bean 属性会被忽略。
+
+LocalDateTime 属性可以赋值 NullValue.NULL_LOCAL_DATE_TIME，通过 Bean/Map CRUD 显式写入 SQL NULL。约定值为 LocalDateTime.MIN，采用值相等判断。普通 Java null 属性仍会被跳过，原始 SQL 参数应直接传入 null。

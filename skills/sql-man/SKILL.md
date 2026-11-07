@@ -65,6 +65,12 @@ Keep transaction behavior explicit:
 
 Close statements and result sets with try-with-resources. Close a connection only when the current API clearly owns it.
 
+## Explicit SQL NULL
+
+Before changing entity null handling, read the Explicit SQL NULL section in
+[references/api.md](references/api.md). Bean writes skip Java null properties. NullValue markers
+are supported during entity generation, subject to property-type restrictions.
+
 ## Test proportionally
 
 Add focused regression tests for the failure mode, including negative and boundary cases. Prefer H2-backed tests for

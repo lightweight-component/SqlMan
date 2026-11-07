@@ -223,7 +223,8 @@ public abstract class BaseWriteSql {
     static Object toSqlValue(Object value) {
         if (value instanceof Enum) // 枚举类型，取其字符串保存
             return value.toString();
-        else if (NullValue.NULL_DATE.equals(value) || NullValue.NULL_INT.equals(value)
+        else if (NullValue.NULL_DATE.equals(value) || NullValue.NULL_LOCAL_DATE_TIME.equals(value)
+                || NullValue.NULL_INT.equals(value)
                 || NullValue.NULL_LONG.equals(value) || NullValue.NULL_STRING.equals(value)) // 如何设数据库 null 值
             return null;
         else if (value instanceof List || value instanceof Map)

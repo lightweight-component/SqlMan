@@ -34,3 +34,5 @@ Runs on Java8+. Maven:
     <version>2.3</version>
 </dependency>
 ```
+
+Entity writes support NullValue.NULL_LOCAL_DATE_TIME to explicitly write SQL NULL for a LocalDateTime property. The reserved marker is LocalDateTime.MIN. Ordinary null Bean properties are omitted. Raw SQL parameters should use actual null.

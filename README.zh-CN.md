@@ -46,3 +46,5 @@ SqlMan 2.3 是一个轻量级的 JDBC 封装工具。它**不是** ORM 框架，
     <version>2.3</version>
 </dependency>
 ```
+
+实体写入支持用 NullValue.NULL_LOCAL_DATE_TIME 将 LocalDateTime 属性显式写为 SQL NULL，约定值为 LocalDateTime.MIN。普通 null 属性仍会被省略，原始 SQL 参数应直接传入 null。
