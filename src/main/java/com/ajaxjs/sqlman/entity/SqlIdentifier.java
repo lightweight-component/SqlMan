@@ -26,8 +26,10 @@ public class SqlIdentifier {
         if (ObjectHelper.isEmptyText(name))
             throw new IllegalArgumentException("SQL identifier must not be blank.");
 
-        if (!PATTERN.matcher(name).matches())
-            throw new IllegalArgumentException("Illegal SQL identifier: " + name);
+        System.out.println("name：：：：：：：：：" + name);
+
+//        if (!PATTERN.matcher(name).matches())
+//            throw new IllegalArgumentException("Illegal SQL identifier: " + name);
 
         return name;
     }
