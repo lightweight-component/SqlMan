@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -14,6 +14,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.12.0/styles/github.min.css" />
         <script defer src="https://aj-util.ajaxjs.com/asset/js/common.js"></script>
         <script defer src="/asset/js/docs-controls.js"></script>
+        <link rel="stylesheet" href="https://aj-util.ajaxjs.com/asset/static-search.css">
+        <link rel="stylesheet" href="/asset/search.css">
+        <script defer src="https://aj-util.ajaxjs.com/asset/js/static-search.js"></script>
+        <script defer src="/asset/search.js"></script>
         <script>
             var _hmt = _hmt || [];
             (function() {
@@ -48,6 +52,7 @@
         </nav>
         <div class="docs-layout">
             <menu class="docs-navigation" aria-label="Documentation navigation">
+                <div data-sqlman-search data-language="en"><noscript>Enable JavaScript to search documentation.</noscript></div>
                 
                 <ul>
                     <li class="selected">
@@ -95,8 +100,8 @@
                 </ul>
             </menu>
             <article class="aj-text">
-                <h1>Query Tutorial</h1>
-<h2>Bind positional parameters</h2>
+                <h1 id="search-query-tutorial">Query Tutorial</h1>
+<h2 id="search-bind-positional-parameters">Bind positional parameters</h2>
 <p>Use <code>?</code> for data values and pass parameters in the same order:</p>
 <pre><code class="language-java">Map&lt;String, Object&gt; row =
         new Action(conn, &quot;SELECT * FROM shop_address WHERE id = ? AND stat = ?&quot;)
@@ -104,10 +109,10 @@
                 .one();
 </code></pre>
 <p>The values are bound by <code>PreparedStatement</code>; do not quote the <code>?</code> placeholders.</p>
-<h2>SQL template parameters</h2>
+<h2 id="search-sql-template-parameters">SQL template parameters</h2>
 <p>If the first argument is a <code>Map</code>, <code>Action</code> renders an inline SQL template when the SQL contains a dynamic node or a
 named placeholder, then binds any remaining positional parameters:</p>
-<h3>Named data parameters: <code>#{}</code></h3>
+<h3 id="search-named-data-parameters">Named data parameters: <code>#{}</code></h3>
 <p>Use <code>#{name}</code> for ordinary values in the Map. It generates a JDBC <code>?</code> placeholder, and values are bound in SQL
 occurrence order. It is therefore safe for fields originating from a query string, form, or JSON request body:</p>
 <pre><code class="language-java">Map&lt;String, Object&gt; params = new HashMap&lt;&gt;();
@@ -121,7 +126,7 @@ Map&lt;String, Object&gt; row =
 </code></pre>
 <p>The JDBC SQL for the example is equivalent to <code>SELECT * FROM shop_address WHERE id = ? AND name = ?</code>. Use <code>#{}</code> for
 values in <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code>; do not add quotes around the placeholder yourself.</p>
-<h3>Identifier parameters: <code>${}</code></h3>
+<h3 id="search-identifier-parameters">Identifier parameters: <code>${}</code></h3>
 <pre><code class="language-java">Map&lt;String, Object&gt; template = new HashMap&lt;&gt;();
 template.put(&quot;tableName&quot;, &quot;shop_address&quot;);
 
@@ -135,7 +140,7 @@ are rejected. It is not for ordinary request values: <code>WHERE id = ${id}</cod
 <code>WHERE id = #{id}</code> instead. Table names, column names, sort fields, and sort direction are SQL structure and cannot be
 JDBC-bound; even when an identifier passes syntax validation, the application must constrain it through server-side
 configuration, an allowlist, and authorization.</p>
-<h2>Map column names</h2>
+<h2 id="search-map-column-names">Map column names</h2>
 <p>Map results use JDBC column labels. Give expressions an alias when you need a stable key:</p>
 <pre><code class="language-java">Map&lt;String, Object&gt; totals =
         new Action(conn, &quot;SELECT COUNT(*) AS total FROM shop_address&quot;)
@@ -144,7 +149,7 @@ configuration, an allowlist, and authorization.</p>
 
 Object total = totals.get(&quot;total&quot;);
 </code></pre>
-<h2>Map to a JavaBean</h2>
+<h2 id="search-map-to-a-javabean">Map to a JavaBean</h2>
 <p>The target class needs a no-argument constructor and writable properties:</p>
 <pre><code class="language-java">Address address =
         new Action(conn, &quot;SELECT id, name, create_date FROM shop_address WHERE id = ?&quot;)

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -14,6 +14,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.12.0/styles/github.min.css" />
         <script defer src="https://aj-util.ajaxjs.com/asset/js/common.js"></script>
         <script defer src="/asset/js/docs-controls.js"></script>
+        <link rel="stylesheet" href="https://aj-util.ajaxjs.com/asset/static-search.css">
+        <link rel="stylesheet" href="/asset/search.css">
+        <script defer src="https://aj-util.ajaxjs.com/asset/js/static-search.js"></script>
+        <script defer src="/asset/search.js"></script>
         <script>
             var _hmt = _hmt || [];
             (function() {
@@ -48,6 +52,7 @@
         </nav>
         <div class="docs-layout">
             <menu class="docs-navigation" aria-label="Documentation navigation">
+                <div data-sqlman-search data-language="en"><noscript>Enable JavaScript to search documentation.</noscript></div>
                 
                 <ul>
                     <li class="selected">
@@ -95,8 +100,8 @@
                 </ul>
             </menu>
             <article class="aj-text">
-                <h1>Quick Start</h1>
-<h2>Install SqlMan</h2>
+                <h1 id="search-quick-start">Quick Start</h1>
+<h2 id="search-install-sqlman">Install SqlMan</h2>
 <p>SqlMan requires Java 8 or later. Add the library and the JDBC driver for your database:</p>
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;com.ajaxjs&lt;/groupId&gt;
@@ -104,7 +109,7 @@
     &lt;version&gt;2.1&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre>
-<h2>Run a query</h2>
+<h2 id="search-run-a-query">Run a query</h2>
 <p><code>Action</code> is the entry point for queries and data modifications. Supply a JDBC <code>Connection</code>, SQL text, and then the
 positional parameters:</p>
 <pre><code class="language-java">try (Connection conn = dataSource.getConnection()) {

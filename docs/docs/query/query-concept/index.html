@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -14,6 +14,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.12.0/styles/github.min.css" />
         <script defer src="https://aj-util.ajaxjs.com/asset/js/common.js"></script>
         <script defer src="/asset/js/docs-controls.js"></script>
+        <link rel="stylesheet" href="https://aj-util.ajaxjs.com/asset/static-search.css">
+        <link rel="stylesheet" href="/asset/search.css">
+        <script defer src="https://aj-util.ajaxjs.com/asset/js/static-search.js"></script>
+        <script defer src="/asset/search.js"></script>
         <script>
             var _hmt = _hmt || [];
             (function() {
@@ -48,6 +52,7 @@
         </nav>
         <div class="docs-layout">
             <menu class="docs-navigation" aria-label="Documentation navigation">
+                <div data-sqlman-search data-language="en"><noscript>Enable JavaScript to search documentation.</noscript></div>
                 
                 <ul>
                     <li class="selected">
@@ -95,7 +100,7 @@
                 </ul>
             </menu>
             <article class="aj-text">
-                <h1>Query Concepts</h1>
+                <h1 id="search-query-concepts">Query Concepts</h1>
 <p>SqlMan keeps SQL visible. An <code>Action</code> contains the connection, SQL text, parameters, and database vendor.
 Calling <code>query(...)</code> creates a <code>Query</code>, which executes the statement and maps its result.</p>
 <pre><code class="language-java">Query query = new Action(
@@ -103,7 +108,7 @@ Calling <code>query(...)</code> creates a <code>Query</code>, which executes the
         &quot;SELECT id, name FROM shop_address WHERE stat = ?&quot;
 ).query(1);
 </code></pre>
-<h2>One row</h2>
+<h2 id="search-one-row">One row</h2>
 <p>Return the first row as a <code>Map</code>:</p>
 <pre><code class="language-java">Map&lt;String, Object&gt; row = query.one();
 </code></pre>
@@ -111,14 +116,14 @@ Calling <code>query(...)</code> creates a <code>Query</code>, which executes the
 <pre><code class="language-java">Address address = query.one(Address.class);
 </code></pre>
 <p>If the query has no row, both methods return <code>null</code>.</p>
-<h2>One value</h2>
+<h2 id="search-one-value">One value</h2>
 <p>For a single-column result, use <code>oneValue(...)</code>:</p>
 <pre><code class="language-java">Integer total = new Action(
         conn,
         &quot;SELECT COUNT(*) FROM shop_address WHERE stat = ?&quot;
 ).query(1).oneValue(Integer.class);
 </code></pre>
-<h2>Multiple rows</h2>
+<h2 id="search-multiple-rows">Multiple rows</h2>
 <pre><code class="language-java">List&lt;Map&lt;String, Object&gt;&gt; rows =
         new Action(conn, &quot;SELECT * FROM shop_address ORDER BY id&quot;)
                 .query()
@@ -131,7 +136,7 @@ List&lt;Address&gt; addresses =
 </code></pre>
 <p>An empty multi-row query currently returns <code>null</code>; callers that require a collection can normalize it
 with <code>Collections.emptyList()</code>.</p>
-<h2>Resource handling</h2>
+<h2 id="search-resource-handling">Resource handling</h2>
 <p><code>Query</code> closes its <code>PreparedStatement</code> and <code>ResultSet</code>. The caller owns the <code>Connection</code> and must close or return it to
 the pool.</p>
 

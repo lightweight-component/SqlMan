@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
     <head>
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -14,6 +14,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.12.0/styles/github.min.css" />
         <script defer src="https://aj-util.ajaxjs.com/asset/js/common.js"></script>
         <script defer src="/asset/js/docs-controls.js"></script>
+        <link rel="stylesheet" href="https://aj-util.ajaxjs.com/asset/static-search.css">
+        <link rel="stylesheet" href="/asset/search.css">
+        <script defer src="https://aj-util.ajaxjs.com/asset/js/static-search.js"></script>
+        <script defer src="/asset/search.js"></script>
          <script>
              var _hmt = _hmt || [];
              (function() {
@@ -47,6 +51,7 @@
         </nav>
         <div class="docs-layout">
             <menu class="docs-navigation" aria-label="文档导航">
+                <div data-sqlman-search data-language="zh"><noscript>启用 JavaScript 后可搜索文档。</noscript></div>
                 
                 <ul>
                     <li class="selected">
@@ -99,9 +104,9 @@
                 </ul>
             </menu>
             <article class="aj-text chinese">
-                <h1>XML SQL</h1>
+                <h1 id="search-xml-sql">XML SQL</h1>
 <p><code>SqlXmlMgr</code> 用于从 classpath XML 保存和加载具名 SQL。它是轻量动态 SQL 功能，不是 MyBatis Mapper 或 ORM；默认条件表达式求值器基于 JSqlParser，不再依赖 Spring EL。</p>
-<h2>定义 SQL</h2>
+<h2 id="search-定义-sql">定义 SQL</h2>
 <p>将 XML 放入 <code>src/main/resources/sql/</code>，子目录也会递归扫描。每个文件只能有一个 <code>&lt;mapper&gt;</code> 根节点，直属子节点为 <code>&lt;sql id=&quot;...&quot;&gt;</code>：</p>
 <pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;mapper&gt;
@@ -121,7 +126,7 @@
 &lt;/mapper&gt;
 </code></pre>
 <p>同一管理器内 SQL ID 必须唯一。资源按逻辑路径排序；若重复 ID，排序靠后的资源会稳定地覆盖前者，并输出警告日志。</p>
-<h2>加载、预编译与执行</h2>
+<h2 id="search-加载-预编译与执行">加载、预编译与执行</h2>
 <pre><code class="language-java">SqlXmlMgr sqlXml = new SqlXmlMgr();
 sqlXml.init();                       // 扫描 classpath sql/
 // sqlXml.init(&quot;myapp/sql&quot;);         // 扫描自定义 classpath 目录
@@ -135,17 +140,17 @@ List&lt;Map&lt;String, Object&gt;&gt; rows = new Action(conn, prepared).query().
 </code></pre>
 <p><code>renderSql(id, params)</code> 可获得渲染后的 SQL 和不可变的有效参数快照；通常直接使用 <code>prepareSql(id, params)</code>，它返回 JDBC SQL 与有序参数值。</p>
 <p>扫描器支持普通 classpath 目录和普通 JAR，不支持 <code>classpath*:</code> 等 Spring 资源表达式，也不支持嵌套/fat JAR。找不到 XML 或 Mapper 格式不正确时，<code>init</code> 会明确失败，不会静默创建空注册表。</p>
-<h2>动态节点与表达式</h2>
+<h2 id="search-动态节点与表达式">动态节点与表达式</h2>
 <p><code>&lt;if&gt;</code> 可以拥有直属 <code>&lt;else&gt;</code> 子节点，两个分支都可继续嵌套动态节点。<code>&lt;forEach&gt;</code> 支持 <code>Iterable</code>、数组和 <code>Map</code>：遍历 Map 时 <code>index</code> 为 key、<code>item</code> 为 value；其他集合的 <code>index</code> 为从零开始的序号。</p>
 <p>表达式使用受限的 SQL 风格子集：布尔逻辑、比较、算术、括号、<code>IS [NOT] NULL</code>、<code>BETWEEN</code>、<code>IN</code> 和显式注册的函数。空值判断请使用 <code>stat IS NOT NULL</code>，而不是 <code>stat != null</code> 这类 Java/Spring-EL 写法。</p>
-<h2>参数绑定与安全性</h2>
+<h2 id="search-参数绑定与安全性">参数绑定与安全性</h2>
 <ul>
 <li><code>#{name}</code> 必定转换为 JDBC <code>?</code>，值按出现顺序收集。</li>
 <li><code>${name}</code> 仅允许标识符（包括 <code>schema.table</code> 等限定名称），任意 SQL 片段都会被拒绝。</li>
 <li>API 支持的位置参数可继续以普通 <code>?</code> 并配合尾随位置参数使用。</li>
 </ul>
 <p><code>${...}</code> 的标识符校验不能替代业务授权；即使语法合法，也不应让不可信调用方任意选择表或列。</p>
-<h2>内联模板</h2>
+<h2 id="search-内联模板">内联模板</h2>
 <p>并非所有动态 SQL 都必须存入 XML。SQL 字符串也可作为 XML 片段编译：</p>
 <pre><code class="language-java">RenderedSql rendered = SqlXmlDomTemplate.compile(
         &quot;SELECT * FROM ${tableName}&lt;if test=\&quot;stat IS NOT NULL\&quot;&gt; WHERE stat = #{stat}&lt;/if&gt;&quot;)

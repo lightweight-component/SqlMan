@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
     <head>
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -14,6 +14,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.12.0/styles/github.min.css" />
         <script defer src="https://aj-util.ajaxjs.com/asset/js/common.js"></script>
         <script defer src="/asset/js/docs-controls.js"></script>
+        <link rel="stylesheet" href="https://aj-util.ajaxjs.com/asset/static-search.css">
+        <link rel="stylesheet" href="/asset/search.css">
+        <script defer src="https://aj-util.ajaxjs.com/asset/js/static-search.js"></script>
+        <script defer src="/asset/search.js"></script>
          <script>
              var _hmt = _hmt || [];
              (function() {
@@ -47,6 +51,7 @@
         </nav>
         <div class="docs-layout">
             <menu class="docs-navigation" aria-label="文档导航">
+                <div data-sqlman-search data-language="zh"><noscript>启用 JavaScript 后可搜索文档。</noscript></div>
                 
                 <ul>
                     <li class="selected">
@@ -99,7 +104,7 @@
                 </ul>
             </menu>
             <article class="aj-text chinese">
-                <h1>批量操作</h1>
+                <h1 id="search-批量操作">批量操作</h1>
 <p><code>BatchUpdate</code> 使用 <code>JdbcConnection</code> 为当前线程保存的连接：</p>
 <pre><code class="language-java">JdbcConnection.setConnection(conn);
 try {
@@ -110,7 +115,7 @@ try {
 }
 </code></pre>
 <p>如果连接处于自动提交模式，参数化批量插入会开启局部事务：成功时提交，失败时回滚，最后恢复自动提交。如果调用方已经关闭自动提交，则事务的提交和回滚仍由调用方负责。</p>
-<h2>批量插入 Map</h2>
+<h2 id="search-批量插入-map">批量插入 Map</h2>
 <p>所有记录必须和第一条记录包含完全相同的键。使用 <code>LinkedHashMap</code> 可以明确控制列顺序：</p>
 <pre><code class="language-java">List&lt;Map&lt;String, Object&gt;&gt; users = new ArrayList&lt;&gt;();
 
@@ -127,7 +132,7 @@ users.add(second);
 new BatchUpdate().createBatchMap(users, &quot;users&quot;);
 </code></pre>
 <p>值通过 <code>PreparedStatement</code> 绑定。支持 <code>byte[]</code> 和 <code>InputStream</code>；枚举保存为字符串，<code>Map</code> 或 <code>List</code> 会序列化为 JSON。</p>
-<h2>批量插入 JavaBean</h2>
+<h2 id="search-批量插入-javabean">批量插入 JavaBean</h2>
 <p>需要在批处理对象上设置表名：</p>
 <pre><code class="language-java">BatchUpdate batch = new BatchUpdate();
 batch.setTableName(&quot;users&quot;);
@@ -136,7 +141,7 @@ batch.createBatch(Arrays.asList(user1, user2));
 <p>第一条 Bean 的非 null 属性决定 INSERT 列。后续 Bean 的这些属性可以为 <code>null</code>，但不能出现第一条 Bean 没有选择的其他非 null
 属性。</p>
 <p><code>@Column</code> 用于修改属性到列的映射，<code>@Transient</code> 用于排除属性。</p>
-<h2>按 ID 批量删除</h2>
+<h2 id="search-按-id-批量删除">按 ID 批量删除</h2>
 <pre><code class="language-java">BatchUpdate batch = new BatchUpdate();
 batch.setTableName(&quot;users&quot;);
 batch.setIdField(&quot;id&quot;);
@@ -144,7 +149,7 @@ batch.setIdField(&quot;id&quot;);
 UpdateResult result = batch.deleteBatch(Arrays.asList(1, 2, 3));
 </code></pre>
 <p>ID 使用参数绑定。空 ID 列表以及包含 <code>null</code> 的列表会被拒绝。</p>
-<h2>旧的原始值接口</h2>
+<h2 id="search-旧的原始值接口">旧的原始值接口</h2>
 <p><code>createBatch(String fields, List&lt;String&gt; values)</code> 及其字符串重载已弃用。它们接收完整 SQL 值片段，无法安全绑定参数，只应兼容可信的旧代码；新代码应使用
 Map 或 JavaBean 接口。</p>
 

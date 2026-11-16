@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
     <head>
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -14,6 +14,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.12.0/styles/github.min.css" />
         <script defer src="https://aj-util.ajaxjs.com/asset/js/common.js"></script>
         <script defer src="/asset/js/docs-controls.js"></script>
+        <link rel="stylesheet" href="https://aj-util.ajaxjs.com/asset/static-search.css">
+        <link rel="stylesheet" href="/asset/search.css">
+        <script defer src="https://aj-util.ajaxjs.com/asset/js/static-search.js"></script>
+        <script defer src="/asset/search.js"></script>
          <script>
              var _hmt = _hmt || [];
              (function() {
@@ -47,6 +51,7 @@
         </nav>
         <div class="docs-layout">
             <menu class="docs-navigation" aria-label="文档导航">
+                <div data-sqlman-search data-language="zh"><noscript>启用 JavaScript 后可搜索文档。</noscript></div>
                 
                 <ul>
                     <li class="selected">
@@ -99,14 +104,14 @@
                 </ul>
             </menu>
             <article class="aj-text chinese">
-                <h1>查询基础概念</h1>
+                <h1 id="search-查询基础概念">查询基础概念</h1>
 <p>SqlMan 始终保留可见的 SQL。<code>Action</code> 保存连接、SQL、参数和数据库类型；调用 <code>query(...)</code> 后得到 <code>Query</code>，由它执行语句并映射结果。</p>
 <pre><code class="language-java">Query query = new Action(
         conn,
         &quot;SELECT id, name FROM shop_address WHERE stat = ?&quot;
 ).query(1);
 </code></pre>
-<h2>单行结果</h2>
+<h2 id="search-单行结果">单行结果</h2>
 <p>把第一行返回为 <code>Map</code>：</p>
 <pre><code class="language-java">Map&lt;String, Object&gt; row = query.one();
 </code></pre>
@@ -114,14 +119,14 @@
 <pre><code class="language-java">Address address = query.one(Address.class);
 </code></pre>
 <p>查询不到记录时，这两个方法都返回 <code>null</code>。</p>
-<h2>单值结果</h2>
+<h2 id="search-单值结果">单值结果</h2>
 <p>只有一列的查询可以使用 <code>oneValue(...)</code>：</p>
 <pre><code class="language-java">Integer total = new Action(
         conn,
         &quot;SELECT COUNT(*) FROM shop_address WHERE stat = ?&quot;
 ).query(1).oneValue(Integer.class);
 </code></pre>
-<h2>多行结果</h2>
+<h2 id="search-多行结果">多行结果</h2>
 <pre><code class="language-java">List&lt;Map&lt;String, Object&gt;&gt; rows =
         new Action(conn, &quot;SELECT * FROM shop_address ORDER BY id&quot;)
                 .query()
@@ -133,7 +138,7 @@ List&lt;Address&gt; addresses =
                 .list(Address.class);
 </code></pre>
 <p>当前多行查询没有记录时返回 <code>null</code>；需要集合语义的调用方可以统一转换为 <code>Collections.emptyList()</code>。</p>
-<h2>资源管理</h2>
+<h2 id="search-资源管理">资源管理</h2>
 <p><code>Query</code> 会关闭 <code>PreparedStatement</code> 和 <code>ResultSet</code>。<code>Connection</code> 仍由调用方负责关闭或归还连接池。</p>
 
             </article>

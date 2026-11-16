@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -14,6 +14,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.12.0/styles/github.min.css" />
         <script defer src="https://aj-util.ajaxjs.com/asset/js/common.js"></script>
         <script defer src="/asset/js/docs-controls.js"></script>
+        <link rel="stylesheet" href="https://aj-util.ajaxjs.com/asset/static-search.css">
+        <link rel="stylesheet" href="/asset/search.css">
+        <script defer src="https://aj-util.ajaxjs.com/asset/js/static-search.js"></script>
+        <script defer src="/asset/search.js"></script>
         <script>
             var _hmt = _hmt || [];
             (function() {
@@ -48,6 +52,7 @@
         </nav>
         <div class="docs-layout">
             <menu class="docs-navigation" aria-label="Documentation navigation">
+                <div data-sqlman-search data-language="en"><noscript>Enable JavaScript to search documentation.</noscript></div>
                 
                 <ul>
                     <li class="selected">
@@ -95,24 +100,24 @@
                 </ul>
             </menu>
             <article class="aj-text">
-                <h1>Pagination</h1>
+                <h1 id="search-pagination">Pagination</h1>
 <p>Pagination executes a count query followed by a query for the requested page. Start with SQL that does not already
 contain database-specific pagination syntax.</p>
-<h2>Offset and limit</h2>
+<h2 id="search-offset-and-limit">Offset and limit</h2>
 <p><code>start</code> is a zero-based row offset and <code>limit</code> is the page size:</p>
 <pre><code class="language-java">PageResult&lt;Map&lt;String, Object&gt;&gt; page =
         new Action(conn, &quot;SELECT * FROM article ORDER BY id DESC&quot;)
                 .query()
                 .pageByStartLimit(0, 20);
 </code></pre>
-<h2>Page number and page size</h2>
+<h2 id="search-page-number-and-page-size">Page number and page size</h2>
 <p>Page numbers start at 1:</p>
 <pre><code class="language-java">PageResult&lt;Map&lt;String, Object&gt;&gt; page =
         new Action(conn, &quot;SELECT * FROM article ORDER BY id DESC&quot;)
                 .query()
                 .pageByPageNo(3, 20);
 </code></pre>
-<h2>JavaBean rows</h2>
+<h2 id="search-javabean-rows">JavaBean rows</h2>
 <pre><code class="language-java">PageResult&lt;Address&gt; page =
         new Action(conn, &quot;SELECT * FROM shop_address ORDER BY id&quot;)
                 .query()
@@ -120,14 +125,14 @@ contain database-specific pagination syntax.</p>
 </code></pre>
 <p><code>PageResult</code> contains <code>list</code>, <code>totalCount</code>, <code>totalPage</code>, <code>currentPage</code>, <code>start</code>, <code>pageSize</code>, and <code>zero</code>. A request
 beyond the last page returns an empty list.</p>
-<h2>Bind query parameters</h2>
+<h2 id="search-bind-query-parameters">Bind query parameters</h2>
 <p>Bind parameters when creating the <code>Query</code>, before invoking the pagination method:</p>
 <pre><code class="language-java">PageResult&lt;Map&lt;String, Object&gt;&gt; page =
         new Action(conn, &quot;SELECT * FROM shop_address WHERE stat = ? ORDER BY id&quot;)
                 .query(1)
                 .pageByStartLimit(0, 20);
 </code></pre>
-<h2>Read pagination from an HTTP request</h2>
+<h2 id="search-read-pagination-from-an-http-request">Read pagination from an HTTP request</h2>
 <p>The servlet overloads recognize:</p>
 <ul>
 <li>Offset mode: <code>start</code> or <code>offset</code>; page size: <code>pageSize</code>, <code>rows</code>, or <code>limit</code>.</li>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -14,6 +14,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.12.0/styles/github.min.css" />
         <script defer src="https://aj-util.ajaxjs.com/asset/js/common.js"></script>
         <script defer src="/asset/js/docs-controls.js"></script>
+        <link rel="stylesheet" href="https://aj-util.ajaxjs.com/asset/static-search.css">
+        <link rel="stylesheet" href="/asset/search.css">
+        <script defer src="https://aj-util.ajaxjs.com/asset/js/static-search.js"></script>
+        <script defer src="/asset/search.js"></script>
         <script>
             var _hmt = _hmt || [];
             (function() {
@@ -48,6 +52,7 @@
         </nav>
         <div class="docs-layout">
             <menu class="docs-navigation" aria-label="Documentation navigation">
+                <div data-sqlman-search data-language="en"><noscript>Enable JavaScript to search documentation.</noscript></div>
                 
                 <ul>
                     <li class="selected">
@@ -95,7 +100,7 @@
                 </ul>
             </menu>
             <article class="aj-text">
-                <h1>Welcome to the SqlMan Documentation</h1>
+                <h1 id="search-welcome-to-the-sqlman-documentation">Welcome to the SqlMan Documentation</h1>
 <p>SqlMan is a small Java library that removes repetitive JDBC work while keeping SQL visible. Version 2.3 uses <code>Action</code> as
 the common entry point for queries, inserts, updates, and deletes.</p>
 <pre><code class="language-java">List&lt;Map&lt;String, Object&gt;&gt; rows =
@@ -103,7 +108,7 @@ the common entry point for queries, inserts, updates, and deletes.</p>
                 .query(1)
                 .list();
 </code></pre>
-<h2>What SqlMan provides</h2>
+<h2 id="search-what-sqlman-provides">What SqlMan provides</h2>
 <ul>
 <li>Parameterized SQL execution through JDBC <code>PreparedStatement</code>.</li>
 <li>Query results as a single value, a <code>Map</code>, a list, or JavaBeans.</li>
@@ -114,7 +119,7 @@ the common entry point for queries, inserts, updates, and deletes.</p>
 <li>XML statement storage with <code>&lt;if&gt;</code>, <code>&lt;else&gt;</code>, and <code>&lt;forEach&gt;</code> dynamic nodes.</li>
 <li>SQL logging with bound-parameter rendering for diagnostics.</li>
 </ul>
-<h2>Design principles</h2>
+<h2 id="search-design-principles">Design principles</h2>
 <ul>
 <li><strong>SQL first:</strong> application SQL remains explicit and can use database-specific features.</li>
 <li><strong>Small:</strong> the API wraps JDBC operations instead of introducing a persistence session or entity manager.</li>
@@ -122,14 +127,14 @@ the common entry point for queries, inserts, updates, and deletes.</p>
 </ul>
 <p>SqlMan is not a full ORM, a JPA implementation, or a complete MyBatis replacement. Entity support focuses on data
 modification; query SQL is still written explicitly.</p>
-<h2>Source code</h2>
+<h2 id="search-source-code">Source code</h2>
 <p>SqlMan is licensed under the GNU General Public License v3.0.</p>
 <ul>
 <li><a href="https://github.com/lightweight-component/SqlMan">GitHub</a></li>
 <li><a href="https://gitcode.com/lightweight-component/SqlMan">GitCode</a></li>
 <li><a href="https://central.sonatype.com/artifact/com.ajaxjs/sqlman">Maven Central</a></li>
 </ul>
-<h2>Links</h2>
+<h2 id="search-links">Links</h2>
 <p><a href="https://sqlman.ajaxjs.com">Website</a> | <a href="https://sqlman.ajaxjs.com/docs">Documentation</a> | <a href="https://github.com/lightweight-component/SqlMan">JavaDoc and source</a></p>
 
             </article>

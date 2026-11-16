@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -14,6 +14,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.12.0/styles/github.min.css" />
         <script defer src="https://aj-util.ajaxjs.com/asset/js/common.js"></script>
         <script defer src="/asset/js/docs-controls.js"></script>
+        <link rel="stylesheet" href="https://aj-util.ajaxjs.com/asset/static-search.css">
+        <link rel="stylesheet" href="/asset/search.css">
+        <script defer src="https://aj-util.ajaxjs.com/asset/js/static-search.js"></script>
+        <script defer src="/asset/search.js"></script>
         <script>
             var _hmt = _hmt || [];
             (function() {
@@ -48,6 +52,7 @@
         </nav>
         <div class="docs-layout">
             <menu class="docs-navigation" aria-label="Documentation navigation">
+                <div data-sqlman-search data-language="en"><noscript>Enable JavaScript to search documentation.</noscript></div>
                 
                 <ul>
                     <li class="selected">
@@ -95,8 +100,8 @@
                 </ul>
             </menu>
             <article class="aj-text">
-                <h1>Create, Update, and Delete</h1>
-<h2>Insert a row</h2>
+                <h1 id="search-create-update-and-delete">Create, Update, and Delete</h1>
+<h2 id="search-insert-a-row">Insert a row</h2>
 <p>Use <code>create(params).execute(...)</code> for an <code>INSERT</code> statement:</p>
 <pre><code class="language-java">String sql = &quot;INSERT INTO shop_address (name, address, phone) VALUES (?, ?, ?)&quot;;
 
@@ -106,7 +111,7 @@ CreateResult&lt;Serializable&gt; result =
                 .execute(false);
 </code></pre>
 <p><code>isOk()</code> reports whether a row was inserted.</p>
-<h2>Retrieve a generated key</h2>
+<h2 id="search-retrieve-a-generated-key">Retrieve a generated key</h2>
 <p>Pass <code>true</code> when the database generates the key, and specify the requested Java type:</p>
 <pre><code class="language-java">CreateResult&lt;Long&gt; result =
         new Action(conn,
@@ -117,7 +122,7 @@ CreateResult&lt;Serializable&gt; result =
 Long id = result.getNewlyId();
 </code></pre>
 <p>SqlMan converts the JDBC-generated value to the requested numeric type and rejects overflow or fractional conversion.</p>
-<h2>Update rows</h2>
+<h2 id="search-update-rows">Update rows</h2>
 <pre><code class="language-java">UpdateResult result =
         new Action(conn,
                 &quot;UPDATE shop_address SET name = ? WHERE id = ?&quot;)
@@ -127,7 +132,7 @@ Long id = result.getNewlyId();
 int affected = result.getEffectedRows();
 </code></pre>
 <p>An execution without a JDBC exception is considered successful even when <code>affected</code> is zero.</p>
-<h2>Delete by ID</h2>
+<h2 id="search-delete-by-id">Delete by ID</h2>
 <pre><code class="language-java">UpdateResult result =
         new Action(conn).delete(&quot;shop_address&quot;, &quot;id&quot;, 8);
 </code></pre>

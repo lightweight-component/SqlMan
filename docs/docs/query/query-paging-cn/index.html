@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
     <head>
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -14,6 +14,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.12.0/styles/github.min.css" />
         <script defer src="https://aj-util.ajaxjs.com/asset/js/common.js"></script>
         <script defer src="/asset/js/docs-controls.js"></script>
+        <link rel="stylesheet" href="https://aj-util.ajaxjs.com/asset/static-search.css">
+        <link rel="stylesheet" href="/asset/search.css">
+        <script defer src="https://aj-util.ajaxjs.com/asset/js/static-search.js"></script>
+        <script defer src="/asset/search.js"></script>
          <script>
              var _hmt = _hmt || [];
              (function() {
@@ -47,6 +51,7 @@
         </nav>
         <div class="docs-layout">
             <menu class="docs-navigation" aria-label="文档导航">
+                <div data-sqlman-search data-language="zh"><noscript>启用 JavaScript 后可搜索文档。</noscript></div>
                 
                 <ul>
                     <li class="selected">
@@ -99,23 +104,23 @@
                 </ul>
             </menu>
             <article class="aj-text chinese">
-                <h1>分页查询</h1>
+                <h1 id="search-分页查询">分页查询</h1>
 <p>分页会先执行统计查询，再执行当前页查询。传入的原始 SQL 不应预先包含数据库专用的分页语句。</p>
-<h2>Start 和 Limit</h2>
+<h2 id="search-start-和-limit">Start 和 Limit</h2>
 <p><code>start</code> 是从 0 开始的记录偏移量，<code>limit</code> 是每页记录数：</p>
 <pre><code class="language-java">PageResult&lt;Map&lt;String, Object&gt;&gt; page =
         new Action(conn, &quot;SELECT * FROM article ORDER BY id DESC&quot;)
                 .query()
                 .pageByStartLimit(0, 20);
 </code></pre>
-<h2>页码和每页大小</h2>
+<h2 id="search-页码和每页大小">页码和每页大小</h2>
 <p>页码从 1 开始：</p>
 <pre><code class="language-java">PageResult&lt;Map&lt;String, Object&gt;&gt; page =
         new Action(conn, &quot;SELECT * FROM article ORDER BY id DESC&quot;)
                 .query()
                 .pageByPageNo(3, 20);
 </code></pre>
-<h2>映射 JavaBean</h2>
+<h2 id="search-映射-javabean">映射 JavaBean</h2>
 <pre><code class="language-java">PageResult&lt;Address&gt; page =
         new Action(conn, &quot;SELECT * FROM shop_address ORDER BY id&quot;)
                 .query()
@@ -123,14 +128,14 @@
 </code></pre>
 <p><code>PageResult</code> 包含 <code>list</code>、<code>totalCount</code>、<code>totalPage</code>、<code>currentPage</code>、<code>start</code>、<code>pageSize</code> 和 <code>zero</code>。请求超过最后一页时，<code>list</code>
 是空列表。</p>
-<h2>绑定查询参数</h2>
+<h2 id="search-绑定查询参数">绑定查询参数</h2>
 <p>先在创建 <code>Query</code> 时传入参数，再调用分页方法：</p>
 <pre><code class="language-java">PageResult&lt;Map&lt;String, Object&gt;&gt; page =
         new Action(conn, &quot;SELECT * FROM shop_address WHERE stat = ? ORDER BY id&quot;)
                 .query(1)
                 .pageByStartLimit(0, 20);
 </code></pre>
-<h2>从 HTTP 请求读取分页参数</h2>
+<h2 id="search-从-http-请求读取分页参数">从 HTTP 请求读取分页参数</h2>
 <p>Servlet 重载支持以下参数名：</p>
 <ul>
 <li>Offset 模式：<code>start</code> 或 <code>offset</code>；每页大小：<code>pageSize</code>、<code>rows</code> 或 <code>limit</code>。</li>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -14,6 +14,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.12.0/styles/github.min.css" />
         <script defer src="https://aj-util.ajaxjs.com/asset/js/common.js"></script>
         <script defer src="/asset/js/docs-controls.js"></script>
+        <link rel="stylesheet" href="https://aj-util.ajaxjs.com/asset/static-search.css">
+        <link rel="stylesheet" href="/asset/search.css">
+        <script defer src="https://aj-util.ajaxjs.com/asset/js/static-search.js"></script>
+        <script defer src="/asset/search.js"></script>
         <script>
             var _hmt = _hmt || [];
             (function() {
@@ -48,6 +52,7 @@
         </nav>
         <div class="docs-layout">
             <menu class="docs-navigation" aria-label="Documentation navigation">
+                <div data-sqlman-search data-language="en"><noscript>Enable JavaScript to search documentation.</noscript></div>
                 
                 <ul>
                     <li class="selected">
@@ -95,10 +100,10 @@
                 </ul>
             </menu>
             <article class="aj-text">
-                <h1>Entity-based Writes</h1>
+                <h1 id="search-entity-based-writes">Entity-based Writes</h1>
 <p>Entity actions generate parameterized INSERT, UPDATE, or DELETE SQL from a JavaBean or <code>Map</code>. Queries still use explicit
 SQL and can map their results to a JavaBean.</p>
-<h2>Insert a Map</h2>
+<h2 id="search-insert-a-map">Insert a Map</h2>
 <p>Maps require an explicit table name:</p>
 <pre><code class="language-java">Map&lt;String, Object&gt; address = new LinkedHashMap&lt;&gt;();
 address.put(&quot;name&quot;, &quot;Office&quot;);
@@ -111,7 +116,7 @@ CreateResult&lt;Long&gt; result =
                 .execute(true, Long.class);
 </code></pre>
 <p>Map keys are treated as database column names.</p>
-<h2>Insert a JavaBean</h2>
+<h2 id="search-insert-a-javabean">Insert a JavaBean</h2>
 <p>Supply the table explicitly:</p>
 <pre><code class="language-java">CreateResult&lt;Long&gt; result =
         new Action(conn, addressBean, &quot;shop_address&quot;)
@@ -140,7 +145,7 @@ public class Address {
 </code></pre>
 <p>Null-valued bean properties are omitted from a single-row INSERT. A field annotated with <code>@Transient</code>, or a getter
 annotated with <code>@Transient</code>, is omitted. <code>@Column(name = &quot;...&quot;)</code> changes the database column name.</p>
-<h2>Update by ID</h2>
+<h2 id="search-update-by-id">Update by ID</h2>
 <p>The ID may be read from the entity:</p>
 <pre><code class="language-java">addressBean.setId(12L);
 addressBean.setName(&quot;New name&quot;);
@@ -157,7 +162,7 @@ UpdateResult result =
                 .withId(&quot;id&quot;, 12L);
 </code></pre>
 <p>The ID field is excluded from the SET clause and bound in the WHERE clause.</p>
-<h2>Update with a condition</h2>
+<h2 id="search-update-with-a-condition">Update with a condition</h2>
 <pre><code class="language-java">UpdateResult result =
         new Action(conn, values, &quot;shop_address&quot;)
                 .update()
@@ -165,16 +170,17 @@ UpdateResult result =
 </code></pre>
 <p>The condition is appended as raw SQL. It must be a trusted application-defined fragment; it does not bind additional
 values.</p>
-<h2>Delete an entity</h2>
+<h2 id="search-delete-an-entity">Delete an entity</h2>
 <pre><code class="language-java">UpdateResult result =
         new Action(conn, addressBean, &quot;shop_address&quot;)
                 .update()
                 .delete();
 </code></pre>
 <p>The default ID field is <code>id</code>. This performs a physical delete.</p>
-<h2>Value conversion</h2>
+<h2 id="search-value-conversion">Value conversion</h2>
 <p>Enums are stored with <code>toString()</code>. <code>List</code> and <code>Map</code> property values are serialized as JSON. <code>NullValue</code> constants can
 explicitly write SQL <code>NULL</code>; ordinary null bean properties are skipped.</p>
+<p>For LocalDateTime properties, assign NullValue.NULL_LOCAL_DATE_TIME to write SQL NULL through Bean/Map CRUD. Its reserved value is LocalDateTime.MIN, compared by value. Ordinary Java null properties are skipped. Raw SQL parameters require actual null.</p>
 
             </article>
         </div>

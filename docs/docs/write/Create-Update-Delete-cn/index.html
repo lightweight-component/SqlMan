@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
     <head>
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -14,6 +14,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.12.0/styles/github.min.css" />
         <script defer src="https://aj-util.ajaxjs.com/asset/js/common.js"></script>
         <script defer src="/asset/js/docs-controls.js"></script>
+        <link rel="stylesheet" href="https://aj-util.ajaxjs.com/asset/static-search.css">
+        <link rel="stylesheet" href="/asset/search.css">
+        <script defer src="https://aj-util.ajaxjs.com/asset/js/static-search.js"></script>
+        <script defer src="/asset/search.js"></script>
          <script>
              var _hmt = _hmt || [];
              (function() {
@@ -47,6 +51,7 @@
         </nav>
         <div class="docs-layout">
             <menu class="docs-navigation" aria-label="文档导航">
+                <div data-sqlman-search data-language="zh"><noscript>启用 JavaScript 后可搜索文档。</noscript></div>
                 
                 <ul>
                     <li class="selected">
@@ -99,8 +104,8 @@
                 </ul>
             </menu>
             <article class="aj-text chinese">
-                <h1>数据的创建、更新和删除</h1>
-<h2>插入记录</h2>
+                <h1 id="search-数据的创建-更新和删除">数据的创建、更新和删除</h1>
+<h2 id="search-插入记录">插入记录</h2>
 <p>执行 <code>INSERT</code> 时使用 <code>create(params).execute(...)</code>：</p>
 <pre><code class="language-java">String sql = &quot;INSERT INTO shop_address (name, address, phone) VALUES (?, ?, ?)&quot;;
 
@@ -110,7 +115,7 @@ CreateResult&lt;Serializable&gt; result =
                 .execute(false);
 </code></pre>
 <p><code>isOk()</code> 表示是否插入成功。</p>
-<h2>获取数据库生成的主键</h2>
+<h2 id="search-获取数据库生成的主键">获取数据库生成的主键</h2>
 <p>数据库生成主键时传入 <code>true</code>，同时指定期望的 Java 类型：</p>
 <pre><code class="language-java">CreateResult&lt;Long&gt; result =
         new Action(conn,
@@ -121,7 +126,7 @@ CreateResult&lt;Serializable&gt; result =
 Long id = result.getNewlyId();
 </code></pre>
 <p>SqlMan 会把 JDBC 返回的主键转换为指定数值类型，并拒绝溢出或丢失小数的转换。</p>
-<h2>更新记录</h2>
+<h2 id="search-更新记录">更新记录</h2>
 <pre><code class="language-java">UpdateResult result =
         new Action(conn,
                 &quot;UPDATE shop_address SET name = ? WHERE id = ?&quot;)
@@ -131,7 +136,7 @@ Long id = result.getNewlyId();
 int affected = result.getEffectedRows();
 </code></pre>
 <p>只要 JDBC 执行过程没有异常，即使影响行数为 0，也会被视为执行成功。</p>
-<h2>按 ID 删除</h2>
+<h2 id="search-按-id-删除">按 ID 删除</h2>
 <pre><code class="language-java">UpdateResult result =
         new Action(conn).delete(&quot;shop_address&quot;, &quot;id&quot;, 8);
 </code></pre>

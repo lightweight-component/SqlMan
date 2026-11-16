@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
     <head>
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -14,6 +14,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.12.0/styles/github.min.css" />
         <script defer src="https://aj-util.ajaxjs.com/asset/js/common.js"></script>
         <script defer src="/asset/js/docs-controls.js"></script>
+        <link rel="stylesheet" href="https://aj-util.ajaxjs.com/asset/static-search.css">
+        <link rel="stylesheet" href="/asset/search.css">
+        <script defer src="https://aj-util.ajaxjs.com/asset/js/static-search.js"></script>
+        <script defer src="/asset/search.js"></script>
          <script>
              var _hmt = _hmt || [];
              (function() {
@@ -47,6 +51,7 @@
         </nav>
         <div class="docs-layout">
             <menu class="docs-navigation" aria-label="文档导航">
+                <div data-sqlman-search data-language="zh"><noscript>启用 JavaScript 后可搜索文档。</noscript></div>
                 
                 <ul>
                     <li class="selected">
@@ -99,7 +104,7 @@
                 </ul>
             </menu>
             <article class="aj-text chinese">
-                <h1>欢迎来到 SqlMan 文档中心</h1>
+                <h1 id="search-欢迎来到-sqlman-文档中心">欢迎来到 SqlMan 文档中心</h1>
 <p>SqlMan 是一个小型 Java 数据库工具，用于消除重复的 JDBC 代码，同时保留清晰可见的 SQL。2.3 版本以 <code>Action</code>
 作为查询、插入、更新和删除的统一入口。</p>
 <pre><code class="language-java">List&lt;Map&lt;String, Object&gt;&gt; rows =
@@ -107,7 +112,7 @@
                 .query(1)
                 .list();
 </code></pre>
-<h2>SqlMan 提供的功能</h2>
+<h2 id="search-sqlman-提供的功能">SqlMan 提供的功能</h2>
 <ul>
 <li>通过 JDBC <code>PreparedStatement</code> 执行参数化 SQL。</li>
 <li>把查询结果返回为单值、<code>Map</code>、列表或 JavaBean。</li>
@@ -118,21 +123,21 @@
 <li>在 XML 中保存 SQL，并处理 <code>&lt;if&gt;</code>、<code>&lt;else&gt;</code> 与 <code>&lt;forEach&gt;</code> 动态节点。</li>
 <li>输出包含绑定参数的 SQL 日志，方便诊断。</li>
 </ul>
-<h2>设计原则</h2>
+<h2 id="search-设计原则">设计原则</h2>
 <ul>
 <li><strong>SQL 优先：</strong> SQL 由应用明确编写，可以使用数据库特有能力。</li>
 <li><strong>小巧：</strong> 只封装常见 JDBC 操作，不引入持久化会话或实体管理器。</li>
 <li><strong>透明：</strong> 连接和事务的生命周期仍由应用控制。</li>
 </ul>
 <p>SqlMan 不是完整 ORM、JPA 实现或 MyBatis 替代品。实体功能主要用于数据写入，查询 SQL 仍需明确编写。</p>
-<h2>源代码</h2>
+<h2 id="search-源代码">源代码</h2>
 <p>SqlMan 使用 GNU General Public License v3.0。</p>
 <ul>
 <li><a href="https://github.com/lightweight-component/SqlMan">GitHub</a></li>
 <li><a href="https://gitcode.com/lightweight-component/SqlMan">GitCode</a></li>
 <li><a href="https://central.sonatype.com/artifact/com.ajaxjs/sqlman">Maven Central</a></li>
 </ul>
-<h2>链接</h2>
+<h2 id="search-链接">链接</h2>
 <p><a href="https://sqlman.ajaxjs.com">网站</a> | <a href="https://sqlman.ajaxjs.com/docs">文档</a> | <a href="https://github.com/lightweight-component/SqlMan">JavaDoc 与源码</a></p>
 
             </article>

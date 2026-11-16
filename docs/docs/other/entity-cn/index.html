@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
     <head>
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -14,6 +14,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.12.0/styles/github.min.css" />
         <script defer src="https://aj-util.ajaxjs.com/asset/js/common.js"></script>
         <script defer src="/asset/js/docs-controls.js"></script>
+        <link rel="stylesheet" href="https://aj-util.ajaxjs.com/asset/static-search.css">
+        <link rel="stylesheet" href="/asset/search.css">
+        <script defer src="https://aj-util.ajaxjs.com/asset/js/static-search.js"></script>
+        <script defer src="/asset/search.js"></script>
          <script>
              var _hmt = _hmt || [];
              (function() {
@@ -47,6 +51,7 @@
         </nav>
         <div class="docs-layout">
             <menu class="docs-navigation" aria-label="文档导航">
+                <div data-sqlman-search data-language="zh"><noscript>启用 JavaScript 后可搜索文档。</noscript></div>
                 
                 <ul>
                     <li class="selected">
@@ -99,10 +104,10 @@
                 </ul>
             </menu>
             <article class="aj-text chinese">
-                <h1>实体写入</h1>
+                <h1 id="search-实体写入">实体写入</h1>
 <p>实体操作会根据 JavaBean 或 <code>Map</code> 生成带参数的 INSERT、UPDATE 或 DELETE SQL。查询仍然使用明确的 SQL，并可以把结果映射成
 JavaBean。</p>
-<h2>插入 Map</h2>
+<h2 id="search-插入-map">插入 Map</h2>
 <p>Map 必须显式指定表名：</p>
 <pre><code class="language-java">Map&lt;String, Object&gt; address = new LinkedHashMap&lt;&gt;();
 address.put(&quot;name&quot;, &quot;公司&quot;);
@@ -115,7 +120,7 @@ CreateResult&lt;Long&gt; result =
                 .execute(true, Long.class);
 </code></pre>
 <p>Map 的键会被直接当作数据库列名。</p>
-<h2>插入 JavaBean</h2>
+<h2 id="search-插入-javabean">插入 JavaBean</h2>
 <p>可以显式传入表名：</p>
 <pre><code class="language-java">CreateResult&lt;Long&gt; result =
         new Action(conn, addressBean, &quot;shop_address&quot;)
@@ -143,7 +148,7 @@ public class Address {
                 .execute(true, Long.class);
 </code></pre>
 <p>单条 INSERT 会忽略值为 null 的 Bean 属性。字段或 getter 上的 <code>@Transient</code> 表示不持久化，<code>@Column(name = &quot;...&quot;)</code> 用于修改数据库列名。</p>
-<h2>按 ID 更新</h2>
+<h2 id="search-按-id-更新">按 ID 更新</h2>
 <p>ID 可以从实体中取得：</p>
 <pre><code class="language-java">addressBean.setId(12L);
 addressBean.setName(&quot;新名称&quot;);
@@ -160,23 +165,24 @@ UpdateResult result =
                 .withId(&quot;id&quot;, 12L);
 </code></pre>
 <p>ID 字段不会进入 SET 子句，而是作为 WHERE 参数绑定。</p>
-<h2>按条件更新</h2>
+<h2 id="search-按条件更新">按条件更新</h2>
 <pre><code class="language-java">UpdateResult result =
         new Action(conn, values, &quot;shop_address&quot;)
                 .update()
                 .execute(&quot;stat = 0&quot;);
 </code></pre>
 <p>该条件会作为原始 SQL 追加，不能继续绑定参数，因此只能传入由应用代码控制的可信片段。</p>
-<h2>删除实体</h2>
+<h2 id="search-删除实体">删除实体</h2>
 <pre><code class="language-java">UpdateResult result =
         new Action(conn, addressBean, &quot;shop_address&quot;)
                 .update()
                 .delete();
 </code></pre>
 <p>默认 ID 字段为 <code>id</code>，执行的是物理删除。</p>
-<h2>属性值转换</h2>
+<h2 id="search-属性值转换">属性值转换</h2>
 <p>枚举通过 <code>toString()</code> 保存；<code>List</code> 和 <code>Map</code> 属性会序列化为 JSON。可以使用 <code>NullValue</code> 常量显式写入 SQL <code>NULL</code>；普通的 null
 Bean 属性会被忽略。</p>
+<p>LocalDateTime 属性可以赋值 NullValue.NULL_LOCAL_DATE_TIME，通过 Bean/Map CRUD 显式写入 SQL NULL。约定值为 LocalDateTime.MIN，采用值相等判断。普通 Java null 属性仍会被跳过，原始 SQL 参数应直接传入 null。</p>
 
             </article>
 
