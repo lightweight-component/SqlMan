@@ -31,7 +31,9 @@ CreateResult<Long> result =
                 .execute(true, Long.class);
 ```
 
-Map 的键会被直接当作数据库列名。
+根据 Map 生成写入 SQL 时，小驼峰键会自动转为下划线列名，例如 `tenantId` 转为 `tenant_id`。
+已经包含下划线的键会按原样使用。如果两个键对应同一列，SqlMan 会报错。
+显式传入 ID 列时请使用数据库列名，例如 `tenant_id`，SqlMan 可以从 Map 的 `tenantId` 键读取对应的值。
 
 ## 插入 JavaBean
 

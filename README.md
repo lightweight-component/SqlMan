@@ -14,6 +14,8 @@ Map/Bean write-SQL generation, pagination, and XML or inline templates with `<if
 `#{name}` values use JDBC parameter binding, while `${name}` accepts validated SQL identifiers only. Query results are
 Maps or JavaBeans, with compact APIs for common JDBC operations.
 
+Generated Map writes convert lower camel-case keys such as `tenantId` to `tenant_id`.
+
 ## Source code
 
 [Github](https://github.com/lightweight-component/SqlMan) | [GitCode](https://gitcode.com/lightweight-component/SqlMan)

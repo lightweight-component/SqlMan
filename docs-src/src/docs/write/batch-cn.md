@@ -28,7 +28,8 @@ try {
 
 ## 批量插入 Map
 
-所有记录必须和第一条记录包含完全相同的键。使用 `LinkedHashMap` 可以明确控制列顺序：
+所有记录转换后的列必须与第一条记录一致。例如，不同记录中的 `tenantId` 和 `tenant_id` 可以对应同一列。
+使用 `LinkedHashMap` 可以明确控制列顺序：
 
 ```java
 List<Map<String, Object>> users = new ArrayList<>();

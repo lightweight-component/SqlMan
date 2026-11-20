@@ -63,6 +63,27 @@ class TestBatchUpdate {
     }
 
     @Test
+    void insertsRowsWithMixedCamelCaseAndColumnKeys() throws SQLException {
+        try (Statement statement = conn.createStatement()) {
+            statement.execute("ALTER TABLE batch_items ADD tenant_id INT");
+        }
+
+        Map<String, Object> first = row("first", "one");
+        first.put("tenantId", 7);
+        Map<String, Object> second = row("second", "two");
+        second.put("tenant_id", 8);
+        new BatchUpdate().createBatchMap(Arrays.asList(first, second), "batch_items");
+
+        try (Statement statement = conn.createStatement();
+             ResultSet rs = statement.executeQuery("SELECT tenant_id FROM batch_items ORDER BY name")) {
+            assertTrue(rs.next());
+            assertEquals(7, rs.getInt(1));
+            assertTrue(rs.next());
+            assertEquals(8, rs.getInt(1));
+        }
+    }
+
+    @Test
     void doesNotCommitAnExistingTransaction() throws SQLException {
         conn.setAutoCommit(false);
         BatchUpdate batch = new BatchUpdate();

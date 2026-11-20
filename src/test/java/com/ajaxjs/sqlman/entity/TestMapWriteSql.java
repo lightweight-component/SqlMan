@@ -12,6 +12,33 @@ class TestMapWriteSql {
     private final static String TABLE_NAME = "test_table";
 
     @Test
+    void mapsCamelCaseKeysForInsertUpdateAndIdLookup() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("tenantId", 7L);
+        map.put("display_name", "Alice");
+        MapWriteSql generator = new MapWriteSql(TABLE_NAME, map);
+
+        generator.getInsertSql();
+        assertEquals("INSERT INTO test_table (`tenant_id`, `display_name` ) VALUES (?, ?)", generator.getSql());
+        assertArrayEquals(new Object[]{7L, "Alice"}, generator.getParams());
+
+        generator.getUpdateSqlWithId("tenant_id");
+        assertEquals("UPDATE test_table SET `display_name` = ? WHERE tenant_id = ?", generator.getSql());
+        assertArrayEquals(new Object[]{"Alice", 7L}, generator.getParams());
+        assertTrue(map.containsKey("tenantId"));
+    }
+
+    @Test
+    void rejectsDuplicateResolvedColumnsEvenWhenFirstValueIsNull() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("tenantId", null);
+        map.put("tenant_id", 7L);
+        MapWriteSql generator = new MapWriteSql(TABLE_NAME, map);
+
+        assertThrows(IllegalArgumentException.class, generator::getInsertSql);
+    }
+
+    @Test
     void testGetInsertSqlWithMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("name", "Alice");

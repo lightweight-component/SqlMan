@@ -31,7 +31,10 @@ CreateResult<Long> result =
                 .execute(true, Long.class);
 ```
 
-Map keys are treated as database column names.
+Generated Map writes convert lower camel-case keys such as `tenantId` to `tenant_id`.
+Keys that already contain underscores are used as supplied. Two keys that resolve to the
+same column are rejected. When supplying an ID column explicitly, use the database column
+name. SqlMan can look up its value from a Map key such as `tenantId`.
 
 ## Insert a JavaBean
 

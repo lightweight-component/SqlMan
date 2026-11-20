@@ -29,7 +29,7 @@ new Action(conn, bean).update().withId("id", id);
 new Action(conn, entity, tableName).update().delete();
 ```
 
-A Bean can obtain its table name from `@Table`. Map keys and resolved Bean columns are validated identifiers. Check empty entities, null properties, ID exclusion, and annotation support when changing generation.
+A Bean can obtain its table name from `@Table`. Entity Map writes and `createBatchMap` convert lower camel-case keys such as `tenantId` to `tenant_id` and reject keys that resolve to the same column. Explicit ID columns use database names. Check empty entities, null properties, ID exclusion, and annotation support when changing generation.
 
 ## SQL XML and inline templates
 

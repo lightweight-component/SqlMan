@@ -17,6 +17,7 @@
 package com.ajaxjs.sqlman;
 
 import com.ajaxjs.sqlman.entity.BeanIterator;
+import com.ajaxjs.sqlman.entity.MapWriteSql;
 import com.ajaxjs.sqlman.model.NullValue;
 import com.ajaxjs.sqlman.model.UpdateResult;
 import com.ajaxjs.sqlman.model.tablemodel.TableModel;
@@ -98,7 +99,7 @@ public class BatchUpdate extends TableModel {
     }
 
     /**
-     * 批量插入
+     * 批量插入。Map 的小驼峰键会转换为下划线列名。
      *
      * @param entities  Map 列表或 Map 数组
      * @param tableName 表名
@@ -120,6 +121,7 @@ public class BatchUpdate extends TableModel {
         else
             throw new IllegalArgumentException("entities 必须是 Map 列表或 Map 数组");
 
+        rows.replaceAll(row -> row == null ? null : MapWriteSql.resolveColumns(row));
         insertRows(tableName, rows, true);
     }
 

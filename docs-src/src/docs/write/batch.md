@@ -30,7 +30,8 @@ remains the caller's responsibility.
 
 ## Insert Maps
 
-All rows must contain exactly the same keys as the first row. A `LinkedHashMap` makes the column order explicit:
+All rows must resolve to the same columns as the first row. For example, `tenantId` and
+`tenant_id` can identify the same column in different rows. A `LinkedHashMap` makes the column order explicit:
 
 ```java
 List<Map<String, Object>> users = new ArrayList<>();

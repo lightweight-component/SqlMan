@@ -22,6 +22,8 @@ SqlMan 2.3 是一个轻量级的 JDBC 封装工具。它**不是** ORM 框架，
 生成、分页，以及包含 `<if>`、`<else>`、`<forEach>` 的 XML 或内联模板。模板 `#{name}` 会使用 JDBC 参数绑定，`${name}`
 仅接受经校验的 SQL 标识符。查询结果可返回 Map 或 JavaBean，并提供紧凑的常用 JDBC API。
 
+根据 Map 生成写入 SQL 时，小驼峰键会自动转成下划线列名，例如 `tenantId` 转为 `tenant_id`。
+
 ## 源代码
 
 [GitHub](https://github.com/lightweight-component/SqlMan) | [Gitcode](https://gitcode.com/lightweight-component/SqlMan)
