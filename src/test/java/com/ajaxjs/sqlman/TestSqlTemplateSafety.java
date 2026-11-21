@@ -55,6 +55,21 @@ class TestSqlTemplateSafety {
         }
     }
 
+    @Test
+    void literalAndCommentPlaceholdersSurviveJdbcExecution() throws Exception {
+        try (Connection conn = createDatabase()) {
+            Map<String, Object> values = new HashMap<>();
+            values.put("name", "safe");
+            values.put("table", "template_items");
+
+            String label = new Action(conn,
+                    "SELECT '#{name} ${missing}' AS label FROM ${table} /* #{name} ${missing} ? */ WHERE name = #{name} AND name = ? -- ${missing}\n")
+                    .query(values, "safe").oneValue(String.class);
+
+            assertEquals("#{name} ${missing}", label);
+        }
+    }
+
     private static Connection createDatabase() throws Exception {
         JdbcDataSource dataSource = new JdbcDataSource();
         dataSource.setURL("jdbc:h2:mem:template_safety;DB_CLOSE_DELAY=-1");
